@@ -1,0 +1,146 @@
+"""Public Line Set API.
+
+The set is declared in :mod:`line_set.registry`, read by
+:mod:`line_set.reader`, and checked by :mod:`line_set.invariants`. Only
+:mod:`line_set.binding` imports a sibling package, and only when asked.
+
+Nothing here evaluates anything. A reading reports which declared
+vocabularies were legible and whether any two of them overlapped.
+"""
+
+from .binding import (
+    DIGEST_ATTRS,
+    LINE_PACKAGE_SUFFIX,
+    SIBLING_BASE_ENV,
+    VERSION_ATTRS,
+    ImportResolver,
+    PackageResolver,
+    Resolution,
+    Vocabulary,
+    VocabularyCensus,
+    candidate_packages,
+    default_resolver,
+    enum_tokens,
+    exported_enums,
+    read_vocabulary,
+    sibling_base,
+    sibling_path_resolver,
+    sibling_source_roots,
+    vocabulary_census,
+)
+from .invariants import (
+    SoundnessResult,
+    all_invariants,
+    check_contiguous_working_positions,
+    check_distinct_colours,
+    check_distinct_line_ids,
+    check_distinct_opus_stages,
+    check_must_not_become_declared,
+    check_orders_diverge,
+    check_self_disjointness,
+    check_shared_tokens_disambiguated,
+    live_invariants,
+    registry_sound,
+    self_disjointness_from_reading,
+)
+from .models import (
+    OPUS_STAGE_ORDER,
+    DerivationStage,
+    LineEntry,
+    LineObservation,
+    ReadCode,
+    SetReading,
+    SetStatus,
+    SharedToken,
+    TokenCollision,
+)
+from .probes import (
+    DERIVED_LINE_SUFFIX,
+    ExemptionProbe,
+    exemption_probes,
+    probes_hold,
+    spare_line_id,
+)
+from .reader import (
+    READER_STAGES,
+    STATUS_PRECEDENCE,
+    exemption_for,
+    read_set,
+)
+from .registry import (
+    LINE_SET,
+    SHARED_TOKENS,
+    WRAPPER_LINE,
+    find_line,
+    line_ids,
+)
+from .serialization import (
+    canonical_reading,
+    canonical_registry,
+    reading_digest,
+    registry_digest,
+)
+from .version import SET_VERSION, __version__
+
+__all__ = [
+    "DERIVED_LINE_SUFFIX",
+    "DIGEST_ATTRS",
+    "DerivationStage",
+    "ExemptionProbe",
+    "ImportResolver",
+    "LINE_PACKAGE_SUFFIX",
+    "LINE_SET",
+    "LineEntry",
+    "LineObservation",
+    "OPUS_STAGE_ORDER",
+    "PackageResolver",
+    "READER_STAGES",
+    "ReadCode",
+    "Resolution",
+    "SET_VERSION",
+    "SHARED_TOKENS",
+    "SIBLING_BASE_ENV",
+    "STATUS_PRECEDENCE",
+    "SetReading",
+    "SetStatus",
+    "SharedToken",
+    "SoundnessResult",
+    "TokenCollision",
+    "VERSION_ATTRS",
+    "Vocabulary",
+    "VocabularyCensus",
+    "WRAPPER_LINE",
+    "__version__",
+    "all_invariants",
+    "candidate_packages",
+    "canonical_reading",
+    "canonical_registry",
+    "check_contiguous_working_positions",
+    "check_distinct_colours",
+    "check_distinct_line_ids",
+    "check_distinct_opus_stages",
+    "check_must_not_become_declared",
+    "check_orders_diverge",
+    "check_self_disjointness",
+    "check_shared_tokens_disambiguated",
+    "default_resolver",
+    "enum_tokens",
+    "exemption_for",
+    "exemption_probes",
+    "exported_enums",
+    "find_line",
+    "line_ids",
+    "live_invariants",
+    "probes_hold",
+    "read_set",
+    "read_vocabulary",
+    "reading_digest",
+    "registry_digest",
+    "registry_sound",
+    "self_disjointness_from_reading",
+    "sibling_base",
+    "sibling_path_resolver",
+    "sibling_source_roots",
+    "spare_line_id",
+    "vocabulary_census",
+]

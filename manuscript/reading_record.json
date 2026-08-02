@@ -1,0 +1,235 @@
+{
+  "package_version": "0.1.0",
+  "reading": {
+    "collisions": [],
+    "counts": {
+      "import_failed": 0,
+      "no_vocabulary": 0,
+      "not_installed": 0,
+      "resolved": 4
+    },
+    "derivation": [
+      {
+        "detail": "asked the resolver for 4 declared packages",
+        "items": [
+          "black_line=resolved",
+          "golden_line=resolved",
+          "red_line=resolved",
+          "white_line=resolved"
+        ],
+        "name": "resolve"
+      },
+      {
+        "detail": "read version, registry size, digest, and enum member names from each package that resolved",
+        "items": [
+          "black_line: 10 tokens, version=0.4.0, registry_size=11",
+          "golden_line: 7 tokens, version=0.4.0, registry_size=9",
+          "red_line: 40 tokens, version=0.3.0, registry_size=7",
+          "white_line: 24 tokens, version=0.7.0, registry_size=11"
+        ],
+        "name": "bind"
+      },
+      {
+        "detail": "0 unexempted and 1 exempted cross-line token collisions",
+        "items": [
+          "OUTSIDE_SCOPE over black_line,red_line (exempted)"
+        ],
+        "name": "collide"
+      },
+      {
+        "detail": "scanned 4 candidate packages and found 0 that resolved but were not declared",
+        "items": [],
+        "name": "declare"
+      },
+      {
+        "detail": "set_legible: all 4 declared line(s) were read and their vocabularies do not overlap",
+        "items": [
+          "set_colliding",
+          "set_undeclared",
+          "set_partial",
+          "set_legible"
+        ],
+        "name": "status"
+      }
+    ],
+    "exempted_collisions": [
+      {
+        "exempted": true,
+        "lines": [
+          "black_line",
+          "red_line"
+        ],
+        "rationale": "Both lines needed a name for work their own question does not reach, and the two senses are not the same sense. Red Line is saying it looked and found no prohibition; Black Line is saying it did not look, because the attempt is not the kind of thing its practices evaluate. The shared spelling is recorded here so the overlap is a declaration rather than an accident.",
+        "token": "OUTSIDE_SCOPE"
+      }
+    ],
+    "observations": [
+      {
+        "code": "resolved",
+        "detail": "digest read from registry_digest()",
+        "line_id": "black_line",
+        "registry_digest": "a02bff47a767b545bdeca7677bd1a2e1b24f1147d0847ec361fa9ee8b9ea1846",
+        "registry_size": 11,
+        "tokens": [
+          "ALIGNED",
+          "COMMUNICATION",
+          "FRAMING",
+          "METHOD",
+          "NEEDS_EVIDENCE",
+          "NEEDS_REWORK",
+          "OUTSIDE_SCOPE",
+          "STEWARDSHIP",
+          "TRACEABILITY",
+          "VERIFICATION"
+        ],
+        "version": "0.4.0"
+      },
+      {
+        "code": "resolved",
+        "detail": "digest read from registry_digest()",
+        "line_id": "golden_line",
+        "registry_digest": "3e0a7e38ececb156336d57ed7cc60b6bf08a3d8f2edfc678270c307820df57e3",
+        "registry_size": 9,
+        "tokens": [
+          "DRIFTING",
+          "DUPLICATE",
+          "INQUIRY",
+          "MALFORMED",
+          "NOT_OBSERVED",
+          "TOWARD",
+          "UNKNOWN_ID"
+        ],
+        "version": "0.4.0"
+      },
+      {
+        "code": "resolved",
+        "detail": "digest read from registry_hash()",
+        "line_id": "red_line",
+        "registry_digest": "72835fd81d1f7ecf70f47b1e0061cd56c385273dd846879ab639225913f5aad7",
+        "registry_size": 7,
+        "tokens": [
+          "ABSOLUTE",
+          "AFFECTED_PARTIES",
+          "AIR_GAPPED",
+          "ALL",
+          "ALL_LINES_NARROWED",
+          "AMBIGUOUS_INTAKE",
+          "ANY",
+          "BELOW_TIER_FLOOR",
+          "CANARY",
+          "CAPABILITY_SCOPE",
+          "COMPLIANT",
+          "CONNECTED",
+          "CONTRADICTED",
+          "DATA_PROVENANCE",
+          "DEPLOYMENT",
+          "DOWNSTREAM_TRANSFER",
+          "EMPTY_SCOPE",
+          "END_USE",
+          "HOSTED",
+          "HUMAN_CONTROL",
+          "INSUFFICIENT_INFORMATION",
+          "INTAKE_BLOCKED",
+          "INVALID_SCOPE",
+          "LEGAL_BASIS",
+          "MISSING_EVIDENCE",
+          "MULTIPLE_PROHIBITED_DIMENSIONS",
+          "NON_COMPLIANT",
+          "OUTSIDE_SCOPE",
+          "PURPOSE",
+          "REQUIRES_MODIFICATION",
+          "SELF_ASSERTED",
+          "STALE_EVIDENCE",
+          "STRONG",
+          "UNDECLARED_UNKNOWN",
+          "UNEXEMPTED_LINE",
+          "UNKNOWN_SCOPE",
+          "UNRESOLVED_EVIDENCE",
+          "UNVERIFIED",
+          "VERIFIED",
+          "VERIFIED_EXEMPTION"
+        ],
+        "version": "0.3.0"
+      },
+      {
+        "code": "resolved",
+        "detail": "digest read from registry_digest()",
+        "line_id": "white_line",
+        "registry_digest": "11047a641a8e80c985f2bbd8a45b67a0e67048b235020aa52aa46da1cc02682a",
+        "registry_size": 11,
+        "tokens": [
+          "CONFLICTING_STATES",
+          "CONTEMPLATIVE",
+          "CURRENT",
+          "DUPLICATE_STATE",
+          "EPISTEMIC",
+          "ETHICAL",
+          "HONOR_AND_CONFIRM_BOUNDARY",
+          "NAMED",
+          "NON_ITERABLE_INPUT",
+          "NON_OBSERVATION",
+          "NOT_RECORDED",
+          "OPEN",
+          "RECORD_OR_EXPLICITLY_SCOPE",
+          "REOPEN_OR_BOUND",
+          "RESERVED_STATE",
+          "RETAIN_NAMED_SCOPE",
+          "STALE",
+          "UNDATED",
+          "UNDATED_OBJECT",
+          "UNDISCLOSED",
+          "UNKNOWN_RECORD",
+          "UNRESOLVED",
+          "UNTYPED_STATE",
+          "WITHHELD"
+        ],
+        "version": "0.7.0"
+      }
+    ],
+    "read_as_of": "2026-07-29",
+    "set_digest": "40db5e0e3e038707ed17944cbb666a1df1ef486d64723133731cd11dec128a2b",
+    "status": "set_legible",
+    "undeclared_lines": []
+  },
+  "reading_digest": "e783001a0baa1c164e3b768eb2148c54b23a7ebca2e9729b445cd22c9401628f",
+  "recorded_on": "2026-07-29",
+  "schema_version": "1.0",
+  "set_digest": "40db5e0e3e038707ed17944cbb666a1df1ef486d64723133731cd11dec128a2b",
+  "set_version": "2026.07.27",
+  "vocabulary_census": {
+    "declared_members": 89,
+    "distinct_names": 80,
+    "enum_classes": 19,
+    "line_and_name_pairs": 81,
+    "method": "Every enum exported at each declared package's root was counted, together with the members it declares. declared_members counts repeats; distinct_names is what survives deduplication within one line, which is what the collision scan compares.",
+    "names_carried_by_more_than_one_line": [
+      "OUTSIDE_SCOPE"
+    ],
+    "per_line": {
+      "black_line": {
+        "declared_members": 13,
+        "distinct_names": 10,
+        "enum_classes": 3,
+        "within_line_repeats": 3
+      },
+      "golden_line": {
+        "declared_members": 7,
+        "distinct_names": 7,
+        "enum_classes": 2,
+        "within_line_repeats": 0
+      },
+      "red_line": {
+        "declared_members": 41,
+        "distinct_names": 40,
+        "enum_classes": 7,
+        "within_line_repeats": 1
+      },
+      "white_line": {
+        "declared_members": 28,
+        "distinct_names": 24,
+        "enum_classes": 7,
+        "within_line_repeats": 4
+      }
+    }
+  }
+}

@@ -1,0 +1,30 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "line_set"
+version = "0.1.0"
+description = "A declaration of the line set, a reader for it, and a non-overlap check"
+authors = [{name = "Daniel Ari Friedman", email = "daniel@activeinference.institute"}]
+requires-python = ">=3.10"
+dependencies = []
+
+[dependency-groups]
+dev = ["pytest>=7.4.0", "pytest-cov>=4.1.0", "ruff>=0.6.0"]
+
+[tool.pytest.ini_options]
+pythonpath = [".", "src"]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+python_functions = ["test_*"]
+addopts = "-v --tb=short --strict-markers"
+
+[tool.coverage.run]
+source = ["src"]
+branch = true
+
+[tool.coverage.report]
+fail_under = 90
+show_missing = true
+precision = 2

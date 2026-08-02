@@ -1,0 +1,38 @@
+# Implementation facts used to ground formalism numbers in the manuscript.
+# These entries support reproducibility of the code description only; they do
+# not establish that any proposition is universally valid.
+#
+# Every `kind: number` row is re-derived from its `source` by
+# tests/test_formalism.py; a row with no executable source may not be
+# added without also adding its derivation there.
+claims:
+  - id: line_entry_count
+    kind: number
+    value: 4
+    source: src/line_set/registry.py LINE_SET
+    source_tier: claim_ledger
+  - id: shared_token_count
+    kind: number
+    value: 2
+    source: src/line_set/registry.py SHARED_TOKENS
+    source_tier: claim_ledger
+  - id: reader_stage_count
+    kind: number
+    value: 5
+    source: src/line_set/reader.py READER_STAGES
+    source_tier: claim_ledger
+  - id: set_status_count
+    kind: number
+    value: 4
+    source: src/line_set/models.py SetStatus
+    source_tier: claim_ledger
+  - id: formal_definition_count
+    kind: number
+    value: 3
+    source: manuscript/02a_formalism.md .definition blocks
+    source_tier: claim_ledger
+  - id: formal_proposition_count
+    kind: number
+    value: 5
+    source: manuscript/02a_formalism.md .proposition blocks
+    source_tier: claim_ledger

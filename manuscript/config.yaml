@@ -1,0 +1,50 @@
+# line_set — manuscript configuration.
+# The fifth work in the line set: a wrapper and reader, not a fifth instrument.
+
+paper:
+  title: "The Line Set: Holding Instruments Apart"
+  subtitle: "A Declaration, a Reader, and a Non-Overlap Contract for a Growing Set of Small Instruments"
+  version: "0.1.0"
+  date: "2026-07-29"
+  description: "A thin wrapper that declares what the line set is, reads the sibling packages that are installed, and checks that no two of them share a status token."
+  cover:
+    image: "output/figures/cover_art.png"
+
+authors:
+  - name: "Daniel Ari Friedman"
+    orcid: "0000-0001-6232-9096"
+    email: "daniel@activeinference.institute"
+    affiliation: "Active Inference Institute"
+    corresponding: true
+
+publication:
+  doi: "10.5281/zenodo.21754244"
+  github_repository: "docxology/line_set"
+  repository_url: "https://github.com/docxology/line_set"
+
+keywords:
+  - "modularity"
+  - "information hiding"
+  - "separation of concerns"
+  - "boundary objects"
+  - "namespace collision"
+  - "declarative registry"
+  - "reproducible review"
+  - "open science"
+
+render:
+  formats:
+    pdf: true
+    html: true
+    slides: false
+    docx: false
+    epub: false
+
+rendering:
+  figure_height_fraction: 0.92
+  front_matter_figure_height_fraction: 0.92
+
+metadata:
+  license: "CC-BY-4.0 (prose); MIT (code)"
+  status: "living document — versioned and revisable"
+  geometry: "left=0.33in,right=0.33in,top=0.55in,bottom=0.55in"
