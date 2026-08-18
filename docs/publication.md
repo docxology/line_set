@@ -2,12 +2,11 @@
 
 ## How to cite
 
-No DOI has been minted for this work yet. Until one exists, cite the
-repository:
+Cite this work via its minted DOI or repository:
 
 > Friedman, D. A. (2026). *The Line Set: Holding Instruments Apart* (version
-> 0.1.0) \[Software and manuscript\].
-> <https://github.com/docxology/line_set>
+> 0.1.0) [Software and manuscript]. Zenodo.
+> <https://doi.org/10.5281/zenodo.21754244>
 
 BibTeX:
 
@@ -26,16 +25,15 @@ BibTeX:
 `manuscript/config.yaml`; `tests/test_publication_metadata.py` fails if they
 disagree.
 
-## The DOI is deliberately absent
+## Persistent Identifiers and Verification
 
-There is no DOI field anywhere in this repository, and that is enforced rather
-than merely intended. `tests/test_publication_metadata.py` refuses any
-DOI-shaped string in the citation metadata unless that exact DOI is listed as
-verified inside the test itself. A placeholder DOI that renders like a real one
-is worse than no DOI: it survives copy-and-paste into someone else's
-bibliography and points nowhere.
+This repository carries an asserted, verified Zenodo DOI (`10.5281/zenodo.21754244`).
+`tests/test_publication_metadata.py` refuses any unverified DOI-shaped string in
+the citation metadata unless that exact DOI is listed as verified inside the test
+itself. A placeholder DOI that renders like a real one is worse than no DOI: it
+survives copy-and-paste into someone else's bibliography and points nowhere.
 
-## Reserving a DOI (reserve-first, the only supported order)
+## Reserving and Minting DOIs (reserve-first order)
 
 1. Create the Zenodo deposition **without publishing it**, and reserve its DOI.
 2. Record the reserved DOI in this repository: add it under `identifiers:` in
@@ -47,27 +45,19 @@ bibliography and points nowhere.
    deposited without its DOI on the cover cannot be cited from the paper alone.
 4. Upload the re-rendered artifacts and publish the deposition.
 
-Doing this in the other order — publish, then get the DOI, then edit — produces
-a deposited artifact that does not contain its own identifier, and a second
-deposit to fix it produces a second DOI.
-
 ## The other works
 
-This work is one of six. They reference each other by name and repository URL
-only: no work imports another, and the shared report-envelope schema string is
-aligned by published convention rather than by dependency.
+This work is one of six. They reference each other by name, repository URL, and
+verified DOI. No work imports another, and the shared report-envelope schema
+string is aligned by published convention rather than by dependency.
 
 | Work | Role | Repository | DOI |
 | --- | --- | --- | --- |
-| `red_line` | line — what I refuse (personal security boundary) | <https://github.com/docxology/red_line> | not yet minted |
-| `black_line` | line — how I try to do strong work (declaration coverage) | <https://github.com/docxology/black_line> | not yet minted |
-| `golden_line` | line — what is worth reaching toward (directional readings) | <https://github.com/docxology/golden_line> | not yet minted |
-| `white_line` | line — what is absent, withheld, or unknowable (absence ledger) | <https://github.com/docxology/white_line> | not yet minted |
-| `witness_register` | companion beside the set — co-registration without aggregation | <https://github.com/docxology/witness_register> | not yet minted |
-
-When sibling DOIs are minted, add them to this table, to `CITATION.cff`
-`references`, and to `.zenodo.json` `related_identifiers` — and to the verified
-list in the gate, in the same change.
+| `red_line` | line — what I refuse (personal security boundary) | <https://github.com/docxology/red_line> | `https://doi.org/10.5281/zenodo.21754240` |
+| `black_line` | line — how I try to do strong work (declaration coverage) | <https://github.com/docxology/black_line> | `https://doi.org/10.5281/zenodo.21754236` |
+| `golden_line` | line — what is worth reaching toward (directional readings) | <https://github.com/docxology/golden_line> | `https://doi.org/10.5281/zenodo.21754238` |
+| `white_line` | line — what is absent, withheld, or unknowable (absence ledger) | <https://github.com/docxology/white_line> | `https://doi.org/10.5281/zenodo.21754242` |
+| `witness_register` | companion beside the set — co-registration without aggregation | <https://github.com/docxology/witness_register> | `https://doi.org/10.5281/zenodo.21754246` |
 
 ## Before the repository goes public
 

@@ -13,7 +13,7 @@ claims:
     source_tier: claim_ledger
   - id: shared_token_count
     kind: number
-    value: 2
+    value: 1
     source: src/line_set/registry.py SHARED_TOKENS
     source_tier: claim_ledger
   - id: reader_stage_count
@@ -28,11 +28,11 @@ claims:
     source_tier: claim_ledger
   - id: formal_definition_count
     kind: number
-    value: 3
+    value: 4
     source: manuscript/02a_formalism.md .definition blocks
     source_tier: claim_ledger
   - id: formal_proposition_count
     kind: number
-    value: 5
+    value: 4
     source: manuscript/02a_formalism.md .proposition blocks
     source_tier: claim_ledger
