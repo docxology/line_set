@@ -125,6 +125,26 @@ def write_paper(
         figures.mkdir(parents=True, exist_ok=True)
         for name in plates:
             (figures / name).write_bytes(PNG_BYTES)
+        # A work that ships plates ships the registry the render toolchain
+        # reads; the omnibus mirror refuses a plate set without one.
+        (figures / "figure_registry.json").write_text(
+            json.dumps(
+                {
+                    "schema_version": "1.2",
+                    "figures": [
+                        {
+                            "label": f"fig:{Path(name).stem}",
+                            "filename": name,
+                            "alt_text": f"Plate {name}.",
+                        }
+                        for name in plates
+                    ],
+                },
+                indent=2,
+            )
+            + "\n",
+            encoding="utf-8",
+        )
     return root
 
 
@@ -1311,3 +1331,36 @@ def test_the_namespace_prefix_is_derived_from_the_declared_id() -> None:
     assert namespace_prefix("some_line") == "some-line"
     for entry in LINE_SET:
         assert namespace_prefix(entry.id) == entry.id.replace("_", "-")
+
+def test_the_volume_writes_a_namespaced_figure_registry_mirror(tmp_path: Path) -> None:
+    """The volume's registry mirror carries namespaced labels; sources stand."""
+    base = tmp_path / "works"
+    write_paper(
+        base,
+        "carrier",
+        sections={"00_a.md": "# A\n\nText.\n"},
+        plates=("p.png",),
+    )
+    out = tmp_path / "out"
+    assemble(
+        out,
+        base,
+        (),
+        (),
+        wrapper_entry("carrier", 1),
+        resolver=blind_resolver(),
+        write=True,
+    )
+    mirror = json.loads(
+        (out / "output" / "figures" / "figure_registry.json").read_text(
+            encoding="utf-8"
+        )
+    )
+    labels = {record["label"] for record in mirror["figures"]}
+    assert labels == {"fig:carrier-p"}
+    source = json.loads(
+        (base / "carrier" / "output" / "figures" / "figure_registry.json").read_text(
+            encoding="utf-8"
+        )
+    )
+    assert {record["label"] for record in source["figures"]} == {"fig:p"}

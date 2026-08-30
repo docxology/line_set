@@ -1,0 +1,106 @@
+{
+  "schema_version": "1.0",
+  "purpose": "Declares the manuscript's formalism-block labels and the vocabulary-census numbers the prose states, so the render engine's evidence registry can resolve those [@def:...]/[@prop:...] cross-references and counts instead of reporting them as unsupported citations. Every row is derived from the manuscript or the recorded reading; tests/test_formalism_claim_ledger.py re-derives the whole set and fails if a block is added, renamed, or removed without this file following.",
+  "boundary": "A row here records that a label is declared and that a number is re-derivable. It is not evidence that the proposition it names is true, and it grants no claim any weight.",
+  "claims": [
+    {
+      "claim_id": "def_exemption-match",
+      "kind": "citation",
+      "value": "def:exemption-match",
+      "source": "manuscript/02a_formalism.md: formalism block declared with this label",
+      "source_path": "manuscript/02a_formalism.md",
+      "source_tier": "manuscript_formalism_block",
+      "freshness": "active"
+    },
+    {
+      "claim_id": "def_line-entry",
+      "kind": "citation",
+      "value": "def:line-entry",
+      "source": "manuscript/02a_formalism.md: formalism block declared with this label",
+      "source_path": "manuscript/02a_formalism.md",
+      "source_tier": "manuscript_formalism_block",
+      "freshness": "active"
+    },
+    {
+      "claim_id": "def_reading",
+      "kind": "citation",
+      "value": "def:reading",
+      "source": "manuscript/02a_formalism.md: formalism block declared with this label",
+      "source_path": "manuscript/02a_formalism.md",
+      "source_tier": "manuscript_formalism_block",
+      "freshness": "active"
+    },
+    {
+      "claim_id": "def_shared-token",
+      "kind": "citation",
+      "value": "def:shared-token",
+      "source": "manuscript/02a_formalism.md: formalism block declared with this label",
+      "source_path": "manuscript/02a_formalism.md",
+      "source_tier": "manuscript_formalism_block",
+      "freshness": "active"
+    },
+    {
+      "claim_id": "prop_fail-closed",
+      "kind": "citation",
+      "value": "prop:fail-closed",
+      "source": "manuscript/02a_formalism.md: formalism block declared with this label",
+      "source_path": "manuscript/02a_formalism.md",
+      "source_tier": "manuscript_formalism_block",
+      "freshness": "active"
+    },
+    {
+      "claim_id": "prop_precedence",
+      "kind": "citation",
+      "value": "prop:precedence",
+      "source": "manuscript/02a_formalism.md: formalism block declared with this label",
+      "source_path": "manuscript/02a_formalism.md",
+      "source_tier": "manuscript_formalism_block",
+      "freshness": "active"
+    },
+    {
+      "claim_id": "prop_self-disjointness",
+      "kind": "citation",
+      "value": "prop:self-disjointness",
+      "source": "manuscript/02a_formalism.md: formalism block declared with this label",
+      "source_path": "manuscript/02a_formalism.md",
+      "source_tier": "manuscript_formalism_block",
+      "freshness": "active"
+    },
+    {
+      "claim_id": "prop_vocabulary-disjointness",
+      "kind": "citation",
+      "value": "prop:vocabulary-disjointness",
+      "source": "manuscript/02a_formalism.md: formalism block declared with this label",
+      "source_path": "manuscript/02a_formalism.md",
+      "source_tier": "manuscript_formalism_block",
+      "freshness": "active"
+    },
+    {
+      "claim_id": "census_declared_members",
+      "kind": "number",
+      "value": 89,
+      "source": "manuscript/reading_record.json vocabulary_census.declared_members (re-derived from the live packages by scripts/record_reading.py)",
+      "source_path": "manuscript/reading_record.json",
+      "source_tier": "recorded_reading_census",
+      "freshness": "active"
+    },
+    {
+      "claim_id": "census_line_and_name_pairs",
+      "kind": "number",
+      "value": 81,
+      "source": "manuscript/reading_record.json vocabulary_census.line_and_name_pairs (re-derived from the live packages by scripts/record_reading.py)",
+      "source_path": "manuscript/reading_record.json",
+      "source_tier": "recorded_reading_census",
+      "freshness": "active"
+    },
+    {
+      "claim_id": "census_distinct_names",
+      "kind": "number",
+      "value": 80,
+      "source": "manuscript/reading_record.json vocabulary_census.distinct_names (re-derived from the live packages by scripts/record_reading.py)",
+      "source_path": "manuscript/reading_record.json",
+      "source_tier": "recorded_reading_census",
+      "freshness": "active"
+    }
+  ]
+}

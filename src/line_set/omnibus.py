@@ -1098,6 +1098,18 @@ def front_matter(
     return "\n".join(lines)
 
 
+def cover_embed_name(paper: SourcePaper) -> str:
+    """The unique volume basename one work's cover copy gets.
+
+    Two works can ship covers under one basename (``cover_art.png``), and the
+    render toolchain maps one filename to exactly one registry record. Each
+    part's cover is therefore copied under a prefix-unique name, which gives
+    every part heading's ``fig:{prefix}-cover`` label its own file and record.
+    """
+
+    return f"{paper.prefix}-cover-{paper.cover_image.name}"
+
+
 def part_heading(paper: SourcePaper, part: int) -> str:
     """The part heading that carries one work's own title into the volume.
 
@@ -1112,7 +1124,7 @@ def part_heading(paper: SourcePaper, part: int) -> str:
     if paper.cover_image is not None and paper.cover_image.is_file():
         lines.extend(
             [
-                f"![Cover art for {title}]({VOLUME_FIGURE_PREFIX}{paper.cover_image.name})"
+                f"![Cover art for {title}]({VOLUME_FIGURE_PREFIX}{cover_embed_name(paper)})"
                 f"{{#fig:{paper.prefix}-cover width=70%}}",
                 "",
             ]
@@ -1501,13 +1513,31 @@ def assemble(
 
     # Extend the figure map with cover images so the embed check passes.
     cover_map: dict[str, Path] = {}
+    cover_registry_records: list[dict[str, object]] = []
     for paper in papers:
         if (
             paper.present
             and paper.cover_image is not None
             and paper.cover_image.is_file()
         ):
-            cover_map[paper.cover_image.name] = paper.cover_image
+            cover_map[cover_embed_name(paper)] = paper.cover_image
+    # The part headings embed each cover under a prefix-unique basename
+    # (``cover_embed_name``) and label it ``fig:{paper.prefix}-cover``, so the
+    # registry mirror carries that exact label/filename pair. Every cover gets
+    # a record: the unique copy never collides with a work's own plate.
+    for paper in papers:
+        if (
+            paper.present
+            and paper.cover_image is not None
+            and paper.cover_image.is_file()
+        ):
+            cover_registry_records.append(
+                {
+                    "label": f"fig:{paper.prefix}-cover",
+                    "filename": cover_embed_name(paper),
+                    "alt_text": f"Cover art for {paper.entry.id.replace('_', ' ')}.",
+                }
+            )
     all_embeds = {**figures, **cover_map}
     for name, text in plan:
         for embed_target in collect_embeds(text):
@@ -1556,6 +1586,19 @@ def assemble(
             if not dest.exists() or dest.resolve() != source.resolve():
                 shutil.copy2(source, dest)
 
+        # Namespaced figure-registry mirror: the render toolchain checks every
+        # rendered figure's label against ``output/figures/figure_registry.json``
+        # exactly, and the volume's sections carry ``paper.prefix``-namespaced
+        # labels. Write a namespaced mirror beside the gathered plates so the
+        # labels agree; never touch the works' own registries, which stay the
+        # source builds' records.
+        (plates / "figure_registry.json").write_text(
+            namespaced_figure_registry(
+                root, papers, cover_registry_records
+            ),
+            encoding="utf-8",
+        )
+
     report = AssemblyReport(
         written=target,
         papers_included=sum(1 for paper in papers if paper.present),
@@ -1586,6 +1629,70 @@ def assemble(
         )
         (target / REPORT_NAME).write_text(report.as_json(), encoding="utf-8")
     return report
+
+
+def namespaced_figure_registry(
+    root: Path,
+    papers: Sequence[SourcePaper],
+    cover_registry_records: Sequence[dict[str, object]] = (),
+) -> str:
+    """The volume's figure registry: every work's labels in its namespace.
+
+    The render toolchain compares each rendered figure's label against
+    ``output/figures/figure_registry.json`` exactly. The volume's sections
+    carry ``paper.prefix``-namespaced labels, so the mirror renames each
+    work's registry labels the same way ``namespace_anchors`` renames the
+    manuscript anchors, and merges every present work into one list. Labels
+    that collide after namespacing cannot happen — the prefix is unique per
+    work — but a missing registry for a present work is refused rather than
+    silently dropped, because a figure the volume shows must stay
+    accessibility-covered.
+    """
+    merged: list[dict[str, object]] = []
+    for paper in papers:
+        if not paper.present:
+            continue
+        registry_path = (
+            paper.root / VOLUME_FIGURES_DIR[0] / VOLUME_FIGURES_DIR[1]
+            / "figure_registry.json"
+        )
+        if not registry_path.is_file():
+            if paper.figures:
+                raise OmnibusError(
+                    f"{paper.entry.id} ships plates but no figure registry at "
+                    f"{registry_path}; the volume cannot carry its figures "
+                    "accessibility-covered"
+                )
+            continue
+        payload = json.loads(registry_path.read_text(encoding="utf-8"))
+        records = (
+            payload["figures"]
+            if isinstance(payload, dict) and "figures" in payload
+            else payload
+        )
+        for record in records:
+            if not isinstance(record, dict) or "label" not in record:
+                continue
+            renamed = dict(record)
+            label = str(record["label"])
+            kind, _, name = label.partition(":")
+            renamed["label"] = f"{kind}:{paper.prefix}-{name}"
+            merged.append(renamed)
+    merged.extend(cover_registry_records)
+    return json.dumps(
+        {
+            "schema_version": "1.2-omnibus",
+            "note": (
+                "Namespaced mirror written by the omnibus assembly: the "
+                "volume's section labels are prefix-namespaced, so this "
+                "registry records each work's figures under the label the "
+                "volume renders. Source registries are unchanged."
+            ),
+            "figures": merged,
+        },
+        indent=2,
+        ensure_ascii=False,
+    ) + "\n"
 
 
 def _keys_of(paper: SourcePaper) -> frozenset[str]:
