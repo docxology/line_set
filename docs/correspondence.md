@@ -16,7 +16,7 @@ The Collected Volume*, 2026-07-27). Its reading of this work: the wrapper is
 already the set's modular witness — it declares without evaluating, reads
 without reinterpreting, and admits in its own limits section that a missing
 colour leaves no trace ("a question nobody has asked yet leaves no trace" —
-`manuscript/05_limits.md`). The review's pressure lands elsewhere: each
+`docs/manuscript/05_limits.md`). The review's pressure lands elsewhere: each
 line's selected status is a safe projection that must not become the whole
 state, and the missing layer is a *shared witness register* that co-registers
 each line's complete report without ranking, averaging, merging, or

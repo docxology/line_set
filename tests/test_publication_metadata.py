@@ -20,7 +20,7 @@ from line_set import __version__
 ROOT = Path(__file__).resolve().parents[1]
 CITATION = ROOT / "CITATION.cff"
 ZENODO = ROOT / ".zenodo.json"
-CONFIG = ROOT / "manuscript" / "config.yaml"
+CONFIG = ROOT / "docs" / "manuscript" / "config.yaml"
 LICENSE = ROOT / "LICENSE"
 
 SELF = "line_set"
@@ -30,7 +30,14 @@ SIBLINGS = ("red_line", "black_line", "golden_line", "white_line", "witness_regi
 #: asserted real and reserved via Zenodo. Adding any other DOI-shaped string to
 #: the metadata surfaces fails test_no_unverified_doi_appears_in_metadata.
 #: copy-and-paste into a bibliography and points nowhere.
-VERIFIED_DOIS: tuple[str, ...] = ("10.5281/zenodo.21754236", "10.5281/zenodo.21754238", "10.5281/zenodo.21754240", "10.5281/zenodo.21754242", "10.5281/zenodo.21754244", "10.5281/zenodo.21754246")
+VERIFIED_DOIS: tuple[str, ...] = (
+    "10.5281/zenodo.21754236",
+    "10.5281/zenodo.21754238",
+    "10.5281/zenodo.21754240",
+    "10.5281/zenodo.21754242",
+    "10.5281/zenodo.21754244",
+    "10.5281/zenodo.21754246",
+)
 
 #: A DOI as the registries publish them.
 DOI_PATTERN = re.compile(r"10\.\d{4,9}/[-._;()/:A-Za-z0-9]+")
@@ -47,7 +54,7 @@ def _config_paper_version() -> str:
             match = re.match(r'\s+version:\s*"([^"]+)"\s*$', line)
             if match:
                 return match.group(1)
-    raise AssertionError("paper.version not found in manuscript/config.yaml")
+    raise AssertionError("paper.version not found in docs/manuscript/config.yaml")
 
 
 def _cff_field(name: str) -> str:

@@ -29,7 +29,7 @@ with it, which is the failure this module exists to catch and which no
 inspection of the SVG alone would reveal.
 
 Nothing here reads a rendered PDF. Page geometry comes from
-``manuscript/config.yaml`` and the embed widths from the manuscript sources, so
+``docs/manuscript/config.yaml`` and the embed widths from the manuscript sources, so
 the derivation runs on a fresh checkout with nothing built but the figures —
 which is the point, because the render is the step most likely not to have
 happened. Lengths are TeX points (``1in = 72.27pt``), the unit both the
@@ -225,7 +225,9 @@ def measure_project(project_root: Path) -> tuple[FigureLegibility, ...]:
     covers the set it claims to cover, and the plate it dropped is exactly the
     one a reader would want measured.
     """
-    manuscript = project_root / "manuscript"
+    manuscript = project_root / "docs" / "manuscript"
+    if not manuscript.is_dir():
+        manuscript = project_root / "manuscript"
     config_text = (manuscript / "config.yaml").read_text(encoding="utf-8")
     geometry = parse_page_geometry(config_text)
     height_fraction = parse_height_fraction(config_text)

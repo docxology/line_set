@@ -51,6 +51,34 @@ NON_SECTION_NAMES: frozenset[str] = frozenset(
     {"AGENTS.md", "README.md", "SYNTAX.md", "preamble.md"}
 )
 
+#: A source manuscript embed points at the work's own plate directory with a
+#: relative prefix; the number of ``../`` hops depends on the manuscript layout
+#: (``docs/manuscript/`` needs two, a root ``manuscript/`` needs one).
+_SOURCE_FIGURE_RE = re.compile(r"(?<![\w/])(?:\.\./)+output/figures/")
+
+
+def _source_figure_basename(target: str) -> str | None:
+    """The plate filename an embed target names, or None if it is not one."""
+
+    if (basename := _SOURCE_FIGURE_RE.sub("", target, count=1)) != target:
+        return basename
+    return None
+
+
+def _manuscript_dir(project_root: Path) -> Path:
+    """A work's manuscript directory, docs-first, root layout as fallback.
+
+    The line set's canonical manuscript tree lives under ``docs/manuscript/``;
+    a detached clone or synthetic fixture may still keep ``manuscript/`` at
+    the repository root. Every reader here resolves through this helper so the
+    set contract cannot bind to one layout while the siblings sit in the other.
+    """
+    docs = project_root / "docs" / "manuscript"
+    if docs.is_dir():
+        return docs
+    return project_root / "manuscript"
+
+
 #: Where a compiled volume is written, relative to the project root.
 INJECTED_MANUSCRIPT_DIR: tuple[str, ...] = ("output", "manuscript")
 
@@ -64,7 +92,7 @@ VOLUME_FIGURES_DIR: tuple[str, ...] = ("output", "figures")
 
 #: The embed prefix every source paper uses, and what it becomes in the volume.
 #:
-#: ``../output/figures/`` is written relative to a source ``manuscript/``. From
+#: ``../output/figures/`` is written relative to the manuscript sources. From
 #: the injected ``output/manuscript/`` the same text would resolve to
 #: ``output/output/figures``, so it is retargeted rather than carried over.
 SOURCE_FIGURE_PREFIX: str = "../output/figures/"
@@ -374,10 +402,11 @@ def retarget_figures(text: str) -> tuple[str, int]:
     count = [0]
 
     def rewrite(line: str) -> str:
-        if SOURCE_FIGURE_PREFIX not in line:
+        found = _SOURCE_FIGURE_RE.search(line)
+        if found is None:
             return line
-        count[0] += line.count(SOURCE_FIGURE_PREFIX)
-        return line.replace(SOURCE_FIGURE_PREFIX, VOLUME_FIGURE_PREFIX)
+        count[0] += len(_SOURCE_FIGURE_RE.findall(line))
+        return _SOURCE_FIGURE_RE.sub(VOLUME_FIGURE_PREFIX, line)
 
     return map_prose_lines(text, rewrite), count[0]
 
@@ -482,7 +511,7 @@ def top_level_block(text: str, key: str) -> str | None:
 class PaperConfig:
     """The manuscript configuration fields a compiled volume needs.
 
-    The set contract treats ``manuscript/config.yaml`` as the authoritative
+    The set contract treats ``docs/manuscript/config.yaml`` as the authoritative
     statement of a work's version, so that is where the version is read from
     rather than from the package the reader happens to import.
     """
@@ -766,7 +795,7 @@ def discover_paper(entry: LineEntry, base: Path) -> SourcePaper:
     file carrying prose stays in the body where its prose belongs.
     """
     root = base / entry.id
-    manuscript = root / "manuscript"
+    manuscript = _manuscript_dir(root)
     if not manuscript.is_dir() and entry.id == WRAPPER_LINE.id:
         # Standalone layout. This repository's own manuscript lives in the
         # repository root, not beside the sibling checkouts — which, in a
@@ -774,9 +803,9 @@ def discover_paper(entry: LineEntry, base: Path) -> SourcePaper:
         # repository, so this fallback only engages when a detached clone
         # cannot find itself beside the siblings; the value it lands on is the
         # same directory either way when the set is all present.
-        if (PROJECT_ROOT / "manuscript").is_dir():
+        if _manuscript_dir(PROJECT_ROOT).is_dir():
             root = PROJECT_ROOT
-            manuscript = root / "manuscript"
+            manuscript = _manuscript_dir(root)
     if not manuscript.is_dir():
         return SourcePaper(
             entry, root, None, (), (), None, None, (), None, "no manuscript directory"
@@ -809,10 +838,9 @@ def discover_paper(entry: LineEntry, base: Path) -> SourcePaper:
     embedded: set[Path] = set()
     for path in sections:
         for target in collect_embeds(path.read_text(encoding="utf-8")):
-            if target.startswith(SOURCE_FIGURE_PREFIX):
-                embedded.add(
-                    root / "output" / "figures" / target[len(SOURCE_FIGURE_PREFIX) :]
-                )
+            basename = _source_figure_basename(target)
+            if basename is not None:
+                embedded.add(root / "output" / "figures" / basename)
     cover_image: Path | None = None
     if config_path.is_file():
         cover_text = paper_cover_block(config_path.read_text(encoding="utf-8"))
@@ -821,7 +849,7 @@ def discover_paper(entry: LineEntry, base: Path) -> SourcePaper:
             if m:
                 raw_img = m.group(1)
                 for candidate in (
-                    root / "manuscript" / raw_img,
+                    manuscript / raw_img,
                     root / raw_img,
                     root / "output" / raw_img,
                 ):
@@ -1026,7 +1054,7 @@ def front_matter(
         "",
         *rows,
         "",
-        "Versions are read from each work's own `manuscript/config.yaml`, which "
+        "Versions are read from each work's own `docs/manuscript/config.yaml`, which "
         "the set contract treats as authoritative. Registry sizes and digests are "
         "read from the installed packages by this volume's own reader; a work "
         "that could not be read reports no size and no digest rather than a "
@@ -1593,9 +1621,7 @@ def assemble(
         # labels agree; never touch the works' own registries, which stay the
         # source builds' records.
         (plates / "figure_registry.json").write_text(
-            namespaced_figure_registry(
-                root, papers, cover_registry_records
-            ),
+            namespaced_figure_registry(root, papers, cover_registry_records),
             encoding="utf-8",
         )
 
@@ -1617,9 +1643,9 @@ def assemble(
     if write:
         (target / "config.yaml").write_text(
             volume_config(
-                (carrier.root / "manuscript" / "config.yaml").read_text(
-                    encoding="utf-8"
-                ),
+                _manuscript_dir(carrier.root)
+                .joinpath("config.yaml")
+                .read_text(encoding="utf-8"),
                 title=volume_title(carrier),
                 subtitle=volume_subtitle(placements),
                 version=carrier.config.version,
@@ -1653,7 +1679,9 @@ def namespaced_figure_registry(
         if not paper.present:
             continue
         registry_path = (
-            paper.root / VOLUME_FIGURES_DIR[0] / VOLUME_FIGURES_DIR[1]
+            paper.root
+            / VOLUME_FIGURES_DIR[0]
+            / VOLUME_FIGURES_DIR[1]
             / "figure_registry.json"
         )
         if not registry_path.is_file():
@@ -1679,20 +1707,23 @@ def namespaced_figure_registry(
             renamed["label"] = f"{kind}:{paper.prefix}-{name}"
             merged.append(renamed)
     merged.extend(cover_registry_records)
-    return json.dumps(
-        {
-            "schema_version": "1.2-omnibus",
-            "note": (
-                "Namespaced mirror written by the omnibus assembly: the "
-                "volume's section labels are prefix-namespaced, so this "
-                "registry records each work's figures under the label the "
-                "volume renders. Source registries are unchanged."
-            ),
-            "figures": merged,
-        },
-        indent=2,
-        ensure_ascii=False,
-    ) + "\n"
+    return (
+        json.dumps(
+            {
+                "schema_version": "1.2-omnibus",
+                "note": (
+                    "Namespaced mirror written by the omnibus assembly: the "
+                    "volume's section labels are prefix-namespaced, so this "
+                    "registry records each work's figures under the label the "
+                    "volume renders. Source registries are unchanged."
+                ),
+                "figures": merged,
+            },
+            indent=2,
+            ensure_ascii=False,
+        )
+        + "\n"
+    )
 
 
 def _keys_of(paper: SourcePaper) -> frozenset[str]:

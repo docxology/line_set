@@ -33,5 +33,5 @@ Figures are embedded as `../output/figures/<name>.png` and are rebuilt with
 `uv run python scripts/build_figures.py`. Do not hand-edit anything under
 `output/`.
 
-Read [AGENTS.md](AGENTS.md), [../docs/README.md](../docs/README.md), and
+Read [AGENTS.md](AGENTS.md), [../README.md](../README.md), and
 [../README.md](../README.md) next.

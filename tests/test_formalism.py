@@ -63,7 +63,7 @@ from line_set.probes import exemption_probes
 from line_set.reader import READER_STAGES, STATUS_PRECEDENCE
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
-MANUSCRIPT = PROJECT_ROOT / "manuscript"
+MANUSCRIPT = PROJECT_ROOT / "docs" / "manuscript"
 
 #: The kinds the render toolchain's filter numbers, and the label prefix each
 #: one is written with in this manuscript. The filter accepts any prefix; the

@@ -64,7 +64,7 @@ from line_set.reader import READER_STAGES, STATUS_PRECEDENCE
 from line_set.registry import WRAPPER_LINE
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
-MANUSCRIPT = PROJECT_ROOT / "manuscript"
+MANUSCRIPT = PROJECT_ROOT / "docs" / "manuscript"
 SOURCE_ROOT = PROJECT_ROOT / "src" / "line_set"
 
 #: The review date the manuscript's dated block reports. Read, never assumed.
@@ -213,9 +213,15 @@ def test_the_bibliography_closes_in_both_directions() -> None:
 def test_every_embedded_figure_exists_and_no_built_figure_is_orphaned() -> None:
     """A caption over a missing file, and a plate nobody shows, are both defects."""
     embedded: dict[str, str] = {}
+    output_figures = PROJECT_ROOT / "output" / "figures"
     for path in sorted(MANUSCRIPT.glob("*.md")):
         for target in re.findall(r"!\[[^\]]*\]\(([^)]+)\)", path.read_text("utf-8")):
-            resolved_target = (MANUSCRIPT / target).resolve()
+            resolved_target = target if "../output/" not in target else None
+            if resolved_target is None:
+                stem = target.rsplit("../output/", 1)[-1]
+                resolved_target = (PROJECT_ROOT / "output" / stem).resolve()
+            else:
+                resolved_target = (MANUSCRIPT / target).resolve()
             assert resolved_target.exists(), f"{path.name} embeds a missing {target}"
             assert resolved_target.name not in embedded, (
                 f"{resolved_target.name} is embedded twice"

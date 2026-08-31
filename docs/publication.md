@@ -22,7 +22,7 @@ BibTeX:
 
 `CITATION.cff` carries the same metadata in machine-readable form, and
 `.zenodo.json` carries the deposit metadata. All three are generated from
-`manuscript/config.yaml`; `tests/test_publication_metadata.py` fails if they
+`docs/manuscript/config.yaml`; `tests/test_publication_metadata.py` fails if they
 disagree.
 
 ## Persistent Identifiers and Verification
@@ -38,7 +38,7 @@ survives copy-and-paste into someone else's bibliography and points nowhere.
 1. Create the Zenodo deposition **without publishing it**, and reserve its DOI.
 2. Record the reserved DOI in this repository: add it under `identifiers:` in
    `CITATION.cff`, add it to `related_identifiers` in `.zenodo.json` if
-   relevant, add `publication.doi` to `manuscript/config.yaml`, and add the
+   relevant, add `publication.doi` to `docs/manuscript/config.yaml`, and add the
    exact string to the verified list in `tests/test_publication_metadata.py`.
    The gate turns green only when a person has asserted the DOI is real.
 3. Re-render the manuscript so the printed artifact carries its own DOI. A PDF

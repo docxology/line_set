@@ -29,10 +29,10 @@ claims:
   - id: formal_definition_count
     kind: number
     value: 4
-    source: manuscript/02a_formalism.md .definition blocks
+    source: docs/manuscript/02a_formalism.md .definition blocks
     source_tier: claim_ledger
   - id: formal_proposition_count
     kind: number
     value: 4
-    source: manuscript/02a_formalism.md .proposition blocks
+    source: docs/manuscript/02a_formalism.md .proposition blocks
     source_tier: claim_ledger

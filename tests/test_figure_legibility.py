@@ -305,7 +305,7 @@ def test_every_shipped_plate_clears_the_rendered_floor() -> None:
         f"{item.label} {item.rendered_min_pt:.4f}pt" for item in illegible(measured)
     ]
     assert not failing, failing
-    assert len(measured) == len(parse_embeds(PROJECT_ROOT / "manuscript"))
+    assert len(measured) == len(parse_embeds(PROJECT_ROOT / "docs" / "manuscript"))
 
 
 def test_the_canvas_floor_is_chosen_so_a_full_width_embed_clears_the_page_floor() -> (
@@ -313,7 +313,9 @@ def test_the_canvas_floor_is_chosen_so_a_full_width_embed_clears_the_page_floor(
 ):
     """The two floors are related, and the relation is arithmetic, not hope."""
     geometry = parse_page_geometry(
-        (PROJECT_ROOT / "manuscript" / "config.yaml").read_text(encoding="utf-8")
+        (PROJECT_ROOT / "docs" / "manuscript" / "config.yaml").read_text(
+            encoding="utf-8"
+        )
     )
     at_full_width = canvas.MIN_TEXT_UNITS * geometry.text_width_pt / canvas.WIDTH
     assert at_full_width >= MIN_LEGIBLE_PT, at_full_width

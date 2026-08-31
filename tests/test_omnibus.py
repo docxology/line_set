@@ -367,7 +367,9 @@ def test_a_detached_repo_finds_its_own_manuscript_at_the_repository_root(
     wrapper = discover_papers(base, LINE_SET, WRAPPER_LINE)[0]
     assert wrapper.present, wrapper.absence
     assert wrapper.root == PROJECT_ROOT
-    assert (wrapper.root / "manuscript").is_dir()
+    assert (wrapper.root / "docs" / "manuscript").is_dir() or (
+        wrapper.root / "manuscript"
+    ).is_dir()
     # The siblings are not beside a detached copy; they read as absent, which
     # is what lets the corpus gates skip rather than measure a short set.
     siblings = discover_papers(base, LINE_SET, WRAPPER_LINE)[1:]
@@ -1331,6 +1333,7 @@ def test_the_namespace_prefix_is_derived_from_the_declared_id() -> None:
     assert namespace_prefix("some_line") == "some-line"
     for entry in LINE_SET:
         assert namespace_prefix(entry.id) == entry.id.replace("_", "-")
+
 
 def test_the_volume_writes_a_namespaced_figure_registry_mirror(tmp_path: Path) -> None:
     """The volume's registry mirror carries namespaced labels; sources stand."""

@@ -71,7 +71,7 @@ instruments' own repositories: `docxology/red_line`, `docxology/black_line`,
 ## Clean copy
 
 Copy the project tree, `uv.lock`, and the manuscript together. Do not copy the
-template engine into the project. After copying: update `manuscript/config.yaml`,
+template engine into the project. After copying: update `docs/manuscript/config.yaml`,
 the publication metadata, and every cross-project link, then run the local
 validation surface in [`docs/development.md`](docs/development.md) before
 claiming the copy is sound.

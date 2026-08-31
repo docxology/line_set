@@ -64,7 +64,7 @@ and the wrapper has no envelope to export.
   and its exported vocabulary grew from 19 to 24 distinct names. A live
   reading is still `SET_LEGIBLE` — the one exempted collision, no unexempted
   token, the wrapper's 8 tokens disjoint from all four vocabularies — but
-  `manuscript/reading_record.json` no longer matches it, so 3 of the suite's
+  `docs/manuscript/reading_record.json` no longer matches it, so 3 of the suite's
   402 tests fail and `record_reading.py --check` exits 1, which is exactly
   what both exist to do. Re-recording mid-window would go stale again before
   the siblings stop moving and drags the paper date and a re-render with it;
@@ -72,7 +72,7 @@ and the wrapper has no envelope to export.
   record), 1 skipped.
 - **The settled recording pass was then taken, once, at the window's close.**
   With the four siblings settled (white_line at 0.7.0, 24 distinct exported
-  names), the paper date in `manuscript/config.yaml` moved 2026-07-27 →
+  names), the paper date in `docs/manuscript/config.yaml` moved 2026-07-27 →
   2026-07-29, `scripts/record_reading.py` re-recorded against that date
   (`recorded_on=2026-07-29`; first taken as `b4e836174eac809d…`, then
   re-taken the same day as `b99eb55c29579a62…` (and once more as `e783001a0baa1c16…` when black_line released 0.4.0) after golden_line's version
@@ -94,7 +94,7 @@ and the wrapper has no envelope to export.
 
 ## Unreleased — 2026-07-28 — the instrument stated formally, and a volume that numbers per work
 
-`manuscript/02a_formalism.md` states the records, the exemption matcher, the
+`docs/manuscript/02a_formalism.md` states the records, the exemption matcher, the
 staged reading, the precedence rule, and the self-application as definitions and
 propositions, each written from the module it describes and each bound by a
 named test that re-derives it. Every block is written in the render toolchain's
@@ -304,7 +304,7 @@ cannot be re-derived where those packages are absent, which is most places the
 manuscript will be read, so on those machines the paper's one empirical claim
 would have travelled entirely unchecked.
 
-- `scripts/record_reading.py` writes `manuscript/reading_record.json` — the
+- `scripts/record_reading.py` writes `docs/manuscript/reading_record.json` — the
   reading, its digest, and a per-line vocabulary census — and refuses to record
   anything but a `SET_LEGIBLE` reading of every declared line. `--check`
   compares against the record without rewriting it.
@@ -348,7 +348,7 @@ would have travelled entirely unchecked.
   projects hold their figures to. `TODO.md` recorded the gap but gave a reason
   that was wrong — that the embed width "is a property of the render that has
   not happened" — when the width is declared on the embed and the geometry in
-  `manuscript/config.yaml`, so the number is derivable from the checkout.
+  `docs/manuscript/config.yaml`, so the number is derivable from the checkout.
   `src/line_set/figures/legibility.py` now derives it, `MIN_TEXT_UNITS` is 18,
   every plate's labels were raised to clear it, the five embeds take the full
   text width, and the measured minimum is **6.2279pt**.

@@ -114,7 +114,7 @@ def test_the_scan_found_documents_and_links_to_check() -> None:
     files = markdown_files()
     assert len(files) > 20, [path.name for path in files]
     assert (PROJECT_ROOT / "README.md") in files
-    assert (PROJECT_ROOT / "manuscript" / "06_conclusion.md") in files
+    assert (PROJECT_ROOT / "docs" / "manuscript" / "06_conclusion.md") in files
     links = relative_links()
     assert len(links) > 20, links
 
@@ -181,7 +181,13 @@ def test_every_in_repository_link_names_a_file_that_is_here() -> None:
         resolved = (path.parent / target.partition("#")[0]).resolve()
         if PROJECT_ROOT not in resolved.parents:
             continue  # an escaping link; the containment gate owns that failure
-        if "output" in resolved.relative_to(PROJECT_ROOT).parts:
+        parts = resolved.relative_to(PROJECT_ROOT).parts
+        if "output" in parts:
+            continue
+        if parts[:2] == ("docs", "manuscript") and "../output/" in target:
+            # The manuscript embeds its plates across the docs-first layout
+            # boundary with an ``../output/`` prefix; the built plates are
+            # gated by ``tests/test_figures.py``, not here.
             continue
         if not resolved.exists():
             dangling.append(f"{path.relative_to(PROJECT_ROOT)} -> {target}")

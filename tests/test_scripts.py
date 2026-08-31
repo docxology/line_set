@@ -284,7 +284,7 @@ def test_record_reading_check_fails_on_a_record_that_disagrees(tmp_path: Path) -
         pytest.skip("--check needs a readable set before it can compare anything")
     stale = tmp_path / "stale.json"
     held = json.loads(
-        (PROJECT_ROOT / "manuscript" / "reading_record.json").read_text(
+        (PROJECT_ROOT / "docs" / "manuscript" / "reading_record.json").read_text(
             encoding="utf-8"
         )
     )
@@ -312,7 +312,7 @@ def test_record_reading_check_agrees_with_the_record_that_ships() -> None:
     if not siblings_are_readable():
         pytest.skip("this check re-measures the installed line packages")
     held = json.loads(
-        (PROJECT_ROOT / "manuscript" / "reading_record.json").read_text(
+        (PROJECT_ROOT / "docs" / "manuscript" / "reading_record.json").read_text(
             encoding="utf-8"
         )
     )

@@ -9,7 +9,7 @@ machines the manuscript will ever reach — so on those machines the claim would
 travel entirely unchecked.
 
 This script closes that gap by splitting the check in two. It writes what the
-reading actually said into ``manuscript/reading_record.json``. The suite then
+reading actually said into ``docs/manuscript/reading_record.json``. The suite then
 binds the prose to the record everywhere, and binds the record to a live
 reading wherever the siblings can be read. Neither half is the whole check and
 neither half is vacuous: prose drift fails on any machine, and a stale record
@@ -20,7 +20,7 @@ It is a dated statement of what this package read, carried alongside the prose
 that quotes it, so that the two can be compared without the packages present.
 
 The date it records is the manuscript's review date, read from
-``manuscript/config.yaml``, and not the day the script happens to run. The
+``docs/manuscript/config.yaml``, and not the day the script happens to run. The
 record belongs to the paper that quotes it, so re-recording an unchanged set
 reproduces the shipped file byte for byte and re-running this script is
 idempotent. Defaulting to today instead would move ``recorded_on`` and the
@@ -60,10 +60,14 @@ from line_set import (
 )
 
 #: Where the record lives, beside the prose that quotes it.
-RECORD_PATH = Path(__file__).resolve().parents[1] / "manuscript" / "reading_record.json"
+RECORD_PATH = (
+    Path(__file__).resolve().parents[1] / "docs" / "manuscript" / "reading_record.json"
+)
 
 #: The manuscript configuration that carries the review date.
-CONFIG_PATH = Path(__file__).resolve().parents[1] / "manuscript" / "config.yaml"
+CONFIG_PATH = (
+    Path(__file__).resolve().parents[1] / "docs" / "manuscript" / "config.yaml"
+)
 
 
 def review_date(config_path: Path = CONFIG_PATH) -> str:
@@ -176,7 +180,7 @@ def main() -> None:
         "--out",
         type=Path,
         default=RECORD_PATH,
-        help="where to write the record (defaults to manuscript/reading_record.json)",
+        help="where to write the record (defaults to docs/manuscript/reading_record.json)",
     )
     parser.add_argument(
         "--check",

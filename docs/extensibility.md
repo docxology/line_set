@@ -136,15 +136,15 @@ paragraph in [claim_boundaries.md](claim_boundaries.md).
 
 - **`src/line_set/registry.py`** — the append itself, and any new `SharedToken`.
   This is the only source file an addition edits.
-- **`manuscript/reading_record.json`** — regenerated, never hand-edited. Rerun
+- **`docs/manuscript/reading_record.json`** — regenerated, never hand-edited. Rerun
   `scripts/record_reading.py`. The record carries the declaration digest, so an
   append invalidates it immediately and `tests/test_manuscript_bindings.py`
   fails on any machine until it is refreshed — including one with no sibling
   installed.
-- **The manuscript** — `manuscript/01b_the_set.md` describes the lines and
-  `manuscript/03_extensibility.md` describes this recipe; both name the set's
-  membership in prose. `manuscript/02b_scholarship.md` and
-  `manuscript/05_limits.md` should be re-read for sentences that assume the
+- **The manuscript** — `docs/manuscript/01b_the_set.md` describes the lines and
+  `docs/manuscript/03_extensibility.md` describes this recipe; both name the set's
+  membership in prose. `docs/manuscript/02b_scholarship.md` and
+  `docs/manuscript/05_limits.md` should be re-read for sentences that assume the
   current membership.
 - **A figure caption, if and only if that caption names a count.** The builders
   derive their content from the declaration, so a figure re-renders correctly

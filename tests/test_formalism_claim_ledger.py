@@ -22,7 +22,7 @@ import re
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
-MANUSCRIPT = ROOT / "manuscript"
+MANUSCRIPT = ROOT / "docs" / "manuscript"
 LEDGER = ROOT / "data" / "formalism_claim_ledger.json"
 READING_RECORD = MANUSCRIPT / "reading_record.json"
 
@@ -30,9 +30,7 @@ READING_RECORD = MANUSCRIPT / "reading_record.json"
 _BLOCK = re.compile(r"^::: \{(?P<attrs>[^}]*)\}\s*$", re.M)
 _LABEL = re.compile(r"#([a-z]+:[a-z0-9-]+)")
 #: The reference syntax the engine's citation check sees.
-_REFERENCE = re.compile(
-    r"\[@((?:def|prop|thm|lem|cor|rem|ax|clm|ex):[a-z0-9-]+)\]"
-)
+_REFERENCE = re.compile(r"\[@((?:def|prop|thm|lem|cor|rem|ax|clm|ex):[a-z0-9-]+)\]")
 
 
 def _body_files() -> list[Path]:
@@ -71,11 +69,7 @@ def _ledger() -> dict:
 
 
 def _ledger_citations() -> set[str]:
-    return {
-        row["value"]
-        for row in _ledger()["claims"]
-        if row["kind"] == "citation"
-    }
+    return {row["value"] for row in _ledger()["claims"] if row["kind"] == "citation"}
 
 
 def _census() -> dict[str, int]:
@@ -109,9 +103,7 @@ def test_every_declared_label_is_in_the_ledger() -> None:
     declared = _declared_labels()
 
     assert declared, "no labels declared; this gate would be vacuous"
-    assert _ledger_citations() == declared, sorted(
-        _ledger_citations() ^ declared
-    )
+    assert _ledger_citations() == declared, sorted(_ledger_citations() ^ declared)
 
 
 def test_every_ledger_citation_is_a_declared_block() -> None:
@@ -130,9 +122,7 @@ def test_every_referenced_label_is_both_declared_and_ledgered() -> None:
 
     assert referenced, "no formalism references found; this gate would be vacuous"
     assert referenced <= declared, sorted(referenced - declared)
-    assert referenced <= _ledger_citations(), sorted(
-        referenced - _ledger_citations()
-    )
+    assert referenced <= _ledger_citations(), sorted(referenced - _ledger_citations())
 
 
 def test_every_ledger_source_path_exists() -> None:
@@ -170,9 +160,7 @@ def test_negative_control_label_gap_fails() -> None:
     ledger["claims"] = [
         row for row in ledger["claims"] if row["value"] != "def:reading"
     ]
-    citations = {
-        row["value"] for row in ledger["claims"] if row["kind"] == "citation"
-    }
+    citations = {row["value"] for row in ledger["claims"] if row["kind"] == "citation"}
 
     assert citations != _declared_labels()
 

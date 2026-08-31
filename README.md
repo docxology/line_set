@@ -86,7 +86,7 @@ must pass with the siblings absent as well as present.
 
 The manuscript quotes numbers it measured against the installed siblings, and
 those numbers cannot be re-derived on a machine without them. So they are
-written to `manuscript/reading_record.json` and the suite binds the prose to
+written to `docs/manuscript/reading_record.json` and the suite binds the prose to
 that record on every machine, while binding the record itself to a live reading
 wherever one can be taken. A prose number that drifts fails anywhere; a stale
 record fails on the machine that can tell. Full command surface and

@@ -22,7 +22,7 @@ from a number restated in prose.
 | `check_registry.py` | No | The offline structural battery over the declaration. |
 | `check_set.py` | Yes, for a full reading | A live reading plus `live_invariants()`. Without them it reports `SET_PARTIAL` and an unestablished self-disjointness — an honest result, not a pass. |
 | `build_figures.py` | No — it needs `rsvg-convert` instead | Deterministic SVG/PNG pairs and the figure registry under `output/figures/`. Two plates are drawn from a live reading; with the siblings absent they render that absence visibly and the run still succeeds. |
-| `record_reading.py` | Yes | Writes `manuscript/reading_record.json`, the dated reading the manuscript's measured numbers are bound to. Refuses to write anything but a `SET_LEGIBLE` reading of every declared line — an incomplete measurement in the place a complete one is expected is worse than no record. `--check` compares without rewriting. |
+| `record_reading.py` | Yes | Writes `docs/manuscript/reading_record.json`, the dated reading the manuscript's measured numbers are bound to. Refuses to write anything but a `SET_LEGIBLE` reading of every declared line — an incomplete measurement in the place a complete one is expected is worse than no record. `--check` compares without rewriting. |
 
 ## Why the manuscript's measured numbers have a record
 
@@ -32,7 +32,7 @@ those can be re-derived where the sibling packages are absent, which is most
 places the manuscript will be read.
 
 So the check is split. `scripts/record_reading.py` writes what the reading said
-into `manuscript/reading_record.json`; `tests/test_manuscript_bindings.py` binds
+into `docs/manuscript/reading_record.json`; `tests/test_manuscript_bindings.py` binds
 the prose to that record on every machine, and binds the record to a live
 reading only where one can be taken. Prose drift therefore fails in a bare
 checkout, and a stale record fails on a machine that can re-measure. The
@@ -97,7 +97,7 @@ closed with install guidance rather than skipping silently, and
 Two floors govern figure text, and only one of them is about the page.
 `canvas.MIN_TEXT_UNITS` refuses a label authored below the floor in canvas
 units. `figures/legibility.py` derives what a canvas unit becomes in printed
-points — from the page geometry in `manuscript/config.yaml`, the `width=NN%`
+points — from the page geometry in `docs/manuscript/config.yaml`, the `width=NN%`
 attribute on each embed, and the plate's own aspect ratio against the template's
 figure height cap — and `tests/test_figure_legibility.py` fails any plate whose
 smallest label lands below `MIN_LEGIBLE_PT`. The rendered floor is the binding
@@ -118,7 +118,7 @@ Never hand-edit anything under `output/`. Rebuild it.
 
 **Rendering is an external dependency, and it is stated as one rather than
 hidden.** This repository ships no renderer. The manuscript is markdown plus a
-`manuscript/config.yaml`, and the PDF and HTML are produced by the separate
+`docs/manuscript/config.yaml`, and the PDF and HTML are produced by the separate
 `docxology/template` engine, which lives in its own repository and is
 deliberately not vendored here.
 

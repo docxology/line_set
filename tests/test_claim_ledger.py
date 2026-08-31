@@ -15,7 +15,7 @@ from line_set.models import SetStatus
 
 ROOT = Path(__file__).resolve().parents[1]
 LEDGER = ROOT / "data" / "claim_ledger.yaml"
-MANUSCRIPT = ROOT / "manuscript"
+MANUSCRIPT = ROOT / "docs" / "manuscript"
 
 
 def _parse_yaml_claims(path: Path) -> dict[str, int]:

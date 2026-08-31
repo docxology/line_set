@@ -34,14 +34,14 @@ may claim regardless of anything listed here.
   checked "because that width is a property of the render that has not
   happened". That reason was wrong, and it was load-bearing: the width is
   declared on the embed and the page geometry is declared in
-  `manuscript/config.yaml`, so the rendered point size is derivable from the
+  `docs/manuscript/config.yaml`, so the rendered point size is derivable from the
   checkout with nothing built but the figures. While the claim stood, every
   plate was landing at 4.27pt against the 6.0pt floor the sibling line projects
   hold their figures to — the canvas floor was passing and measuring a unit the
   page never sees. `src/line_set/figures/legibility.py` now derives the real
   number and `tests/test_figure_legibility.py` gates on it.
 - **The measured numbers are checked against a record, not re-measured
-  everywhere.** `manuscript/reading_record.json` lets a machine without the
+  everywhere.** `docs/manuscript/reading_record.json` lets a machine without the
   sibling packages catch prose that drifted from the reading; only a machine that
   can read the siblings catches a record that drifted from them. Both halves run
   in the suite, and the second reports as skipped where it cannot run. That is
@@ -50,7 +50,7 @@ may claim regardless of anything listed here.
 - **`--as-of` is an operator input.** `record_reading.py` takes the review date
   rather than deriving it, so a record can be written under a date that is not
   the day it was taken. The suite checks the record's date against
-  `manuscript/config.yaml`, which catches disagreement with the paper but not a
+  `docs/manuscript/config.yaml`, which catches disagreement with the paper but not a
   date that was wrong in both places.
 
 ## Open — intentionally outside the current instrument boundary
@@ -100,7 +100,7 @@ These are not represented anywhere as hidden features:
 
 - 2026-08-01 — floor re-derivation and type/lint pass. The canvas legibility
   floor `MIN_TEXT_UNITS` (18) and its justification were calibrated to a
-  0.42in-margin text block (553.6pt), but `manuscript/config.yaml` declares
+  0.42in-margin text block (553.6pt), but `docs/manuscript/config.yaml` declares
   0.33in margins, a 566.6pt block, so `tests/test_figure_legibility.py`'s
   tight-floor check failed: at the real width one unit below the floor (17)
   would still clear 6pt, meaning 18 was no longer the minimal floor. The gate
@@ -142,7 +142,7 @@ These are not represented anywhere as hidden features:
   (`40db5e0e3e03…`) because the declaration never moved.
 
 - 2026-07-27 — adversarial verification. Every number in `README.md`,
-  `AGENTS.md`, `TODO.md`, `CHANGELOG.md`, `docs/`, and `manuscript/` was
+  `AGENTS.md`, `TODO.md`, `CHANGELOG.md`, `docs/`, and `docs/manuscript/` was
   re-derived from the code rather than read back from a report: the census
   (16 enum classes, 80 declared members, 76 line-and-name pairs, 75 distinct
   names, one shared name) was reproduced by an independent counter that imports
@@ -171,10 +171,10 @@ These are not represented anywhere as hidden features:
   a resolver reporting `RESOLVED` with no module, a gate that exited zero on any
   argument, a rasterizer path that was located and then not resolved, and an
   exported drawing primitive no plate used. The claim audit re-derived every
-  number in `README.md`, `docs/`, and `manuscript/`; the abstract's status
+  number in `README.md`, `docs/`, and `docs/manuscript/`; the abstract's status
   precedence was stated backwards and the token arithmetic conflated members
   declared with distinct names carried, both corrected and both now bound by a
-  test. `manuscript/reading_record.json` and `scripts/record_reading.py` were
+  test. `docs/manuscript/reading_record.json` and `scripts/record_reading.py` were
   added so the measured numbers are checkable where the sibling packages are not
   installed.
 
