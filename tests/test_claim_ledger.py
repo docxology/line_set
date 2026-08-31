@@ -8,7 +8,6 @@ from __future__ import annotations
 
 import re
 from pathlib import Path
-import pytest
 
 from line_set.registry import LINE_SET, SHARED_TOKENS
 from line_set.reader import READER_STAGES
