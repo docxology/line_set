@@ -47,9 +47,12 @@ survives copy-and-paste into someone else's bibliography and points nowhere.
 
 ## The other works
 
-This work is one of six. They reference each other by name, repository URL, and
-verified DOI. No work imports another, and the shared report-envelope schema
-string is aligned by published convention rather than by dependency.
+This work is one of the collected set. The works reference each other by name,
+repository URL, and — where minted — DOI. No work imports another, and the
+shared report-envelope schema string is aligned by published convention rather
+than by dependency. The membership of the set itself is declared data in
+`src/line_set/registry.py`; this table is a citation convenience and does not
+define it.
 
 | Work | Role | Repository | DOI |
 | --- | --- | --- | --- |
