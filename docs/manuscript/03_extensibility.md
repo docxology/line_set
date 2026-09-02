@@ -57,7 +57,7 @@ counts: {'resolved': 8, 'not_installed': 1, 'import_failed': 0, 'no_vocabulary':
 reason: set_partial: 1 declared line(s) could not be read: ['teal_line']
 ```
 
-All seven structural checks pass on the nine-entry declaration. Position contiguity now expects `1..9` and gets it. Colour distinctness has a ninth colour to consider. The orders still diverge, because the fifth entry declares no opus stage and is therefore ignored by that comparison — a line may join the set without being assigned a stage, and a set could in principle grow past four while the four borrowed stage names stay exactly four.
+All seven structural checks pass on the nine-entry declaration. Position contiguity now expects `1..9` and gets it. Colour distinctness has a ninth colour to consider. The orders still diverge, because the appended entry declares no opus stage and is therefore ignored by that comparison — a line may join the set without being assigned a stage, and the set has in fact grown past four while the four borrowed stage names stayed exactly four.
 
 The wrapper's own collision check ([@prop:self-disjointness]) applies to any extended declaration.
 

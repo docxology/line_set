@@ -123,7 +123,7 @@ an individual line.
 The reading is `SET_PARTIAL`, not an error, because `green_line` is a name with
 no package behind it. Declaring a line before writing it is a normal state and
 the reader reports it as one: the entry resolves to `not_installed`, its
-version, registry size, and digest stay `None`, and the four real lines are
+version, registry size, and digest stay `None`, and the other real lines are
 still read and still checked for collisions. A declaration is allowed to run
 ahead of an installation.
 

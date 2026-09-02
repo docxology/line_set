@@ -53,7 +53,7 @@ usually holds nothing to do with the set, and the resolver correctly finds
 nothing. A copy that does have the set somewhere says where with
 `LINE_SET_SIBLINGS` rather than being relocated into a layout; a copy that does
 not should say plainly that the lines are not available here. The layout is a
-default, never a requirement, and the four instruments are their own
+default, never a requirement, and the eight instruments are their own
 repositories — `docxology/red_line`, `docxology/black_line`,
 `docxology/golden_line`, `docxology/white_line` — which is where a copy that
 wants them gets them.
@@ -84,7 +84,7 @@ will report absence, which is the correct result and not a gate failure.
 
 The `build_omnibus.py` volume is a further gate on separation, and it degrades
 rather than raising. With no sibling beside the clone it assembles this work
-alone and names the four it could not find; with a sibling whose manuscript is
+alone and names those it could not find; with a sibling whose manuscript is
 present but whose figures were never built it names that too, with the reason,
 because this project reads other checkouts and writes to none of them. Both
 outcomes exit zero and both are honest, and the omnibus corpus gates in the

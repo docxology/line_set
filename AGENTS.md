@@ -13,7 +13,7 @@ non-overlap check. Its source of truth is
 manuscript and generated figures must stay synchronized with the declaration.
 
 It is a wrapper and a reader. It is not a fifth instrument, a meta-evaluator, a
-merge of the four lines, or a ranking of them. Every rule below exists to keep it
+merge of the eight lines, or a ranking of them. Every rule below exists to keep it
 from becoming one.
 
 ## Working contract

@@ -38,6 +38,6 @@ Registry size comes from a convention: the unique public, non-empty tuple in the
 
 Self-disjointness needs the siblings importable and fails when they are not — the second and third conditions of [@prop:self-disjointness] are what make it fail rather than pass. That failure is honest and it is also a real coverage limit: on a machine with no siblings, the property this project exists to hold is unestablished, not established.
 
-Each structural check is backed by a test that plants its defined bad input and proves the check rejects it. What that establishes is detection of the planted defect. It is not evidence that no other defect exists in the declaration, and it says nothing at all about the four packages the declaration describes.
+Each structural check is backed by a test that plants its defined bad input and proves the check rejects it. What that establishes is detection of the planted defect. It is not evidence that no other defect exists in the declaration, and it says nothing at all about the packages the declaration describes.
 
 Finally, the colours. The alchemical resonance is a naming resonance held in Jung's symbolic register and nothing further [@jung1953alchemy]. No line is a stage of anyone's transformation, the working order does not re-enact the opus, and the borrowed names carry none of the opus's direction. A structural check pins the divergence of the two orders; nothing pins how a reader will hear the names, and the honest safeguard there is to keep saying what the echo is not.

@@ -1,6 +1,6 @@
 # Line Set
 
-Line Set is the fifth work in the line set, and it is not a fifth instrument. It
+Line Set is the bookkeeping work in the line set, and it is not an instrument. It
 has no opinion about refusal, method, aspiration, or absence — those questions
 belong to Red, Black, Golden, and White Line, and this work does not answer, merge,
 rank, or second-guess any of them. Its job is bookkeeping: hold the declaration
@@ -125,7 +125,7 @@ references, and figures, and a separated copy must still explain its own purpose
 and limits without the siblings present — see [`STANDALONE.md`](STANDALONE.md).
 Its relationship to Red, Black, Golden, and White Line is declared as data in
 [`src/line_set/registry.py`](src/line_set/registry.py) and described at length in
-the manuscript. Each of the four is its own repository —
+the manuscript. Each of the eight is its own repository —
 [Red Line](https://github.com/docxology/red_line),
 [Black Line](https://github.com/docxology/black_line),
 [Golden Line](https://github.com/docxology/golden_line), and

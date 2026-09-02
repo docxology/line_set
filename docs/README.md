@@ -43,7 +43,7 @@ This project's ancestor is `docs/line-set.md`, a short internal note in the
 author's private projects tree that first recorded the set, its colours, and its
 non-overlap contract. It is unpublished and does not travel with this
 repository, so it is named rather than linked. It stays as the short map; this
-project is the paper. The durable references for the four instruments are their
+project is the paper. The durable references for the eight instruments are their
 own repositories: [red_line](https://github.com/docxology/red_line),
 [black_line](https://github.com/docxology/black_line),
 [golden_line](https://github.com/docxology/golden_line), and

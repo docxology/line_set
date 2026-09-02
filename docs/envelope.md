@@ -1,6 +1,6 @@
 # The report envelope convention
 
-The four line instruments export a common report envelope for co-registration:
+The eight line instruments export a common report envelope for co-registration:
 one record per native report, saying "this instrument, about this subject, at
 this review moment, said this — and here is the pointer to its complete native
 report." The convention came out of a design review of the collected set
@@ -54,7 +54,7 @@ which is exactly the coupling the set wants.
 
 `native_status` is one instrument's word in that instrument's vocabulary.
 Envelopes from different lines **must not be compared, ranked, averaged,
-merged, or scored on it** — the four instruments answer four different
+merged, or scored on it** — the eight instruments answer eight different
 questions, so a cross-line operation on their status words would be a number
 with no referent, the same aggregate this package already refuses in
 [claim_boundaries.md](claim_boundaries.md). An envelope is a witness record,

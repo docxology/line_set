@@ -1,5 +1,20 @@
 # Changelog
 
+## 2026-09-01 — four colours admitted: the set grows to eight
+
+Silver, Violet, Blue, and Green Line joined the declaration (working
+positions 5–8, each `opus_stage=None`), each with its own completed
+repository, registry, evaluator, figures, tests, and manuscript. Seven new
+shared-token exemptions were declared, each with a distinct per-line meaning
+derived from the line's own vocabulary; `OUTSIDE_SCOPE`'s exemption was
+widened to its five real carriers. The reading record was regenerated
+against the eight installed siblings (34 enum classes, 146 declared members,
+126 line-and-name pairs, 114 distinct names, `SET_LEGIBLE`), every
+manuscript number was refreshed, and the vocabulary-matrix plate was
+reworked to a transposed layout so the grown vocabulary stays legible
+through the 6pt rendered floor. The shared witness register now co-registers
+all eight lines' worked envelopes.
+
 ## 2026-08-01 — standalone-clone discovery fix (publication readiness)
 
 `discover_paper()` in `src/line_set/omnibus.py` found every work's manuscript

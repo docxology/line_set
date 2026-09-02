@@ -78,7 +78,7 @@ All four read codes appear at once. The one worth pointing at is `black_line`: i
 
 ## No siblings at all
 
-Run from a directory where none of the four packages is importable:
+Run from a directory where none of the sibling packages is importable:
 
 ```text
 registry_sound()              : True

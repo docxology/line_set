@@ -124,7 +124,7 @@ spellings.
 | Empirical | None. | There is no dataset, no observation of use, and no measurement of whether the set helps anyone. | Any claim that separating instruments this way works, is better than not doing so, or generalizes past one person's practice. |
 
 The Reading row is where the manuscript's counted numbers live — how many enum
-classes the four packages export, how many members those classes declare, how
+classes the packages export, how many members those classes declare, how
 many distinct names survive, and which name two lines carry. Those are
 measurements of four packages on one machine on one date, recorded in
 `docs/manuscript/reading_record.json` and bound to the prose by
