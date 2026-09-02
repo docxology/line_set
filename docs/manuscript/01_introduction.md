@@ -4,8 +4,9 @@ For most of the time the four lines have existed, their separation was a sentenc
 
 Two things go wrong when a set of small instruments grows, and they go wrong
 quietly. The first is that two instruments give the same name to different
-things — `OUTSIDE_SCOPE` is the set's only such collision, defined in
-[@def:shared-token]. Someone reading a stored finding sees that word and has
+things — when the set was four lines, `OUTSIDE_SCOPE` was its only such
+collision, and the admitted colours brought more, each handled the same way
+by the mechanism defined in [@def:shared-token]. Someone reading a stored finding sees that word and has
 to already know which line produced it before it means anything; if they
 guess wrong, they read a refusal as a competence judgement. The second is
 that one instrument slowly takes on another's job — an aspiration registry
