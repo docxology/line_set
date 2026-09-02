@@ -404,7 +404,7 @@ def vocabulary_matrix(
         140,
     )
 
-    parts = open_canvas(1600, height)
+    parts = open_canvas(1600, int(height))
     parts += header(
         "THE VOCABULARY MATRIX",
         "Which line spells which token",

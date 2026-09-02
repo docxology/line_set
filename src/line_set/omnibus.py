@@ -1133,8 +1133,13 @@ def cover_embed_name(paper: SourcePaper) -> str:
     render toolchain maps one filename to exactly one registry record. Each
     part's cover is therefore copied under a prefix-unique name, which gives
     every part heading's ``fig:{prefix}-cover`` label its own file and record.
+
+    Raises ``ValueError`` when the paper declares no cover image; callers gate
+    on ``paper.cover_image is not None`` before reaching here.
     """
 
+    if paper.cover_image is None:
+        raise ValueError(f"{paper.prefix} declares no cover image to name")
     return f"{paper.prefix}-cover-{paper.cover_image.name}"
 
 
