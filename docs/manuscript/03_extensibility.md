@@ -65,13 +65,13 @@ The reading is `SET_PARTIAL`, and that is the correct answer rather than a short
 
 ## What the digest change means
 
-The set digest moved from `7b7e70b70c5c` to `81d9e7d415d0`. That is the intended behaviour: the digest covers the lines and the exemption table together, so a set with a fifth line is a different set. It is also worth noticing that the digest binds to the *content* of the entry and not merely to its presence. Rewording the fifth line's question produces a different digest, which is what makes the value useful for spotting that two people are reading different declarations.
+The set digest moved from `7b7e70b70c5c` to `81d9e7d415d0`. That is the intended behaviour: the digest covers the lines and the exemption table together, so a set with an appended line is a different set. It is also worth noticing that the digest binds to the *content* of the entry and not merely to its presence. Rewording the appended line's question produces a different digest, which is what makes the value useful for spotting that two people are reading different declarations.
 
 The value is a comparison handle and nothing more. It tells you that a declaration you hold differs from a declaration someone else holds. It does not tell you which one is right, it does not record who changed what, and it is not tamper evidence.
 
 ## What this does not establish
 
-What the run above shows is that the declaration is extensible without touching the reader or the checks: the battery passed on five entries, the reading was taken, and no module outside `registry.py` was edited to make either happen. Two nearby claims are not shown and should not be read in.
+What the run above shows is that the declaration is extensible without touching the reader or the checks: the battery passed on the nine-entry declaration, the reading was taken, and no module outside `registry.py` was edited to make either happen. Two nearby claims are not shown and should not be read in.
 
 Adding a colour is cheap in code. It is not cheap in judgement: the hard part of a fifth line is deciding whether the set actually has a fifth question, and nothing in this package can help with that. A line whose question overlaps an existing line's would pass every check here, because the checks read names.
 
