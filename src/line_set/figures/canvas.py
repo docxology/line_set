@@ -225,7 +225,7 @@ def header(
     note: str = "",
     accent: str = MUTED,
 ) -> list[str]:
-    """Return the shared four-line plate header."""
+    """Return the shared plate header."""
     parts = [
         text(MARGIN, KICKER_Y, kicker, 28, accent, "700"),
         text(MARGIN, TITLE_Y, title, 40, INK, "700"),

@@ -72,7 +72,7 @@ def spare_line_id(
 
     Returns the id and whether it came from the declaration. A derived id is
     used only when every declared line already carries the token, which is a
-    state the four-line set does not currently reach; it exists so the probe
+    state the eight-line set does not currently reach; it exists so the probe
     set does not silently shrink on a declaration that does.
     """
     for entry in sorted(lines, key=lambda item: item.working_position):

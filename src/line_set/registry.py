@@ -1,11 +1,11 @@
 """The declaration of the line set.
 
-``LINE_SET`` is the whole declaration: four lines in working order, each with
+``LINE_SET`` is the whole declaration: eight lines in working order, each with
 the question it answers, the job it does, and the thing it must not become.
 ``SHARED_TOKENS`` is the exemption table — the tokens two lines are allowed to
 share, with a distinct meaning recorded per line.
 
-Adding a fifth colour to the set means appending one :class:`LineEntry` here.
+Adding another colour to the set means appending one :class:`LineEntry` here.
 The reader, the checks, and the serialization take the declaration as an
 argument and do not name any line individually, so nothing else has to change.
 
@@ -150,8 +150,8 @@ WRAPPER_LINE: LineEntry = LineEntry(
     question="How does a growing set of instruments stay separate?",
     job="Declare the set, read it, check non-overlap, admit new colours",
     must_not_become=(
-        "A meta-evaluator, a fifth substantive instrument, a merge of the "
-        "four, or a ranking of them"
+        "A meta-evaluator, a substantive instrument of its own, a merge of the "
+        "eight, or a ranking of them"
     ),
     opus_stage=None,
     working_position=len(LINE_SET) + 1,
