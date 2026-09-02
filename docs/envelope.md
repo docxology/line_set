@@ -107,9 +107,10 @@ now exists beside the set (its own repository at
 <https://github.com/docxology/witness_register>, first committed 2026-07-29):
 it declares its own `line.report-envelope/1.0` intake literal and, checked
 that day, accepted each of the four lines' actually-exported envelopes
-unmodified — the convention recorded here observed working end to end. It
+unmodified (a 2026-07-29 observation about the then-four-line set, kept
+here dated rather than updated in place; the set's current membership is
+the registry's to state) — the convention recorded here observed working end to end. It
 remains a companion, not a member — it is not in `LINE_SET`, it is not a
-colour, and nothing further about its contents is asserted here. This package declares the four
-lines and records this shared data contract, and that is the whole of its
+colour, and nothing further about its contents is asserted here. This package declares the lines of the set and records this shared data contract, and that is the whole of its
 part: the reader will not collect envelopes, will not store them, and will
 not compute anything across them.
