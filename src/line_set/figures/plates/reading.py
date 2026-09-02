@@ -13,7 +13,6 @@ in place of an empty grid that would read like a clean result.
 
 from __future__ import annotations
 
-import math
 
 from ...models import LineEntry, ReadCode, SetReading
 from ..canvas import (
@@ -29,6 +28,8 @@ from ..canvas import (
     rect,
     text,
     wrap,
+
+    escape_text,
 )
 from ..palette import (
     ACCENT,
@@ -70,7 +71,8 @@ COLLISION_LABEL = "COLLISION — no declaration covers it"
 _PIP = 8
 
 #: Font size of a token label in the grid, in canvas units.
-_TOKEN_LABEL_SIZE = 18
+_COLLISION_ROW_HEIGHT = 104
+_TOKEN_LABEL_SIZE = 26
 
 #: Distance from a column's left edge to the start of its token labels.
 _TOKEN_LABEL_INSET = 22
@@ -142,7 +144,7 @@ def _legend(
                 2.5,
             )
         )
-        parts.append(text(x + 66, top + 36, entry.color, 20, ink, "700"))
+        parts.append(text(x + 66, top + 36, entry.color, 26, ink, "700"))
         parts.append(
             text(
                 x + 20,
@@ -150,7 +152,7 @@ def _legend(
                 plural(len(tokens), "token")
                 if tokens
                 else f"no vocabulary read · {code.value if code else 'not observed'}",
-                18,
+                26,
                 MUTED if tokens else WARN,
                 "700",
             )
@@ -186,7 +188,7 @@ def _empty_matrix(
             _TOP + 42,
             f"{plural(legible, 'line')} yielded a vocabulary; two are needed "
             "before any overlap can be found",
-            22,
+            26,
             WARN,
             "700",
         )
@@ -197,7 +199,7 @@ def _empty_matrix(
             _TOP + 74,
             "This plate is not evidence that the declared vocabularies are "
             "disjoint. They were not compared.",
-            18,
+            24,
             INK,
         )
     )
@@ -217,13 +219,13 @@ def _empty_matrix(
                 2,
             )
         )
-        parts.append(text(MARGIN + 52, cursor + 25, entry.color, 18, INK, "700"))
+        parts.append(text(MARGIN + 52, cursor + 25, entry.color, 24, INK, "700"))
         parts.append(
             text(
                 MARGIN + 200,
                 cursor + 25,
                 code.value if code is not None else "not observed",
-                18,
+                24,
                 ink,
                 "700",
             )
@@ -233,7 +235,7 @@ def _empty_matrix(
                 MARGIN + 420,
                 cursor + 25,
                 READ_CODE_GLOSS[code] if code is not None else "no observation",
-                18,
+                24,
                 MUTED,
             )
         )
@@ -245,7 +247,7 @@ def _empty_matrix(
             cursor + 56,
             "Install the declared line packages and rebuild to compare them. "
             "Until then the set's non-overlap contract is unchecked, not held.",
-            18,
+            24,
             INK,
         )
     )
@@ -269,7 +271,7 @@ def _collision_rows(
             f"TOKENS CARRIED BY MORE THAN ONE LINE · "
             f"{len(reading.collisions)} undeclared · "
             f"{len(reading.exempted_collisions)} declared",
-            18,
+            26,
             ACCENT,
             "700",
         )
@@ -282,7 +284,7 @@ def _collision_rows(
                 MARGIN + 24,
                 cursor + 38,
                 "No token in the grid below is carried by two lines.",
-                19,
+                26,
                 INK,
                 "700",
             )
@@ -292,7 +294,7 @@ def _collision_rows(
         ink = OCHRE if collision.exempted else WARN
         shape = EXEMPT_SHAPE if collision.exempted else COLLISION_SHAPE
         label = EXEMPT_LABEL if collision.exempted else COLLISION_LABEL
-        parts.append(rect(MARGIN, cursor, _CONTENT_WIDTH, 74, PANEL, ink, 2.5, rx=8))
+        parts.append(rect(MARGIN, cursor, _CONTENT_WIDTH, 96, PANEL, ink, 2.5, rx=8))
         parts.append(
             glyph(
                 shape,
@@ -304,8 +306,8 @@ def _collision_rows(
                 3,
             )
         )
-        parts.append(text(MARGIN + 62, cursor + 32, collision.token, 21, ink, "700"))
-        parts.append(text(MARGIN + 62, cursor + 58, label, 18, ink, "700"))
+        parts.append(text(MARGIN + 62, cursor + 34, collision.token, 28, ink, "700"))
+        parts.append(text(MARGIN + 62, cursor + 62, label, 26, ink, "700"))
         cell_x = MARGIN + 640
         for index, entry in enumerate(entries):
             x = cell_x + index * 150
@@ -328,15 +330,15 @@ def _collision_rows(
             parts.append(
                 text(
                     x,
-                    cursor + 62,
+                    cursor + 78,
                     f"{entry.color} · {'carries' if holds else 'does not'}",
-                    18,
+                    26,
                     line_ink(entry.color) if holds else MUTED,
                     "700" if holds else "400",
                     "middle",
                 )
             )
-        cursor += 82
+        cursor += 104
     return parts, cursor
 
 
@@ -346,11 +348,13 @@ def vocabulary_matrix(
 ) -> str:
     """Draw every token the reader collected against the lines carrying it.
 
-    Rows are the tokens in the reading, sorted. A filled cell means that line
-    exported that token; an outlined cell means it did not. A token carried by
-    two lines also appears in the band above the grid, where a declared
-    exemption and an undeclared collision are separated by marker shape, by
-    fill, and by the words on the row.
+    Tokens run across the top as rotated column labels; the declared lines run
+    down the side as rows, so the plate's height does not grow with the size
+    of the vocabulary and its width does not grow with the size of the set.
+    A filled cell means that line exported that token; an outlined cell means
+    it did not. A token carried by more than one line also appears in the band
+    below the header, where a declared exemption and an undeclared collision
+    are separated by marker shape, by fill, and by the words on the row.
     """
     verify_coverage()
     entries = _ordered(lines)
@@ -365,38 +369,32 @@ def vocabulary_matrix(
         collision.token: collision.exempted
         for collision in (*reading.collisions, *reading.exempted_collisions)
     }
-    cell = 18
-    pitch = 22
-    # The label gutter is sized from the longest token actually in this
-    # reading, at the worst-case advance any character a token may contain can
-    # have, so a label can never reach the cells of its own column. Deriving it
-    # from a bound rather than measuring the rendered text keeps the plate
+    cell = 12
+    column_pitch = 12
+    # Column labels are drawn rotated 90 degrees, so a label's width on the
+    # canvas is its rendered *height*: one label pitch of 12 units per token
+    # plus a label lane tall enough for the longest token in the reading,
+    # bounded by the widest advance any character may claim. Deriving the lane
+    # from a bound rather than measuring rendered text keeps the plate
     # byte-reproducible: no primitive in this package consults a font.
-    label_room = _TOKEN_LABEL_INSET + max(len(token) for token in tokens) * (
-        _WIDEST_TOKEN_GLYPH_EM * _TOKEN_LABEL_SIZE
+    label_lane = (
+        max(len(token) for token in tokens) * (_WIDEST_TOKEN_GLYPH_EM * _TOKEN_LABEL_SIZE)
+        + 30
     )
-    # Then take the most columns whose group is still wide enough to hold that
-    # gutter plus one cell block. One column always qualifies, because the
-    # content width exceeds the widest label a token this long can produce.
-    affordable = int(
-        _CONTENT_WIDTH // (label_room + _TOKEN_CELL_GAP + pitch * len(entries))
+    grid_width = len(tokens) * column_pitch
+    height = (
+        _TOP
+        + 108
+        + 8 * _COLLISION_ROW_HEIGHT
+        + 62
+        + label_lane
+        + len(entries) * 56
+        + 210
     )
-    columns = max(1, min(4, math.ceil(len(tokens) / 26), affordable))
-    per_column = math.ceil(len(tokens) / columns)
-    group_w = _CONTENT_WIDTH / columns
-    # Sit the cells just past the label gutter, not at the far edge of a wide
-    # group, so a cell stays next to the token it belongs to.
-    cells_offset = min(
-        label_room + _TOKEN_CELL_GAP,
-        group_w - _TOKEN_CELL_GAP - pitch * len(entries),
+    grid_left = MARGIN + max(
+        0, (_CONTENT_WIDTH - grid_width) // 2
     )
-    row_h = 24
 
-    legend_top = _TOP
-    band_top = legend_top + 108
-    band_parts, band_end = _collision_rows(reading, entries, carried, band_top)
-    grid_top = band_end + 62
-    grid_height = 44 + per_column * row_h
     rule_lines = wrap(
         "A grid with no undeclared collision says the declared names do not "
         "overlap. It does not say the lines do not overlap: two lines can spell "
@@ -405,7 +403,6 @@ def vocabulary_matrix(
         "is not permission to merge them.",
         140,
     )
-    height = grid_top + grid_height + 140 + 26 * len(rule_lines)
 
     parts = open_canvas(1600, height)
     parts += header(
@@ -417,115 +414,118 @@ def vocabulary_matrix(
         f"{plural(legible, 'legible line').upper()}",
         ACCENT,
     )
-    parts += _legend(entries, carried, codes, legend_top)
+    parts += _legend(entries, carried, codes, _TOP)
+    band_top = _TOP + 108
+    band_parts, _band_end = _collision_rows(reading, entries, carried, band_top)
     parts += band_parts
 
+    grid_top = band_top + 8 * _COLLISION_ROW_HEIGHT + 62
     parts.append(
         text(
             MARGIN,
             grid_top - 24,
-            "THE FULL GRID · filled cell = that line exports that token",
-            18,
+            "THE FULL GRID · filled cell = that line exports that token · "
+            "labels read bottom to top",
+            26,
             ACCENT,
             "700",
         )
     )
-    for column in range(columns):
-        gx = MARGIN + column * group_w
-        cells_x = gx + cells_offset
-        for index, entry in enumerate(entries):
+    label_top = grid_top
+    rows_top = label_top + label_lane
+    # The token columns, labels rotated so the plate stays one page wide.
+    for index, token in enumerate(tokens):
+        x = grid_left + index * column_pitch + column_pitch / 2
+        exempted = collision_tokens.get(token)
+        label_ink = INK if exempted is None else (OCHRE if exempted else WARN)
+        weight = "400" if exempted is None else "700"
+        if exempted is not None:
             parts.append(
                 glyph(
-                    shape_for(entry.working_position),
-                    cells_x + index * pitch + cell / 2,
-                    grid_top + 14,
+                    EXEMPT_SHAPE if exempted else COLLISION_SHAPE,
+                    x,
+                    label_top + 14,
                     8,
-                    line_fill(entry.color),
-                    line_ink(entry.color),
+                    PAPER if exempted else label_ink,
+                    label_ink,
                     2,
                 )
             )
-        chunk = tokens[column * per_column : (column + 1) * per_column]
-        for row, token in enumerate(chunk):
-            y = grid_top + 34 + row * row_h
-            exempted = collision_tokens.get(token)
-            if exempted is None:
-                label_ink = INK
-                weight = "400"
-            else:
-                label_ink = OCHRE if exempted else WARN
-                weight = "700"
-                parts.append(
-                    glyph(
-                        EXEMPT_SHAPE if exempted else COLLISION_SHAPE,
-                        gx + 8,
-                        y - 5,
-                        7,
-                        PAPER if exempted else label_ink,
-                        label_ink,
-                        2,
-                    )
-                )
+        parts.append(
+            f'<text x="{x}" y="{label_top + label_lane - 12}" '
+            f'font-family="Arial, sans-serif" font-size="{_TOKEN_LABEL_SIZE}px" '
+            f'font-weight="{weight}" fill="{label_ink}" '
+            f'text-anchor="start" '
+            f'transform="rotate(-90 {x} {label_top + label_lane - 12})">'
+            f"{escape_text(token)}</text>"
+        )
+    # The declared lines as rows down the side.
+    for row_index, entry in enumerate(entries):
+        y = rows_top + 24 + row_index * 56
+        parts.append(
+            text(
+                MARGIN,
+                y + 6,
+                f"{entry.color} · {entry.package_name}",
+                26,
+                line_ink(entry.color),
+                "700",
+            )
+        )
+        holds_code = codes.get(entry.id)
+        if holds_code is not None:
             parts.append(
-                text(
-                    gx + _TOKEN_LABEL_INSET,
-                    y,
-                    token,
-                    _TOKEN_LABEL_SIZE,
-                    label_ink,
-                    weight,
+                text(MARGIN + 340, y + 6, holds_code.value, 26, MUTED, "700")
+            )
+        for column_index, token in enumerate(tokens):
+            x = grid_left + column_index * column_pitch
+            holds = token in carried.get(entry.id, frozenset())
+            parts.append(
+                rect(
+                    x,
+                    y - 10,
+                    cell,
+                    cell,
+                    line_fill(entry.color) if holds else PAPER,
+                    line_ink(entry.color) if holds else RULE,
+                    2 if holds else 1,
+                    rx=2,
                 )
             )
-            for index, entry in enumerate(entries):
-                holds = token in carried.get(entry.id, frozenset())
+            if holds:
+                # A carried cell also gets a dark pip in the line's ink. The
+                # white line's fill is nearly the paper colour, so fill alone
+                # would make its row unreadable in greyscale.
                 parts.append(
                     rect(
-                        cells_x + index * pitch,
-                        y - 13,
-                        cell,
-                        cell,
-                        line_fill(entry.color) if holds else PAPER,
-                        line_ink(entry.color) if holds else RULE,
-                        2 if holds else 1,
-                        rx=3,
+                        x + (cell - _PIP) / 2,
+                        y - 10 + (cell - _PIP) / 2,
+                        _PIP,
+                        _PIP,
+                        line_ink(entry.color),
+                        line_ink(entry.color),
+                        0,
+                        rx=1,
                     )
                 )
-                if holds:
-                    # A carried cell also gets a dark pip in the line's ink. The
-                    # white line's fill is nearly the paper colour, so fill
-                    # alone would make its column unreadable in greyscale.
-                    parts.append(
-                        rect(
-                            cells_x + index * pitch + (cell - _PIP) / 2,
-                            y - 13 + (cell - _PIP) / 2,
-                            _PIP,
-                            _PIP,
-                            line_ink(entry.color),
-                            line_ink(entry.color),
-                            0,
-                            rx=1,
-                        )
-                    )
 
-    footer = grid_top + grid_height + 34
+    footer = rows_top + 24 + len(entries) * 56 + 34
     parts.append(line(MARGIN, footer, CONTENT_RIGHT, footer, RULE, 2))
-    parts.append(text(MARGIN, footer + 34, "READING RULE", 18, ACCENT, "700"))
+    parts.append(text(MARGIN, footer + 34, "READING RULE", 26, ACCENT, "700"))
     for index, rule in enumerate(rule_lines):
-        parts.append(text(MARGIN, footer + 66 + index * 26, rule, 18, INK))
+        parts.append(text(MARGIN, footer + 66 + index * 26, rule, 26, INK))
     parts.append(
         text(
             MARGIN,
             footer + 74 + len(rule_lines) * 26,
             "Cells are drawn from this build's reading; a line that was not read "
-            "contributes no column content and is marked in the key above.",
-            18,
+            "contributes no row content and is marked in the key above.",
+            26,
             MUTED,
         )
     )
     parts.append(close_canvas())
     return "".join(parts)
-
-
 def _surface_row_height(detail_lines: int) -> int:
     """Row height derived from how much detail the observation carries."""
     return 112 + 24 * detail_lines
@@ -607,15 +607,15 @@ def installation_surface(
                 shape_for(entry.working_position),
                 MARGIN + 60,
                 cursor + 46,
-                22,
+                26,
                 line_fill(entry.color),
                 ink,
                 3,
             )
         )
-        parts.append(text(MARGIN + 106, cursor + 40, entry.color, 22, ink, "700"))
+        parts.append(text(MARGIN + 106, cursor + 40, entry.color, 26, ink, "700"))
         parts.append(
-            text(MARGIN + 106, cursor + 68, entry.package_name, 18, MUTED, "700")
+            text(MARGIN + 106, cursor + 68, entry.package_name, 24, MUTED, "700")
         )
         parts.append(
             glyph(
@@ -628,13 +628,13 @@ def installation_surface(
                 2.5,
             )
         )
-        parts.append(text(MARGIN + 424, cursor + 40, code.value, 18, code_ink, "700"))
+        parts.append(text(MARGIN + 424, cursor + 40, code.value, 24, code_ink, "700"))
         # Wrapped narrow enough that the widest gloss line stops short of the
         # stat blocks to its right. The room is CONTENT_RIGHT - 20 - four stat
         # blocks - this column's left edge; a wider wrap ran the gloss under
         # the version value.
         for index, gloss in enumerate(wrap(READ_CODE_GLOSS[code], _GLOSS_WRAP)):
-            parts.append(text(MARGIN + 424, cursor + 68 + index * 22, gloss, 18, MUTED))
+            parts.append(text(MARGIN + 424, cursor + 68 + index * 22, gloss, 24, MUTED))
         stats = (
             (
                 "VERSION",
@@ -668,21 +668,21 @@ def installation_surface(
         first_x = CONTENT_RIGHT - 20 - block_w * len(stats)
         for index, (label, value) in enumerate(stats):
             bx = first_x + index * block_w
-            parts.append(text(bx, cursor + 38, label, 18, MUTED, "700"))
+            parts.append(text(bx, cursor + 38, label, 24, MUTED, "700"))
             parts.append(
                 text(
                     bx,
                     cursor + 66,
                     value,
-                    19,
+                    26,
                     INK if value != "—" else MUTED,
                     "700",
                 )
             )
             if value == "—":
-                parts.append(text(bx, cursor + 88, "not read", 18, code_ink, "700"))
+                parts.append(text(bx, cursor + 88, "not read", 24, code_ink, "700"))
         for index, row in enumerate(details[entry.id]):
-            parts.append(text(MARGIN + 106, cursor + 104 + index * 24, row, 18, MUTED))
+            parts.append(text(MARGIN + 106, cursor + 104 + index * 24, row, 24, MUTED))
         cursor += row_height + 20
 
     status_ink = SET_STATUS_INK[reading.status]
@@ -703,7 +703,7 @@ def installation_surface(
             SET_STATUS_SHAPE[reading.status],
             MARGIN + 40,
             cursor + 44,
-            18,
+            24,
             PAPER,
             status_ink,
             3,
@@ -717,25 +717,25 @@ def installation_surface(
             MARGIN + 74,
             cursor + 80,
             SET_STATUS_GLOSS[reading.status],
-            18,
+            24,
             INK,
         )
     )
     counts = reading.counts()
     tally = " · ".join(f"{code.value} {counts[code.value]}" for code in ReadCode)
-    parts.append(text(MARGIN + 74, cursor + 112, tally, 18, MUTED, "700"))
+    parts.append(text(MARGIN + 74, cursor + 112, tally, 24, MUTED, "700"))
     parts.append(
         text(
             MARGIN + 74,
             cursor + 144,
             f"declaration digest {reading.set_digest[:DIGEST_PREFIX]} · "
             f"undeclared lines: {', '.join(reading.undeclared_lines) or 'none reported'}",
-            18,
+            24,
             MUTED,
         )
     )
     for index, row in enumerate(summary_lines):
-        parts.append(text(MARGIN + 74, cursor + 176 + index * 24, row, 18, MUTED))
+        parts.append(text(MARGIN + 74, cursor + 176 + index * 24, row, 24, MUTED))
     parts.append(
         text(
             MARGIN,
@@ -743,7 +743,7 @@ def installation_surface(
             "A row marked not read is a fact about this machine's installation, "
             "not about the line. Nothing on that row is filled in from memory, "
             "a default, or a previous build.",
-            18,
+            24,
             INK,
         )
     )

@@ -55,14 +55,14 @@ COLOUR_BLIND_MODULES = (
 )
 
 FIFTH = LineEntry(
-    id="violet_line",
-    color="violet",
+    id="teal_line",
+    color="teal",
     question="What has not been asked yet?",
-    job="A fifth instrument invented for this test and nowhere else",
+    job="A colour invented for this test and nowhere else",
     must_not_become="Part of the declared set",
     opus_stage=None,
     working_position=len(LINE_SET) + 1,
-    package_name="violet_line",
+    package_name="teal_line",
     registry_noun="openings",
     verdict_noun="opening status",
 )

@@ -233,8 +233,13 @@ def test_contiguous_positions_detects_an_entry_that_is_not_a_line() -> None:
 def test_orders_diverge_detects_a_declaration_that_re_enacts_the_opus() -> None:
     """The plant lines the stages up with the working order, and is rejected."""
     assert check_orders_diverge(REAL).passed
-    assert len(REAL) <= len(OPUS_STAGE_ORDER)
-    in_working_order = sorted(REAL, key=lambda entry: entry.working_position)
+    staged = tuple(
+        entry
+        for entry in REAL
+        if entry.opus_stage in OPUS_STAGE_ORDER and entry.working_position is not None
+    )
+    assert len(staged) <= len(OPUS_STAGE_ORDER)
+    in_working_order = sorted(staged, key=lambda entry: entry.working_position)
     planted = tuple(
         dataclasses.replace(entry, opus_stage=OPUS_STAGE_ORDER[index])
         for index, entry in enumerate(in_working_order)

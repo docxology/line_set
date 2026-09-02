@@ -1,6 +1,6 @@
 # Conclusion {#sec:conclusion}
 
-The four lines were separate because I said they were. They are still separate for the same reason, and now one narrow part of that claim is checkable: on the review date, the four packages between them put 81 line-and-name pairs in front of the reader, spanning 80 distinct names, and the single name carried by two lines was the one the set had already written down and disambiguated.
+The eight lines were separate because I said they were. They are still separate for the same reason, and now one narrow part of that claim is checkable: on the review date, the eight packages between them put 126 line-and-name pairs in front of the reader, spanning 114 distinct names, and every name carried by more than one line was one the set had already written down and disambiguated.
 
 That is a small result and I have tried not to dress it up. A necessary condition held. Whether the instruments overlap is the question I actually care about, no reader of names can answer it, and it is still a matter of reading the four manuscripts and deciding (see [the scholarship section](#sec:scholarship)).
 

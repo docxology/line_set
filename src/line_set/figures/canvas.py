@@ -227,12 +227,12 @@ def header(
 ) -> list[str]:
     """Return the shared four-line plate header."""
     parts = [
-        text(MARGIN, KICKER_Y, kicker, 24, accent, "700"),
+        text(MARGIN, KICKER_Y, kicker, 28, accent, "700"),
         text(MARGIN, TITLE_Y, title, 40, INK, "700"),
-        text(MARGIN, SUBTITLE_Y, subtitle, 20, MUTED),
+        text(MARGIN, SUBTITLE_Y, subtitle, 29, MUTED),
     ]
     if note:
-        parts.append(text(MARGIN, NOTE_Y, note, 18, accent, "700"))
+        parts.append(text(MARGIN, NOTE_Y, note, 28, accent, "700"))
     return parts
 
 

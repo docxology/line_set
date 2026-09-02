@@ -574,7 +574,10 @@ def test_the_volume_order_is_the_declared_working_order_and_not_a_list() -> None
 
 def test_appending_a_colour_extends_the_volume_without_reordering_it() -> None:
     extra = declaration("fifth_colour")[0]
-    grown = (*LINE_SET, LineEntry(**{**extra.canonical(), "working_position": 5}))
+    grown = (
+        *LINE_SET,
+        LineEntry(**{**extra.canonical(), "working_position": len(LINE_SET) + 1}),
+    )
     ordered = volume_order(grown, WRAPPER_LINE)
     assert [entry.id for entry in ordered[1:-1]] == [entry.id for entry in LINE_SET]
     assert ordered[-1].id == "fifth_colour"

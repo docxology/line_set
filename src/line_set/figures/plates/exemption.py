@@ -73,7 +73,7 @@ def _empty_gate() -> str:
             MARGIN + 28,
             _TOP + 46,
             "the exemption table is empty, so no probe was run",
-            22,
+            26,
             WARN,
             "700",
         )
@@ -84,7 +84,7 @@ def _empty_gate() -> str:
             _TOP + 80,
             "An empty table is refused by the structural battery as well. A gate "
             "that passed here would have passed on nothing.",
-            18,
+            24,
             INK,
         )
     )
@@ -153,13 +153,13 @@ def exemption_gate(
                 3,
             )
         )
-        parts.append(text(MARGIN + 80, cursor + 46, probe.name, 21, INK, "700"))
+        parts.append(text(MARGIN + 80, cursor + 46, probe.name, 26, INK, "700"))
         parts.append(
             text(
                 CONTENT_RIGHT - 20,
                 cursor + 40,
                 probe.outcome,
-                20,
+                26,
                 ink,
                 "700",
                 "end",
@@ -170,7 +170,7 @@ def exemption_gate(
                 CONTENT_RIGHT - 20,
                 cursor + 66,
                 "as specified" if probe.holds else "DIVERGED FROM SPECIFICATION",
-                18,
+                24,
                 MUTED if probe.holds else WARN,
                 "700",
                 "end",
@@ -178,7 +178,7 @@ def exemption_gate(
         )
         row = cursor + 74
         for entry in _condition_lines(probe):
-            parts.append(text(MARGIN + 80, row, entry, 18, MUTED))
+            parts.append(text(MARGIN + 80, row, entry, 24, MUTED))
             row += 24
         parts.append(
             text(
@@ -187,7 +187,7 @@ def exemption_gate(
                 f"table: {plural(probe.declarations, 'declaration')} · "
                 f"{probe.declared_token} over {', '.join(probe.declared_lines)} "
                 f"· {plural(probe.declared_meanings, 'meaning')}",
-                18,
+                24,
                 ACCENT,
                 "700",
             )
@@ -197,7 +197,7 @@ def exemption_gate(
                 CONTENT_RIGHT - 20,
                 row + 16,
                 f"asked: {probe.query_token} over {', '.join(probe.query_lines)}",
-                18,
+                24,
                 MUTED,
                 "700",
                 "end",
@@ -216,7 +216,7 @@ def exemption_gate(
             "every probe agreed with its specification"
             if probes_hold(probes)
             else f"probes that diverged: {', '.join(diverged)}",
-            22,
+            26,
             GOOD if probes_hold(probes) else WARN,
             "700",
         )
@@ -228,16 +228,16 @@ def exemption_gate(
             f"{plural(honoured, 'probe')} honoured and {refused} refused, all "
             "decided by the matcher the reader calls rather than by a second "
             "copy of its rules.",
-            18,
+            24,
             INK,
         )
     )
 
     footer = cursor + 132
     parts.append(line(MARGIN, footer, CONTENT_RIGHT, footer, RULE, 2))
-    parts.append(text(MARGIN, footer + 34, "READING RULE", 18, ACCENT, "700"))
+    parts.append(text(MARGIN, footer + 34, "READING RULE", 24, ACCENT, "700"))
     for index, row_text in enumerate(rule_lines):
-        parts.append(text(MARGIN, footer + 66 + index * 26, row_text, 18, INK))
+        parts.append(text(MARGIN, footer + 66 + index * 26, row_text, 24, INK))
     parts.append(close_canvas())
     return "".join(parts)
 

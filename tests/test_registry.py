@@ -62,10 +62,11 @@ def test_working_order_is_not_opus_order() -> None:
     by_work = tuple(
         entry.id for entry in sorted(LINE_SET, key=lambda item: item.working_position)
     )
+    staged = tuple(entry for entry in LINE_SET if entry.opus_stage is not None)
     by_opus = tuple(
         entry.id
         for entry in sorted(
-            LINE_SET, key=lambda item: OPUS_STAGE_ORDER.index(item.opus_stage)
+            staged, key=lambda item: OPUS_STAGE_ORDER.index(item.opus_stage)
         )
     )
     assert by_work != by_opus

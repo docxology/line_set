@@ -78,7 +78,7 @@
     {
       "claim_id": "census_declared_members",
       "kind": "number",
-      "value": 89,
+      "value": 146,
       "source": "docs/manuscript/reading_record.json vocabulary_census.declared_members (re-derived from the live packages by scripts/record_reading.py)",
       "source_path": "docs/manuscript/reading_record.json",
       "source_tier": "recorded_reading_census",
@@ -87,7 +87,7 @@
     {
       "claim_id": "census_line_and_name_pairs",
       "kind": "number",
-      "value": 81,
+      "value": 126,
       "source": "docs/manuscript/reading_record.json vocabulary_census.line_and_name_pairs (re-derived from the live packages by scripts/record_reading.py)",
       "source_path": "docs/manuscript/reading_record.json",
       "source_tier": "recorded_reading_census",
@@ -96,7 +96,7 @@
     {
       "claim_id": "census_distinct_names",
       "kind": "number",
-      "value": 80,
+      "value": 114,
       "source": "docs/manuscript/reading_record.json vocabulary_census.distinct_names (re-derived from the live packages by scripts/record_reading.py)",
       "source_path": "docs/manuscript/reading_record.json",
       "source_tier": "recorded_reading_census",

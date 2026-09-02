@@ -7,32 +7,34 @@ Every reading below was executed against the package as it stands. Where a readi
 ```python
 from line_set import read_set, reading_digest, sibling_path_resolver
 
-reading = read_set(resolver=sibling_path_resolver(), as_of="2026-07-29")
+reading = read_set(resolver=sibling_path_resolver(), as_of="2026-09-01")
 ```
 
 ```text
 status        : set_legible
-set_digest    : 40db5e0e3e038707
-reading_digest: e783001a0baa1c16
-counts        : {'resolved': 4, 'not_installed': 0, 'import_failed': 0, 'no_vocabulary': 0}
-  red_line     resolved  v0.3.0  registry= 7  digest=72835fd81d1f  tokens=40
-  black_line   resolved  v0.4.0  registry=11  digest=a02bff47a767  tokens=10
-  golden_line  resolved  v0.4.0  registry= 9  digest=3e0a7e38ecec  tokens= 7
-  white_line   resolved  v0.7.0  registry=11  digest=11047a641a8e  tokens=24
-  exempted: OUTSIDE_SCOPE over ['black_line', 'red_line']
+set_digest    : 7b7e70b70c5c22eaf5daeac59dd54d3c8b771fee3b1193d7446f66c0a1b156b4
+reading_digest: afae36b01400bf91
+counts        : {'resolved': 8, 'not_installed': 0, 'import_failed': 0, 'no_vocabulary': 0}
+  black_line   resolved   v0.4.0  registry=11  digest=a02bff47a767  tokens=10
+  blue_line    resolved   v0.1.0  registry=12  digest=9ae7cae1f0f7  tokens= 8
+  golden_line  resolved   v0.4.0  registry= 9  digest=3e0a7e38ecec  tokens= 7
+  green_line   resolved   v0.1.0  registry=11  digest=2d40bfefb9a5  tokens=10
+  red_line     resolved   v0.3.0  registry= 7  digest=72835fd81d1f  tokens=40
+  silver_line  resolved   v0.1.0  registry=11  digest=3d4f90f50de3  tokens=11
+  violet_line  resolved   v0.1.0  registry= 8  digest=cc2df72dfdba  tokens=16
+  white_line   resolved   v0.7.0  registry=11  digest=11047a641a8e  tokens=24
+  exempted: COMMUNICATION over ['black_line', 'green_line']; KEPT over ['silver_line', 'violet_line']; METHOD over ['black_line', 'green_line']; NEEDS_REWORK over ['black_line', 'green_line', 'silver_line']; OUTSIDE_SCOPE over ['black_line', 'blue_line', 'green_line', 'red_line', 'silver_line']; STALE over ['blue_line', 'white_line']; STEWARDSHIP over ['black_line', 'green_line']; VERIFICATION over ['black_line', 'green_line']
   unexempted: []
-  [resolve] asked the resolver for 4 declared packages
+  [resolve] asked the resolver for 8 declared packages
   [bind] read version, registry size, digest, and enum member names from each package that resolved
-  [collide] 0 unexempted and 1 exempted cross-line token collisions
-  [declare] scanned 4 candidate packages and found 0 that resolved but were not declared
-  [status] set_legible: all 4 declared line(s) were read and their vocabularies do not overlap
+  [collide] 0 unexempted and 8 exempted cross-line token collisions
+  [declare] scanned 8 candidate packages and found 0 that resolved but were not declared
+  [status] set_legible: all 8 declared line(s) were read and their vocabularies do not overlap
 ```
 
-The four packages export 19 enum classes between them — 7 in red_line, 3 in black_line, 2 in golden_line, 7 in white_line — and those classes declare 89 members in total. Eight of the 89 are a line repeating a word it already uses in another of its own enums, which is not a cross-line event and which the reader collapses: red_line spells `OUTSIDE_SCOPE` in two of its enums, black_line repeats three names across its three, and white_line repeats four names across its seven — its witness-facet alphabets reuse states its ledger already declares. After that collapse the reading holds 81 line-and-name pairs — 40 for red_line, 10 for black_line, 7 for golden_line, 24 for white_line — spanning 80 distinct names.
+The eight packages export 34 enum classes between them — 7 in red_line, 3 in black_line, 2 in golden_line, 7 in white_line, 4 in silver_line, 5 in violet_line, 3 in blue_line, 3 in green_line — and those classes declare 146 members in total. Twenty of the 146 are a line repeating a word it already uses in another of its own enums, which is not a cross-line event and which the reader collapses: red_line spells `OUTSIDE_SCOPE` in two of its enums, black_line repeats three names across its three, silver_line repeats three names across its four, violet_line repeats three names across its five, blue_line repeats three names across its three, green_line repeats three names across its three, and white_line repeats four names across its seven — its witness-facet alphabets reuse states its ledger already declares. After that collapse the reading holds 126 line-and-name pairs — 40 for red_line, 10 for black_line, 7 for golden_line, 24 for white_line, 11 for silver_line, 16 for violet_line, 8 for blue_line, 10 for green_line — spanning 114 distinct names.
 
-The arithmetic is the whole finding: 81 minus 80 is one, the one is `OUTSIDE_SCOPE`, and the set had already declared it (governed by [@prop:precedence]).
-
-The version and registry numbers above are dated. They are what the installed siblings reported on the review date, not constants of the set, and a sibling release changes them without changing anything this package claims. The digests are there so a later reader can tell whether they are looking at the same four packages I was.
+The arithmetic is the whole finding: 126 minus 114 is twelve, and the twelve are the eight shared spellings — `OUTSIDE_SCOPE` contributing four pairings beyond its first carrier, `NEEDS_REWORK` two, `KEPT`, `STALE`, `METHOD`, `VERIFICATION`, `COMMUNICATION`, and `STEWARDSHIP` one each — every one of them declared and disambiguated in the exemption table (governed by [@prop:precedence]).
 
 ![Vocabulary matrix: exported enum member names down the side, declared lines across the top. A cell is marked where a line carries that token. The one token carried by two lines is marked as a collision, and the exempted cell is distinguished from an unexempted one by both its shape and its label, so the plate reads in greyscale.](../output/figures/vocabulary_matrix.png){#fig:vocabulary-matrix width=100%}
 

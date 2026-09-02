@@ -6,15 +6,19 @@
       "import_failed": 0,
       "no_vocabulary": 0,
       "not_installed": 0,
-      "resolved": 4
+      "resolved": 8
     },
     "derivation": [
       {
-        "detail": "asked the resolver for 4 declared packages",
+        "detail": "asked the resolver for 8 declared packages",
         "items": [
           "black_line=resolved",
+          "blue_line=resolved",
           "golden_line=resolved",
+          "green_line=resolved",
           "red_line=resolved",
+          "silver_line=resolved",
+          "violet_line=resolved",
           "white_line=resolved"
         ],
         "name": "resolve"
@@ -23,26 +27,37 @@
         "detail": "read version, registry size, digest, and enum member names from each package that resolved",
         "items": [
           "black_line: 10 tokens, version=0.4.0, registry_size=11",
+          "blue_line: 8 tokens, version=0.1.0, registry_size=12",
           "golden_line: 7 tokens, version=0.4.0, registry_size=9",
+          "green_line: 10 tokens, version=0.1.0, registry_size=11",
           "red_line: 40 tokens, version=0.3.0, registry_size=7",
+          "silver_line: 11 tokens, version=0.1.0, registry_size=11",
+          "violet_line: 16 tokens, version=0.1.0, registry_size=8",
           "white_line: 24 tokens, version=0.7.0, registry_size=11"
         ],
         "name": "bind"
       },
       {
-        "detail": "0 unexempted and 1 exempted cross-line token collisions",
+        "detail": "0 unexempted and 8 exempted cross-line token collisions",
         "items": [
-          "OUTSIDE_SCOPE over black_line,red_line (exempted)"
+          "COMMUNICATION over black_line,green_line (exempted)",
+          "KEPT over silver_line,violet_line (exempted)",
+          "METHOD over black_line,green_line (exempted)",
+          "NEEDS_REWORK over black_line,green_line,silver_line (exempted)",
+          "OUTSIDE_SCOPE over black_line,blue_line,green_line,red_line,silver_line (exempted)",
+          "STALE over blue_line,white_line (exempted)",
+          "STEWARDSHIP over black_line,green_line (exempted)",
+          "VERIFICATION over black_line,green_line (exempted)"
         ],
         "name": "collide"
       },
       {
-        "detail": "scanned 4 candidate packages and found 0 that resolved but were not declared",
+        "detail": "scanned 8 candidate packages and found 0 that resolved but were not declared",
         "items": [],
         "name": "declare"
       },
       {
-        "detail": "set_legible: all 4 declared line(s) were read and their vocabularies do not overlap",
+        "detail": "set_legible: all 8 declared line(s) were read and their vocabularies do not overlap",
         "items": [
           "set_colliding",
           "set_undeclared",
@@ -57,10 +72,77 @@
         "exempted": true,
         "lines": [
           "black_line",
-          "red_line"
+          "green_line"
         ],
-        "rationale": "Both lines needed a name for work their own question does not reach, and the two senses are not the same sense. Red Line is saying it looked and found no prohibition; Black Line is saying it did not look, because the attempt is not the kind of thing its practices evaluate. The shared spelling is recorded here so the overlap is a declaration rather than an accident.",
+        "rationale": "Same divergence as METHOD and VERIFICATION, for communication: established practice families in Black Line, domains of deliberately incomplete capacity in Green Line.",
+        "token": "COMMUNICATION"
+      },
+      {
+        "exempted": true,
+        "lines": [
+          "silver_line",
+          "violet_line"
+        ],
+        "rationale": "Silver Line is about custody of what persists; Violet Line is about recording what affected parties said. A KEPT keepsake and a KEPT consent record are different facts about different objects, and neither implies the other.",
+        "token": "KEPT"
+      },
+      {
+        "exempted": true,
+        "lines": [
+          "black_line",
+          "green_line"
+        ],
+        "rationale": "Black Line enumerates established practice families; Green Line enumerates domains where capacity is still growing. The same family name labels a discipline held in Black Line and a discipline still being built in Green Line.",
+        "token": "METHOD"
+      },
+      {
+        "exempted": true,
+        "lines": [
+          "black_line",
+          "green_line",
+          "silver_line"
+        ],
+        "rationale": "Three lines each need a rework verdict, but the material being reworked differs: a practice attempt, a growth claim, and a succession declaration. A rework of one is not a rework of the others, so the shared spelling is declared rather than accidental.",
+        "token": "NEEDS_REWORK"
+      },
+      {
+        "exempted": true,
+        "lines": [
+          "black_line",
+          "blue_line",
+          "green_line",
+          "red_line",
+          "silver_line"
+        ],
+        "rationale": "Five instruments each needed a name for input their own question does not reach. The sense is parallel but each line says it about its own intake: a refusal scope, a practice scope, a commitment scope, a growth scope, and a succession scope are five different scopes. Violet Line deliberately spells its token OUT_OF_SCOPE instead, so it is not carried here.",
         "token": "OUTSIDE_SCOPE"
+      },
+      {
+        "exempted": true,
+        "lines": [
+          "blue_line",
+          "white_line"
+        ],
+        "rationale": "Blue Line's staleness is about care-signal freshness for living commitments; White Line's is about the age of a recorded absence against its own review horizon. Both mark time passed, but over different objects with different consequences.",
+        "token": "STALE"
+      },
+      {
+        "exempted": true,
+        "lines": [
+          "black_line",
+          "green_line"
+        ],
+        "rationale": "Same divergence as the other shared family names: Black Line's stewardship is a practised discipline, Green Line's is a capacity still growing. The exemption records the overlap so the collision check can distinguish declaration from accident.",
+        "token": "STEWARDSHIP"
+      },
+      {
+        "exempted": true,
+        "lines": [
+          "black_line",
+          "green_line"
+        ],
+        "rationale": "Same divergence as METHOD: an established verification practice in Black Line versus verification still under cultivation in Green Line. Declared here so the shared spelling stays a declaration.",
+        "token": "VERIFICATION"
       }
     ],
     "observations": [
@@ -87,6 +169,24 @@
       {
         "code": "resolved",
         "detail": "digest read from registry_digest()",
+        "line_id": "blue_line",
+        "registry_digest": "9ae7cae1f0f7389f2f58bd7f75a2038a4c48d791166bf79c100d78f2f379e8fd",
+        "registry_size": 12,
+        "tokens": [
+          "ARTIFACT",
+          "MAINTAINED",
+          "NEEDS_ATTENTION",
+          "OBLIGATION",
+          "OUTSIDE_SCOPE",
+          "RELATIONSHIP",
+          "STALE",
+          "SYSTEM"
+        ],
+        "version": "0.1.0"
+      },
+      {
+        "code": "resolved",
+        "detail": "digest read from registry_digest()",
         "line_id": "golden_line",
         "registry_digest": "3e0a7e38ececb156336d57ed7cc60b6bf08a3d8f2edfc678270c307820df57e3",
         "registry_size": 9,
@@ -100,6 +200,26 @@
           "UNKNOWN_ID"
         ],
         "version": "0.4.0"
+      },
+      {
+        "code": "resolved",
+        "detail": "digest read from registry_digest()",
+        "line_id": "green_line",
+        "registry_digest": "2d40bfefb9a57d898412861a06d3d1718d0cc6425fc36b8be526f0306063cc57",
+        "registry_size": 11,
+        "tokens": [
+          "APPRENTICESHIP",
+          "COMMUNICATION",
+          "METHOD",
+          "NEEDS_MARKER",
+          "NEEDS_REWORK",
+          "OUTSIDE_SCOPE",
+          "PRACTICE",
+          "STAGED",
+          "STEWARDSHIP",
+          "VERIFICATION"
+        ],
+        "version": "0.1.0"
       },
       {
         "code": "resolved",
@@ -154,6 +274,53 @@
       {
         "code": "resolved",
         "detail": "digest read from registry_digest()",
+        "line_id": "silver_line",
+        "registry_digest": "3d4f90f50de380657fdd16c1b1626b065d455497ca0dc1b8f3cbe95bc23f9efd",
+        "registry_size": 11,
+        "tokens": [
+          "ACCEPTED",
+          "ENTRUSTMENT",
+          "KEPT",
+          "LAPSE",
+          "NEEDS_PROVISION",
+          "NEEDS_REWORK",
+          "OUTSIDE_SCOPE",
+          "RESTRAINT",
+          "RETENTION",
+          "SET_ASIDE",
+          "TRANSMISSION"
+        ],
+        "version": "0.1.0"
+      },
+      {
+        "code": "resolved",
+        "detail": "digest read from registry_digest()",
+        "line_id": "violet_line",
+        "registry_digest": "cc2df72dfdbad157bff9881e1fefae68782952705853c65600150de0b4a0c99a",
+        "registry_size": 8,
+        "tokens": [
+          "ACCOUNTED",
+          "BOUNDING",
+          "CONSENTED",
+          "DECLINED",
+          "HONOURING",
+          "KEPT",
+          "NAMING",
+          "OUT_OF_SCOPE",
+          "RECORDING",
+          "SET_ASIDE_FUTURE_DATE",
+          "SET_ASIDE_MALFORMED",
+          "SET_ASIDE_UNKNOWN_STATE",
+          "SET_ASIDE_UNREADABLE_DATE",
+          "UNACCOUNTED",
+          "UNRECORDED",
+          "WITHDRAWN"
+        ],
+        "version": "0.1.0"
+      },
+      {
+        "code": "resolved",
+        "detail": "digest read from registry_digest()",
         "line_id": "white_line",
         "registry_digest": "11047a641a8e80c985f2bbd8a45b67a0e67048b235020aa52aa46da1cc02682a",
         "registry_size": 11,
@@ -186,29 +353,42 @@
         "version": "0.7.0"
       }
     ],
-    "read_as_of": "2026-07-29",
-    "set_digest": "40db5e0e3e038707ed17944cbb666a1df1ef486d64723133731cd11dec128a2b",
+    "read_as_of": "2026-09-01",
+    "set_digest": "7b7e70b70c5c22eaf5daeac59dd54d3c8b771fee3b1193d7446f66c0a1b156b4",
     "status": "set_legible",
     "undeclared_lines": []
   },
-  "reading_digest": "e783001a0baa1c164e3b768eb2148c54b23a7ebca2e9729b445cd22c9401628f",
-  "recorded_on": "2026-07-29",
+  "reading_digest": "afae36b01400bf9148553f774c52ddaaae68ff9cf1b33acd0c82a033c7a9f36e",
+  "recorded_on": "2026-09-01",
   "schema_version": "1.0",
-  "set_digest": "40db5e0e3e038707ed17944cbb666a1df1ef486d64723133731cd11dec128a2b",
+  "set_digest": "7b7e70b70c5c22eaf5daeac59dd54d3c8b771fee3b1193d7446f66c0a1b156b4",
   "set_version": "2026.07.27",
   "vocabulary_census": {
-    "declared_members": 89,
-    "distinct_names": 80,
-    "enum_classes": 19,
-    "line_and_name_pairs": 81,
+    "declared_members": 146,
+    "distinct_names": 114,
+    "enum_classes": 34,
+    "line_and_name_pairs": 126,
     "method": "Every enum exported at each declared package's root was counted, together with the members it declares. declared_members counts repeats; distinct_names is what survives deduplication within one line, which is what the collision scan compares.",
     "names_carried_by_more_than_one_line": [
-      "OUTSIDE_SCOPE"
+      "COMMUNICATION",
+      "KEPT",
+      "METHOD",
+      "NEEDS_REWORK",
+      "OUTSIDE_SCOPE",
+      "STALE",
+      "STEWARDSHIP",
+      "VERIFICATION"
     ],
     "per_line": {
       "black_line": {
         "declared_members": 13,
         "distinct_names": 10,
+        "enum_classes": 3,
+        "within_line_repeats": 3
+      },
+      "blue_line": {
+        "declared_members": 11,
+        "distinct_names": 8,
         "enum_classes": 3,
         "within_line_repeats": 3
       },
@@ -218,11 +398,29 @@
         "enum_classes": 2,
         "within_line_repeats": 0
       },
+      "green_line": {
+        "declared_members": 13,
+        "distinct_names": 10,
+        "enum_classes": 3,
+        "within_line_repeats": 3
+      },
       "red_line": {
         "declared_members": 41,
         "distinct_names": 40,
         "enum_classes": 7,
         "within_line_repeats": 1
+      },
+      "silver_line": {
+        "declared_members": 14,
+        "distinct_names": 11,
+        "enum_classes": 4,
+        "within_line_repeats": 3
+      },
+      "violet_line": {
+        "declared_members": 19,
+        "distinct_names": 16,
+        "enum_classes": 5,
+        "within_line_repeats": 3
       },
       "white_line": {
         "declared_members": 28,

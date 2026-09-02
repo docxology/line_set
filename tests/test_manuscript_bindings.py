@@ -85,8 +85,18 @@ WORDS = {
     8: "eight",
     9: "nine",
     10: "ten",
+    11: "eleven",
+    12: "twelve",
+    13: "thirteen",
+    14: "fourteen",
+    15: "fifteen",
     16: "sixteen",
+    17: "seventeen",
+    18: "eighteen",
     19: "nineteen",
+    20: "twenty",
+    34: "thirty-four",
+    89: "eighty-nine",
 }
 
 
@@ -213,7 +223,6 @@ def test_the_bibliography_closes_in_both_directions() -> None:
 def test_every_embedded_figure_exists_and_no_built_figure_is_orphaned() -> None:
     """A caption over a missing file, and a plate nobody shows, are both defects."""
     embedded: dict[str, str] = {}
-    output_figures = PROJECT_ROOT / "output" / "figures"
     for path in sorted(MANUSCRIPT.glob("*.md")):
         for target in re.findall(r"!\[[^\]]*\]\(([^)]+)\)", path.read_text("utf-8")):
             resolved_target = target if "../output/" not in target else None
@@ -412,14 +421,14 @@ def test_the_set_digest_in_the_prose_is_the_digest_of_the_declaration() -> None:
 def test_the_extension_example_reports_what_the_package_actually_returns() -> None:
     """Every printed line of the executed block, re-executed here."""
     fifth = LineEntry(
-        id="green_line",
-        color="green",
+        id="teal_line",
+        color="teal",
         question="What does keeping this alive cost?",
         job="Standing upkeep, dependencies, and the bill for continued existence",
         must_not_become="A reason to drop work that is merely expensive",
         opus_stage=None,
         working_position=len(LINE_SET) + 1,
-        package_name="green_line",
+        package_name="teal_line",
         registry_noun="upkeep records",
         verdict_noun="upkeep status",
     )
@@ -472,14 +481,14 @@ def test_the_extension_examples_partial_reading_is_reproduced_exactly(
     )
 
     fifth = LineEntry(
-        id="green_line",
-        color="green",
+        id="teal_line",
+        color="teal",
         question="What does keeping this alive cost?",
         job="Standing upkeep, dependencies, and the bill for continued existence",
         must_not_become="A reason to drop work that is merely expensive",
         opus_stage=None,
         working_position=len(LINE_SET) + 1,
-        package_name="green_line",
+        package_name="teal_line",
         registry_noun="upkeep records",
         verdict_noun="upkeep status",
     )
@@ -708,7 +717,14 @@ def test_the_token_arithmetic_is_stated_correctly_everywhere_it_appears() -> Non
     assert declared - pairs == sum(
         item["within_line_repeats"] for item in per_line.values()
     )
-    assert pairs - distinct == len(shared_names), (
+    carriers = {
+        collision["token"]: len(collision["lines"])
+        for collision in (
+            *record()["reading"]["collisions"],
+            *record()["reading"]["exempted_collisions"],
+        )
+    }
+    assert pairs - distinct == sum(count - 1 for count in carriers.values()), (
         "the record's own arithmetic does not close"
     )
     assert shared_names == sorted(
@@ -760,17 +776,28 @@ def test_the_within_line_repeats_are_attributed_to_the_right_lines() -> None:
         f"{word(sum(repeats.values())).capitalize()} of the {declared} are a line "
         "repeating a word it already uses",
     )
-    assert repeats == {"red_line": 1, "black_line": 3, "white_line": 4}, (
-        "the attributions spelled out below must be re-derived if this changes"
-    )
-    must_say(
-        "04_examples.md",
-        f"red_line spells `{token}` in {word(repeats['red_line'] + 1)} of its enums",
-        f"black_line repeats {word(repeats['black_line'])} names across its "
-        f"{word(per_line['black_line']['enum_classes'])}",
-        f"white_line repeats {word(repeats['white_line'])} names across its "
-        f"{word(per_line['white_line']['enum_classes'])}",
-    )
+    attribution_order = [entry.id for entry in LINE_SET if entry.id in repeats]
+    assert repeats == {
+        "red_line": 1,
+        "black_line": 3,
+        "white_line": 4,
+        "silver_line": 3,
+        "violet_line": 3,
+        "blue_line": 3,
+        "green_line": 3,
+    }, "the attributions spelled out below must be re-derived if this changes"
+    fragments = []
+    for line_id in attribution_order:
+        if line_id == "red_line":
+            fragments.append(
+                f"red_line spells `{token}` in {word(repeats[line_id] + 1)} of its enums"
+            )
+        else:
+            fragments.append(
+                f"{line_id} repeats {word(repeats[line_id])} names across its "
+                f"{word(per_line[line_id]['enum_classes'])}"
+            )
+    must_say("04_examples.md", *fragments)
 
 
 def test_the_per_line_enum_class_counts_are_stated_correctly() -> None:

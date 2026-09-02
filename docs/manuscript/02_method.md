@@ -6,7 +6,7 @@ A `LineEntry` has ten fields. Four are identity and prose — the line's id, its
 
 A `SharedToken` has four: the token, the tuple of line ids allowed to carry it, a tuple of per-line meanings, and a rationale. The meanings tuple is the load-bearing one. A shared token with no meaning recorded for each line it names is a label, and a label cannot show that two uses of one spelling are two different things.
 
-The two record types are stated as [@def:line-entry] and [@def:shared-token]. The declaration ships four line entries and one shared token. The wrapper's own entry lives beside `LINE_SET` rather than inside it, because it is not a fifth instrument; its `working_position` continues the sequence so that appending it still yields a contiguous run.
+The two record types are stated as [@def:line-entry] and [@def:shared-token]. The declaration ships eight line entries and eight shared token. The wrapper's own entry lives beside `LINE_SET` rather than inside it, because it is not a fifth instrument; its `working_position` continues the sequence so that appending it still yields a contiguous run.
 
 ## The reader
 

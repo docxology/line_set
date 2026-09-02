@@ -243,6 +243,10 @@ def live_reading(tmp_path: Path) -> Iterator[SetReading]:
             "black_line": ("STRONG", "WEAK", "OUTSIDE_SCOPE"),
             "golden_line": ("TOWARD", "AWAY"),
             "white_line": ("ABSENT", "WITHHELD"),
+            "silver_line": ("KEPT", "LAPSED", "OUTSIDE_SCOPE"),
+            "violet_line": ("RECORDED", "UNRECORDED"),
+            "blue_line": ("FRESH", "DUE", "OUTSIDE_SCOPE"),
+            "green_line": ("SPROUTING", "ROOTED", "OUTSIDE_SCOPE"),
         }
         for name, tokens in vocabularies.items():
             write_line_package(
@@ -640,6 +644,10 @@ def test_the_exempted_cell_is_distinguished_by_shape_and_label(
             "black_line": ("OUTSIDE_SCOPE", "STRONG"),
             "golden_line": ("BORROWED", "TOWARD"),
             "white_line": ("ABSENT",),
+            "silver_line": ("KEPT", "OUTSIDE_SCOPE"),
+            "violet_line": ("RECORDED",),
+            "blue_line": ("FRESH", "OUTSIDE_SCOPE"),
+            "green_line": ("SPROUTING", "OUTSIDE_SCOPE"),
         }
         answers = {}
         for name, tokens in vocabularies.items():
@@ -679,6 +687,10 @@ def test_a_grid_with_no_shared_token_says_so_rather_than_leaving_the_band_blank(
             ("black_line", ("STRONG", "WEAK")),
             ("golden_line", ("TOWARD",)),
             ("white_line", ("ABSENT",)),
+            ("silver_line", ("KEPT",)),
+            ("violet_line", ("RECORDED",)),
+            ("blue_line", ("FRESH",)),
+            ("green_line", ("SPROUTING",)),
         ):
             write_line_package(tmp_path, name, tokens, registry_sizes={"ITEMS": 1})
             answers[name] = resolved(name, load_line_package(tmp_path, name))

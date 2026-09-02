@@ -65,10 +65,11 @@ def test_canonical_registry_sorts_lines_and_exemptions_by_identity() -> None:
         token.token for token in SHARED_TOKENS
     )
     first = payload["shared_tokens"][0]
-    assert first["lines"] == sorted(SHARED_TOKENS[0].lines)
-    assert first["meanings"] == [
-        list(pair) for pair in sorted(SHARED_TOKENS[0].meanings)
-    ]
+    declared = next(
+        token for token in SHARED_TOKENS if token.token == first["token"]
+    )
+    assert first["lines"] == sorted(declared.lines)
+    assert first["meanings"] == [list(pair) for pair in sorted(declared.meanings)]
 
 
 def test_canonical_registry_is_already_in_its_own_canonical_form() -> None:

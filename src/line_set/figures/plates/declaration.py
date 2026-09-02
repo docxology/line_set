@@ -51,16 +51,16 @@ _CONTENT_TOP = 300
 def _row_lines(entry: LineEntry) -> tuple[list[str], list[str], list[str]]:
     """Wrap one entry's three sentences at the widths the card allows."""
     return (
-        wrap(f"asks — {entry.question}", 104),
-        wrap(f"does — {entry.job}", 118),
-        wrap(f"must not become — {entry.must_not_become}", 118),
+        wrap(f"asks — {entry.question}", 84),
+        wrap(f"does — {entry.job}", 94),
+        wrap(f"must not become — {entry.must_not_become}", 94),
     )
 
 
 def _row_height(entry: LineEntry) -> int:
     """Card height derived from how much text the entry actually carries."""
     asks, does, avoids = _row_lines(entry)
-    return 122 + 28 * len(asks) + 24 * len(does) + 24 * len(avoids)
+    return 150 + 36 * len(asks) + 30 * len(does) + 30 * len(avoids)
 
 
 def _draw_card(
@@ -98,22 +98,22 @@ def _draw_card(
             dash="10 8" if dashed else "",
         ),
         rect(_CARD_LEFT, top, 12, height, ink, ink, 0, rx=0),
-        glyph(marker, _CARD_LEFT + 62, top + 50, 24, fill, ink, 3),
-        text(_CARD_LEFT + 62, top + 96, corner_note, 18, MUTED, "700", "middle"),
-        text(_TEXT_LEFT, top + 52, entry.color, 26, ink, "700"),
+        glyph(marker, _CARD_LEFT + 62, top + 50, 28, fill, ink, 3),
+        text(_CARD_LEFT + 62, top + 96, corner_note, 28, MUTED, "700", "middle"),
+        text(_TEXT_LEFT, top + 52, entry.color, 29, ink, "700"),
         text(
             _TEXT_LEFT,
             top + 80,
             f"package {entry.package_name} · keeps {entry.registry_noun} "
             f"· emits {entry.verdict_noun}",
-            18,
+            28,
             MUTED,
         ),
         text(
             CONTENT_RIGHT - 24,
             top + 52,
             f"opus stage · {entry.opus_stage}" if entry.opus_stage else "no opus stage",
-            18,
+            28,
             ink if entry.opus_stage else MUTED,
             "700",
             "end",
@@ -122,14 +122,14 @@ def _draw_card(
     asks, does, avoids = _row_lines(entry)
     cursor = top + 118
     for row in asks:
-        parts.append(text(_TEXT_LEFT, cursor, row, 20, INK, "700"))
-        cursor += 28
+        parts.append(text(_TEXT_LEFT, cursor, row, 29, INK, "700"))
+        cursor += 36
     for row in does:
-        parts.append(text(_TEXT_LEFT, cursor, row, 18, MUTED))
-        cursor += 24
+        parts.append(text(_TEXT_LEFT, cursor, row, 28, MUTED))
+        cursor += 30
     for row in avoids:
-        parts.append(text(_TEXT_LEFT, cursor, row, 18, WARN, "700"))
-        cursor += 24
+        parts.append(text(_TEXT_LEFT, cursor, row, 29, WARN, "700"))
+        cursor += 30
     return parts
 
 
@@ -174,7 +174,7 @@ def _compass_rose(entries: tuple[LineEntry, ...], cx: int, cy: int) -> list[str]
         label_y = cy + (radius + 22) * math.sin(angle) + 5
         parts.append(
             text(
-                label_x, label_y, str(entry.working_position), 18, ink, "700", "middle"
+                label_x, label_y, str(entry.working_position), 28, ink, "700", "middle"
             )
         )
     # The hub is drawn last so the needle origins do not show through it.
@@ -183,7 +183,7 @@ def _compass_rose(entries: tuple[LineEntry, ...], cx: int, cy: int) -> list[str]
         'stroke-width="2"/>'
     )
     parts.append(
-        text(cx, cy + radius + 62, "working positions", 18, MUTED, "700", "middle")
+        text(cx, cy + radius + 62, "working positions", 28, MUTED, "700", "middle")
     )
     return parts
 
@@ -230,7 +230,7 @@ def set_compass(lines: tuple[LineEntry, ...], wrapper: LineEntry) -> str:
             MARGIN,
             cursor + 30,
             "BELOW THE RULE — NOT A LINE IN THE SET",
-            18,
+            28,
             MUTED,
             "700",
         )
@@ -240,7 +240,7 @@ def set_compass(lines: tuple[LineEntry, ...], wrapper: LineEntry) -> str:
             CONTENT_RIGHT,
             cursor + 30,
             "the wrapper declares no refusal, method, aspiration, or absence",
-            18,
+            28,
             MUTED,
             "400",
             "end",
@@ -262,7 +262,7 @@ def set_compass(lines: tuple[LineEntry, ...], wrapper: LineEntry) -> str:
             cursor,
             "A card states what its line is for. It is not evidence that the "
             "line does it, and no card is a score.",
-            18,
+            28,
             INK,
         )
     )
@@ -317,17 +317,17 @@ def two_orders(lines: tuple[LineEntry, ...]) -> str:
         "THE CROSSINGS ARE THE POINT · THE DIVERGENCE IS DELIBERATE",
         ACCENT,
     )
-    parts.append(text(left_x, top - 26, "WORKING ORDER", 18, ACCENT, "700"))
+    parts.append(text(left_x, top - 26, "WORKING ORDER", 28, ACCENT, "700"))
     parts.append(
-        text(left_x + 200, top - 26, "refuse → method → aspire → absence", 18, MUTED)
+        text(left_x + 200, top - 26, "refuse → method → aspire → absence", 28, MUTED)
     )
-    parts.append(text(right_x, top - 26, "OPUS ORDER", 18, ACCENT, "700"))
+    parts.append(text(right_x, top - 26, "OPUS ORDER", 28, ACCENT, "700"))
     parts.append(
         text(
             right_x + 150,
             top - 26,
             " → ".join(OPUS_STAGE_ORDER),
-            18,
+            28,
             MUTED,
         )
     )
@@ -343,22 +343,22 @@ def two_orders(lines: tuple[LineEntry, ...]) -> str:
                 shape_for(entry.working_position),
                 left_x + 52,
                 y + box_h / 2,
-                18,
+                28,
                 line_fill(entry.color),
                 ink,
                 2.5,
             )
         )
-        parts.append(text(left_x + 92, y + 40, entry.color, 22, ink, "700"))
+        parts.append(text(left_x + 92, y + 40, entry.color, 26, ink, "700"))
         parts.append(
-            text(left_x + 92, y + 68, f"position {entry.working_position}", 18, MUTED)
+            text(left_x + 92, y + 68, f"position {entry.working_position}", 28, MUTED)
         )
         parts.append(
             text(
                 left_x + box_w - 20,
                 y + 40,
                 entry.question,
-                18,
+                28,
                 MUTED,
                 "400",
                 "end",
@@ -379,19 +379,19 @@ def two_orders(lines: tuple[LineEntry, ...]) -> str:
                 shape_for(entry.working_position),
                 right_x + box_w - 52,
                 y + box_h / 2,
-                18,
+                28,
                 line_fill(entry.color),
                 ink,
                 2.5,
             )
         )
-        parts.append(text(right_x + 24, y + 40, stage, 22, ink, "700"))
+        parts.append(text(right_x + 24, y + 40, stage, 26, ink, "700"))
         parts.append(
             text(
                 right_x + 24,
                 y + 68,
                 f"stage {OPUS_STAGE_ORDER.index(stage) + 1} · the {entry.color} line",
-                18,
+                28,
                 MUTED,
             )
         )
@@ -434,7 +434,7 @@ def two_orders(lines: tuple[LineEntry, ...]) -> str:
             )
         )
         parts.append(
-            text(right_x + 24, cursor + 34, "NO OPUS STAGE DECLARED", 18, MUTED, "700")
+            text(right_x + 24, cursor + 34, "NO OPUS STAGE DECLARED", 28, MUTED, "700")
         )
         for index, entry in enumerate(unstaged):
             parts.append(
@@ -443,7 +443,7 @@ def two_orders(lines: tuple[LineEntry, ...]) -> str:
                     cursor + 62 + index * 30,
                     f"the {entry.color} line keeps its working position and "
                     "borrows no stage name",
-                    18,
+                    28,
                     MUTED,
                 )
             )
@@ -468,17 +468,17 @@ def two_orders(lines: tuple[LineEntry, ...]) -> str:
             cursor + 46,
             f"LIVE CHECK · {divergence.name} · "
             f"{'holds' if divergence.passed else 'does not hold'}",
-            18,
+            28,
             ACCENT,
             "700",
         )
     )
-    parts.append(text(MARGIN, cursor + 74, divergence.detail, 18, INK))
+    parts.append(text(MARGIN, cursor + 74, divergence.detail, 28, INK))
     for index, note in enumerate(_ORDER_NOTES):
         parts.append(
-            text(MARGIN, cursor + 112 + index * 32, f"{index + 1}.", 18, MUTED, "700")
+            text(MARGIN, cursor + 112 + index * 32, f"{index + 1}.", 28, MUTED, "700")
         )
-        parts.append(text(MARGIN + 32, cursor + 112 + index * 32, note, 18, INK))
+        parts.append(text(MARGIN + 32, cursor + 112 + index * 32, note, 28, INK))
     parts.append(close_canvas())
     return "".join(parts)
 

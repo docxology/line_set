@@ -92,9 +92,9 @@ def set_reading_pipeline() -> str:
         ACCENT,
     )
     parts.append(
-        text(_STAGE_LEFT, _TOP - 26, "THE STAGES, IN ORDER", 18, ACCENT, "700")
+        text(_STAGE_LEFT, _TOP - 26, "THE STAGES, IN ORDER", 24, ACCENT, "700")
     )
-    parts.append(text(_LADDER_LEFT, _TOP - 26, "THE EXIT LADDER", 18, ACCENT, "700"))
+    parts.append(text(_LADDER_LEFT, _TOP - 26, "THE EXIT LADDER", 24, ACCENT, "700"))
 
     cursor = _TOP
     for index, stage in enumerate(READER_STAGES):
@@ -111,7 +111,7 @@ def set_reading_pipeline() -> str:
                 _STAGE_LEFT + 52,
                 cursor + 50,
                 str(index + 1),
-                18,
+                24,
                 ACCENT,
                 "700",
                 "middle",
@@ -121,10 +121,10 @@ def set_reading_pipeline() -> str:
         gloss, note = _stage_lines(stage)
         row = cursor + 78
         for entry in gloss:
-            parts.append(text(_STAGE_LEFT + 92, row, entry, 18, INK))
+            parts.append(text(_STAGE_LEFT + 92, row, entry, 24, INK))
             row += 26
         for entry in note:
-            parts.append(text(_STAGE_LEFT + 92, row, entry, 18, MUTED))
+            parts.append(text(_STAGE_LEFT + 92, row, entry, 24, MUTED))
             row += 24
         if index < len(READER_STAGES) - 1:
             arrow_top = cursor + box_height
@@ -186,28 +186,28 @@ def set_reading_pipeline() -> str:
             )
         )
         parts.append(
-            text(_LADDER_LEFT + 72, rung_top + 40, status.value, 20, ink, "700")
+            text(_LADDER_LEFT + 72, rung_top + 40, status.value, 26, ink, "700")
         )
         parts.append(
             text(
                 _LADDER_LEFT + 72,
                 rung_top + 66,
                 SET_STATUS_CONDITION[status],
-                18,
+                24,
                 MUTED,
                 "700",
             )
         )
         row = rung_top + 92
         for entry in _rung_lines(status):
-            parts.append(text(_LADDER_LEFT + 72, row, entry, 18, INK))
+            parts.append(text(_LADDER_LEFT + 72, row, entry, 24, INK))
             row += 22
         parts.append(
             text(
                 _LADDER_LEFT + _LADDER_WIDTH - 16,
                 rung_top + 40,
                 f"exit {index + 1}",
-                18,
+                24,
                 MUTED,
                 "700",
                 "end",
@@ -229,7 +229,7 @@ def set_reading_pipeline() -> str:
             _LADDER_LEFT,
             rung_top + 26,
             "read downward · no condition below is tested",
-            18,
+            24,
             MUTED,
             "700",
         )
@@ -239,7 +239,7 @@ def set_reading_pipeline() -> str:
             _LADDER_LEFT,
             rung_top + 50,
             "once one above it has matched",
-            18,
+            24,
             MUTED,
             "700",
         )
@@ -248,7 +248,7 @@ def set_reading_pipeline() -> str:
     footer = _TOP + max(column, ladder + 46) + 40
     parts.append(line(MARGIN, footer, CONTENT_RIGHT, footer, RULE, 2))
     parts.append(
-        text(MARGIN, footer + 36, "WHAT AN EXIT ESTABLISHES", 18, ACCENT, "700")
+        text(MARGIN, footer + 36, "WHAT AN EXIT ESTABLISHES", 24, ACCENT, "700")
     )
     parts.append(
         text(
@@ -256,7 +256,7 @@ def set_reading_pipeline() -> str:
             footer + 68,
             "An exit reports what the reader found in the declared names. It is "
             "not a finding about how any line behaves, and no exit grades a line.",
-            18,
+            24,
             INK,
         )
     )
@@ -266,7 +266,7 @@ def set_reading_pipeline() -> str:
             footer + 98,
             "A line that could not be read contributes no version, no registry "
             "size, and no digest; those stay empty rather than being filled in.",
-            18,
+            24,
             MUTED,
         )
     )

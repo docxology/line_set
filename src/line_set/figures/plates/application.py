@@ -113,7 +113,7 @@ def _unestablished(
             _TOP + 78,
             "This plate is not evidence that the wrapper's vocabulary is "
             "disjoint. It was not compared.",
-            18,
+            24,
             INK,
         )
     )
@@ -133,31 +133,31 @@ def _unestablished(
             )
         )
         parts.append(
-            text(MARGIN + 52, cursor + 24, observation.line_id, 18, INK, "700")
+            text(MARGIN + 52, cursor + 24, observation.line_id, 24, INK, "700")
         )
         parts.append(
-            text(MARGIN + 320, cursor + 24, code.value, 18, READ_CODE_INK[code], "700")
+            text(MARGIN + 320, cursor + 24, code.value, 24, READ_CODE_INK[code], "700")
         )
         parts.append(
             text(
                 MARGIN + 560,
                 cursor + 24,
                 f"{plural(len(observation.tokens), 'token')} read",
-                18,
+                24,
                 MUTED,
             )
         )
         cursor += 44
     parts.append(line(MARGIN, cursor + 18, CONTENT_RIGHT, cursor + 18, RULE, 2))
     for index, detail in enumerate(detail_lines):
-        parts.append(text(MARGIN, cursor + 54 + index * 26, detail, 18, INK))
+        parts.append(text(MARGIN, cursor + 54 + index * 26, detail, 24, INK))
     parts.append(
         text(
             MARGIN,
             cursor + 62 + 26 * len(detail_lines),
             f"The declaration holds {plural(len(lines), 'line')}; install them "
             "and rebuild to make the comparison.",
-            18,
+            24,
             MUTED,
         )
     )
@@ -244,7 +244,7 @@ def self_application(
     )
 
     parts.append(
-        text(MARGIN, _TOP - 24, "THE WRAPPER'S OWN VOCABULARY", 18, ACCENT, "700")
+        text(MARGIN, _TOP - 24, "THE WRAPPER'S OWN VOCABULARY", 24, ACCENT, "700")
     )
     parts.append(
         rect(MARGIN, _TOP, _CONTENT_WIDTH, vocabulary_height, CARD, MUTED, 2, rx=10)
@@ -255,7 +255,7 @@ def self_application(
             _TOP + 40,
             f"{wrapper.package_name} · {wrapper.color} · "
             f"{plural(len(tokens), 'enum member name')} exported at its root",
-            20,
+            26,
             INK,
             "700",
         )
@@ -283,7 +283,7 @@ def self_application(
                 x + 26,
                 y,
                 token,
-                18,
+                24,
                 WARN if carried else INK,
                 "700" if carried else "400",
             )
@@ -291,7 +291,7 @@ def self_application(
 
     cursor = _TOP + vocabulary_height + 76
     parts.append(
-        text(MARGIN, cursor - 26, "AGAINST EACH DECLARED LINE", 18, ACCENT, "700")
+        text(MARGIN, cursor - 26, "AGAINST EACH DECLARED LINE", 24, ACCENT, "700")
     )
     for item in observations:
         overlap = sorted(frozenset(item.tokens) & set(tokens))
@@ -307,7 +307,7 @@ def self_application(
         parts.append(
             glyph(marker, MARGIN + 46, cursor + 32, 15, entry_fill, entry_ink, 2.5)
         )
-        parts.append(text(MARGIN + 78, cursor + 28, item.line_id, 20, INK, "700"))
+        parts.append(text(MARGIN + 78, cursor + 28, item.line_id, 26, INK, "700"))
         parts.append(
             text(
                 MARGIN + 78,
@@ -315,7 +315,7 @@ def self_application(
                 f"{plural(len(item.tokens), 'token')} read"
                 if readable
                 else f"no vocabulary read · {item.code.value}",
-                18,
+                24,
                 MUTED if readable else WARN,
             )
         )
@@ -341,7 +341,7 @@ def self_application(
                     if readable
                     else "was not read, so nothing was compared"
                 ),
-                18,
+                24,
                 ink,
                 "700",
             )
@@ -383,13 +383,13 @@ def self_application(
         )
     )
     for index, detail in enumerate(detail_lines):
-        parts.append(text(MARGIN + 74, cursor + 96 + index * 26, detail, 18, INK))
+        parts.append(text(MARGIN + 74, cursor + 96 + index * 26, detail, 24, INK))
 
     footer = cursor + 142 + 26 * len(detail_lines)
     parts.append(line(MARGIN, footer, CONTENT_RIGHT, footer, RULE, 2))
-    parts.append(text(MARGIN, footer + 34, "READING RULE", 18, ACCENT, "700"))
+    parts.append(text(MARGIN, footer + 34, "READING RULE", 24, ACCENT, "700"))
     for index, row_text in enumerate(rule_lines):
-        parts.append(text(MARGIN, footer + 66 + index * 26, row_text, 18, INK))
+        parts.append(text(MARGIN, footer + 66 + index * 26, row_text, 24, INK))
     parts.append(close_canvas())
     return "".join(parts)
 

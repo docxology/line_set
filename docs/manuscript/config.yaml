@@ -5,7 +5,7 @@ paper:
   title: "The Line Set: Holding Instruments Apart"
   subtitle: "A Declaration, a Reader, and a Non-Overlap Contract for a Growing Set of Small Instruments"
   version: "0.1.0"
-  date: "2026-07-29"
+  date: "2026-09-01"
   description: "A thin wrapper that declares what the line set is, reads the sibling packages that are installed, and checks that no two of them share a status token."
   cover:
     image: "output/figures/cover_art.png"

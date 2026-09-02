@@ -4,25 +4,25 @@ The set has grown before and will grow again, so the cost of adding a line is a 
 
 Parnas treats extension and contraction as one problem and puts the cost of both in the *uses* relation rather than in the size of the edit: what makes a subset removable, or an addition cheap, is that nothing outside it names it [@parnas1979extension]. That is the property claimed here, and it is claimed narrowly. He is designing families of programs whose minimal subsets are chosen in advance and whose uses relation is documented and enforced; I have one package, and the only uses relation I have measured is which modules mention a line id as a whole word. Those are different standards of evidence for the same-shaped claim, and the second is the one this section supports.
 
-The claim holds because no module outside `registry.py` names an individual line. Every function that does work takes `lines` and `shared` as arguments and computes over whatever it was handed. Searching the package for the four line ids as whole words finds them only in `registry.py`, four and four and two and two times; `reader.py`, `invariants.py`, `binding.py`, `serialization.py`, `models.py`, and `__init__.py` contain none of them. One mention of `OUTSIDE_SCOPE` survives in `reader.py`, inside the exemption matcher's docstring, where it is the worked example of a substring the matcher must refuse. It is prose, not a branch.
+The claim holds because no module outside `registry.py` names an individual line. Every function that does work takes `lines` and `shared` as arguments and computes over whatever it was handed. Searching the package for the eight line ids as whole words finds them only in `registry.py`, four and fourteen and two and four and eight and four and six and fourteen times; `reader.py`, `invariants.py`, `binding.py`, `serialization.py`, `models.py`, and `__init__.py` contain none of them. One mention of `OUTSIDE_SCOPE` survives in `reader.py`, inside the exemption matcher's docstring, where it is the worked example of a substring the matcher must refuse. It is prose, not a branch.
 
 ## The executed example
 
-Here is a fifth colour, appended at runtime and put through the whole battery. Nothing in the package was edited to run it.
+Here is a further colour, appended at runtime and put through the whole battery. Nothing in the package was edited to run it.
 
 ```python
 from line_set import (LINE_SET, SHARED_TOKENS, LineEntry, all_invariants,
                       read_set, registry_digest, sibling_path_resolver)
 
 fifth = LineEntry(
-    id="green_line",
-    color="green",
+    id="teal_line",
+    color="teal",
     question="What does keeping this alive cost?",
     job="Standing upkeep, dependencies, and the bill for continued existence",
     must_not_become="A reason to drop work that is merely expensive",
     opus_stage=None,
-    working_position=5,
-    package_name="green_line",
+    working_position=9,
+    package_name="teal_line",
     registry_noun="upkeep records",
     verdict_noun="upkeep status",
 )
@@ -34,7 +34,7 @@ print("digest:", registry_digest(LINE_SET, SHARED_TOKENS)[:12],
 for r in all_invariants(extended, SHARED_TOKENS):
     print(f"  {'PASS' if r.passed else 'FAIL'}  {r.name}")
 reading = read_set(extended, SHARED_TOKENS,
-                   resolver=sibling_path_resolver(), as_of="2026-07-29")
+                   resolver=sibling_path_resolver(), as_of="2026-09-01")
 print("status:", reading.status.value)
 print("counts:", reading.counts())
 print("reason:", reading.derivation[-1].detail)
@@ -43,8 +43,8 @@ print("reason:", reading.derivation[-1].detail)
 The measured output:
 
 ```text
-lines: 4 -> 5
-digest: 40db5e0e3e03 -> 7ca600e34332
+lines: 8 -> 9
+digest: 7b7e70b70c5c -> 81d9e7d415d0
   PASS  distinct_line_ids
   PASS  distinct_colours
   PASS  distinct_opus_stages
@@ -53,11 +53,11 @@ digest: 40db5e0e3e03 -> 7ca600e34332
   PASS  must_not_become_declared
   PASS  shared_tokens_disambiguated
 status: set_partial
-counts: {'resolved': 4, 'not_installed': 1, 'import_failed': 0, 'no_vocabulary': 0}
-reason: set_partial: 1 declared line(s) could not be read: ['green_line']
+counts: {'resolved': 8, 'not_installed': 1, 'import_failed': 0, 'no_vocabulary': 0}
+reason: set_partial: 1 declared line(s) could not be read: ['teal_line']
 ```
 
-All seven structural checks pass on the five-entry declaration. Position contiguity now expects `1..5` and gets it. Colour distinctness has a fifth colour to consider. The orders still diverge, because the fifth entry declares no opus stage and is therefore ignored by that comparison — a line may join the set without being assigned a stage, and a set could in principle grow past four while the four borrowed stage names stay exactly four.
+All seven structural checks pass on the nine-entry declaration. Position contiguity now expects `1..9` and gets it. Colour distinctness has a ninth colour to consider. The orders still diverge, because the fifth entry declares no opus stage and is therefore ignored by that comparison — a line may join the set without being assigned a stage, and a set could in principle grow past four while the four borrowed stage names stay exactly four.
 
 The wrapper's own collision check ([@prop:self-disjointness]) applies to any extended declaration.
 
@@ -65,7 +65,7 @@ The reading is `SET_PARTIAL`, and that is the correct answer rather than a short
 
 ## What the digest change means
 
-The set digest moved from `40db5e0e3e03` to `7ca600e34332`. That is the intended behaviour: the digest covers the lines and the exemption table together, so a set with a fifth line is a different set. It is also worth noticing that the digest binds to the *content* of the entry and not merely to its presence. Rewording the fifth line's question produces a different digest, which is what makes the value useful for spotting that two people are reading different declarations.
+The set digest moved from `7b7e70b70c5c` to `81d9e7d415d0`. That is the intended behaviour: the digest covers the lines and the exemption table together, so a set with a fifth line is a different set. It is also worth noticing that the digest binds to the *content* of the entry and not merely to its presence. Rewording the fifth line's question produces a different digest, which is what makes the value useful for spotting that two people are reading different declarations.
 
 The value is a comparison handle and nothing more. It tells you that a declaration you hold differs from a declaration someone else holds. It does not tell you which one is right, it does not record who changed what, and it is not tamper evidence.
 

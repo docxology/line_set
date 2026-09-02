@@ -331,7 +331,7 @@ def self_disjointness_from_reading(
     holds. It is separated from :func:`check_self_disjointness` so that a plate
     drawing this property draws the same verdict the check reports, rather than
     a second implementation of the same four conditions that could drift away
-    from it while both stayed green.
+    from it while both stayed passing.
 
     Four things are refused, and the order matters because each later one
     presupposes the earlier:
