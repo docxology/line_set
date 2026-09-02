@@ -46,5 +46,9 @@ repository, so it is named rather than linked. It stays as the short map; this
 project is the paper. The durable references for the eight instruments are their
 own repositories: [red_line](https://github.com/docxology/red_line),
 [black_line](https://github.com/docxology/black_line),
-[golden_line](https://github.com/docxology/golden_line), and
-[white_line](https://github.com/docxology/white_line).
+[golden_line](https://github.com/docxology/golden_line),
+[white_line](https://github.com/docxology/white_line),
+[silver_line](https://github.com/docxology/silver_line),
+[violet_line](https://github.com/docxology/violet_line),
+[blue_line](https://github.com/docxology/blue_line), and
+[green_line](https://github.com/docxology/green_line).
