@@ -393,7 +393,15 @@ def _split_anchors(anchors: Iterable[str]) -> tuple[tuple[str, str, str], ...]:
 
 
 def retarget_figures(text: str) -> tuple[str, int]:
-    """Point figure embeds at the volume's plate directory."""
+    """Point figure embeds at the volume's plate directory.
+
+    The source prefix may be written at any ``../`` depth (a root
+    ``manuscript/`` writes one hop, a ``docs/manuscript/`` tree writes two);
+    the volume's embeds are always the one-hop
+    :data:`VOLUME_FIGURE_PREFIX`. The retargeting is depth-collapsing by
+    design, so the inverse is :func:`restore_figures` with the same
+    canonical one-hop restore documented there.
+    """
     if VOLUME_FIGURE_PREFIX in text:
         raise OmnibusError(
             f"the source already writes {VOLUME_FIGURE_PREFIX!r}, so retargeting "
@@ -412,7 +420,14 @@ def retarget_figures(text: str) -> tuple[str, int]:
 
 
 def restore_figures(text: str) -> str:
-    """The inverse of :func:`retarget_figures`."""
+    """The inverse of :func:`retarget_figures` for a single-hop manuscript.
+
+    :func:`retarget_figures` collapses any ``../`` depth to the volume's
+    one-hop prefix, so the round trip restores one hop regardless of how many
+    the source wrote. The volume itself is always written at the one-hop
+    depth, so assembly round-trips exactly there; a multi-hop source section
+    in some checkout is restored to the canonical one-hop spelling instead.
+    """
     return map_prose_lines(
         text, lambda line: line.replace(VOLUME_FIGURE_PREFIX, SOURCE_FIGURE_PREFIX)
     )
