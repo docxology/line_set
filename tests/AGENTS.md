@@ -18,7 +18,7 @@ contracts.
 - `test_manuscript_bindings.py` — prose, reading record, figure, and bibliography bindings
 - `test_formalism.py` — formalism block parsing, prefixes, citation split
 - `test_binding.py` — sibling_path_resolver and package resolution
-- `test_extensibility.py` — adding a fifth line entry and re-deriving results
+- `test_extensibility.py` — adding an appended line entry and re-deriving results
 - `test_self_disjointness.py` — the wrapper line's vocabulary is disjoint from the set
 - `test_documentation_links.py` — all documentation cross-references resolve
 - `test_publication_metadata.py` — publication metadata across config and package

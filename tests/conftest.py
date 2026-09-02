@@ -18,7 +18,7 @@ So the prerequisite is built here rather than assumed.
 source checkouts to ``sys.path`` the first time it is used. Building in
 process would leave those roots on the path and the real sibling packages in
 ``sys.modules`` for the rest of the session, so every test that hands the
-reader a synthetic ``red_line`` or a fictional fifth colour would silently
+reader a synthetic ``red_line`` or a fictional appended colour would silently
 bind to the real package instead and assert against the wrong vocabulary.
 Running the operator script as a separate process keeps the build's import
 side effects entirely outside the test interpreter.
