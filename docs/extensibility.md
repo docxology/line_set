@@ -37,13 +37,13 @@ convention:
 
 The `opus_stage` constraint bites immediately in practice. `OPUS_STAGE_ORDER`
 has one member per classical stage and the existing lines already use each of
-them, so **a fifth colour added today must carry `opus_stage=None`.** That is
+them, so **another colour added today must carry `opus_stage=None`.** That is
 the correct outcome rather than an obstacle: the opus supplies four stage names
 and the set never claimed the naming resonance would extend to arbitrary
-growth. Inventing a fifth stage name is rejected — `opus_stage="viriditas"`
+growth. Inventing a ninth stage name is rejected — `opus_stage="viriditas"`
 fails `distinct_opus_stages` with `stages that are not opus stages:
 ['viriditas']` — and reusing an existing one fails the same check with
-`duplicate opus stages: ['rubedo']`. A colourless, stageless fifth line is what
+`duplicate opus stages: ['rubedo']`. A colourless, stageless ninth line is what
 the declaration is shaped to accept.
 
 **2. Declare an exemption only if the new line genuinely shares a token.** Add a
@@ -60,7 +60,7 @@ you; see *Files this touches* below.
 ## Executed example
 
 The following runs against the declaration as it stands today. It appends a
-fifth entry at runtime, runs the whole offline battery over the extended
+hypothetical entry at runtime, runs the whole offline battery over the extended
 declaration, takes a live reading, and compares the declaration digest before
 and after. Nothing in `src/line_set/` is modified by it.
 
@@ -148,7 +148,7 @@ paragraph in [claim_boundaries.md](claim_boundaries.md).
   current membership.
 - **A figure caption, if and only if that caption names a count.** The builders
   derive their content from the declaration, so a figure re-renders correctly
-  with a fifth entry without being edited. A caption that says *four* does not.
+  with an appended entry without being edited. A caption that says *four* does not.
   Grep the caption text before assuming it is clean.
 - **Project-root and `docs/` prose, wherever it names a count or lists the
   lines.** Same rule as captions: the prose is not derived, so the prose is what
@@ -170,7 +170,7 @@ paragraph in [claim_boundaries.md](claim_boundaries.md).
   and the canonical form are per-entry, not per-set.
 - **The figure builders** in `src/line_set/figures/`. They read the declaration
   and lay out however many entries they find. A builder that would need editing
-  to accept a fifth entry is a bug in the builder.
+  to accept an appended entry is a bug in the builder.
 
 If a change to the set requires touching anything in the second list, stop and
 ask whether the thing being added is a line at all, or a second concern wearing

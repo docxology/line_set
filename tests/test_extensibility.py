@@ -1,7 +1,7 @@
 """Adding a colour is appending an entry, and nothing else.
 
-The manuscript claims that a fifth line requires editing only the declaration.
-This module is what binds that claim. It appends a fifth entry at runtime and
+The manuscript claims that another line requires editing only the declaration.
+This module is what binds that claim. It appends a hypothetical ninth entry at runtime and
 requires the whole apparatus — the structural battery, the reader, the
 collision check, and the serializer — to keep working on the longer set.
 
@@ -81,7 +81,7 @@ def test_the_extended_declaration_passes_the_whole_structural_battery() -> None:
     assert find_line(FIFTH.id) is None, "the real declaration is untouched"
 
 
-def test_a_fifth_colour_with_no_opus_stage_keeps_the_orders_diverging() -> None:
+def test_an_appended_colour_with_no_opus_stage_keeps_the_orders_diverging() -> None:
     """Stages stay optional; a new line need not borrow one."""
     assert FIFTH.opus_stage is None
     stages = [entry.opus_stage for entry in EXTENDED if entry.opus_stage is not None]
@@ -117,7 +117,7 @@ def test_the_reader_reads_a_five_line_set_without_being_told_about_it(
     assert reading.observations[-1].registry_size == FIFTH.working_position
 
 
-def test_a_fifth_colour_that_borrows_a_token_is_still_caught(tmp_path: Path) -> None:
+def test_an_appended_colour_that_borrows_a_token_is_still_caught(tmp_path: Path) -> None:
     """Extending the set does not soften the contract it exists to hold."""
     borrowed = "SHARED_SPELLING"
     with import_sandbox():
@@ -136,7 +136,7 @@ def test_a_fifth_colour_that_borrows_a_token_is_still_caught(tmp_path: Path) -> 
     assert set(reading.collisions[0].lines) == {LINE_SET[0].id, FIFTH.id}
 
 
-def test_a_fifth_colour_may_declare_its_own_exemption(tmp_path: Path) -> None:
+def test_an_appended_colour_may_declare_its_own_exemption(tmp_path: Path) -> None:
     borrowed = "SHARED_SPELLING"
     declared = SharedToken(
         token=borrowed,
@@ -163,7 +163,7 @@ def test_a_fifth_colour_may_declare_its_own_exemption(tmp_path: Path) -> None:
     assert [collision.token for collision in reading.exempted_collisions] == [borrowed]
 
 
-def test_the_serializer_covers_the_fifth_line_and_moves_the_digest() -> None:
+def test_the_serializer_covers_the_appended_line_and_moves_the_digest() -> None:
     extended = canonical_registry(EXTENDED, SHARED_TOKENS)
     assert FIFTH.id in extended
     assert registry_digest(EXTENDED, SHARED_TOKENS) != registry_digest(
@@ -205,7 +205,7 @@ def test_the_declaration_is_the_one_module_that_does_name_the_lines() -> None:
 
 
 def test_the_wrapper_entry_still_appends_cleanly_to_the_longer_set() -> None:
-    """Self-application survives a fifth colour, given a renumbered wrapper."""
+    """Self-application survives another colour, given a renumbered wrapper."""
     renumbered = dataclasses.replace(WRAPPER_LINE, working_position=len(EXTENDED) + 1)
     results = all_invariants(EXTENDED + (renumbered,), SHARED_TOKENS)
     assert all(result.passed for result in results), [
