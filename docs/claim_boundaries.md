@@ -126,7 +126,7 @@ spellings.
 The Reading row is where the manuscript's counted numbers live — how many enum
 classes the packages export, how many members those classes declare, how
 many distinct names survive, and which name two lines carry. Those are
-measurements of four packages on one machine on one date, recorded in
+measurements of the declared packages on one machine on one date, recorded in
 `docs/manuscript/reading_record.json` and bound to the prose by
 `tests/test_manuscript_bindings.py`. They are not the Empirical row, which
 stays at none: counting spellings is not evidence that keeping instruments
