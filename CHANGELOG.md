@@ -1,5 +1,21 @@
 # Changelog
 
+## 2026-09-02 — review pass: membership prose, two latent defects, mypy clean
+
+A review-and-improve pass over the eight-line declaration. Three source
+comments and a dozen documentation/manuscript passages still described
+the four-line set or spoke of "a fifth colour" that is now one of the
+shipped entries; they were reworded to the appended-entry framing, and
+docs/publication.md's "one of six" roster prose now defers membership to
+`src/line_set/registry.py` instead of restating a drifting count. Two
+latent defects surfaced by `mypy src` were fixed: `omnibus.cover_embed_name`
+dereferenced a cover image that every caller guarded but it did not (now a
+documented `ValueError`), and `figures/plates/reading.py` passed a float
+canvas height to `open_canvas(width: int, height: int)` at the vocabulary
+matrix (now coerced). `mypy src` is clean for the first time since the
+admission commit; the full suite, both registry/set scripts,
+`record_reading.py --check`, and the figure build all pass unchanged.
+
 ## 2026-09-01 — four colours admitted: the set grows to eight
 
 Silver, Violet, Blue, and Green Line joined the declaration (working
