@@ -18,8 +18,8 @@ follows is what a separated copy must still be able to explain about itself.
 
 **What it is.** A declaration of a set of small instruments, a reader that
 reports which of them are installed and what vocabulary each publishes, and a
-check that no two of them share a status token. Not a fifth instrument, not a
-meta-evaluator, not a merge of the set, not a ranking of it.
+check that no two of them share a status token. Not an instrument of its own,
+not a meta-evaluator, not a merge of the set, not a ranking of it.
 
 **What the set is, without the siblings there to point at.** The declaration in
 `src/line_set/registry.py` is self-describing: each entry carries the question
@@ -64,9 +64,12 @@ does not travel with this repository, so — this copy being the separated one �
 it is cited here by name rather than linked: a relative path out of the
 repository root resolves to nothing for anyone holding only this repository. The
 acknowledgement stays and the ancestor's prose is never pasted into the
-manuscript in its place. The durable references for the set are the four
-instruments' own repositories: `docxology/red_line`, `docxology/black_line`,
-`docxology/golden_line`, and `docxology/white_line`.
+manuscript in its place. The durable references for the set are the
+instruments' own repositories — `docxology/red_line`, `docxology/black_line`,
+`docxology/golden_line`, `docxology/white_line`, `docxology/silver_line`,
+`docxology/violet_line`, `docxology/blue_line`, and `docxology/green_line`
+(the set's own membership, as declared in `src/line_set/registry.py`, is
+authoritative if this list and it ever disagree).
 
 ## Clean copy
 

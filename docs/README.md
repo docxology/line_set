@@ -2,7 +2,7 @@
 
 Line Set declares the line set, reads whichever line packages are installed, and
 checks that no two of them share a status token. It is a wrapper and a reader,
-not a fifth instrument.
+not an instrument of its own.
 
 Start with [claim_boundaries.md](claim_boundaries.md) if you are evaluating what
 this project asserts, and with [architecture.md](architecture.md) if you are

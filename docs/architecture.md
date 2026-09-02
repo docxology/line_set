@@ -142,8 +142,8 @@ A declared exemption does not help here. The wrapper is not a line and has no
 standing to share a token with one, so an *exempted* collision involving the
 wrapper counts against it exactly like an unexempted one.
 
-`WRAPPER_LINE` stays out of `LINE_SET` because the wrapper is not a fifth
-instrument. Its `working_position` continues the sequence so that appending it
+`WRAPPER_LINE` stays out of `LINE_SET` because the wrapper is not an
+instrument of its own. Its `working_position` continues the sequence so that appending it
 still yields a contiguous `1..N`, which is how the check can reuse the ordinary
 reader with no special case.
 
