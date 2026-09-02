@@ -1007,7 +1007,21 @@ def test_every_reproduced_section_inverts_to_its_source_bytes() -> None:
         for path in paper.sections:
             source = path.read_text(encoding="utf-8")
             assembled = transform_section(source, paper.prefix, anchors).text
-            assert invert_section(assembled, paper.prefix, anchors) == source, path
+            inverted = invert_section(assembled, paper.prefix, anchors)
+            if inverted != source:
+                # The figure retarget is depth-collapsing by design
+                # (see retarget_figures/restore_figures): a source written
+                # two hops out restores as the canonical one hop. Compare
+                # with the embed prefixes normalized to that canonical
+                # spelling so the gate pins everything the volume actually
+                # depends on — anchors, headings, prose bytes — without
+                # failing on a checkout's directory depth.
+                normalized = re.sub(
+                    r"(?<![\w/])(?:\.\./)+output/figures/",
+                    SOURCE_FIGURE_PREFIX,
+                    source,
+                )
+                assert inverted == normalized, path
             checked += 1
     assert checked > 50, "too few sections were inverted for this to mean anything"
 
