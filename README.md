@@ -147,3 +147,19 @@ registries, figure designs, or evaluator logic, and it never modifies them.
 - [`docs/envelope.md`](docs/envelope.md) — the set-wide report envelope convention.
 - [`docs/correspondence.md`](docs/correspondence.md) — design reviews received and answered.
 - [`AGENTS.md`](AGENTS.md) — working rules for this tree. [`TODO.md`](TODO.md) — what is not yet built.
+
+## The Line Set
+
+This work is one of ten in the Line Set family — eight instruments, their
+cross-line reader, and the witness register that co-registers their report
+envelopes without aggregation:
+
+- [Black Line](https://github.com/docxology/black_line) — the practice registry of realized craft
+- [Golden Line](https://github.com/docxology/golden_line) — the aspiration and horizon registry
+- [Red Line](https://github.com/docxology/red_line) — the cognitive-security registry of self-assessments
+- [White Line](https://github.com/docxology/white_line) — the absence and omission ledger
+- [Silver Line](https://github.com/docxology/silver_line) — the memory-and-succession instrument
+- [Violet Line](https://github.com/docxology/violet_line) — the consent ledger of affected parties
+- [Blue Line](https://github.com/docxology/blue_line) — the stewardship instrument for maintained commitments
+- [Green Line](https://github.com/docxology/green_line) — the capacity-under-development instrument
+- [The Witness Register](https://github.com/docxology/witness_register) — co-registration without aggregation
