@@ -1,6 +1,6 @@
 # Line Set figures
 
-Seven deterministic plates, hand-written as SVG and rasterized with
+Eight deterministic plates, hand-written as SVG and rasterized with
 `rsvg-convert`. Importing this package reads nothing: plates are assembled by
 `figure_plates()` when a build asks for them, so nothing here imports a sibling
 line package or touches `sys.path` at import time.
@@ -14,9 +14,10 @@ line package or touches `sys.path` at import time.
 | `installation_surface` | a live reading — what this machine could actually read |
 | `exemption_gate` | `line_set.probes` — the production matcher over a declared exemption and six weakenings |
 | `self_application` | the reading that includes the wrapper, with the verdict from `invariants.self_disjointness_from_reading()` |
+| `line_set_cover` | the declaration — the title-page cover: one stroke per declared line in a dotted register, the reader beneath |
 
 Build them with `uv run python scripts/build_figures.py`. Artifacts land in
-`output/figures/`: seven SVGs, seven PNGs, `set_registry.json` (the canonical
+`output/figures/`: eight SVGs, eight PNGs, `set_registry.json` (the canonical
 declaration and its digest), and `figure_registry.json` (the manifest the
 manuscript embeds read).
 

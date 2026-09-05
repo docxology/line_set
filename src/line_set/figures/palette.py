@@ -61,6 +61,38 @@ LINE_INK: dict[str, str] = {
     "colourless": "#6c655c",
 }
 
+#: Stroke colours for the cover plate, one per declared line colour.
+#:
+#: Each hex is the colour-named stroke constant from that line's own figure
+#: module, so the cover shows each instrument in the colour its own book
+#: draws it. Silver and blue publish no colour-named stroke constant, so the
+#: muted stand-ins below carry them. The white stroke cannot read on paper
+#: alone; the cover plate draws it over a thin dark under-stroke.
+COVER_STROKE: dict[str, str] = {
+    "black": "#2d2d2d",
+    "golden": "#b47a16",
+    "white": "#ffffff",
+    "silver": "#9a9a9a",
+    "violet": "#7c3aed",
+    "blue": "#3465a4",
+    "green": "#1a7a3a",
+}
+
+#: The order the cover presents the strokes in: the canonical colour
+#: sequence the set is read in, which is not the working order the cards
+#: use. A colour this tuple does not know follows the known ones, by
+#: working position, so an appended colour still draws in a stable place.
+COVER_ORDER: tuple[str, ...] = (
+    "black",
+    "golden",
+    "red",
+    "white",
+    "silver",
+    "violet",
+    "blue",
+    "green",
+)
+
 #: Fill/ink pairs handed to a colour this module has never seen.
 #:
 #: The choice is deterministic — a digest of the colour name picks the pair —
@@ -186,6 +218,16 @@ def line_ink(color: str) -> str:
     return known if known is not None else _accent_for(color)[1]
 
 
+def cover_stroke(color: str) -> str:
+    """Cover stroke for a declared colour name.
+
+    Falls back to the same deterministic ink the other plates use, so a
+    colour the cover map has never seen still draws, the same way, everywhere.
+    """
+    known = COVER_STROKE.get(color)
+    return known if known is not None else line_ink(color)
+
+
 def shape_for(working_position: int) -> str:
     """Marker shape for a line, cycled by its working position."""
     return SHAPE_CYCLE[(int(working_position) - 1) % len(SHAPE_CYCLE)]
@@ -237,6 +279,8 @@ __all__ = [
     "ACCENT",
     "ACCENT_CYCLE",
     "CARD",
+    "COVER_ORDER",
+    "COVER_STROKE",
     "DASH_CYCLE",
     "GOOD",
     "INK",
@@ -259,6 +303,7 @@ __all__ = [
     "STAGE_GLOSS",
     "STAGE_NOTE",
     "WARN",
+    "cover_stroke",
     "dash_for",
     "line_fill",
     "line_ink",

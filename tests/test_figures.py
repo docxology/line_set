@@ -327,6 +327,7 @@ def test_every_declared_plate_renders_well_formed_svg(tmp_path: Path) -> None:
     assert sorted(bodies) == [
         "exemption_gate",
         "installation_surface",
+        "line_set_cover",
         "self_application",
         "set_compass",
         "set_reading_pipeline",

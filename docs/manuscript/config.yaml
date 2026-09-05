@@ -8,7 +8,7 @@ paper:
   date: "2026-09-01"
   description: "A thin wrapper that declares what the line set is, reads the sibling packages that are installed, and checks that no two of them share a status token."
   cover:
-    image: "output/figures/cover_art.png"
+    image: "../../output/figures/line_set_cover.png"
 
 authors:
   - name: "Daniel Ari Friedman"

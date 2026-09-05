@@ -31,6 +31,7 @@ from ...probes import exemption_probes
 from ...reader import READER_STAGES, STATUS_PRECEDENCE
 from ..canvas import plural
 from .application import self_application
+from .cover import cover_svg
 from .declaration import set_compass, two_orders
 from .exemption import exemption_gate
 from .pipeline import set_reading_pipeline
@@ -297,6 +298,23 @@ def figure_plates(
             ),
             "line_set.invariants.self_disjointness_from_reading() over a "
             "reading of the declaration with the wrapper appended",
+        ),
+        FigurePlate(
+            "line_set_cover",
+            partial(cover_svg, lines),
+            "fig:cover-plate",
+            "The set's cover: one short stroke per declared line, each in "
+            "the colour its own book draws it and named beneath, held in one "
+            "dotted register with one longer neutral stroke beneath them. "
+            "The strokes stand for instruments that stay separate; the "
+            "register and the reader are this volume's claim to hold them "
+            "together without merging them. The plate states the set's "
+            "composition, not that any line works.",
+            "A row of evenly spaced short horizontal strokes, one per "
+            "declared line colour and named beneath, inside a light dotted "
+            "rectangle, with one longer thin neutral stroke spanning the row "
+            "beneath the rectangle.",
+            "line_set.registry.LINE_SET via figure_plates()",
         ),
     )
 
