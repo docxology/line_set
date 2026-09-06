@@ -73,6 +73,17 @@ REVIEW_DATE = re.search(
     (MANUSCRIPT / "config.yaml").read_text(encoding="utf-8"),
 ).group(1)
 
+#: The title-page cover, named by the render engine's ``paper.cover.image``
+#: key in the manuscript config. The cover is placed by the renderer from
+#: that key and is never embedded in a section, so it is bound to its config
+#: declaration rather than counted against the embed set.
+COVER_IMAGE = Path(
+    re.search(
+        r'image:\s*"([^"]+)"',
+        (MANUSCRIPT / "config.yaml").read_text(encoding="utf-8"),
+    ).group(1)
+).name
+
 WORDS = {
     0: "zero",
     1: "one",
@@ -257,12 +268,18 @@ def test_every_embedded_figure_exists_and_no_built_figure_is_orphaned() -> None:
         ),
     )
     declared = {f"{plate.name}.png": plate for plate in plates}
-    assert declared, "the builder declares no plate"
-    assert set(declared) == set(embedded), (
-        f"built but never embedded: {sorted(set(declared) - set(embedded))}; "
-        f"embedded but not built: {sorted(set(embedded) - set(declared))}"
+    assert COVER_IMAGE in declared, (
+        f"the config declares cover image {COVER_IMAGE}, which the builder "
+        "does not build"
     )
-    for filename, plate in declared.items():
+    embedded_plates = {
+        name: plate for name, plate in declared.items() if name != COVER_IMAGE
+    }
+    assert set(embedded_plates) == set(embedded), (
+        f"built but never embedded: {sorted(set(embedded_plates) - set(embedded))}; "
+        f"embedded but not built: {sorted(set(embedded) - set(embedded_plates))}"
+    )
+    for filename, plate in embedded_plates.items():
         assert plate.label in section(embedded[filename]), (
             f"{embedded[filename]} embeds {filename} without the label {plate.label}"
         )

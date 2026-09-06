@@ -10,6 +10,7 @@ fail on drift.
 
 from __future__ import annotations
 
+import argparse
 import json
 import re
 from pathlib import Path
@@ -81,6 +82,14 @@ def number_rows() -> list[dict[str, object]]:
 
 
 def main() -> None:
+    """Regenerate the ledger from the manuscript and the recorded reading.
+
+    The generator takes no options. It still parses its command line, because
+    a command that ignores an argument it was given cannot be told apart from
+    one that honoured it, and the failure mode is an operator who believes a
+    flag was honoured over a run that never understood it.
+    """
+    argparse.ArgumentParser(description=__doc__).parse_args()
     claims: list[dict[str, object]] = [
         citation_row(*row) for row in sorted(declared_labels())
     ]
