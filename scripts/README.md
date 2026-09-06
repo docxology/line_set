@@ -8,6 +8,8 @@ uv run python scripts/check_registry.py   # offline structural battery over the 
 uv run python scripts/check_set.py        # live reading of the installed lines
 uv run python scripts/build_figures.py    # deterministic SVG/PNG pairs into output/figures/
 uv run python scripts/record_reading.py   # write docs/manuscript/reading_record.json
+uv run python scripts/build_omnibus.py    # compile the declared works under output/manuscript/
+uv run python scripts/gen_formalism_ledger.py   # regenerate data/formalism_claim_ledger.json
 ```
 
 `check_registry.py` needs no sibling line package and exits non-zero if any

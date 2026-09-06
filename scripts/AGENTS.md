@@ -11,6 +11,7 @@ Every file in `scripts/` is a thin CLI over `src/`. Business logic belongs in
 - `check_registry.py` — runs structural checks over `LINE_SET` and `SHARED_TOKENS`
 - `check_set.py` — runs the reader over the installed siblings and reports status
 - `record_reading.py` — records a dated reading of the installed sibling packages
+- `gen_formalism_ledger.py` — regenerates `data/formalism_claim_ledger.json` via `line_set.formalism_ledger.build_ledger()`
 
 ## Canonical commands
 
