@@ -1353,7 +1353,7 @@ def test_the_namespace_prefix_is_derived_from_the_declared_id() -> None:
 
 
 def test_the_volume_writes_a_namespaced_figure_registry_mirror(tmp_path: Path) -> None:
-    """The volume's registry mirror carries namespaced labels; sources stand."""
+    """The volume's registry carries the carrier's records and the mirror."""
     base = tmp_path / "works"
     write_paper(
         base,
@@ -1371,16 +1371,102 @@ def test_the_volume_writes_a_namespaced_figure_registry_mirror(tmp_path: Path) -
         resolver=blind_resolver(),
         write=True,
     )
-    mirror = json.loads(
-        (out / "output" / "figures" / "figure_registry.json").read_text(
-            encoding="utf-8"
-        )
-    )
-    labels = {record["label"] for record in mirror["figures"]}
-    assert labels == {"fig:carrier-p"}
+    registry_path = out / "output" / "figures" / "figure_registry.json"
+    registry = json.loads(registry_path.read_text(encoding="utf-8"))
+    by_origin: dict[str, set[str]] = {}
+    for record in registry["figures"]:
+        by_origin.setdefault(record["origin"], set()).add(record["label"])
+    # The carrier's own record stands under the label its manuscript uses…
+    assert by_origin["standalone"] == {"fig:p"}
+    # …and the volume's sections read it under the namespaced label.
+    assert by_origin["omnibus-mirror"] == {"fig:carrier-p"}
     source = json.loads(
         (base / "carrier" / "output" / "figures" / "figure_registry.json").read_text(
             encoding="utf-8"
         )
     )
     assert {record["label"] for record in source["figures"]} == {"fig:p"}
+    assert all("origin" not in record for record in source["figures"])
+
+
+def test_assembling_twice_writes_a_byte_identical_registry(tmp_path: Path) -> None:
+    """The merged registry never compounds: two assemblies land on one file."""
+    base = tmp_path / "works"
+    carrier_root = write_paper(
+        base,
+        "carrier",
+        sections={"00_a.md": "# A\n\nText.\n"},
+        plates=("p.png",),
+    )
+    assemble(
+        carrier_root,
+        base,
+        (),
+        (),
+        wrapper_entry("carrier", 1),
+        resolver=blind_resolver(),
+        write=True,
+    )
+    registry_path = carrier_root / "output" / "figures" / "figure_registry.json"
+    after_first = registry_path.read_bytes()
+    assemble(
+        carrier_root,
+        base,
+        (),
+        (),
+        wrapper_entry("carrier", 1),
+        resolver=blind_resolver(),
+        write=True,
+    )
+    assert registry_path.read_bytes() == after_first
+    registry = json.loads(after_first.decode(encoding="utf-8"))
+    by_origin: dict[str, set[str]] = {}
+    for record in registry["figures"]:
+        by_origin.setdefault(record["origin"], set()).add(record["label"])
+    assert by_origin["standalone"] == {"fig:p"}
+    assert by_origin["omnibus-mirror"] == {"fig:carrier-p"}
+
+
+def test_a_registry_written_by_an_older_assembly_is_not_re_namespaced(
+    tmp_path: Path,
+) -> None:
+    """Mirror and cover records from an earlier run are regenerated, not read."""
+    base = tmp_path / "works"
+    carrier_root = write_paper(
+        base,
+        "carrier",
+        sections={"00_a.md": "# A\n\nText.\n"},
+        plates=("p.png",),
+    )
+    assemble(
+        carrier_root,
+        base,
+        (),
+        (),
+        wrapper_entry("carrier", 1),
+        resolver=blind_resolver(),
+        write=True,
+    )
+    registry_path = carrier_root / "output" / "figures" / "figure_registry.json"
+    poisoned = json.loads(registry_path.read_text(encoding="utf-8"))
+    poisoned["figures"].append(
+        {
+            "label": "fig:carrier-carrier-p",
+            "filename": "p.png",
+            "alt_text": "A doubly namespaced record from an older assembly.",
+            "origin": "omnibus-mirror",
+        }
+    )
+    registry_path.write_text(json.dumps(poisoned, indent=2) + "\n", encoding="utf-8")
+    assemble(
+        carrier_root,
+        base,
+        (),
+        (),
+        wrapper_entry("carrier", 1),
+        resolver=blind_resolver(),
+        write=True,
+    )
+    registry = json.loads(registry_path.read_text(encoding="utf-8"))
+    labels = [record["label"] for record in registry["figures"]]
+    assert sorted(labels) == ["fig:carrier-p", "fig:p"]

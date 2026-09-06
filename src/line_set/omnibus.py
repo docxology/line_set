@@ -1634,12 +1634,12 @@ def assemble(
             if not dest.exists() or dest.resolve() != source.resolve():
                 shutil.copy2(source, dest)
 
-        # Namespaced figure-registry mirror: the render toolchain checks every
-        # rendered figure's label against ``output/figures/figure_registry.json``
-        # exactly, and the volume's sections carry ``paper.prefix``-namespaced
-        # labels. Write a namespaced mirror beside the gathered plates so the
-        # labels agree; never touch the works' own registries, which stay the
-        # source builds' records.
+        # Merged figure registry: the assembling work's own records stay
+        # registered under the labels its source manuscript references, and
+        # the namespaced mirror carries every work's figures under the labels
+        # the volume renders. Both classes live beside the gathered plates so
+        # the render toolchain and the validation stage agree; the works' own
+        # registries are never touched.
         (plates / "figure_registry.json").write_text(
             namespaced_figure_registry(root, papers, cover_registry_records),
             encoding="utf-8",
@@ -1677,24 +1677,69 @@ def assemble(
     return report
 
 
+def _source_records(records: object) -> list[dict[str, object]]:
+    """The raw build records in one work's registry payload.
+
+    A record the assembly itself wrote carries an ``origin`` stamp
+    (``standalone``, ``omnibus-mirror``, or ``cover``) and is regenerated on
+    the next assembly, never re-read. Everything else came from the work's
+    own figure build and feeds both registry classes below. Reading back only
+    what the build produced is what makes the written registry idempotent:
+    assembling twice in a row lands on the same bytes.
+    """
+    if not isinstance(records, list):
+        return []
+    return [
+        record
+        for record in records
+        if isinstance(record, dict)
+        and "label" in record
+        and record.get("origin") not in ("omnibus-mirror", "cover")
+    ]
+
+
+def _namespaced_record(
+    record: dict[str, object], prefix: str, origin: str
+) -> dict[str, object]:
+    """One registry record restamped under a work's anchor namespace."""
+    renamed = dict(record)
+    label = str(record["label"])
+    kind, _, name = label.partition(":")
+    renamed["label"] = f"{kind}:{prefix}-{name}"
+    renamed["origin"] = origin
+    return renamed
+
+
 def namespaced_figure_registry(
     root: Path,
     papers: Sequence[SourcePaper],
     cover_registry_records: Sequence[dict[str, object]] = (),
 ) -> str:
-    """The volume's figure registry: every work's labels in its namespace.
+    """The volume's merged figure registry, written over the carrier's own.
 
-    The render toolchain compares each rendered figure's label against
-    ``output/figures/figure_registry.json`` exactly. The volume's sections
-    carry ``paper.prefix``-namespaced labels, so the mirror renames each
-    work's registry labels the same way ``namespace_anchors`` renames the
-    manuscript anchors, and merges every present work into one list. Labels
-    that collide after namespacing cannot happen — the prefix is unique per
-    work — but a missing registry for a present work is refused rather than
-    silently dropped, because a figure the volume shows must stay
-    accessibility-covered.
+    The file this assembly writes sits where the carrier's figure build wrote
+    its registry, so the write is a merge of two record classes, not a
+    replacement:
+
+    * **standalone** — the carrier's own build records, labels unchanged,
+      because the carrier's source manuscript references those exact labels
+      and the validation stage checks that manuscript against this registry.
+    * **omnibus-mirror** — every present work's build records renamed the way
+      ``namespace_anchors`` renames the volume's manuscript anchors, so the
+      rendered volume's labels agree with the registry the render toolchain
+      reads. Labels that collide after namespacing cannot happen — the prefix
+      is unique per work.
+
+    Cover records the assembly generates are stamped ``cover``. Every record
+    written here carries an ``origin`` stamp; on the next assembly only
+    unstamped build records are read back (see :func:`_source_records`), so
+    the merge never compounds. A missing registry for a present work is
+    refused rather than silently dropped, because a figure the volume shows
+    must stay accessibility-covered.
     """
-    merged: list[dict[str, object]] = []
+    carrier = papers[0]
+    standalone: list[dict[str, object]] = []
+    mirror: list[dict[str, object]] = []
     for paper in papers:
         if not paper.present:
             continue
@@ -1718,26 +1763,27 @@ def namespaced_figure_registry(
             if isinstance(payload, dict) and "figures" in payload
             else payload
         )
-        for record in records:
-            if not isinstance(record, dict) or "label" not in record:
-                continue
-            renamed = dict(record)
-            label = str(record["label"])
-            kind, _, name = label.partition(":")
-            renamed["label"] = f"{kind}:{paper.prefix}-{name}"
-            merged.append(renamed)
-    merged.extend(cover_registry_records)
+        source = _source_records(records)
+        if paper is carrier:
+            standalone.extend(
+                dict(record, origin="standalone") for record in source
+            )
+        mirror.extend(_namespaced_record(record, paper.prefix, "omnibus-mirror") for record in source)
+    covers = [dict(record, origin="cover") for record in cover_registry_records]
     return (
         json.dumps(
             {
-                "schema_version": "1.2-omnibus",
+                "schema_version": "1.3-omnibus",
                 "note": (
-                    "Namespaced mirror written by the omnibus assembly: the "
-                    "volume's section labels are prefix-namespaced, so this "
-                    "registry records each work's figures under the label the "
-                    "volume renders. Source registries are unchanged."
+                    "Merged figure registry written by the omnibus assembly: "
+                    "the standalone records are the assembling work's own, "
+                    "under the labels its source manuscript references, and "
+                    "the omnibus-mirror records carry every work's figures "
+                    "under the prefix-namespaced labels the volume renders. "
+                    "Each record's origin states its class; source registries "
+                    "are unchanged."
                 ),
-                "figures": merged,
+                "figures": [*standalone, *mirror, *covers],
             },
             indent=2,
             ensure_ascii=False,
