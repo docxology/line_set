@@ -29,9 +29,9 @@ registry sizes, and digests appear only inside the dated reading in
 [`04_examples.md`](04_examples.md); they are what the installed siblings
 reported on the review date, not constants of the set.
 
-Figures are embedded as `../output/figures/<name>.png` and are rebuilt with
+Figures are embedded as `../../output/figures/<name>.png` and are rebuilt with
 `uv run python scripts/build_figures.py`. Do not hand-edit anything under
 `output/`.
 
 Read [AGENTS.md](AGENTS.md), [../README.md](../README.md), and
-[../README.md](../README.md) next.
+[../../README.md](../../README.md) next.

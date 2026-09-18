@@ -22,7 +22,7 @@ The two record types are stated as [@def:line-entry] and [@def:shared-token]. Th
 
 **Status** applies the fixed precedence of [@prop:precedence]. An unexempted collision yields `SET_COLLIDING` and outranks everything, because it is the single finding that says the set's contract stopped holding. An undeclared line yields `SET_UNDECLARED`, ranking above a partial read because a line nobody declared is a gap in the declaration rather than a gap in the installation. A line that could not be read yields `SET_PARTIAL`. Only when none of those applies is the reading `SET_LEGIBLE`.
 
-![The reader's five stages, with the status precedence drawn as the exit ladder: a collision leaves at the first rung, an undeclared line at the second, an unread line at the third, and only a reading that reaches the bottom is legible.](../output/figures/set_reading_pipeline.png){#fig:set-reading-pipeline width=100%}
+![The reader's five stages, with the status precedence drawn as the exit ladder: a collision leaves at the first rung, an undeclared line at the second, an unread line at the third, and only a reading that reaches the bottom is legible.](../../output/figures/set_reading_pipeline.png){#fig:set-reading-pipeline width=100%}
 
 ## The seam
 

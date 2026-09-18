@@ -26,7 +26,7 @@ Every condition in [@def:exemption-match] is an equality, and every failure retu
 
 [@prop:fail-closed] names six weakenings, and the plate below is those six run through the matcher the reader actually calls, together with the declaration as written. The seventh row is the positive control: without it, six refusals would be equally consistent with a matcher that refuses everything.
 
-![The exemption gate. Each row weakens the declaration or the query in one way and reports what `exemption_for` returned for it; the outcome column is a return value, not a claim written into the plate. The first row is the declaration as shipped, asked for exactly the lines it names, and it must be honoured. A refused row leaves its collision standing.](../output/figures/exemption_gate.png){#fig:exemption-gate width=100%}
+![The exemption gate. Each row weakens the declaration or the query in one way and reports what `exemption_for` returned for it; the outcome column is a return value, not a claim written into the plate. The first row is the declaration as shipped, asked for exactly the lines it names, and it must be honoured. A refused row leaves its collision standing.](../../output/figures/exemption_gate.png){#fig:exemption-gate width=100%}
 
 ## The reading
 
@@ -50,7 +50,7 @@ The middle two conditions are what keep the property from being established by a
 The reading (see [@def:reading]) partitions every token into the lines that carry it. Each vocabulary term maps to exactly one registry entry: no term is ambiguous across the line set. After exempted collisions are removed by [@def:exemption-match], any token appearing in more than one vocabulary is an unexempted collision, and the reading's status is `SET_COLLIDING`. The set's contract is that every terminal spelling names exactly one registry entry; non-overlap of vocabulary is a necessary condition for separation and nowhere near a sufficient one — two lines can be about substantially the same thing in different words and read `SET_LEGIBLE`, and two lines can be entirely distinct in substance and collide because they both liked a word.
 :::
 
-![The wrapper under its own rule. Above, the enum member names this package publishes at its own root; below, one row per declared line with the vocabulary it published and whether any spelling is shared. The verdict panel prints the check's own result and detail over this reading, so the plate and the check cannot disagree.](../output/figures/self_application.png){#fig:self-application width=100%}
+![The wrapper under its own rule. Above, the enum member names this package publishes at its own root; below, one row per declared line with the vocabulary it published and whether any spelling is shared. The verdict panel prints the check's own result and detail over this reading, so the plate and the check cannot disagree.](../../output/figures/self_application.png){#fig:self-application width=100%}
 
 ## What the statements do not carry
 

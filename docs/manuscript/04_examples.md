@@ -36,7 +36,7 @@ The eight packages export 34 enum classes between them — 7 in red_line, 3 in b
 
 The arithmetic is the whole finding: 126 minus 114 is twelve, and the twelve are the eight shared spellings — `OUTSIDE_SCOPE` contributing four pairings beyond its first carrier, `NEEDS_REWORK` two, `KEPT`, `STALE`, `METHOD`, `VERIFICATION`, `COMMUNICATION`, and `STEWARDSHIP` one each — every one of them declared and disambiguated in the exemption table (governed by [@prop:precedence]).
 
-![Vocabulary matrix: exported enum member names down the side, declared lines across the top. A cell is marked where a line carries that token. The one token carried by two lines is marked as a collision, and the exempted cell is distinguished from an unexempted one by both its shape and its label, so the plate reads in greyscale.](../output/figures/vocabulary_matrix.png){#fig:vocabulary-matrix width=100%}
+![Vocabulary matrix: exported enum member names down the side, declared lines across the top. A cell is marked where a line carries that token. The one token carried by two lines is marked as a collision, and the exempted cell is distinguished from an unexempted one by both its shape and its label, so the plate reads in greyscale.](../../output/figures/vocabulary_matrix.png){#fig:vocabulary-matrix width=100%}
 
 ## A second line adopts the word
 
@@ -93,7 +93,7 @@ check_self_disjointness()     : FAIL — no line vocabulary was available to com
 
 The seven offline checks pass, because they are computation over the declaration and need nothing installed. The reading is honestly partial. And self-disjointness fails rather than passing, which is the point of keeping it out of the offline battery: an overlap check that found no overlap because it had nothing to look at is not a result, and reporting it as a pass would be the most convenient lie this package could tell.
 
-![Installation surface: one row per declared line, showing whether it resolved, the version it reported, its registry size, and the first characters of its digest. Unresolved lines render as visibly empty rather than as zero, because a line that could not be read has no size, not a size of none.](../output/figures/installation_surface.png){#fig:installation-surface width=100%}
+![Installation surface: one row per declared line, showing whether it resolved, the version it reported, its registry size, and the first characters of its digest. Unresolved lines render as visibly empty rather than as zero, because a line that could not be read has no size, not a size of none.](../../output/figures/installation_surface.png){#fig:installation-surface width=100%}
 
 ## A weakened exemption
 
