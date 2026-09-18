@@ -2,8 +2,8 @@ cff-version: 1.2.0
 message: "If you use or refer to this work, please cite it as below."
 type: software
 title: "The Line Set: Holding Instruments Apart"
-version: "0.1.0"
-date-released: "2026-07-29"
+version: "0.2.0"
+date-released: "2026-09-18"
 authors:
   - family-names: "Friedman"
     given-names: "Daniel Ari"
@@ -14,7 +14,7 @@ repository-code: "https://github.com/docxology/line_set"
 url: "https://github.com/docxology/line_set"
 identifiers:
   - type: doi
-    value: "10.5281/zenodo.21754244"
+    value: "10.5281/zenodo.22833507"
   - type: url
     value: "https://github.com/docxology/line_set"
 license:
@@ -54,7 +54,7 @@ references:
         orcid: "https://orcid.org/0000-0001-6232-9096"
     repository-code: "https://github.com/docxology/black_line"
     notes: "line — how I try to do strong work (declaration coverage)"
-    doi: "10.5281/zenodo.21754236"
+    doi: "10.5281/zenodo.22833503"
   - type: software
     title: "golden_line"
     authors:
@@ -63,7 +63,7 @@ references:
         orcid: "https://orcid.org/0000-0001-6232-9096"
     repository-code: "https://github.com/docxology/golden_line"
     notes: "line — what is worth reaching toward (directional readings)"
-    doi: "10.5281/zenodo.21754238"
+    doi: "10.5281/zenodo.22833506"
   - type: software
     title: "white_line"
     authors:
@@ -81,4 +81,4 @@ references:
         orcid: "https://orcid.org/0000-0001-6232-9096"
     repository-code: "https://github.com/docxology/witness_register"
     notes: "companion beside the set — co-registration without aggregation"
-    doi: "10.5281/zenodo.21754246"
+    doi: "10.5281/zenodo.22833511"

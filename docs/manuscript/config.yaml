@@ -4,8 +4,8 @@
 paper:
   title: "The Line Set: Holding Instruments Apart"
   subtitle: "A Declaration, a Reader, and a Non-Overlap Contract for a Growing Set of Small Instruments"
-  version: "0.1.0"
-  date: "2026-09-01"
+  version: "0.2.0"
+  date: "2026-09-18"
   description: "A thin wrapper that declares what the line set is, reads the sibling packages that are installed, and checks that no two of them share a status token."
   cover:
     image: "../../output/figures/line_set_cover.png"
@@ -18,7 +18,7 @@ authors:
     corresponding: true
 
 publication:
-  doi: "10.5281/zenodo.21754244"
+  doi: "10.5281/zenodo.22833507"
   github_repository: "docxology/line_set"
   repository_url: "https://github.com/docxology/line_set"
 
