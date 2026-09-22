@@ -9,6 +9,7 @@ paper:
   description: "A thin wrapper that declares what the line set is, reads the sibling packages that are installed, and checks that no two of them share a status token."
   cover:
     image: "../../output/figures/line_set_cover.png"
+    alt: "Cover art for The Line Set: separated line bands held apart over a shared dark field"
 
 authors:
   - name: "Daniel Ari Friedman"
@@ -38,7 +39,7 @@ render:
     html: true
     slides: false
     docx: false
-    epub: false
+    epub: true
 
 rendering:
   figure_height_fraction: 0.92
