@@ -1,5 +1,17 @@
 # Changelog
 
+## Unreleased — 0.3.0 candidate (2026-10-21)
+
+Implement the additional-topics synthesis as human admission materials, a
+hypothetical contrastive library, an optional evidence/replay convention and an
+unexecuted comparison protocol. Add no colour. Keep native exporters, replay and
+instrument fixes with their owners; preserve the declaration and dated reading.
+Historicize the extension demonstration and synchronize software-version metadata.
+Historical measurement checks retain producer identity without losing canonical
+byte or measurement checks. Fix the live CLI tests' explicit snapshot override
+and the formalism-ledger return annotation. Local gates pass; external rendered
+output acceptance remains unresolved. See the [candidate packet](docs/releases/v0.3.0.md).
+
 ## 2026-09-02 — review pass: membership prose, two latent defects, mypy clean
 
 A review-and-improve pass over the eight-line declaration. Three source

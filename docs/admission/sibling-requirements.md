@@ -8,7 +8,7 @@ receipts. This release edits no sibling and imports no sibling evaluator.
 | Owner / source revision in synthesis | Required native work and acceptance evidence |
 | --- | --- |
 | Red, `375e8ae9b7a111bcdb66f0ba33872c078083983c` | Tier/scope separation and noncompensation; repair or favorable unrelated evidence cannot clear refusal. |
-| Black, `a40aa7820f0bc238ddea66b2c7650faa18ad59d9` | Evaluator/analytics agreement; reproducibility profiles retain their own scope, version, registry identity and tests. Black is outside the parallel release dispatch. |
+| Black, `a40aa7820f0bc238ddea66b2c7650faa18ad59d9` | Evaluator/analytics agreement; reproducibility profiles retain their own scope, version, registry identity and tests. The dispatch update includes Black in this release round; this branch's historical checks still use the pinned source snapshot. |
 | Golden, `3a6f4b3557c55cb9c0378a7f5a6195235cd0b167` | Preserve contrary sources, admitted observation versus unobserved aspiration, and disagreements without utility aggregation. |
 | White, `88072dcfbe585d8c402cbfea1acf532dfd48525d` | Protected withholding versus missing evidence; contradiction preservation, exact return obligation and partial remainder, without forced disclosure. |
 | Silver, `c66ccb46fe32aea4ba3ac03b149403b1a33bc1fb` | Explicit subject release versus permission to lapse; authority, custody and exit evidence, preserving succession limits. |
