@@ -20,15 +20,15 @@ def record_matches(held: dict[str, object], current: dict[str, object]) -> bool:
     }
 
 
-def record_text_matches(text: str, current: dict[str, object]) -> bool:
+def record_bytes_match(payload: bytes, current: dict[str, object]) -> bool:
     try:
-        held = json.loads(text)
-    except json.JSONDecodeError:
+        held = json.loads(payload)
+    except (json.JSONDecodeError, UnicodeDecodeError):
         return False
     if not isinstance(held, dict) or not record_matches(held, current):
         return False
     expected = {**current, "package_version": held["package_version"]}
-    return (
-        text
-        == json.dumps(expected, indent=2, ensure_ascii=False, sort_keys=True) + "\n"
+    canonical = (
+        json.dumps(expected, indent=2, ensure_ascii=False, sort_keys=True) + "\n"
     )
+    return payload == canonical.encode("utf-8")

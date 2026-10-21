@@ -10,7 +10,9 @@ Historicize the extension demonstration and synchronize software-version metadat
 Historical measurement checks retain producer identity without losing canonical
 byte or measurement checks. Fix the live CLI tests' explicit snapshot override
 and the formalism-ledger return annotation. Independent review corrected the
-archive DOI's version association and an inconsistent matched pair. Apply the
+archive DOI's version association, an inconsistent matched pair and a CLI
+newline-normalization defect. Raw-byte checks now reject CRLF, lone CR and
+alternate encodings through real subprocess controls. Apply the
 required formatter across its full source/test/script surface, including inherited
 failures. External rendered output acceptance remains unresolved. See the
 [candidate packet](docs/releases/v0.3.0.md).
