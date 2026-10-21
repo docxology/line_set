@@ -28,7 +28,7 @@ the last verified DOI as an archive reference, not as a claim that the new
 software version has already been deposited. In `CITATION.cff` it is an explicitly
 versioned historical reference, and in the manuscript config it is
 `publication.archived_version_doi` beside `publication.archived_version`.
-The candidate has no own DOI identifier or `publication.doi`; the renderer
+The current software release has no own DOI identifier or `publication.doi`; the renderer
 states this rather than printing an earlier version's DOI as its own.
 Cite a new code release by its tag
 and repository URL when identifying code that is not yet deposited.

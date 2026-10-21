@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "line_set"
-version = "0.3.0"
+version = "0.4.0"
 description = "A declaration of the line set, a reader for it, and a non-overlap check"
 authors = [{name = "Daniel Ari Friedman", email = "daniel@activeinference.institute"}]
 requires-python = ">=3.10"
