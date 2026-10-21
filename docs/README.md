@@ -8,6 +8,11 @@ Start with [claim_boundaries.md](claim_boundaries.md) if you are evaluating what
 this project asserts, and with [architecture.md](architecture.md) if you are
 about to change it.
 
+- [admission/README.md](admission/README.md) — no-addition decision, dossier,
+  hypothetical contrast cases, bounded unexecuted protocol and owner requirements.
+- [evidence/README.md](evidence/README.md) — optional versioned evidence/replay
+  companion convention; no native exporter or evaluator in this package.
+
 - [claim_boundaries.md](claim_boundaries.md) — what a reading does and, at
   length, does not establish; the meaning of each status; the evidence classes.
 - [architecture.md](architecture.md) — module map, the five reader stages,

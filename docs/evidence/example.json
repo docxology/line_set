@@ -1,0 +1,41 @@
+{
+  "schema": "line.evidence-replay/1.0",
+  "line_id": "hypothetical-native-owner",
+  "subject_ref": "illustrative-subject",
+  "created_by": "design-scaffold",
+  "created_at": "2026-10-21",
+  "sources": [{"ref": "opaque:source-A", "access": "restricted", "digest": null, "unavailable_reason": "No source collected; hypothetical prompt only", "declared_provenance": {"declarant": "design-scaffold", "claim": "Hypothetical design material", "evidence_class": "submitted declaration"}}],
+  "normalized_input": {"ref": "opaque:input-A", "schema": "hypothetical-input/1.0", "digest": null, "digest_method": "sha256-exact-bytes", "unavailable_reason": "No native input produced"},
+  "registry": {"scope": "hypothetical-not-shipped", "version": null, "digest": null, "declared_by": "design-scaffold", "unavailable_reason": "No native registry selected"},
+  "evaluator_revision": null,
+  "effective_policy": {"review_timezone": "explicit-in-native-run", "illustrative_limit": 1},
+  "resolved_review_date": "2026-10-21",
+  "native_schemas": {"input": "hypothetical-input/1.0", "report": "hypothetical-report/1.0", "envelope": "hypothetical-envelope/1.0"},
+  "context": {"object": null, "digest": null, "unavailable_reason": "No native execution; illustrative context constructed only by tests"},
+  "native_report": {"ref": "opaque:report-A", "schema": "hypothetical-report/1.0", "digest": null, "digest_method": "sha256-exact-bytes", "unavailable_reason": "No native report produced"},
+  "subject_bound_envelope": {"ref": "opaque:envelope-A", "schema": "hypothetical-envelope/1.0", "digest": null, "digest_method": "sha256-exact-bytes", "unavailable_reason": "No native envelope produced"},
+  "intake_dispositions": [{"schema": "hypothetical-intake/1.0", "disposition": "not_performed", "reason": "No native intake run"}],
+  "verification": [
+    {"predicate": "source-byte match", "outcome": "not_performed", "verifier": null, "method": null, "evidence_refs": [], "limits": "No source collected"},
+    {"predicate": "native report correspondence", "outcome": "not_performed", "verifier": null, "method": null, "evidence_refs": [], "limits": "No native report"},
+    {"predicate": "strict envelope validity", "outcome": "not_performed", "verifier": null, "method": null, "evidence_refs": [], "limits": "No native envelope"},
+    {"predicate": "structural reference validity", "outcome": "not_performed", "verifier": null, "method": null, "evidence_refs": [], "limits": "No native record graph"},
+    {"predicate": "external identity/authentication", "outcome": "not_performed", "verifier": null, "method": null, "evidence_refs": [], "limits": "No external anchor"},
+    {"predicate": "native replay", "outcome": "not_performed", "verifier": null, "method": null, "evidence_refs": [], "limits": "No native execution"}
+  ],
+  "replay": {
+    "state": "not_attempted",
+    "prerequisites": [
+      {"name": "normalized input bytes", "state": "unavailable", "ref": "opaque:input-A", "reason": "No native input"},
+      {"name": "native registry/configuration", "state": "unavailable", "ref": null, "reason": "No native registry selected"},
+      {"name": "evaluator revision/runtime", "state": "unavailable", "ref": null, "reason": "No evaluator run"},
+      {"name": "resolved date", "state": "not_checked", "ref": null, "reason": "Illustrative date only"},
+      {"name": "native schemas", "state": "unavailable", "ref": null, "reason": "Hypothetical schema names only"},
+      {"name": "access authority", "state": "not_checked", "ref": null, "reason": "No source access requested"}
+    ],
+    "output_ref": null,
+    "differences": [],
+    "limits": "Design scaffold, not a replay result"
+  },
+  "nonclaims": ["No native result", "No external authentication", "No permission or substantive verification", "No empirical finding"]
+}

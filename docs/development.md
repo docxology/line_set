@@ -8,11 +8,18 @@ uv run pytest tests/ --cov=src --cov-branch --cov-report=term-missing
 uv run python scripts/check_registry.py
 uv run python scripts/check_set.py
 uv run python scripts/build_figures.py
-uv run python scripts/record_reading.py --check
+uv run python scripts/record_reading.py --as-of <recorded-review-date> --check
 ```
 
 The coverage floor is configured in `pyproject.toml`; read it there rather than
 from a number restated in prose.
+
+For a release preserving an earlier reading, take the date from
+`docs/manuscript/reading_record.json` (`reading.read_as_of`), not the new
+publication date. `--check` compares every recorded measurement field and
+reports the retained producer version separately from the current checker.
+It does not relabel the historical record as produced by the current release.
+Malformed producer metadata, missing fields and any measurement drift still fail.
 
 ## What each command needs
 

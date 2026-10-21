@@ -9,6 +9,14 @@ repository did about them. It is a decision record, not an endorsement chain:
 each item names what was adopted, what was deferred with a reason, and what
 was declined with a reason.
 
+## 2026-10-21 — additional-topics synthesis
+
+The [disposition record](admission/README.md) records the decision to admit no
+colour and resolves each deliverable as documentation, study scaffolding or
+sibling-owner requirements. The [evidence profile](evidence/README.md) stays a
+convention beside the envelope; exporters and native replay stay with owners.
+No study was executed and no sibling was modified by this synthesis work.
+
 ## 2026-07-29 — "The Space Between the Lines" (an external reviewer, with an analytic reader)
 
 A two-voiced review of the collected line set (dated source: *The Line Set:

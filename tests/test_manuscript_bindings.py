@@ -69,8 +69,8 @@ SOURCE_ROOT = PROJECT_ROOT / "src" / "line_set"
 
 #: The review date the manuscript's dated block reports. Read, never assumed.
 REVIEW_DATE = re.search(
-    r'date:\s*"([0-9]{4}-[0-9]{2}-[0-9]{2})"',
-    (MANUSCRIPT / "config.yaml").read_text(encoding="utf-8"),
+    r'"read_as_of":\s*"([0-9]{4}-[0-9]{2}-[0-9]{2})"',
+    (MANUSCRIPT / "reading_record.json").read_text(encoding="utf-8"),
 ).group(1)
 
 #: The title-page cover, named by the render engine's ``paper.cover.image``

@@ -9,6 +9,7 @@ That split is the whole design, and most of what follows is a consequence of it.
 
 | Module | Question it answers |
 | --- | --- |
+| `src/line_set/record_identity.py` | Does a live measurement match the historical canonical record, retaining its separately reported producer version? No sibling imports or authentication. |
 | `src/line_set/version.py` | Which package version and which reviewed revision of the declaration is this? |
 | `src/line_set/models.py` | What are the record types — entry, exemption, observation, collision, stage, reading? |
 | `src/line_set/registry.py` | What is the set? `LINE_SET`, `SHARED_TOKENS`, and the wrapper's own entry. |

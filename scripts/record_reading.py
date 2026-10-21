@@ -58,6 +58,7 @@ from line_set import (
     sibling_path_resolver,
     vocabulary_census,
 )
+from line_set.record_identity import record_text_matches
 
 #: Where the record lives, beside the prose that quotes it.
 RECORD_PATH = (
@@ -205,14 +206,19 @@ def main() -> None:
         if not args.out.exists():
             print(f"FAIL no record at {args.out}", file=sys.stderr)
             sys.exit(1)
-        if args.out.read_text(encoding="utf-8") != rendered:
+        held_text = args.out.read_text(encoding="utf-8")
+        if not record_text_matches(held_text, record):
             print(
                 f"FAIL {args.out} disagrees with a live reading; rerun without "
                 "--check to refresh it",
                 file=sys.stderr,
             )
             sys.exit(1)
-        print(f"OK {args.out} agrees with a live reading taken now")
+        held = json.loads(held_text)
+        print(
+            f"OK {args.out} measurement agrees with a live reading taken now; "
+            f"retained producer={held['package_version']}, checker={__version__}"
+        )
         return
 
     args.out.parent.mkdir(parents=True, exist_ok=True)

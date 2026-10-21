@@ -1,14 +1,26 @@
 # Extensibility: adding a colour is an edit to one file {#sec:extensibility}
 
-The set has grown before and will grow again, so the cost of adding a line is a design property rather than a convenience. The target is that a new colour costs one appended record in `registry.py` ([@def:line-entry]) and nothing else: no branch in the reader, no case in a check, no new figure code.
+The set has grown before and may grow again, so the cost of adding a line is a design property rather than a convenience. The target is that a new colour costs one appended record in `registry.py` ([@def:line-entry]) and nothing else: no branch in the reader, no case in a check, no new figure code.
+
+Cheap registration is not conceptual admission. At this revision I do not add a
+colour. Contestation and repair remains a hypothesis for a bounded comparison
+with existing instruments, their native extensions and Witness relations and
+returns. The repository's admission dossier and hypothetical case library are
+human review materials outside the reader; no study has run. A documented
+decision to add nothing is an allowed outcome. Resource and burden allocation
+remains a lower-priority hypothesis. A renamed instrument can avoid every token
+collision and still duplicate another instrument's question.
 
 Parnas treats extension and contraction as one problem and puts the cost of both in the *uses* relation rather than in the size of the edit: what makes a subset removable, or an addition cheap, is that nothing outside it names it [@parnas1979extension]. That is the property claimed here, and it is claimed narrowly. He is designing families of programs whose minimal subsets are chosen in advance and whose uses relation is documented and enforced; I have one package, and the only uses relation I have measured is which modules mention a line id as a whole word. Those are different standards of evidence for the same-shaped claim, and the second is the one this section supports.
 
 The claim holds because no module outside `registry.py` names an individual line. Every function that does work takes `lines` and `shared` as arguments and computes over whatever it was handed. Searching the package for the eight line ids as whole words finds them only in `registry.py`, four and fourteen and two and four and eight and four and six and fourteen times; `reader.py`, `invariants.py`, `binding.py`, `serialization.py`, `models.py`, and `__init__.py` contain none of them. One mention of `OUTSIDE_SCOPE` survives in `reader.py`, inside the exemption matcher's docstring, where it is the worked example of a substring the matcher must refuse. It is prose, not a branch.
 
-## The executed example
+## The historical executed example
 
-Here is a further colour, appended at runtime and put through the whole battery. Nothing in the package was edited to run it.
+The following is the recorded 2026-09-01 extension demonstration, using the
+then-read sibling versions. The hypothetical upkeep entry is bookkeeping test
+material, not an admission proposal or a new member of the set. Nothing in the
+package was edited to run it; the reading record is preserved at that date.
 
 ```python
 from line_set import (LINE_SET, SHARED_TOKENS, LineEntry, all_invariants,

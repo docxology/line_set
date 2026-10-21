@@ -132,6 +132,36 @@ measurements of the declared packages on one machine on one date, recorded in
 stays at none: counting spellings is not evidence that keeping instruments
 apart this way does any good.
 
+## Admission materials and optional replay profile
+
+The [admission dossier and case library](admission/README.md) are human review
+scaffolds outside the lexical gate. Their completeness checks establish the
+presence and declared class of materials, not conceptual independence, usefulness,
+fairness, legitimacy or admission. Hypothetical prompts are not observed cases.
+Reviewer slots, native output slots and study results are unfilled. Repair
+remains a candidate; allocation is deferred. The current decision is do not add.
+
+The optional [evidence/replay profile](evidence/README.md) documents identity
+domains and independent checks. It supplies no exporter, native evaluator,
+replay runner, signature, authentication or envelope validation here. A digest
+does not verify a provenance declaration. A report-content match does not
+establish strict envelope validity or subject authority. A replay with missing
+prerequisites is unavailable, not evidence that an assertion is false. Matching
+native output, if a native owner later demonstrates it, would establish only
+the stated reproduction under the recorded context. Transport never strengthens
+native verdicts, aggregates them, or supplies absent human decisions.
+
+No study has run and no new empirical finding is asserted. Sibling requirements
+are inherited source traces and requests for owner evidence, not verification
+of defects, fixes or current behavior. No release here certifies their completion.
+
+Historical reading checks retain the original producer version and compare all
+measurement fields and canonical bytes against a current reading at the recorded
+date. A different valid producer version alone is permitted; this is not
+authentication of that producer. The original record is never rewritten by a
+check. Missing fields, duplicate JSON keys, noncanonical bytes and measured
+disagreement still fail.
+
 ## The reading protocol
 
 1. Find the claim.

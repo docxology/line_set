@@ -1,5 +1,10 @@
 # Line Set
 
+The [admission materials](docs/admission/README.md) record the current decision
+to add no colour, a human dossier, hypothetical contrast cases and an unexecuted
+comparison protocol. The optional [evidence/replay profile](docs/evidence/README.md)
+is a documented companion convention; this package executes no native replay.
+
 Line Set is the bookkeeping work in the line set, and it is not an instrument. It
 has no opinion about refusal, method, aspiration, or absence — those questions
 belong to Red, Black, Golden, and White Line, and this work does not answer, merge,

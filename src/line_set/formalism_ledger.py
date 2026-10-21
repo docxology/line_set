@@ -40,7 +40,7 @@ def declared_labels() -> list[tuple[str, Path]]:
     return labels
 
 
-def citation_row(label: str, path: Path) -> dict[str, str]:
+def citation_row(label: str, path: Path) -> dict[str, object]:
     """The declaration the engine's evidence registry reads for one label."""
 
     return {

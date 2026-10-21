@@ -57,9 +57,17 @@ exemption does and does not establish.
 **3. Update the prose that names the set.** This is the part no check can do for
 you; see *Files this touches* below.
 
-## Executed example
+## Historical executed example (2026-07-29; not the current declaration)
 
-The following runs against the declaration as it stands today. It appends a
+The following transcript belongs to the earlier declaration before Green was
+admitted. It is preserved as history, not rerun against the current declaration:
+Green is already present, so appending it now would duplicate an identifier and
+colour. It is not evidence of current admission or of a ninth-line test. For
+the current extension regression, run `uv run pytest tests/test_extensibility.py`;
+that test derives a fresh hypothetical identifier and colour from the declaration.
+Conceptual admission is separate human work in the [dossier](admission/dossier.md).
+
+The historical example appends a
 hypothetical entry at runtime, runs the whole offline battery over the extended
 declaration, takes a live reading, and compares the declaration digest before
 and after. Nothing in `src/line_set/` is modified by it.

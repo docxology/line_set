@@ -37,6 +37,10 @@ VERIFIED_DOIS: tuple[str, ...] = (
     "10.5281/zenodo.21754242",
     "10.5281/zenodo.21754244",
     "10.5281/zenodo.21754246",
+    "10.5281/zenodo.22833507",
+    "10.5281/zenodo.22833503",
+    "10.5281/zenodo.22833506",
+    "10.5281/zenodo.22833511",
 )
 
 #: A DOI as the registries publish them.

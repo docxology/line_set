@@ -5,8 +5,8 @@
 Cite this work via its minted DOI or repository:
 
 > Friedman, D. A. (2026). *The Line Set: Holding Instruments Apart* (version
-> 0.1.0) [Software and manuscript]. Zenodo.
-> <https://doi.org/10.5281/zenodo.21754244>
+> 0.2.0) [Software and manuscript]. Zenodo.
+> <https://doi.org/10.5281/zenodo.22833507>
 
 BibTeX:
 
@@ -14,20 +14,28 @@ BibTeX:
 @software{friedman_line_set_2026,
   author  = {Friedman, Daniel Ari},
   title   = {The Line Set: Holding Instruments Apart},
-  version = {0.1.0},
+  version = {0.2.0},
   year    = {2026},
-  doi     = {10.5281/zenodo.21754244}
+  doi     = {10.5281/zenodo.22833507}
 }
 ```
 
-`CITATION.cff` carries the same metadata in machine-readable form, and
-`.zenodo.json` carries the deposit metadata. All three are generated from
-`docs/manuscript/config.yaml`; `tests/test_publication_metadata.py` fails if they
-disagree.
+The citation above is the last verified archived version. The current software
+version is declared in `pyproject.toml`, `src/line_set/version.py`, `CITATION.cff`,
+`.zenodo.json` and `docs/manuscript/config.yaml`; these must agree. Until Daniel
+reserves and mints a new version DOI, the current metadata deliberately retains
+the last verified DOI as an archive reference, not as a claim that the new
+software version has already been deposited. Cite a new code release by its tag
+and repository URL when identifying code that is not yet deposited.
+
+`CITATION.cff` carries the citation metadata in machine-readable form, and
+`.zenodo.json` carries the deposit metadata. The version declarations are
+synchronized with `docs/manuscript/config.yaml`; publication metadata is checked
+by `tests/test_publication_metadata.py`.
 
 ## Persistent Identifiers and Verification
 
-This repository carries an asserted, verified Zenodo DOI (`10.5281/zenodo.21754244`).
+This repository retains its last verified Zenodo version DOI (`10.5281/zenodo.22833507`).
 `tests/test_publication_metadata.py` refuses any unverified DOI-shaped string in
 the citation metadata unless that exact DOI is listed as verified inside the test
 itself. A placeholder DOI that renders like a real one is worse than no DOI: it

@@ -6,6 +6,14 @@ may claim regardless of anything listed here.
 
 ## Open — inside the current instrument boundary
 
+- **Admission research remains unexecuted.** The additional-topics synthesis is
+  implemented as a [dossier and protocol](docs/admission/README.md), with a
+  hypothetical case library and an optional evidence/replay convention. Native
+  exporters, replay runners and instrument fixes remain owner work under
+  [sibling requirements](docs/admission/sibling-requirements.md). Obtain their
+  receipts, real native outputs, independent human reviews and consent before
+  running the proposed comparison. Do not admit a colour from the scaffold.
+
 - **The render has now happened once, and once is not a standing gate.** On
   2026-07-28 the manuscript rendered through the external template engine to a
   26-page PDF with zero undefined references and no `??`, and the seven

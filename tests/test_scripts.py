@@ -65,15 +65,18 @@ def every_script() -> tuple[Path, ...]:
 
 
 def run(
-    script: Path, *args: str, cwd: Path, source: Path
+    script: Path, *args: str, cwd: Path, source: Path, live_siblings: bool = False
 ) -> subprocess.CompletedProcess:
     """Run one script as a subprocess, resolving ``line_set`` from ``source``."""
+    env = isolated_env(PYTHONPATH=str(source))
+    if live_siblings and SIBLING_BASE_ENV in os.environ:
+        env[SIBLING_BASE_ENV] = os.environ[SIBLING_BASE_ENV]
     return subprocess.run(
         [sys.executable, str(script), *args],
         capture_output=True,
         text=True,
         cwd=str(cwd),
-        env=isolated_env(PYTHONPATH=str(source)),
+        env=env,
     )
 
 
@@ -208,7 +211,8 @@ def test_check_set_passes_where_every_line_can_be_read() -> None:
             "fail-closed direction is covered above and runs everywhere"
         )
     result = run(
-        SCRIPTS / "check_set.py", cwd=PROJECT_ROOT, source=PROJECT_ROOT / "src"
+        SCRIPTS / "check_set.py", cwd=PROJECT_ROOT, source=PROJECT_ROOT / "src",
+        live_siblings=True,
     )
     assert result.returncode == 0, result.stdout + result.stderr
     assert "set_legible" in result.stdout
@@ -274,6 +278,7 @@ def test_record_reading_check_fails_when_there_is_no_record(tmp_path: Path) -> N
         str(tmp_path / "absent.json"),
         cwd=PROJECT_ROOT,
         source=PROJECT_ROOT / "src",
+        live_siblings=True,
     )
     assert result.returncode != 0
     assert "no record" in result.stderr
@@ -302,6 +307,7 @@ def test_record_reading_check_fails_on_a_record_that_disagrees(tmp_path: Path) -
         str(stale),
         cwd=PROJECT_ROOT,
         source=PROJECT_ROOT / "src",
+        live_siblings=True,
     )
     assert result.returncode != 0
     assert "disagrees" in result.stderr
@@ -323,6 +329,7 @@ def test_record_reading_check_agrees_with_the_record_that_ships() -> None:
         "--check",
         cwd=PROJECT_ROOT,
         source=PROJECT_ROOT / "src",
+        live_siblings=True,
     )
     assert result.returncode == 0, result.stdout + result.stderr
     assert "agrees" in result.stdout

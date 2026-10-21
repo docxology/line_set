@@ -32,6 +32,18 @@ Discovery is also weaker than it may appear from a passing run. It finds importa
 
 ## Smaller boundaries worth naming
 
+The optional evidence/replay profile is a companion convention, not a native
+exporter or replay engine in this package. It separates source identity,
+report-content identity, subject-bound envelope identity, declared provenance
+and individual verification records. No hash supplies external authentication,
+and unavailable replay prerequisites say nothing about an assertion's truth.
+Neither that profile nor the admission materials strengthen a lexical reading
+into conceptual approval. Their hypothetical cases establish no empirical result.
+
+A historical reading check compares its canonical measurement fields at the
+recorded date while retaining the original producer version separately from
+the current checker. It does not rewrite the record or authenticate its producer.
+
 Only the package root is read for enums. A token defined in a submodule and never re-exported does not participate in the collision scan. That is a deliberate scoping of the contract to the vocabulary a line publishes, and it does mean two lines could collide privately without this reader noticing.
 
 Registry size comes from a convention: the unique public, non-empty tuple in the package's `registry` submodule whose members are all one dataclass type, largest winning, ties reporting nothing. A package that organizes itself differently reports no size, which is an absence of information rather than a finding about the package.
