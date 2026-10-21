@@ -13,6 +13,8 @@ and the formalism-ledger return annotation. Independent review corrected the
 archive DOI's version association, an inconsistent matched pair and a CLI
 newline-normalization defect. Raw-byte checks now reject CRLF, lone CR and
 alternate encodings through real subprocess controls. Apply the
+empty-scan rule to records carrying only producer metadata. Correct the extension
+guide's description of its fixed hypothetical fixture. Apply the
 required formatter across its full source/test/script surface, including inherited
 failures. Complete external validation requires a Git-indexed renderer worktree
 and a managed project link; the earlier blocked 0.3.0 candidate was not released.

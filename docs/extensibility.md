@@ -64,7 +64,9 @@ admitted. It is preserved as history, not rerun against the current declaration:
 Green is already present, so appending it now would duplicate an identifier and
 colour. It is not evidence of current admission or of a ninth-line test. For
 the current extension regression, run `uv run pytest tests/test_extensibility.py`;
-that test derives a fresh hypothetical identifier and colour from the declaration.
+that test uses a fixed hypothetical identifier and colour currently distinct
+from the declaration, and derives its appended working position from the
+declaration's length.
 Conceptual admission is separate human work in the [dossier](admission/dossier.md).
 
 The historical example appends a
