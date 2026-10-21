@@ -47,6 +47,17 @@ def test_absent_or_malformed_producer_is_refused(version: object) -> None:
     assert not record_matches({}, {})
 
 
+def test_empty_measurements_are_refused() -> None:
+    held = {"package_version": "1.0.0"}
+    current = {"package_version": "2.0.0"}
+    complete = json.loads(RECORD.read_bytes())
+    assert not record_matches(held, current)
+    assert not record_matches(held, complete)
+    assert not record_matches(complete, current)
+    payload = (json.dumps(held, indent=2, sort_keys=True) + "\n").encode("utf-8")
+    assert not record_bytes_match(payload, current)
+
+
 def test_comparison_preserves_canonical_bytes() -> None:
     payload = RECORD.read_bytes()
     current = json.loads(payload)

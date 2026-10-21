@@ -19,7 +19,8 @@ For a release preserving an earlier reading, take the date from
 publication date. `--check` compares every recorded measurement field and
 reports the retained producer version separately from the current checker.
 It does not relabel the historical record as produced by the current release.
-Malformed producer metadata, missing fields and any measurement drift still fail.
+Malformed producer metadata, empty measurement sets, missing fields and any
+measurement drift still fail.
 Comparison reads raw bytes and requires canonical UTF-8 with LF line endings;
 CRLF, lone CR, a byte-order mark or another encoding fails even if JSON values
 match. New writes use those same canonical bytes on every platform.

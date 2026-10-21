@@ -159,8 +159,10 @@ Historical reading checks retain the original producer version and compare all
 measurement fields and canonical bytes against a current reading at the recorded
 date. A different valid producer version alone is permitted; this is not
 authentication of that producer. The original record is never rewritten by a
-check. Missing fields, duplicate JSON keys, noncanonical bytes and measured
-disagreement still fail.
+check. Empty measurement sets, missing fields, duplicate JSON keys,
+noncanonical bytes and measured disagreement still fail. This comparison uses
+the current record builder's measurements; it is not an arbitrary-record schema
+validator.
 
 ## The reading protocol
 

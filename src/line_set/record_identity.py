@@ -15,6 +15,8 @@ def record_matches(held: dict[str, object], current: dict[str, object]) -> bool:
         version = record.get("package_version")
         if not isinstance(version, str) or not re.fullmatch(r"\d+\.\d+\.\d+", version):
             return False
+        if not record.keys() - {"package_version"}:
+            return False
     return {key: value for key, value in held.items() if key != "package_version"} == {
         key: value for key, value in current.items() if key != "package_version"
     }
