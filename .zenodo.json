@@ -80,5 +80,5 @@
       "scheme": "doi"
     }
   ],
-  "notes": "One of six related works (the line set and its witness register). The five sibling DOIs are listed in related_identifiers with relation 'cites'; this work's own DOI is recorded in CITATION.cff identifiers and the record link."
+  "notes": "Membership is declared by the package registry. Sibling DOI references are retained in related_identifiers. The last verified archive DOI is retained as an explicitly versioned historical reference in CITATION.cff and the manuscript configuration; no DOI has been assigned to this candidate."
 }

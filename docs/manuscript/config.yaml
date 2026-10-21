@@ -19,7 +19,9 @@ authors:
     corresponding: true
 
 publication:
-  doi: "10.5281/zenodo.22833507"
+  doi_status: "No new DOI; cite this software by repository and version"
+  archived_version: "0.2.0"
+  archived_version_doi: "10.5281/zenodo.22833507"
   github_repository: "docxology/line_set"
   repository_url: "https://github.com/docxology/line_set"
 

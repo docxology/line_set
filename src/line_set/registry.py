@@ -184,9 +184,18 @@ SHARED_TOKENS: tuple[SharedToken, ...] = (
         token="NEEDS_REWORK",
         lines=("black_line", "green_line", "silver_line"),
         meanings=(
-            ("black_line", "an attempt whose declared evidence fails the discipline's checks"),
-            ("green_line", "a cultivation attempt whose staged markers do not yet support the claim"),
-            ("silver_line", "a keepsake whose declared custody fails the succession checks"),
+            (
+                "black_line",
+                "an attempt whose declared evidence fails the discipline's checks",
+            ),
+            (
+                "green_line",
+                "a cultivation attempt whose staged markers do not yet support the claim",
+            ),
+            (
+                "silver_line",
+                "a keepsake whose declared custody fails the succession checks",
+            ),
         ),
         rationale=(
             "Three lines each need a rework verdict, but the material being "
@@ -199,8 +208,14 @@ SHARED_TOKENS: tuple[SharedToken, ...] = (
         token="KEPT",
         lines=("silver_line", "violet_line"),
         meanings=(
-            ("silver_line", "declared custody of a keepsake read as adequate at the review date"),
-            ("violet_line", "a consent record accepted into the ledger at the review date"),
+            (
+                "silver_line",
+                "declared custody of a keepsake read as adequate at the review date",
+            ),
+            (
+                "violet_line",
+                "a consent record accepted into the ledger at the review date",
+            ),
         ),
         rationale=(
             "Silver Line is about custody of what persists; Violet Line is "
@@ -213,7 +228,10 @@ SHARED_TOKENS: tuple[SharedToken, ...] = (
         token="STALE",
         lines=("blue_line", "white_line"),
         meanings=(
-            ("blue_line", "a maintained commitment whose declared care signals fall outside the freshness window"),
+            (
+                "blue_line",
+                "a maintained commitment whose declared care signals fall outside the freshness window",
+            ),
             ("white_line", "an absence record whose review horizon has lapsed"),
         ),
         rationale=(
@@ -227,8 +245,14 @@ SHARED_TOKENS: tuple[SharedToken, ...] = (
         token="METHOD",
         lines=("black_line", "green_line"),
         meanings=(
-            ("black_line", "a family of disciplined practices in the practice registry"),
-            ("green_line", "a family of method capacities in the growth-marker vocabulary"),
+            (
+                "black_line",
+                "a family of disciplined practices in the practice registry",
+            ),
+            (
+                "green_line",
+                "a family of method capacities in the growth-marker vocabulary",
+            ),
         ),
         rationale=(
             "Black Line enumerates established practice families; Green Line "
@@ -241,8 +265,14 @@ SHARED_TOKENS: tuple[SharedToken, ...] = (
         token="VERIFICATION",
         lines=("black_line", "green_line"),
         meanings=(
-            ("black_line", "a family of verification practices in the practice registry"),
-            ("green_line", "a family of verification capacities in the growth-marker vocabulary"),
+            (
+                "black_line",
+                "a family of verification practices in the practice registry",
+            ),
+            (
+                "green_line",
+                "a family of verification capacities in the growth-marker vocabulary",
+            ),
         ),
         rationale=(
             "Same divergence as METHOD: an established verification practice "
@@ -255,8 +285,14 @@ SHARED_TOKENS: tuple[SharedToken, ...] = (
         token="COMMUNICATION",
         lines=("black_line", "green_line"),
         meanings=(
-            ("black_line", "a family of communication practices in the practice registry"),
-            ("green_line", "a family of communication capacities in the growth-marker vocabulary"),
+            (
+                "black_line",
+                "a family of communication practices in the practice registry",
+            ),
+            (
+                "green_line",
+                "a family of communication capacities in the growth-marker vocabulary",
+            ),
         ),
         rationale=(
             "Same divergence as METHOD and VERIFICATION, for communication: "
@@ -268,8 +304,14 @@ SHARED_TOKENS: tuple[SharedToken, ...] = (
         token="STEWARDSHIP",
         lines=("black_line", "green_line"),
         meanings=(
-            ("black_line", "a family of stewardship practices in the practice registry"),
-            ("green_line", "a family of stewardship capacities in the growth-marker vocabulary"),
+            (
+                "black_line",
+                "a family of stewardship practices in the practice registry",
+            ),
+            (
+                "green_line",
+                "a family of stewardship capacities in the growth-marker vocabulary",
+            ),
         ),
         rationale=(
             "Same divergence as the other shared family names: Black Line's "

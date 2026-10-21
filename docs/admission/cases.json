@@ -23,8 +23,8 @@
       "reviewer_results": [],
       "study_result": null,
       "contrast_design": {
-        "held_fixed": "Same baseline native reports and credited contribution",
-        "varied": "No receipt versus attributed receipt with adequacy disputed",
+        "held_fixed": "Same baseline native reports, credited contribution and correction delivery",
+        "varied": "Receipt unacknowledged (R01) versus acknowledged with adequacy disputed (R02)",
         "execution": "not_run"
       }
     },
@@ -47,8 +47,8 @@
       "reviewer_results": [],
       "study_result": null,
       "contrast_design": {
-        "held_fixed": "Same baseline native reports and correction delivery",
-        "varied": "Receipt acknowledged with adequacy disputed versus explicitly accepted adequacy",
+        "held_fixed": "Same baseline native reports, credited contribution and correction delivery",
+        "varied": "Receipt unacknowledged (R01) versus acknowledged with adequacy disputed (R02)",
         "execution": "not_run"
       }
     },

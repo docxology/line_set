@@ -90,6 +90,23 @@ def test_the_citation_names_this_repository_exactly() -> None:
     assert supplements == [expected]
 
 
+def test_the_archived_doi_cannot_identify_the_current_candidate() -> None:
+    config = CONFIG.read_text(encoding="utf-8")
+    publication = config.split("publication:\n", 1)[1].split("\n\n", 1)[0]
+    assert not re.search(r"^  doi:", publication, re.MULTILINE)
+    archive_doi = re.search(r'archived_version_doi: "([^"]+)"', publication).group(1)
+    archive_version = re.search(r'archived_version: "([^"]+)"', publication).group(1)
+    assert archive_doi in VERIFIED_DOIS
+    assert archive_version != __version__
+    citation, references = CITATION.read_text(encoding="utf-8").split(
+        "references:\n", 1
+    )
+    assert not DOI_PATTERN.findall(citation)
+    archive = references.split("  - type: software", 2)[1]
+    assert f'version: "{archive_version}"' in archive
+    assert f'doi: "{archive_doi}"' in archive
+
+
 def test_every_sibling_is_referenced_by_its_exact_public_url() -> None:
     """All five siblings, each exactly once, at the canonical URL."""
 

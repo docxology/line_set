@@ -9,8 +9,11 @@ instrument fixes with their owners; preserve the declaration and dated reading.
 Historicize the extension demonstration and synchronize software-version metadata.
 Historical measurement checks retain producer identity without losing canonical
 byte or measurement checks. Fix the live CLI tests' explicit snapshot override
-and the formalism-ledger return annotation. Local gates pass; external rendered
-output acceptance remains unresolved. See the [candidate packet](docs/releases/v0.3.0.md).
+and the formalism-ledger return annotation. Independent review corrected the
+archive DOI's version association and an inconsistent matched pair. Apply the
+required formatter across its full source/test/script surface, including inherited
+failures. External rendered output acceptance remains unresolved. See the
+[candidate packet](docs/releases/v0.3.0.md).
 
 ## 2026-09-02 — review pass: membership prose, two latent defects, mypy clean
 

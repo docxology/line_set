@@ -23,9 +23,12 @@ def checked_cases(document: dict) -> None:
     cases = document["cases"]
     assert cases, "empty case scan"
     ids = [case["id"] for case in cases]
+    by_id = {case["id"]: case for case in cases}
     assert len(set(ids)) == len(ids), "duplicate identity"
     assert Counter(case["group"] for case in cases) == {
-        "repair": 6, "control": 6, "ambiguous": 6,
+        "repair": 6,
+        "control": 6,
+        "ambiguous": 6,
     }
     for case in cases:
         for field in ("id", "title", "scenario", "question", "constraint"):
@@ -35,10 +38,17 @@ def checked_cases(document: dict) -> None:
         assert case["contrast_design"]["varied"].strip()
         assert case["contrast_design"]["execution"] == "not_run"
         assert case["matched_case"] is None or case["matched_case"] in ids
+        if case["matched_case"] is not None:
+            partner = by_id[case["matched_case"]]
+            assert partner["matched_case"] == case["id"]
+            assert partner["contrast_design"] == case["contrast_design"]
         for field in (
-            "existing_family_representation", "witness_relations_and_returns",
-            "missing_distinction_hypothesis", "minimal_native_extension",
-            "separate_repair_record", "study_result",
+            "existing_family_representation",
+            "witness_relations_and_returns",
+            "missing_distinction_hypothesis",
+            "minimal_native_extension",
+            "separate_repair_record",
+            "study_result",
         ):
             assert case[field] is None, f"manufactured {field}"
         for field in ("native_outputs", "evidence_profile_refs", "reviewer_results"):
@@ -52,15 +62,21 @@ def checked_profile(document: dict) -> None:
     assert document["intake_dispositions"], "empty intake scan"
     for source in document["sources"]:
         assert source["digest"] is None and source["unavailable_reason"].strip()
-        assert source["declared_provenance"]["evidence_class"] == "submitted declaration"
+        assert (
+            source["declared_provenance"]["evidence_class"] == "submitted declaration"
+        )
     for field in ("normalized_input", "native_report", "subject_bound_envelope"):
         assert document[field]["digest"] is None
         assert document[field]["unavailable_reason"].strip()
     checks = document["verification"]
     assert checks, "empty verification scan"
     assert {item["predicate"] for item in checks} == {
-        "source-byte match", "native report correspondence", "strict envelope validity",
-        "structural reference validity", "external identity/authentication", "native replay",
+        "source-byte match",
+        "native report correspondence",
+        "strict envelope validity",
+        "structural reference validity",
+        "external identity/authentication",
+        "native replay",
     }
     assert len({item["predicate"] for item in checks}) == len(checks)
     for item in checks:
@@ -72,8 +88,12 @@ def checked_profile(document: dict) -> None:
     assert replay["output_ref"] is None and replay["differences"] == []
     assert replay["prerequisites"], "empty prerequisite scan"
     assert {item["name"] for item in replay["prerequisites"]} == {
-        "normalized input bytes", "native registry/configuration",
-        "evaluator revision/runtime", "resolved date", "native schemas", "access authority",
+        "normalized input bytes",
+        "native registry/configuration",
+        "evaluator revision/runtime",
+        "resolved date",
+        "native schemas",
+        "access authority",
     }
     for item in replay["prerequisites"]:
         assert item["state"] in {"unavailable", "not_checked"}
@@ -106,7 +126,9 @@ def test_shipped_materials_are_hypothetical_and_unexecuted() -> None:
     checked_profile(json.loads(EXAMPLE.read_text(encoding="utf-8")))
 
 
-@pytest.mark.parametrize("defect", ["empty", "duplicate", "result", "constraint", "label"])
+@pytest.mark.parametrize(
+    "defect", ["empty", "duplicate", "result", "constraint", "label", "pair"]
+)
 def test_corpus_guard_rejects_planted_bad_material(defect: str) -> None:
     document = json.loads(CORPUS.read_text(encoding="utf-8"))
     if defect == "empty":
@@ -117,13 +139,17 @@ def test_corpus_guard_rejects_planted_bad_material(defect: str) -> None:
         document["cases"][0]["study_result"] = "admit"
     elif defect == "constraint":
         document["cases"][0]["constraint"] = " "
+    elif defect == "pair":
+        document["cases"][1]["contrast_design"]["varied"] = "a different contrast"
     else:
         document["cases"][0]["source_class"] = "observed"
     with pytest.raises(AssertionError):
         checked_cases(document)
 
 
-@pytest.mark.parametrize("field", ["sources", "verification", "prerequisites", "intake"])
+@pytest.mark.parametrize(
+    "field", ["sources", "verification", "prerequisites", "intake"]
+)
 def test_profile_guard_refuses_empty_scan_sets(field: str) -> None:
     document = json.loads(EXAMPLE.read_text(encoding="utf-8"))
     if field == "prerequisites":
@@ -141,8 +167,17 @@ def test_profile_cannot_turn_consistency_into_authentication() -> None:
         checked_profile(document)
 
 
-@pytest.mark.parametrize("field", ["effective_policy", "normalized_input", "registry",
-                                  "evaluator_revision", "resolved_review_date", "native_schemas"])
+@pytest.mark.parametrize(
+    "field",
+    [
+        "effective_policy",
+        "normalized_input",
+        "registry",
+        "evaluator_revision",
+        "resolved_review_date",
+        "native_schemas",
+    ],
+)
 def test_context_changes_independently_of_report_content(field: str) -> None:
     original = json.loads(EXAMPLE.read_text(encoding="utf-8"))
     changed = copy.deepcopy(original)

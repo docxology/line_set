@@ -1,5 +1,5 @@
 cff-version: 1.2.0
-message: "If you use or refer to this work, please cite it as below."
+message: "Cite this software by repository and version. The archived reference below identifies the earlier deposited version."
 type: software
 title: "The Line Set: The Collected Volume"
 version: "0.3.0"
@@ -13,8 +13,6 @@ authors:
 repository-code: "https://github.com/docxology/line_set"
 url: "https://github.com/docxology/line_set"
 identifiers:
-  - type: doi
-    value: "10.5281/zenodo.22833507"
   - type: url
     value: "https://github.com/docxology/line_set"
 license:
@@ -37,6 +35,14 @@ abstract: >-
   aggregate; a legible reading says only that the declared vocabularies
   did not overlap.
 references:
+  - type: software
+    title: "The Line Set: The Collected Volume"
+    version: "0.2.0"
+    authors:
+      - family-names: "Friedman"
+        given-names: "Daniel Ari"
+    doi: "10.5281/zenodo.22833507"
+    notes: "Last verified archive; this DOI identifies version 0.2.0, not the current candidate."
   - type: software
     title: "red_line"
     authors:

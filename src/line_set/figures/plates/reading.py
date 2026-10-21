@@ -28,7 +28,6 @@ from ..canvas import (
     rect,
     text,
     wrap,
-
     escape_text,
 )
 from ..palette import (
@@ -378,7 +377,8 @@ def vocabulary_matrix(
     # from a bound rather than measuring rendered text keeps the plate
     # byte-reproducible: no primitive in this package consults a font.
     label_lane = (
-        max(len(token) for token in tokens) * (_WIDEST_TOKEN_GLYPH_EM * _TOKEN_LABEL_SIZE)
+        max(len(token) for token in tokens)
+        * (_WIDEST_TOKEN_GLYPH_EM * _TOKEN_LABEL_SIZE)
         + 30
     )
     grid_width = len(tokens) * column_pitch
@@ -391,9 +391,7 @@ def vocabulary_matrix(
         + len(entries) * 56
         + 210
     )
-    grid_left = MARGIN + max(
-        0, (_CONTENT_WIDTH - grid_width) // 2
-    )
+    grid_left = MARGIN + max(0, (_CONTENT_WIDTH - grid_width) // 2)
 
     rule_lines = wrap(
         "A grid with no undeclared collision says the declared names do not "
@@ -474,9 +472,7 @@ def vocabulary_matrix(
         )
         holds_code = codes.get(entry.id)
         if holds_code is not None:
-            parts.append(
-                text(MARGIN + 340, y + 6, holds_code.value, 26, MUTED, "700")
-            )
+            parts.append(text(MARGIN + 340, y + 6, holds_code.value, 26, MUTED, "700"))
         for column_index, token in enumerate(tokens):
             x = grid_left + column_index * column_pitch
             holds = token in carried.get(entry.id, frozenset())
@@ -526,6 +522,8 @@ def vocabulary_matrix(
     )
     parts.append(close_canvas())
     return "".join(parts)
+
+
 def _surface_row_height(detail_lines: int) -> int:
     """Row height derived from how much detail the observation carries."""
     return 112 + 24 * detail_lines

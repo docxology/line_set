@@ -211,7 +211,9 @@ def test_check_set_passes_where_every_line_can_be_read() -> None:
             "fail-closed direction is covered above and runs everywhere"
         )
     result = run(
-        SCRIPTS / "check_set.py", cwd=PROJECT_ROOT, source=PROJECT_ROOT / "src",
+        SCRIPTS / "check_set.py",
+        cwd=PROJECT_ROOT,
+        source=PROJECT_ROOT / "src",
         live_siblings=True,
     )
     assert result.returncode == 0, result.stdout + result.stderr

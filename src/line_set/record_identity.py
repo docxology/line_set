@@ -28,4 +28,7 @@ def record_text_matches(text: str, current: dict[str, object]) -> bool:
     if not isinstance(held, dict) or not record_matches(held, current):
         return False
     expected = {**current, "package_version": held["package_version"]}
-    return text == json.dumps(expected, indent=2, ensure_ascii=False, sort_keys=True) + "\n"
+    return (
+        text
+        == json.dumps(expected, indent=2, ensure_ascii=False, sort_keys=True) + "\n"
+    )

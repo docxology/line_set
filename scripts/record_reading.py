@@ -19,11 +19,11 @@ The record is not evidence that the numbers were right when they were taken.
 It is a dated statement of what this package read, carried alongside the prose
 that quotes it, so that the two can be compared without the packages present.
 
-The date it records is the manuscript's review date, read from
-``docs/manuscript/config.yaml``, and not the day the script happens to run. The
-record belongs to the paper that quotes it, so re-recording an unchanged set
-reproduces the shipped file byte for byte and re-running this script is
-idempotent. Defaulting to today instead would move ``recorded_on`` and the
+The default date comes from ``docs/manuscript/config.yaml``, not the clock.
+When preserving an earlier measurement across a publication update, pass its
+recorded date with ``--as-of``. A new write records the running producer version;
+``--check`` retains the historical producer while requiring every measurement
+field and canonical byte to match. Defaulting to today would move ``recorded_on`` and the
 digest derived from it on every run, which would leave the record disagreeing
 with the prose that quotes it and with its own freshness check the next
 morning. Taking a reading for a *new* review date is a deliberate act: pass

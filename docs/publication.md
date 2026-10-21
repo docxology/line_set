@@ -25,7 +25,12 @@ version is declared in `pyproject.toml`, `src/line_set/version.py`, `CITATION.cf
 `.zenodo.json` and `docs/manuscript/config.yaml`; these must agree. Until Daniel
 reserves and mints a new version DOI, the current metadata deliberately retains
 the last verified DOI as an archive reference, not as a claim that the new
-software version has already been deposited. Cite a new code release by its tag
+software version has already been deposited. In `CITATION.cff` it is an explicitly
+versioned historical reference, and in the manuscript config it is
+`publication.archived_version_doi` beside `publication.archived_version`.
+The candidate has no own DOI identifier or `publication.doi`; the renderer
+states this rather than printing an earlier version's DOI as its own.
+Cite a new code release by its tag
 and repository URL when identifying code that is not yet deposited.
 
 `CITATION.cff` carries the citation metadata in machine-readable form, and

@@ -117,7 +117,9 @@ def test_the_reader_reads_the_extended_set_without_being_told_about_it(
     assert reading.observations[-1].registry_size == APPENDED.working_position
 
 
-def test_an_appended_colour_that_borrows_a_token_is_still_caught(tmp_path: Path) -> None:
+def test_an_appended_colour_that_borrows_a_token_is_still_caught(
+    tmp_path: Path,
+) -> None:
     """Extending the set does not soften the contract it exists to hold."""
     borrowed = "SHARED_SPELLING"
     with import_sandbox():

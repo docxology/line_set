@@ -10,7 +10,9 @@ import pytest
 
 from line_set.record_identity import record_matches, record_text_matches
 
-RECORD = Path(__file__).resolve().parents[1] / "docs" / "manuscript" / "reading_record.json"
+RECORD = (
+    Path(__file__).resolve().parents[1] / "docs" / "manuscript" / "reading_record.json"
+)
 
 
 def test_only_producer_version_may_differ() -> None:
@@ -49,5 +51,7 @@ def test_text_comparison_preserves_canonical_byte_check() -> None:
     assert not record_text_matches("{", current)
     assert not record_text_matches("[]", current)
     assert not record_text_matches("{}", current)
-    duplicated = text.replace('"package_version":', '"package_version": "1.2.3", "package_version":')
+    duplicated = text.replace(
+        '"package_version":', '"package_version": "1.2.3", "package_version":'
+    )
     assert not record_text_matches(duplicated, current)

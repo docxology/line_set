@@ -164,9 +164,7 @@ def cover_svg(entries: tuple[LineEntry, ...]) -> str:
     )
     for slot, entry in enumerate(ordered):
         body.extend(_stroke(entry, left + slot * step + step / 2))
-    body.append(
-        line(left - 110, _READER_Y, left + span + 110, _READER_Y, MUTED, 3.0)
-    )
+    body.append(line(left - 110, _READER_Y, left + span + 110, _READER_Y, MUTED, 3.0))
     body.append(close_canvas())
     return "".join(body)
 

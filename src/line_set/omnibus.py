@@ -1765,10 +1765,11 @@ def namespaced_figure_registry(
         )
         source = _source_records(records)
         if paper is carrier:
-            standalone.extend(
-                dict(record, origin="standalone") for record in source
-            )
-        mirror.extend(_namespaced_record(record, paper.prefix, "omnibus-mirror") for record in source)
+            standalone.extend(dict(record, origin="standalone") for record in source)
+        mirror.extend(
+            _namespaced_record(record, paper.prefix, "omnibus-mirror")
+            for record in source
+        )
     covers = [dict(record, origin="cover") for record in cover_registry_records]
     return (
         json.dumps(
