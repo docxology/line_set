@@ -361,14 +361,14 @@ def test_a_partial_migration_does_not_shadow_the_configured_source(
 ) -> None:
     base = tmp_path / "works"
     root = write_paper(base, "one")
-    legacy = root / "manuscript"
+    root_layout = root / "manuscript"
     docs = root / "docs" / "manuscript"
     docs.mkdir(parents=True)
     (docs / "01_fragment.md").write_text("# Fragment\n", encoding="utf-8")
     if configured_docs:
-        (docs / "config.yaml").write_bytes((legacy / "config.yaml").read_bytes())
+        (docs / "config.yaml").write_bytes((root_layout / "config.yaml").read_bytes())
     paper = discover_paper(declaration("one")[0], base)
-    expected = docs if configured_docs else legacy
+    expected = docs if configured_docs else root_layout
     assert paper.sections
     assert all(path.parent == expected for path in paper.sections)
 

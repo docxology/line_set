@@ -74,14 +74,14 @@ def _manuscript_dir(project_root: Path) -> Path:
     Without either config, retain the directory-based absence behavior.
     """
     docs = project_root / "docs" / "manuscript"
-    legacy = project_root / "manuscript"
+    root_layout = project_root / "manuscript"
     if (docs / "config.yaml").is_file():
         return docs
-    if (legacy / "config.yaml").is_file():
-        return legacy
+    if (root_layout / "config.yaml").is_file():
+        return root_layout
     if docs.is_dir():
         return docs
-    return legacy
+    return root_layout
 
 
 #: Where a compiled volume is written, relative to the project root.

@@ -40,10 +40,18 @@ from pathlib import Path
 
 import pytest
 
+from tests.support import import_sandbox
+
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 
 #: The operator-facing build command, run as its own process.
 BUILD_SCRIPT = PROJECT_ROOT / "scripts" / "build_figures.py"
+
+
+@pytest.fixture(autouse=True)
+def isolated_import_state():
+    with import_sandbox():
+        yield
 
 
 @pytest.fixture(scope="session", autouse=True)
