@@ -7,7 +7,7 @@ more than one line, which resolved packages were not declared, and how the
 status followed from those four facts.
 
 What a reading establishes is narrow. ``SET_LEGIBLE`` says the declared
-vocabularies of the lines that could be read did not overlap. It does not say
+vocabularies have no unexempted published-name collision. It does not say
 the lines are correct, complete, consistent, or worth having, and it says
 nothing about behaviour: two lines can have entirely disjoint vocabularies and
 still overlap conceptually. The reader reads declarations.
@@ -17,11 +17,19 @@ from __future__ import annotations
 
 from collections.abc import Iterable
 from datetime import date
+from dataclasses import replace
 
 from . import binding
-from .binding import PackageResolver, candidate_packages, read_vocabulary
+from .admission import admit_declaration
+from .binding import (
+    PackageResolver,
+    discover_packages,
+    read_vocabulary,
+    resolve_package,
+)
 from .models import (
     DerivationStage,
+    CandidateOutcome,
     LineEntry,
     LineObservation,
     ReadCode,
@@ -103,7 +111,12 @@ def exemption_for(
     """
     if not isinstance(token, str) or not token:
         return None
-    carried = frozenset(str(line_id) for line_id in carrying)
+    carrying_ids = tuple(carrying)
+    if any(
+        not isinstance(line_id, str) or not line_id.strip() for line_id in carrying_ids
+    ):
+        return None
+    carried = frozenset(carrying_ids)
     if len(carried) < 2:
         return None
 
@@ -117,6 +130,8 @@ def exemption_for(
     if len(matches) != 1:
         return None
     entry = matches[0]
+    if not isinstance(entry.rationale, str) or not entry.rationale.strip():
+        return None
 
     try:
         declared_lines = tuple(entry.lines)
@@ -169,26 +184,29 @@ def _observe(entry: LineEntry, resolver: PackageResolver) -> LineObservation:
     strength of having compared nothing. Refusing costs a visible failure with
     the reason attached; accepting costs the contract silently.
     """
-    resolution = resolver(entry.package_name)
-    if resolution.code is ReadCode.RESOLVED and resolution.module is None:
-        return LineObservation(
-            line_id=entry.id,
-            code=ReadCode.IMPORT_FAILED,
-            detail=(
-                "the resolver reported this package as resolved but supplied "
-                f"no module, so nothing could be read from it: {resolution.detail}"
-            ),
-        )
+    resolution = resolve_package(resolver, entry.package_name)
     if resolution.code is not ReadCode.RESOLVED:
         return LineObservation(
             line_id=entry.id,
             code=resolution.code,
             detail=resolution.detail,
+            provenance=replace(
+                resolution.provenance, requested_package=entry.package_name
+            ),
+            diagnostics=resolution.diagnostics,
         )
-    # The guards above ensure a RESOLVED reading carries a module: the resolver
-    # that reports RESOLVED without one was already downgraded to IMPORT_FAILED.
     assert resolution.module is not None
-    vocabulary = read_vocabulary(resolution.module)
+    try:
+        vocabulary = read_vocabulary(resolution.module)
+    except Exception as exc:
+        issue = binding.diagnostic("bind", exc)
+        return LineObservation(
+            entry.id,
+            ReadCode.IMPORT_FAILED,
+            detail=issue.detail,
+            provenance=resolution.provenance,
+            diagnostics=(issue,),
+        )
     code = ReadCode.RESOLVED if vocabulary.tokens else ReadCode.NO_VOCABULARY
     return LineObservation(
         line_id=entry.id,
@@ -198,6 +216,14 @@ def _observe(entry: LineEntry, resolver: PackageResolver) -> LineObservation:
         registry_digest=vocabulary.registry_digest,
         tokens=vocabulary.tokens,
         detail=vocabulary.detail,
+        provenance=replace(
+            resolution.provenance,
+            requested_package=entry.package_name,
+            resolved_package=resolution.module.__name__,
+            binding_schema=vocabulary.binding_schema,
+            registry_identity=vocabulary.registry_identity,
+        ),
+        diagnostics=vocabulary.diagnostics,
     )
 
 
@@ -219,7 +245,34 @@ def _collide(
             continue
         declared = exemption_for(shared, token, lines)
         if declared is None:
-            unexempted.append(TokenCollision(token=token, lines=lines, exempted=False))
+            declarations = [
+                item
+                for item in shared
+                if isinstance(item, SharedToken) and item.token == token
+            ]
+            declared_carriers = tuple(
+                sorted({name for item in declarations for name in item.lines})
+            )
+            unread = tuple(
+                sorted(
+                    o.line_id
+                    for o in observations
+                    if o.line_id in declared_carriers
+                    and o.code is not ReadCode.RESOLVED
+                )
+            )
+            unexempted.append(
+                TokenCollision(
+                    token=token,
+                    lines=lines,
+                    exempted=False,
+                    declared_carriers=declared_carriers,
+                    unread_declared_carriers=unread,
+                    fully_observed=all(
+                        o.code is ReadCode.RESOLVED for o in observations
+                    ),
+                )
+            )
         else:
             exempted.append(
                 TokenCollision(
@@ -227,6 +280,11 @@ def _collide(
                     lines=lines,
                     exempted=True,
                     rationale=declared.rationale,
+                    meanings=declared.meanings,
+                    declared_carriers=tuple(sorted(declared.lines)),
+                    fully_observed=all(
+                        o.code is ReadCode.RESOLVED for o in observations
+                    ),
                 )
             )
     return tuple(unexempted), tuple(exempted)
@@ -256,6 +314,8 @@ def read_set(
     resolver = binding.default_resolver if resolver is None else resolver
     line_list = tuple(lines)
     shared_list = tuple(shared)
+    admit_declaration(line_list)
+    declaration_digest = registry_digest(line_list, shared_list)
     read_as_of = _review_date(as_of).isoformat()
 
     observations = tuple(_observe(entry, resolver) for entry in line_list)
@@ -306,22 +366,24 @@ def read_set(
     )
 
     declared_packages = {entry.package_name for entry in line_list}
-    found = candidate_packages(resolver)
-    if found is None:
-        undeclared: tuple[str, ...] = ()
+    discovery = discover_packages(resolver)
+    outcomes = tuple(
+        CandidateOutcome(name, result.code, result.diagnostics)
+        for name in discovery.candidates
+        if name not in declared_packages
+        for result in (resolve_package(resolver, name),)
+    )
+    discovery = replace(discovery, outcomes=outcomes)
+    found = discovery.candidates
+    undeclared = tuple(
+        item.package_name for item in outcomes if item.code is ReadCode.RESOLVED
+    )
+    if not discovery.completed:
         declare_detail = (
             "the resolver cannot enumerate installed packages, so undeclared "
-            "lines were not scanned for"
+            "lines were not scanned for completely; discovery is incomplete"
         )
     else:
-        undeclared = tuple(
-            sorted(
-                name
-                for name in found
-                if name not in declared_packages
-                and resolver(name).code is ReadCode.RESOLVED
-            )
-        )
         declare_detail = (
             f"scanned {len(found)} candidate "
             f"{'package' if len(found) == 1 else 'packages'} and found "
@@ -353,8 +415,8 @@ def read_set(
     else:
         status = SetStatus.SET_LEGIBLE
         reason = (
-            f"all {len(line_list)} declared line(s) were read and their "
-            "vocabularies do not overlap"
+            f"no unexempted published-name collisions among all {len(line_list)} "
+            f"declared readable vocabularies; {len(exempted)} declared exemption(s)"
         )
     status_stage = DerivationStage(
         name="status",
@@ -368,7 +430,7 @@ def read_set(
         collisions=unexempted,
         exempted_collisions=exempted,
         undeclared_lines=undeclared,
-        set_digest=registry_digest(line_list, shared_list),
+        set_digest=declaration_digest,
         read_as_of=read_as_of,
         derivation=(
             resolve_stage,
@@ -377,4 +439,6 @@ def read_set(
             declare_stage,
             status_stage,
         ),
+        discovery=discovery,
+        exemptions=shared_list,
     )

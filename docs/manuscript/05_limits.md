@@ -2,7 +2,7 @@
 
 ## The reader reads declarations
 
-Everything this package reports is derived from what the sibling packages say about themselves at their package roots: a version string, a registry tuple, a digest function, and the member names of the enums they export. Nothing is executed. No evaluator is called, no data is passed to a line, and no finding a line has ever produced is examined. A line could return the same verdict for every input it is given and read as perfectly healthy here, because the reader never asks it a question.
+The reader reports what sibling packages say about themselves at their package roots: a version string, a registry tuple, their own digest function's result, and the member names of the enums they export. Importing a sibling executes its package code, and obtaining its digest calls its declared digest function. Imports remain in process, without a sandbox or a hanging-import guarantee. The reader never invokes a sibling evaluator, passes it data, or examines its findings. A line could return the same verdict for every input it is given and still participate in a `SET_LEGIBLE` reading, because the reader never asks it that question.
 
 The consequence is that `SET_LEGIBLE`, in [@prop:precedence], is a statement about names in the declared namespaces on one machine on one date. It is not a statement that the instruments work, that they are internally consistent, that their tests pass, or that their registries are current.
 
@@ -10,7 +10,7 @@ The consequence is that `SET_LEGIBLE`, in [@prop:precedence], is a statement abo
 
 This is the limit I most want a reader to carry away, because it is the one the instrument's own name invites people to forget. The check finds tokens two lines spell identically. It cannot find two lines that answer the same question in different words.
 
-Nothing would stop me from writing another line whose registry duplicates Golden Line's aspirations under new names, whose evaluator reimplements Golden Line's decision rule, and whose statuses are spelled so as to collide with nothing. The reading would be `SET_LEGIBLE`. It would be correct and it would be worthless, because the separation I actually care about is conceptual and the property I can check is lexical. The lexical check is worth having — it catches the failure that makes stored findings ambiguous downstream — and it is a necessary condition for the separation, not evidence of it. Whether two lines are thinking about the same thing remains a judgement someone has to make by reading them.
+Nothing would stop me from writing another line whose registry duplicates Golden Line's aspirations under new names, whose evaluator reimplements Golden Line's decision rule, and whose statuses are spelled so as to collide with nothing. The reading would be `SET_LEGIBLE`. It would be correct and it would be worthless, because the separation I actually care about is conceptual and the property I can check is lexical. The lexical check detects shared spellings without a matching declared exemption. It establishes no conceptual separation. Whether two lines are thinking about the same thing remains a judgement someone has to make by reading them.
 
 ## A digest is not tamper evidence
 
@@ -32,6 +32,13 @@ Discovery is also weaker than it may appear from a passing run. It finds importa
 
 ## Smaller boundaries worth naming
 
+The compiled volume selects a configured manuscript tree, preferring
+`docs/manuscript/` when both supported layouts have a config. An unconfigured
+migration fragment cannot replace an existing configured `manuscript/` tree.
+Assembly retains source prose through reversible transforms and refuses
+unresolved references; selecting and rendering a source does not validate its
+claims.
+
 The optional evidence/replay profile is a companion convention, not a native
 exporter or replay engine in this package. It separates source identity,
 report-content identity, subject-bound envelope identity, declared provenance
@@ -44,9 +51,9 @@ A historical reading check compares its canonical measurement fields at the
 recorded date while retaining the original producer version separately from
 the current checker. It does not rewrite the record or authenticate its producer.
 
-Only the package root is read for enums. A token defined in a submodule and never re-exported does not participate in the collision scan. That is a deliberate scoping of the contract to the vocabulary a line publishes, and it does mean two lines could collide privately without this reader noticing.
+Only the package root is read for enums. All declared names include aliases; repeated bindings of one class do not multiply the census. A token defined in a submodule and never re-exported does not participate in the collision scan. That is a deliberate scoping of the contract to the vocabulary a line publishes, and it does mean two lines could collide privately without this reader noticing.
 
-Registry size comes from a convention: the unique public, non-empty tuple in the package's `registry` submodule whose members are all one dataclass type, largest winning, ties reporting nothing. A package that organizes itself differently reports no size, which is an absence of information rather than a finding about the package.
+Without an explicit versioned binding descriptor, registry size comes from a convention: the unique public, non-empty tuple in the package's `registry` submodule whose members are all one dataclass type, largest winning, ties reporting nothing. A package that organizes itself differently reports no size, which is an absence of information rather than a finding about the package.
 
 Self-disjointness needs the siblings importable and fails when they are not — the second and third conditions of [@prop:self-disjointness] are what make it fail rather than pass. That failure is honest and it is also a real coverage limit: on a machine with no siblings, the property this project exists to hold is unestablished, not established.
 

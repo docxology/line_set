@@ -1,0 +1,103 @@
+{
+  "declaration": {
+    "lines": [
+      {
+        "color": "example",
+        "id": "example_line",
+        "job": "Read names",
+        "must_not_become": "A substantive evaluator",
+        "opus_stage": null,
+        "package_name": "example_line",
+        "question": "Which names?",
+        "registry_noun": "entries",
+        "verdict_noun": "status",
+        "working_position": 1
+      }
+    ],
+    "schema_version": "line-set-declaration/2",
+    "shared_tokens": []
+  },
+  "reading": {
+    "collisions": [],
+    "counts": {
+      "import_failed": 0,
+      "no_vocabulary": 0,
+      "not_installed": 1,
+      "resolved": 0
+    },
+    "derivation": [
+      {
+        "detail": "asked the resolver for 1 declared package",
+        "items": [
+          "example_line=not_installed"
+        ],
+        "name": "resolve"
+      },
+      {
+        "detail": "read version, registry size, digest, and enum member names from each package that resolved",
+        "items": [
+          "example_line: 0 tokens, version=None, registry_size=None"
+        ],
+        "name": "bind"
+      },
+      {
+        "detail": "0 unexempted and 0 exempted cross-line token collisions",
+        "items": [],
+        "name": "collide"
+      },
+      {
+        "detail": "the resolver cannot enumerate installed packages, so undeclared lines were not scanned for completely; discovery is incomplete",
+        "items": [],
+        "name": "declare"
+      },
+      {
+        "detail": "set_partial: 1 declared line(s) could not be read: ['example_line']",
+        "items": [
+          "set_colliding",
+          "set_undeclared",
+          "set_partial",
+          "set_legible"
+        ],
+        "name": "status"
+      }
+    ],
+    "discovery": {
+      "attempted": false,
+      "candidates": [],
+      "capable": false,
+      "completed": false,
+      "diagnostics": [],
+      "outcomes": []
+    },
+    "exempted_collisions": [],
+    "exemptions": [],
+    "observations": [
+      {
+        "code": "not_installed",
+        "detail": "no such package in this test",
+        "diagnostics": [],
+        "line_id": "example_line",
+        "provenance": {
+          "binding_schema": "unread",
+          "distribution": null,
+          "distribution_version": null,
+          "module_origin": null,
+          "registry_identity": null,
+          "requested_package": "example_line",
+          "resolved_package": null,
+          "resolver_policy": "injected",
+          "source_revision": null
+        },
+        "registry_digest": null,
+        "registry_size": null,
+        "tokens": [],
+        "version": null
+      }
+    ],
+    "read_as_of": "2026-10-21",
+    "schema_version": "line-set-reading/2",
+    "set_digest": "4b4acd8ba38e748a3852131b1a0e2e46c320635f62da733932648e87321a591d",
+    "status": "set_partial",
+    "undeclared_lines": []
+  }
+}

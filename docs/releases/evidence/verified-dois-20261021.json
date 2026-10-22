@@ -1,0 +1,38 @@
+{
+  "checked_on": "2026-10-21",
+  "records": [
+    {
+      "doi": "10.5281/zenodo.22833503",
+      "record_id": 22833503,
+      "response_sha256": "631b2243bab9b78956360d22c54a3661fb5e36f5c30d35dd3b5f81716a568c58",
+      "source_url": "https://zenodo.org/api/records/22833503",
+      "title": "Black Line: Strong Work in Public",
+      "version": "0.4.1"
+    },
+    {
+      "doi": "10.5281/zenodo.22833506",
+      "record_id": 22833506,
+      "response_sha256": "895cd9b90dc3461e7c2df9689e58241fa9e63f9f1636ce86f0a5855bff964fc2",
+      "source_url": "https://zenodo.org/api/records/22833506",
+      "title": "Golden Line: Toward What Matters",
+      "version": "0.4.1"
+    },
+    {
+      "doi": "10.5281/zenodo.22833507",
+      "record_id": 22833507,
+      "response_sha256": "90e0179641a9cdb0f96c354a8ae041dae557c7ff472fdf00271dd05cf2cd85af",
+      "source_url": "https://zenodo.org/api/records/22833507",
+      "title": "The Line Set: Holding Instruments Apart",
+      "version": "0.2.0"
+    },
+    {
+      "doi": "10.5281/zenodo.22833511",
+      "record_id": 22833511,
+      "response_sha256": "f42479fc75d126ebc6c80877652ce33270829f073301be100f2193a97fa90166",
+      "source_url": "https://zenodo.org/api/records/22833511",
+      "title": "The Witness Register: Co-Registration Without Aggregation",
+      "version": "0.1.1"
+    }
+  ],
+  "scope": "Existing identifiers only; no DOI reservation or minting"
+}

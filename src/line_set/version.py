@@ -8,6 +8,6 @@ Neither marker says anything about the sibling line packages. Their versions
 are read at runtime and reported per line; they are never mirrored here.
 """
 
-__version__ = "0.4.0"
+__version__ = "0.5.0"
 
-SET_VERSION = "2026.07.27"
+SET_VERSION = "2026.10.21"

@@ -13,6 +13,7 @@ in place of an empty grid that would read like a clean result.
 
 from __future__ import annotations
 
+from dataclasses import dataclass
 
 from ...models import LineEntry, ReadCode, SetReading
 from ..canvas import (
@@ -28,6 +29,7 @@ from ..canvas import (
     rect,
     text,
     wrap,
+    wrap_to_width,
     escape_text,
 )
 from ..palette import (
@@ -63,35 +65,11 @@ DIGEST_PREFIX = 12
 #: distinction survives a greyscale print.
 EXEMPT_SHAPE = "diamond"
 COLLISION_SHAPE = "square"
-EXEMPT_LABEL = "EXEMPT — declared, with one meaning per line"
-COLLISION_LABEL = "COLLISION — no declaration covers it"
+EXEMPT_LABEL = "EXEMPT — declared meanings"
+COLLISION_LABEL = "COLLISION — no matching exemption"
 
-#: Side of the dark pip drawn inside a carried grid cell.
-_PIP = 8
-
-#: Font size of a token label in the grid, in canvas units.
-_COLLISION_ROW_HEIGHT = 104
-_TOKEN_LABEL_SIZE = 26
-
-#: Distance from a column's left edge to the start of its token labels.
-_TOKEN_LABEL_INSET = 22
-
-#: Clear space between the end of the label gutter and a column's cell block.
-_TOKEN_CELL_GAP = 26
-
-#: Character-count wrap for a read-code gloss on the installation surface.
+_TOKEN_LABEL_SIZE = 24
 _GLOSS_WRAP = 30
-
-#: Worst-case advance, in em, of any character a token label can contain.
-#:
-#: Tokens are enum member names, so they are ASCII uppercase, digits, and
-#: underscores. In the Arial face these plates declare, the widest glyph in
-#: that set is ``W`` at 0.9438 em; every other character is narrower. Sizing
-#: the label gutter from this bound rather than from the text's measured width
-#: is what lets the plate stay byte-reproducible — no primitive in this package
-#: opens a font — while still guaranteeing that no label can reach the cells of
-#: its own column. The cost is a gutter wider than most labels need.
-_WIDEST_TOKEN_GLYPH_EM = 0.9438
 
 _CONTENT_WIDTH = CONTENT_RIGHT - MARGIN
 _TOP = 300
@@ -122,41 +100,40 @@ def _legend(
     carried: dict[str, frozenset[str]],
     codes: dict[str, ReadCode],
     top: int,
-) -> list[str]:
-    """Draw the column key: one chip per declared line, marker plus count."""
-    chip_w = _CONTENT_WIDTH / max(len(entries), 1)
+) -> tuple[list[str], int]:
+    columns = max(1, min(len(entries), int(_CONTENT_WIDTH / 300)))
+    gap = 12
+    chip_w = (_CONTENT_WIDTH - gap * (columns - 1)) / columns
     parts: list[str] = []
     for index, entry in enumerate(entries):
-        x = MARGIN + index * chip_w
+        x = MARGIN + (index % columns) * (chip_w + gap)
+        y = top + (index // columns) * 68
         ink = line_ink(entry.color)
         code = codes.get(entry.id)
         tokens = carried.get(entry.id, frozenset())
-        parts.append(rect(x + 4, top, chip_w - 8, 78, CARD, ink, 2, rx=8))
+        parts.append(rect(x, y, chip_w, 60, CARD, ink, 2, rx=6))
         parts.append(
             glyph(
                 shape_for(entry.working_position),
-                x + 38,
-                top + 30,
-                16,
+                x + 24,
+                y + 21,
+                12,
                 line_fill(entry.color),
                 ink,
-                2.5,
+                2,
             )
         )
-        parts.append(text(x + 66, top + 36, entry.color, 26, ink, "700"))
         parts.append(
-            text(
-                x + 20,
-                top + 64,
-                plural(len(tokens), "token")
-                if tokens
-                else f"no vocabulary read · {code.value if code else 'not observed'}",
-                26,
-                MUTED if tokens else WARN,
-                "700",
-            )
+            text(x + 46, y + 28, f"{entry.working_position} {entry.id}", 24, ink, "700")
         )
-    return parts
+        detail = (
+            f"{plural(len(tokens), 'token')} · {code.value if code else 'observed'}"
+            if tokens
+            else f"not read · {code.value if code else 'not observed'}"
+        )
+        parts.append(text(x + 14, y + 52, detail, 24, MUTED))
+    rows = (len(entries) + columns - 1) // columns
+    return parts, top + rows * 68
 
 
 def _empty_matrix(
@@ -254,106 +231,55 @@ def _empty_matrix(
     return "".join(parts)
 
 
-def _collision_rows(
-    reading: SetReading,
-    entries: tuple[LineEntry, ...],
-    carried: dict[str, frozenset[str]],
-    top: int,
-) -> tuple[list[str], int]:
-    """Draw the collision band; returns its parts and the y it ends at."""
-    parts: list[str] = []
-    found = tuple(reading.collisions) + tuple(reading.exempted_collisions)
-    parts.append(
-        text(
-            MARGIN,
-            top,
-            f"TOKENS CARRIED BY MORE THAN ONE LINE · "
-            f"{len(reading.collisions)} undeclared · "
-            f"{len(reading.exempted_collisions)} declared",
-            26,
-            ACCENT,
-            "700",
-        )
-    )
-    cursor = top + 20
-    if not found:
-        parts.append(rect(MARGIN, cursor, _CONTENT_WIDTH, 62, PANEL, RULE, 2, rx=8))
-        parts.append(
-            text(
-                MARGIN + 24,
-                cursor + 38,
-                "No token in the grid below is carried by two lines.",
-                26,
-                INK,
-                "700",
+@dataclass(frozen=True)
+class _TokenRow:
+    token: str
+    fragments: tuple[str, ...]
+    positions: str
+    kind: str
+
+    @property
+    def height(self) -> int:
+        return 25 * len(self.fragments) + 6
+
+
+def _token_fragments(token: str, budget: int) -> tuple[str, ...]:
+    fragments = []
+    while len(token) > budget:
+        split = token.rfind("_", 0, budget) + 1
+        split = split if split else budget
+        fragments.append(token[:split])
+        token = token[split:]
+    return (*fragments, token)
+
+
+def _token_panels(
+    rows: tuple[_TokenRow, ...], columns: int
+) -> tuple[tuple[_TokenRow, ...], ...]:
+    prefix = [0]
+    for row in rows:
+        prefix.append(prefix[-1] + row.height)
+    cuts = [0]
+    for column in range(1, columns):
+        candidates = range(cuts[-1] + 1, len(rows) - (columns - column) + 1)
+        cuts.append(
+            min(
+                candidates,
+                key=lambda index: abs(prefix[index] - prefix[-1] * column / columns),
             )
         )
-        return parts, cursor + 62
-    for collision in sorted(found, key=lambda item: (not item.exempted, item.token)):
-        ink = OCHRE if collision.exempted else WARN
-        shape = EXEMPT_SHAPE if collision.exempted else COLLISION_SHAPE
-        label = EXEMPT_LABEL if collision.exempted else COLLISION_LABEL
-        parts.append(rect(MARGIN, cursor, _CONTENT_WIDTH, 96, PANEL, ink, 2.5, rx=8))
-        parts.append(
-            glyph(
-                shape,
-                MARGIN + 34,
-                cursor + 37,
-                15,
-                PAPER if collision.exempted else ink,
-                ink,
-                3,
-            )
-        )
-        parts.append(text(MARGIN + 62, cursor + 34, collision.token, 28, ink, "700"))
-        parts.append(text(MARGIN + 62, cursor + 62, label, 26, ink, "700"))
-        cell_x = MARGIN + 640
-        for index, entry in enumerate(entries):
-            x = cell_x + index * 150
-            holds = collision.token in carried.get(entry.id, frozenset())
-            parts.append(
-                glyph(
-                    shape_for(entry.working_position),
-                    x,
-                    cursor + 30,
-                    12,
-                    line_fill(entry.color) if holds else PAPER,
-                    line_ink(entry.color) if holds else RULE,
-                    2.5 if holds else 1.5,
-                )
-            )
-            if holds:
-                parts.append(
-                    glyph("circle", x, cursor + 30, 4, line_ink(entry.color), "none", 0)
-                )
-            parts.append(
-                text(
-                    x,
-                    cursor + 78,
-                    f"{entry.color} · {'carries' if holds else 'does not'}",
-                    26,
-                    line_ink(entry.color) if holds else MUTED,
-                    "700" if holds else "400",
-                    "middle",
-                )
-            )
-        cursor += 104
-    return parts, cursor
+    cuts.append(len(rows))
+    return tuple(rows[left:right] for left, right in zip(cuts, cuts[1:]))
 
 
 def vocabulary_matrix(
     lines: tuple[LineEntry, ...],
     reading: SetReading,
 ) -> str:
-    """Draw every token the reader collected against the lines carrying it.
+    """Draw every observed name and its carriers as a faceted sparse matrix.
 
-    Tokens run across the top as rotated column labels; the declared lines run
-    down the side as rows, so the plate's height does not grow with the size
-    of the vocabulary and its width does not grow with the size of the set.
-    A filled cell means that line exported that token; an outlined cell means
-    it did not. A token carried by more than one line also appears in the band
-    below the header, where a declared exemption and an undeclared collision
-    are separated by marker shape, by fill, and by the words on the row.
+    Carrier numbers are declaration working positions. Unread entries remain
+    unknown in the key; an omitted carrier is never evidence about an unread line.
     """
     verify_coverage()
     entries = _ordered(lines)
@@ -364,164 +290,134 @@ def vocabulary_matrix(
     if legible < 2 or not tokens:
         return _empty_matrix(entries, codes, legible)
 
-    collision_tokens = {
-        collision.token: collision.exempted
-        for collision in (*reading.collisions, *reading.exempted_collisions)
+    flags = {
+        item.token: item.exempted
+        for item in (*reading.collisions, *reading.exempted_collisions)
     }
-    cell = 12
-    column_pitch = 12
-    # Column labels are drawn rotated 90 degrees, so a label's width on the
-    # canvas is its rendered *height*: one label pitch of 12 units per token
-    # plus a label lane tall enough for the longest token in the reading,
-    # bounded by the widest advance any character may claim. Deriving the lane
-    # from a bound rather than measuring rendered text keeps the plate
-    # byte-reproducible: no primitive in this package consults a font.
-    label_lane = (
-        max(len(token) for token in tokens)
-        * (_WIDEST_TOKEN_GLYPH_EM * _TOKEN_LABEL_SIZE)
-        + 30
+    positions = {
+        token: ",".join(
+            str(entry.working_position)
+            for entry in entries
+            if token in carried.get(entry.id, ())
+        )
+        for token in tokens
+    }
+    columns = min(3, len(tokens))
+    gap = 24
+    column_width = (_CONTENT_WIDTH - gap * (columns - 1)) / columns
+    carrier_width = max(
+        144, max(len(value) for value in positions.values()) * 24 * 0.6 + 14
     )
-    grid_width = len(tokens) * column_pitch
-    height = (
-        _TOP
-        + 108
-        + 8 * _COLLISION_ROW_HEIGHT
-        + 62
-        + label_lane
-        + len(entries) * 56
-        + 210
+    token_width = column_width - carrier_width - 50
+    budget = max(1, int(token_width / _TOKEN_LABEL_SIZE))
+    rows = tuple(
+        _TokenRow(
+            token,
+            _token_fragments(token, budget),
+            positions[token],
+            "exempted"
+            if flags.get(token) is True
+            else "collision"
+            if flags.get(token) is False
+            else "unique",
+        )
+        for token in tokens
     )
-    grid_left = MARGIN + max(0, (_CONTENT_WIDTH - grid_width) // 2)
-
-    rule_lines = wrap(
-        "A grid with no undeclared collision says the declared names do not "
-        "overlap. It does not say the lines do not overlap: two lines can spell "
-        "nothing alike and still be asking the same question. A declared "
-        "exemption records that one spelling carries two different senses; it "
-        "is not permission to merge them.",
-        140,
-    )
-
-    parts = open_canvas(1600, int(height))
+    panels = _token_panels(rows, columns)
+    parts: list[str] = []
     parts += header(
         "THE VOCABULARY MATRIX",
-        "Which line spells which token",
-        "Tokens are the enum member names each package exports from its root. "
-        "A name defined but not re-exported is not here.",
-        f"LIVE READING · {plural(len(tokens), 'token').upper()} ACROSS "
-        f"{plural(legible, 'legible line').upper()}",
+        "Every observed name and its carrying lines",
+        "Names include enum aliases. Positions refer to the declaration key below; only observed carriers are listed.",
+        f"LIVE READING · {plural(len(tokens), 'name').upper()} · {legible} OF {len(entries)} VOCABULARIES READ",
         ACCENT,
     )
-    parts += _legend(entries, carried, codes, _TOP)
-    band_top = _TOP + 108
-    band_parts, _band_end = _collision_rows(reading, entries, carried, band_top)
-    parts += band_parts
-
-    grid_top = band_top + 8 * _COLLISION_ROW_HEIGHT + 62
-    parts.append(
-        text(
-            MARGIN,
-            grid_top - 24,
-            "THE FULL GRID · filled cell = that line exports that token · "
-            "labels read bottom to top",
-            26,
-            ACCENT,
-            "700",
-        )
+    legend, key_end = _legend(entries, carried, codes, 280)
+    parts += legend
+    summary = (
+        f"{len(reading.exempted_collisions)} exempted collisions · "
+        f"{len(reading.collisions)} unexempted collisions"
     )
-    label_top = grid_top
-    rows_top = label_top + label_lane
-    # The token columns, labels rotated so the plate stays one page wide.
-    for index, token in enumerate(tokens):
-        x = grid_left + index * column_pitch + column_pitch / 2
-        exempted = collision_tokens.get(token)
-        label_ink = INK if exempted is None else (OCHRE if exempted else WARN)
-        weight = "400" if exempted is None else "700"
-        if exempted is not None:
-            parts.append(
-                glyph(
-                    EXEMPT_SHAPE if exempted else COLLISION_SHAPE,
-                    x,
-                    label_top + 14,
-                    8,
-                    PAPER if exempted else label_ink,
-                    label_ink,
-                    2,
-                )
-            )
+    if not flags:
+        summary = "No token in the grid below is carried by two lines."
+    parts.append(text(MARGIN, key_end + 26, summary, 24, ACCENT, "700"))
+    for x, shape, label, ink in (
+        (MARGIN, EXEMPT_SHAPE, EXEMPT_LABEL, OCHRE),
+        (MARGIN + _CONTENT_WIDTH / 2, COLLISION_SHAPE, COLLISION_LABEL, WARN),
+    ):
+        parts.append(glyph(shape, x + 10, key_end + 48, 7, PAPER, ink, 2))
+        parts.append(text(x + 28, key_end + 56, label, 24, ink, "700"))
+    table_top = key_end + 108
+    bottoms = []
+    for column, panel in enumerate(panels):
+        left = MARGIN + column * (column_width + gap)
+        right = left + column_width
+        parts.append(text(left + 26, table_top - 14, "TOKEN", 24, ACCENT, "700"))
         parts.append(
-            f'<text x="{x}" y="{label_top + label_lane - 12}" '
-            f'font-family="Arial, sans-serif" font-size="{_TOKEN_LABEL_SIZE}px" '
-            f'font-weight="{weight}" fill="{label_ink}" '
-            f'text-anchor="start" '
-            f'transform="rotate(-90 {x} {label_top + label_lane - 12})">'
-            f"{escape_text(token)}</text>"
+            text(right - 12, table_top - 14, "POSITIONS", 24, ACCENT, "700", "end")
         )
-    # The declared lines as rows down the side.
-    for row_index, entry in enumerate(entries):
-        y = rows_top + 24 + row_index * 56
-        parts.append(
-            text(
-                MARGIN,
-                y + 6,
-                f"{entry.color} · {entry.package_name}",
-                26,
-                line_ink(entry.color),
-                "700",
+        cursor = table_top
+        for row in panel:
+            ink = (
+                OCHRE
+                if row.kind == "exempted"
+                else WARN
+                if row.kind == "collision"
+                else INK
             )
-        )
-        holds_code = codes.get(entry.id)
-        if holds_code is not None:
-            parts.append(text(MARGIN + 340, y + 6, holds_code.value, 26, MUTED, "700"))
-        for column_index, token in enumerate(tokens):
-            x = grid_left + column_index * column_pitch
-            holds = token in carried.get(entry.id, frozenset())
             parts.append(
-                rect(
-                    x,
-                    y - 10,
-                    cell,
-                    cell,
-                    line_fill(entry.color) if holds else PAPER,
-                    line_ink(entry.color) if holds else RULE,
-                    2 if holds else 1,
-                    rx=2,
-                )
+                f'<g data-token="{escape_text(row.token)}" data-kind="{row.kind}" '
+                f'data-carriers="{row.positions}" role="group" '
+                f'aria-label="{escape_text(row.token)}; observed positions {row.positions}; {row.kind}">'
             )
-            if holds:
-                # A carried cell also gets a dark pip in the line's ink. The
-                # white line's fill is nearly the paper colour, so fill alone
-                # would make its row unreadable in greyscale.
+            parts.append(
+                rect(left, cursor, column_width, row.height, CARD, RULE, 0.7, rx=3)
+            )
+            if row.kind != "unique":
                 parts.append(
-                    rect(
-                        x + (cell - _PIP) / 2,
-                        y - 10 + (cell - _PIP) / 2,
-                        _PIP,
-                        _PIP,
-                        line_ink(entry.color),
-                        line_ink(entry.color),
-                        0,
-                        rx=1,
+                    glyph(
+                        EXEMPT_SHAPE if row.kind == "exempted" else COLLISION_SHAPE,
+                        left + 10,
+                        cursor + 13,
+                        6,
+                        PAPER if row.kind == "exempted" else ink,
+                        ink,
+                        2,
                     )
                 )
-
-    footer = rows_top + 24 + len(entries) * 56 + 34
-    parts.append(line(MARGIN, footer, CONTENT_RIGHT, footer, RULE, 2))
-    parts.append(text(MARGIN, footer + 34, "READING RULE", 26, ACCENT, "700"))
-    for index, rule in enumerate(rule_lines):
-        parts.append(text(MARGIN, footer + 66 + index * 26, rule, 26, INK))
-    parts.append(
-        text(
-            MARGIN,
-            footer + 74 + len(rule_lines) * 26,
-            "Cells are drawn from this build's reading; a line that was not read "
-            "contributes no row content and is marked in the key above.",
-            26,
-            MUTED,
-        )
-    )
-    parts.append(close_canvas())
-    return "".join(parts)
+            parts.append('<g class="token-name">')
+            for index, fragment in enumerate(row.fragments):
+                parts.append(
+                    text(
+                        left + 26,
+                        cursor + 22 + index * 25,
+                        fragment,
+                        _TOKEN_LABEL_SIZE,
+                        ink,
+                        "700" if row.kind != "unique" else "400",
+                    )
+                )
+            parts.append('</g><g class="token-carriers">')
+            parts.append(
+                text(right - 12, cursor + 22, row.positions, 24, INK, "700", "end")
+            )
+            parts.append("</g></g>")
+            cursor += row.height
+        bottoms.append(cursor)
+    cursor = max(bottoms) + 28
+    parts.append(line(MARGIN, cursor, CONTENT_RIGHT, cursor, RULE, 2))
+    cursor += 34
+    parts.append(text(MARGIN, cursor, "READING BOUNDARY", 24, ACCENT, "700"))
+    cursor += 30
+    for paragraph in (
+        "Numbers are working positions. Only observed carriers are listed; unread lines remain unknown.",
+        "This display compares spellings. It establishes neither conceptual separation nor sibling correctness.",
+    ):
+        for value in wrap_to_width(paragraph, _CONTENT_WIDTH, 24):
+            parts.append(text(MARGIN, cursor, value, 24, INK))
+            cursor += 26
+        cursor += 8
+    return "".join([*open_canvas(1600, cursor + 24), *parts, close_canvas()])
 
 
 def _surface_row_height(detail_lines: int) -> int:
@@ -546,11 +442,12 @@ def installation_surface(
         observation.line_id: observation for observation in reading.observations
     }
     details = {
-        entry.id: wrap(
+        entry.id: wrap_to_width(
             observations[entry.id].detail
             if entry.id in observations and observations[entry.id].detail
             else "no detail was recorded",
-            168,
+            _CONTENT_WIDTH - 130,
+            24,
         )
         for entry in entries
     }
@@ -558,9 +455,10 @@ def installation_surface(
     declare_stage = next(
         (stage for stage in reading.derivation if stage.name == "declare"), None
     )
-    summary_lines = wrap(
+    summary_lines = wrap_to_width(
         declare_stage.detail if declare_stage is not None else "no declare stage ran",
-        150,
+        _CONTENT_WIDTH - 98,
+        24,
     )
     summary_height = 210 + 24 * len(summary_lines)
     height = _TOP + sum(item + 20 for item in heights) + summary_height + 90
@@ -641,10 +539,7 @@ def installation_surface(
                 else "—",
             ),
             (
-                # "REGISTRY ENTRIES" no longer fits one stat block at the
-                # legibility floor, and it is the manuscript's own wording that
-                # matters here: the number is the registry's size.
-                "REGISTRY SIZE",
+                "SIZE",
                 str(observation.registry_size)
                 if observation is not None and observation.registry_size is not None
                 else "—",
@@ -734,17 +629,15 @@ def installation_surface(
     )
     for index, row in enumerate(summary_lines):
         parts.append(text(MARGIN + 74, cursor + 176 + index * 24, row, 24, MUTED))
-    parts.append(
-        text(
-            MARGIN,
-            cursor + summary_height + 4,
-            "A row marked not read is a fact about this machine's installation, "
-            "not about the line. Nothing on that row is filled in from memory, "
-            "a default, or a previous build.",
-            24,
-            INK,
-        )
+    footer_lines = wrap_to_width(
+        "A row marked not read is a fact about this machine's installation, not about the line. Nothing on that row is filled in from memory, a default, or a previous build.",
+        _CONTENT_WIDTH,
+        24,
     )
+    for index, value in enumerate(footer_lines):
+        parts.append(
+            text(MARGIN, cursor + summary_height + 4 + index * 26, value, 24, INK)
+        )
     parts.append(close_canvas())
     return "".join(parts)
 

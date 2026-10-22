@@ -20,6 +20,12 @@ not already decide.
 
 ## Invariants
 
+`canvas.wrap_to_width()` derives a deterministic character budget from available
+width and font size. The native raster regression measures actual glyph widths
+against horizontal card and viewport boundaries and detects text overlaps near
+the same baseline. Both that
+gate and the printed-point legibility gate must pass.
+
 - **The build fails closed before it writes.** `verify_coverage()` and the
   rasterizer lookup both run before the first SVG is written. A missing
   `rsvg-convert` raises with install guidance; it is never skipped, never
@@ -34,9 +40,9 @@ not already decide.
   artifact. Coordinates are formatted to one decimal place so a trigonometric
   polygon cannot carry a floating-point difference into the file.
 - **No distinction is carried by colour alone.** Every line, read code, and
-  status has a marker shape *and* a written label. A carried grid cell also
-  gets a dark pip: the white line's fill is nearly the paper colour, and fill
-  alone makes its column unreadable in greyscale. The exempted collision and
+  status has a marker shape *and* a written label. The sparse vocabulary matrix
+  writes each carrier's working position beside the token and keys those
+  positions to named lines; fill alone never identifies a carrier. The exempted collision and
   the undeclared one differ by shape, by fill, and by the words on the row.
   Check any new encoding against a greyscale conversion before shipping it.
 - **The written label has to survive the page, not just the canvas.** The
@@ -71,8 +77,9 @@ not already decide.
 ## Claim boundaries
 
 A plate draws a declaration or a reading. `set_legible` on the installation
-surface means the declared vocabularies of the lines that were read did not
-overlap — not that the lines are correct, complete, or worth having. A row
+surface means every declared vocabulary was readable and no unexempted
+published-name collision was found. Exemptions stay visible. These facts do not
+establish sibling correctness or conceptual separation. A row
 marked not read is a fact about one machine's installation. A digest prefix
 detects disagreement with a digest someone already holds and is not tamper
 evidence.
@@ -83,6 +90,9 @@ evidence.
 - Build twice and diff the SVGs; they must be byte-identical.
 - `uv run pytest tests/test_figure_legibility.py` — derives the rendered point
   size of every plate's smallest label and fails below `MIN_LEGIBLE_PT`.
+- `uv run pytest tests/test_figure_layout.py` — measures native glyph widths
+  and refuses horizontal overflow or text overlap near the same baseline,
+  with a planted bad SVG control.
 - Convert a plate to greyscale and confirm every distinction survives.
 - Build once with a resolver that finds no sibling; `installation_surface`
   must hatch every row and `vocabulary_matrix` must draw its honest panel.

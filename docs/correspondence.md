@@ -4,6 +4,10 @@ restored on confirmation. -->
 
 # Correspondence: design reviews received
 
+The 2026-10-20 deep review received on 2026-10-21 is resolved in
+[the item-by-item disposition](review-20261020.md). The versioned release packet
+records final commits, gates and pinned sibling sources.
+
 This page records external design reviews of Line Set and what this
 repository did about them. It is a decision record, not an endorsement chain:
 each item names what was adopted, what was deferred with a reason, and what

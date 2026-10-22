@@ -9,7 +9,7 @@ claim, and it is a claim about names, not about behaviour.
 
 from __future__ import annotations
 
-from dataclasses import dataclass
+from dataclasses import asdict, dataclass
 from enum import Enum
 
 #: The classical stages of the alchemical *magnum opus*, in opus order.
@@ -31,7 +31,7 @@ class SetStatus(str, Enum):
     disjointness checkable rather than merely hoped for; the check itself is
     :func:`line_set.invariants.check_self_disjointness`.
 
-    ``SET_LEGIBLE`` means the declared vocabularies did not overlap. It does
+    ``SET_LEGIBLE`` means no unexempted published-name collision was found. It does
     not mean the lines are correct, complete, consistent, or good.
     """
 
@@ -142,6 +142,26 @@ class SharedToken:
 
 
 @dataclass(frozen=True)
+class Diagnostic:
+    phase: str
+    exception_type: str
+    detail: str
+
+
+@dataclass(frozen=True)
+class BindingProvenance:
+    requested_package: str = ""
+    resolved_package: str | None = None
+    module_origin: str | None = None
+    distribution: str | None = None
+    distribution_version: str | None = None
+    resolver_policy: str = "injected"
+    binding_schema: str = "unread"
+    registry_identity: str | None = None
+    source_revision: str | None = None
+
+
+@dataclass(frozen=True)
 class LineObservation:
     """What was actually read from one declared line.
 
@@ -157,6 +177,8 @@ class LineObservation:
     registry_digest: str | None = None
     tokens: tuple[str, ...] = ()
     detail: str = ""
+    provenance: BindingProvenance = BindingProvenance()
+    diagnostics: tuple[Diagnostic, ...] = ()
 
     def canonical(self) -> dict[str, object]:
         """Order-independent mapping for serialization."""
@@ -168,6 +190,8 @@ class LineObservation:
             "registry_digest": self.registry_digest,
             "tokens": sorted(self.tokens),
             "detail": self.detail,
+            "provenance": asdict(self.provenance),
+            "diagnostics": [asdict(item) for item in self.diagnostics],
         }
 
 
@@ -184,6 +208,10 @@ class TokenCollision:
     lines: tuple[str, ...]
     exempted: bool
     rationale: str = ""
+    meanings: tuple[tuple[str, str], ...] = ()
+    declared_carriers: tuple[str, ...] = ()
+    unread_declared_carriers: tuple[str, ...] = ()
+    fully_observed: bool = True
 
     def canonical(self) -> dict[str, object]:
         """Order-independent mapping for serialization."""
@@ -192,6 +220,10 @@ class TokenCollision:
             "lines": sorted(self.lines),
             "exempted": self.exempted,
             "rationale": self.rationale,
+            "meanings": [list(pair) for pair in sorted(self.meanings)],
+            "declared_carriers": sorted(self.declared_carriers),
+            "unread_declared_carriers": sorted(self.unread_declared_carriers),
+            "fully_observed": self.fully_observed,
         }
 
 
@@ -218,6 +250,43 @@ class DerivationStage:
 
 
 @dataclass(frozen=True)
+class CandidateOutcome:
+    package_name: str
+    code: ReadCode
+    diagnostics: tuple[Diagnostic, ...] = ()
+
+    def canonical(self) -> dict[str, object]:
+        return {
+            "package_name": self.package_name,
+            "code": self.code.value,
+            "diagnostics": [asdict(item) for item in self.diagnostics],
+        }
+
+
+@dataclass(frozen=True)
+class Discovery:
+    capable: bool = False
+    attempted: bool = False
+    completed: bool = False
+    candidates: tuple[str, ...] = ()
+    outcomes: tuple[CandidateOutcome, ...] = ()
+    diagnostics: tuple[Diagnostic, ...] = ()
+
+    def canonical(self) -> dict[str, object]:
+        return {
+            "capable": self.capable,
+            "attempted": self.attempted,
+            "completed": self.completed,
+            "candidates": sorted(self.candidates),
+            "outcomes": [
+                item.canonical()
+                for item in sorted(self.outcomes, key=lambda item: item.package_name)
+            ],
+            "diagnostics": [asdict(item) for item in self.diagnostics],
+        }
+
+
+@dataclass(frozen=True)
 class SetReading:
     """One dated reading of the declared set.
 
@@ -234,6 +303,8 @@ class SetReading:
     set_digest: str
     read_as_of: str
     derivation: tuple[DerivationStage, ...] = ()
+    discovery: Discovery = Discovery()
+    exemptions: tuple[SharedToken, ...] = ()
 
     def counts(self) -> dict[str, int]:
         """Tally observations per read code; a summary, not a score."""

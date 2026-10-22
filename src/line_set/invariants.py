@@ -1,12 +1,12 @@
 """Structural checks over the set declaration, plus one live self-check.
 
-Checks one through seven are pure compute over the declaration: they read
+Offline checks compute over the declaration: they read
 ``LINE_SET`` and ``SHARED_TOKENS`` and import nothing. They establish that the
 declaration is well formed — ids and colours distinct, positions contiguous,
 every exemption disambiguated — and nothing at all about whether the lines
 themselves are good instruments.
 
-Check eight is different in kind. It applies this package's own collision
+The live self-check is different in kind. It applies this package's own collision
 check to a declaration that includes this package, which is the property the
 whole project exists to hold: a wrapper that checks other packages for shared
 tokens has to survive that check itself. It needs the siblings to be
@@ -24,10 +24,12 @@ from collections import Counter
 from dataclasses import dataclass
 from datetime import date
 
-from .binding import PackageResolver
+from .binding import PackageResolver, valid_source_revision
+from .admission import declaration_problems
 from .models import OPUS_STAGE_ORDER, LineEntry, SetReading, SharedToken
 from .reader import exemption_for, read_set
 from .registry import LINE_SET, SHARED_TOKENS, WRAPPER_LINE
+from .serialization import validate_reading
 
 
 @dataclass(frozen=True)
@@ -42,6 +44,15 @@ class SoundnessResult:
 def _entries(lines: tuple[LineEntry, ...]) -> tuple[LineEntry, ...]:
     """Keep only well-typed entries so a check can report the rest."""
     return tuple(entry for entry in lines if isinstance(entry, LineEntry))
+
+
+def check_declaration_admission(
+    lines: tuple[LineEntry, ...] = LINE_SET,
+) -> SoundnessResult:
+    problems = declaration_problems(tuple(lines))
+    return SoundnessResult(
+        "declaration_admission", not problems, "; ".join(problems) if problems else "ok"
+    )
 
 
 def check_distinct_line_ids(
@@ -302,6 +313,8 @@ def check_shared_tokens_disambiguated(
             problems.append(f"index {index}: not a SharedToken")
             continue
         label = token.token if isinstance(token.token, str) else f"index {index}"
+        if not isinstance(token.rationale, str) or not token.rationale.strip():
+            problems.append(f"{label}: no rationale is recorded")
         try:
             declared_lines = tuple(token.lines)
         except TypeError:
@@ -315,8 +328,6 @@ def check_shared_tokens_disambiguated(
         unknown = sorted(set(declared_lines) - known)
         if unknown:
             problems.append(f"{label}: names undeclared lines {unknown}")
-        if not isinstance(token.rationale, str) or not token.rationale.strip():
-            problems.append(f"{label}: no rationale is recorded")
     ok = not problems
     return SoundnessResult(name, ok, "ok" if ok else f"unusable exemptions: {problems}")
 
@@ -346,6 +357,14 @@ def self_disjointness_from_reading(
       unestablished for the set.
     """
     name = "self_disjointness"
+    try:
+        validate_reading(reading)
+    except (ValueError, TypeError, AttributeError) as exc:
+        return SoundnessResult(
+            name,
+            False,
+            f"invalid reading: {str(exc)[:500]}; disjointness is unestablished",
+        )
     by_id = {observation.line_id: observation for observation in reading.observations}
     wrapper_observation = by_id.get(wrapper.id)
     if wrapper_observation is None or not wrapper_observation.tokens:
@@ -380,9 +399,12 @@ def self_disjointness_from_reading(
         )
 
     hits = sorted(
-        collision.token
-        for collision in (*reading.collisions, *reading.exempted_collisions)
-        if wrapper.id in collision.lines
+        set(wrapper_observation.tokens).intersection(
+            token
+            for observation in reading.observations
+            if observation.line_id != wrapper.id
+            for token in observation.tokens
+        )
     )
     if hits:
         return SoundnessResult(
@@ -435,7 +457,45 @@ def check_self_disjointness(
     return self_disjointness_from_reading(reading, wrapper)
 
 
+def check_pinned_sources(reading: SetReading) -> SoundnessResult:
+    problems = []
+    try:
+        validate_reading(reading)
+    except ValueError as error:
+        problems.append(str(error))
+    if not reading.observations:
+        problems.append("no observations were scanned")
+    for observation in reading.observations:
+        provenance = observation.provenance
+        if (
+            not valid_source_revision(provenance.source_revision)
+            or provenance.resolver_policy != "pinned-source-snapshot"
+        ):
+            problems.append(f"{observation.line_id}: no pinned source revision")
+        if not observation.tokens or any(
+            value is None
+            for value in (
+                observation.version,
+                observation.registry_size,
+                observation.registry_digest,
+            )
+        ):
+            problems.append(f"{observation.line_id}: incomplete package reading")
+    if not reading.discovery.completed:
+        problems.append("candidate enumeration did not complete")
+    if any(item.code.value == "import_failed" for item in reading.discovery.outcomes):
+        problems.append("candidate resolution failed")
+    return SoundnessResult(
+        "pinned_sources",
+        not problems,
+        "; ".join(problems)
+        if problems
+        else "every observed line has a pinned source and package metadata; discovery completed",
+    )
+
+
 _LINE_CHECKS = (
+    check_declaration_admission,
     check_distinct_line_ids,
     check_distinct_colours,
     check_distinct_opus_stages,

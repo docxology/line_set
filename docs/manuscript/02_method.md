@@ -2,6 +2,42 @@
 
 ## The declaration
 
+Before importing a package, I apply the minimal admission validator shared with
+the offline checks. An empty declaration, duplicate or blank line/package
+identity, or malformed line field raises `DeclarationError`. This is separate
+from historical opus and working-order conventions, so a valid small custom set
+with no exemptions remains readable. Admission does not decide whether a line
+deserves to exist.
+
+Published names include aliases: I collect `__members__` keys from all root
+enum bindings, independently of `__all__`, and count each class object once.
+The census separates declared names, canonical members and distinct spellings.
+Submodule-only names remain outside the contract.
+
+The optional `line-set-binding/1` descriptor selects the package's own registry
+and digest callable. Otherwise binding is marked `convention-heuristic`; tuple
+aliases do not create false ambiguity. Provenance records requested/resolved
+identity, module origin, distribution when available, resolver policy, binding
+schema and source revision when known. I refuse a cached source mismatch rather
+than silently unloading modules. These fields record custody, not correctness.
+
+Resolve, bind, digest and discovery failures retain bounded phase diagnostics.
+Discovery capability, attempt, completion and candidate outcomes are separate
+from namespace status. An unread declared exemption carrier remains unknown:
+exact equality still refuses the exemption, and the collision retains observed,
+declared and unread carriers. Exempted collisions retain per-line meanings.
+Imports run package code in process and are not a sandbox.
+
+Canonical declarations and readings carry schema versions. Replay recomputes
+collision and status facts and rejects malformed package metadata: present
+versions and digests are non-blank strings, and registry sizes are non-negative
+integers, excluding booleans. These field checks do not verify what a sibling
+reports. Self-disjointness recomputes wrapper token
+intersections rather than trusting a supplied collision list. A reading hash
+compares the exact dated record, including diagnostics and provenance, and may
+change while the declaration digest stays fixed. Historical records retain
+their original identity; the release reading uses separately pinned sources.
+
 A `LineEntry` has ten fields. Four are identity and prose — the line's id, its colour, the question it answers, the job it does. One is the boundary: `must_not_become`, which every line fills in and which a structural check refuses to let go blank. Two are ordering: `opus_stage`, which may be absent, and `working_position`, a one-based integer that must land in a contiguous `1..N` across the whole declaration. The last three are addresses. `package_name` is what the reader asks the import system for, and it is kept separate from `id` so that a line's identity in the declaration does not depend on how its code happens to be distributed. `registry_noun` and `verdict_noun` are prose labels for what a line keeps and what it emits; figures and manuscript text use them, and the reader never uses them to find anything.
 
 A `SharedToken` has four: the token, the tuple of line ids allowed to carry it, a tuple of per-line meanings, and a rationale. The meanings tuple is the load-bearing one. A shared token with no meaning recorded for each line it names is a label, and a label cannot show that two uses of one spelling are two different things.
@@ -12,7 +48,7 @@ The two record types are stated as [@def:line-entry] and [@def:shared-token]. Th
 
 `read_set` takes the lines, the exemption table, an optional resolver, and an optional review date, and runs five stages, formalized as [@def:reading]. Each stage records what it did into the returned derivation, so a reading can be re-read rather than trusted.
 
-**Resolve** asks the resolver for each declared line's package and records one of four codes. `RESOLVED` means the package imported. `NOT_INSTALLED` means the import system found nothing. `IMPORT_FAILED` means it found something that raised, and the exception text is kept. `NO_VOCABULARY` means the package imported and exported no enum at its root. None of these is an exception. A line that cannot be read produces no version, no registry size, and no digest, and those fields stay `None`; nothing in the package invents a value for a package it could not read.
+**Resolve** asks the resolver for each declared line's package and records one of four codes. `RESOLVED` means the package imported. `NOT_INSTALLED` means the import system found nothing. `IMPORT_FAILED` means it found something that raised, and the exception text is kept. `NO_VOCABULARY` means the package imported and exported no enum at its root. None of these is an exception. `NOT_INSTALLED` and `IMPORT_FAILED` leave version, registry size and digest as `None`; `NO_VOCABULARY` preserves whatever metadata was actually read. Nothing in the package invents a missing value.
 
 **Bind** reads what a resolved package publishes about itself: a version string from `__version__` or `PROJECT_VERSION`, a registry size, a digest, and the member names of every `enum.Enum` exported at the package root. Only the root is read. A token defined in a submodule and never re-exported is invisible here, which is intentional — the contract is about the vocabulary a line publishes, not about every name that exists somewhere inside it.
 
@@ -28,7 +64,7 @@ The two record types are stated as [@def:line-entry] and [@def:shared-token]. Th
 
 One module imports siblings. `binding.py` resolves a package by name, reads a version, counts a registry, asks the package for its own digest, and collects enum member names. It never calls a sibling's evaluator, never passes it data, and never forms an opinion about what a sibling concluded. Every other module in the package is pure computation over a declaration handed to it as an argument.
 
-Two details in that module are deliberate. The digest is always the package's own, computed by the package's own function over the package's own registry; a digest this wrapper derived on a sibling's behalf would say nothing about whether the sibling agrees with it. And the registry-size rule is a convention read rather than a contract: the size is the length of the unique public, non-empty tuple in the package's `registry` submodule whose members are all one dataclass type, with the strictly largest winning when several qualify and a tie reporting no size at all rather than a guess. A package that keeps its registry somewhere else simply reports nothing, which is the correct answer to a question the wrapper is not entitled to force.
+Two details in that module are deliberate. The digest is always the package's own, computed by the package's own function over the package's own registry; a digest this wrapper derived on a sibling's behalf would say nothing about whether the sibling agrees with it. Without an explicit binding descriptor, the registry-size rule is a convention read rather than a contract: the size is the length of the unique public, non-empty tuple in the package's `registry` submodule whose members are all one dataclass type, with the strictly largest winning when several qualify and a tie reporting no size at all rather than a guess. A package that keeps its registry somewhere else simply reports nothing, which is the correct answer to a question the wrapper is not entitled to force.
 
 The default resolver adds nothing to `sys.path` and finds exactly what an ordinary import would find. Looking in the sibling checkouts is an explicit opt-in, and a resolver that was asked to do so records precisely which directories it inserted.
 
@@ -38,11 +74,11 @@ The exemption matcher is the only thing standing between a declared exemption an
 
 ## The checks
 
-Seven checks run offline over the declaration and import nothing: distinct ids, distinct colours, distinct opus stages drawn from the known stage names, contiguous working positions, working order differing from opus order, a non-blank `must_not_become` on every entry, and an exemption table the live matcher would honour. That last one calls the matcher the reader actually uses instead of re-deriving its rules, so the check cannot drift away from the thing it is checking.
+Eight checks run offline over the declaration and import nothing: minimal reader admission, distinct ids, distinct colours, distinct opus stages drawn from the known stage names, contiguous working positions, working order differing from opus order, a non-blank `must_not_become` on every entry, and an exemption table the live matcher would honour. That last one calls the matcher the reader actually uses instead of re-deriving its rules, so the check cannot drift away from the thing it is checking.
 
-Every one of the seven fails on an empty declaration, and each says why in its detail. A check that passed because it had nothing to look at is not evidence of anything, and the same principle applies to the exemption table: an empty table fails, because a table that is empty because none is needed and a table that was accidentally cleared look identical from inside the check.
+Every one of the eight fails on an empty declaration, and each says why in its detail. A check that passed because it had nothing to look at is not evidence of anything, and the same principle applies to the exemption table: an empty table fails, because a table that is empty because none is needed and a table that was accidentally cleared look identical from inside the check.
 
-The eighth check appends the wrapper's own entry to the declaration, runs the ordinary reader over the result, and asks whether any of the wrapper's own tokens turned up in any collision; it is stated as [@prop:self-disjointness]. A declared exemption does not help here — the wrapper is not a line and has no standing to share a token with one, so an exempted collision involving it counts against it exactly like an unexempted one. The check needs the siblings importable, so it lives outside the offline battery, and when there is no sibling vocabulary to compare against it reports failure with the reason. Moving it into the offline battery would make an unattended run go green and would establish nothing.
+The ninth check appends the wrapper's own entry to the declaration, runs the ordinary reader over the result, and asks whether any of the wrapper's own tokens turned up in any collision; it is stated as [@prop:self-disjointness]. A declared exemption does not help here — the wrapper is not a line and has no standing to share a token with one, so an exempted collision involving it counts against it exactly like an unexempted one. The check needs the siblings importable, so it lives outside the offline battery, and when there is no sibling vocabulary to compare against it reports failure with the reason. Moving it into the offline battery would make an unattended run go green and would establish nothing.
 
 ## Digests
 

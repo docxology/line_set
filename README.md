@@ -43,6 +43,10 @@ version, size, and digest reported is read from that sibling using the sibling's
 own function; it is not a ranking; and it is emphatically not a claim about
 substance — two lines can have entirely disjoint vocabularies and still overlap
 conceptually, which is human work this package does not do and does not shorten.
+Admission rejects empty or ambiguous declarations before imports. Published enum
+names include aliases; binding and discovery retain structured provenance and
+coverage. The exact contracts are in [`docs/binding_contract.md`](docs/binding_contract.md).
+
 The full non-claim register is [`docs/claim_boundaries.md`](docs/claim_boundaries.md),
 and it is the first thing to read if you suspect this project of overreach.
 

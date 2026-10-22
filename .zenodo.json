@@ -1,6 +1,6 @@
 {
-  "title": "The Line Set: Holding Instruments Apart",
-  "description": "<p>A thin reader that declares what a set of small evaluative instruments is, reads whichever sibling packages are installed, and checks one narrow property: that no two of them have given the same spelling to different things. It adds no instrument of its own and computes no aggregate; a legible reading says only that the declared vocabularies did not overlap.</p><p><strong>Subtitle:</strong> A Declaration, a Reader, and a Non-Overlap Contract for a Growing Set of Small Instruments</p><p>Code is MIT licensed; prose and figures are CC BY 4.0. See LICENSE in the repository.</p>",
+  "title": "The Line Set: The Collected Volume",
+  "description": "<p>A thin reader that declares what a set of small evaluative instruments is, reads available sibling packages, and reports unexempted cross-line collisions in published enum member names. It adds no instrument of its own and computes no aggregate. A reading does not establish conceptual separation or verify sibling conclusions.</p><p><strong>Subtitle:</strong> A Declaration, a Reader, and a Non-Overlap Contract for a Growing Set of Small Instruments</p><p>Code is MIT licensed; prose and figures are CC BY 4.0. See LICENSE in the repository.</p>",
   "upload_type": "publication",
   "publication_type": "workingpaper",
   "creators": [
@@ -12,7 +12,7 @@
   ],
   "license": "cc-by-4.0",
   "access_right": "open",
-  "version": "0.4.0",
+  "version": "0.5.0",
   "keywords": [
     "modularity",
     "information hiding",

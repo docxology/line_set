@@ -15,30 +15,22 @@ Parnas treats extension and contraction as one problem and puts the cost of both
 
 The claim holds because no module outside `registry.py` names an individual line. Every function that does work takes `lines` and `shared` as arguments and computes over whatever it was handed. Searching the package for the eight line ids as whole words finds them only in `registry.py`, four and fourteen and two and four and eight and four and six and fourteen times; `reader.py`, `invariants.py`, `binding.py`, `serialization.py`, `models.py`, and `__init__.py` contain none of them. One mention of `OUTSIDE_SCOPE` survives in `reader.py`, inside the exemption matcher's docstring, where it is the worked example of a substring the matcher must refuse. It is prose, not a branch.
 
-## The historical executed example
+## The executable isolated example
 
-The following is the recorded 2026-09-01 extension demonstration, using the
-then-read sibling versions. The hypothetical upkeep entry is bookkeeping test
-material, not an admission proposal or a new member of the set. Nothing in the
-package was edited to run it; the reading record is preserved at that date.
+The hypothetical teal entry is bookkeeping test material, not an admission
+proposal or a new member of the set. Its identifier and colour are fixed
+examples, currently unused; its working position is derived from the
+declaration. The fixture reading below is separate from the preserved
+historical sibling record and from the current pinned release reading.
 
 ```python
 from line_set import (LINE_SET, SHARED_TOKENS, LineEntry, all_invariants,
                       read_set, registry_digest, sibling_path_resolver)
 
-fifth = LineEntry(
-    id="teal_line",
-    color="teal",
-    question="What does keeping this alive cost?",
-    job="Standing upkeep, dependencies, and the bill for continued existence",
-    must_not_become="A reason to drop work that is merely expensive",
-    opus_stage=None,
-    working_position=9,
-    package_name="teal_line",
-    registry_noun="upkeep records",
-    verdict_noun="upkeep status",
-)
-extended = LINE_SET + (fifth,)
+from tests.test_extensibility import APPENDED
+
+appended = APPENDED
+extended = LINE_SET + (appended,)
 
 print("lines:", len(LINE_SET), "->", len(extended))
 print("digest:", registry_digest(LINE_SET, SHARED_TOKENS)[:12],
@@ -46,17 +38,27 @@ print("digest:", registry_digest(LINE_SET, SHARED_TOKENS)[:12],
 for r in all_invariants(extended, SHARED_TOKENS):
     print(f"  {'PASS' if r.passed else 'FAIL'}  {r.name}")
 reading = read_set(extended, SHARED_TOKENS,
-                   resolver=sibling_path_resolver(), as_of="2026-09-01")
+                   resolver=sibling_path_resolver(), as_of="2026-10-21")
 print("status:", reading.status.value)
 print("counts:", reading.counts())
 print("reason:", reading.derivation[-1].detail)
 ```
 
-The measured output:
+The output below was reproduced on 2026-10-21 with isolated temporary packages,
+one distinct vocabulary per declared identity, and the same unused teal fixture
+as the suite. It covers all declared identities plus the absent appended one;
+it is separate from the pinned sibling measurement. The reviewed source base
+was `3be000b`; the release packet identifies the implementation. To reproduce
+without siblings, run the executable recipe in `docs/extensibility.md` or the
+manuscript binding tests. With released siblings, the snippet uses the explicitly
+selected `LINE_SET_SIBLINGS` directory.
+
+The measured fixture output:
 
 ```text
 lines: 8 -> 9
-digest: 7b7e70b70c5c -> 81d9e7d415d0
+digest: de4bd085666e -> fdd7e5719dc8
+  PASS  declaration_admission
   PASS  distinct_line_ids
   PASS  distinct_colours
   PASS  distinct_opus_stages
@@ -69,7 +71,7 @@ counts: {'resolved': 8, 'not_installed': 1, 'import_failed': 0, 'no_vocabulary':
 reason: set_partial: 1 declared line(s) could not be read: ['teal_line']
 ```
 
-All seven structural checks pass on the nine-entry declaration. Position contiguity now expects `1..9` and gets it. Colour distinctness has a ninth colour to consider. The orders still diverge, because the appended entry declares no opus stage and is therefore ignored by that comparison — a line may join the set without being assigned a stage, and the set has in fact grown past four while the four borrowed stage names stayed exactly four.
+All eight structural checks pass on the nine-entry declaration. Position contiguity now expects `1..9` and gets it. Colour distinctness has a ninth colour to consider. The orders still diverge, because the appended entry declares no opus stage and is therefore ignored by that comparison — a line may join the set without being assigned a stage, and the set has in fact grown past four while the four borrowed stage names stayed exactly four.
 
 The wrapper's own collision check ([@prop:self-disjointness]) applies to any extended declaration.
 
@@ -77,7 +79,7 @@ The reading is `SET_PARTIAL`, and that is the correct answer rather than a short
 
 ## What the digest change means
 
-The set digest moved from `7b7e70b70c5c` to `81d9e7d415d0`. That is the intended behaviour: the digest covers the lines and the exemption table together, so a set with an appended line is a different set. It is also worth noticing that the digest binds to the *content* of the entry and not merely to its presence. Rewording the appended line's question produces a different digest, which is what makes the value useful for spotting that two people are reading different declarations.
+The set digest moved from `de4bd085666e` to `fdd7e5719dc8`. That is the intended behaviour: the digest covers the lines and the exemption table together, so a set with an appended line is a different set. It is also worth noticing that the digest binds to the *content* of the entry and not merely to its presence. Rewording the appended line's question produces a different digest, which is what makes the value useful for spotting that two people are reading different declarations.
 
 The value is a comparison handle and nothing more. It tells you that a declaration you hold differs from a declaration someone else holds. It does not tell you which one is right, it does not record who changed what, and it is not tamper evidence.
 
@@ -85,6 +87,6 @@ The value is a comparison handle and nothing more. It tells you that a declarati
 
 What the run above shows is that the declaration is extensible without touching the reader or the checks: the battery passed on the nine-entry declaration, the reading was taken, and no module outside `registry.py` was edited to make either happen. Two nearby claims are not shown and should not be read in.
 
-Adding a colour is cheap in code. It is not cheap in judgement: the hard part of a fifth line is deciding whether the set actually has a fifth question, and nothing in this package can help with that. A line whose question overlaps an existing line's would pass every check here, because the checks read names.
+Adding a colour is cheap in code. It is not cheap in judgement: the hard part of another line is deciding whether the set actually has another question, and nothing in this package can help with that. A line whose question overlaps an existing line's would pass every check here, because the checks read names.
 
 The same requirement is placed on the figure builders — they draw from the declaration rather than from a fixed list of four, and a test appends a colour and re-renders to hold them to it. A passing render is a weaker result than it sounds. It says the plate was produced, not that it is still readable at five entries, or at nine.

@@ -7,21 +7,20 @@ checks, the design has failed and the fix is the design, not the edit.
 
 ## The recipe
 
+Before adding a colour, a person records its distinct question, explicit
+must-not-become boundary, package identity, published vocabulary and dated
+binding evidence, and reviews any proposed exemption meanings. These are
+substantive admission decisions; a namespace reading cannot make them.
+
 **1. Append one `LineEntry` to `LINE_SET` in `src/line_set/registry.py`.**
 
+For an executable hypothetical entry, use the suite's fixture:
+
 ```python
-LineEntry(
-    id="green_line",                       # unique across the set
-    color="green",                         # unique across the set
-    question="What is still growing?",     # the one question the line answers
-    job="...",                             # what it does
-    must_not_become="...",                 # non-blank; the drift it refuses
-    opus_stage=None,                       # see the constraint below
-    working_position=len(LINE_SET) + 1,    # must extend 1..N contiguously
-    package_name="green_line",             # what the reader imports
-    registry_noun="growth records",        # prose label, for figures and text
-    verdict_noun="growth status",          # prose label, for figures and text
-)
+from tests.test_extensibility import APPENDED
+
+# The unused teal identity is the same fixture exercised by the suite.
+APPENDED
 ```
 
 Five constraints, each enforced by a check that fails closed rather than by
@@ -57,90 +56,57 @@ exemption does and does not establish.
 **3. Update the prose that names the set.** This is the part no check can do for
 you; see *Files this touches* below.
 
-## Historical executed example (2026-07-29; not the current declaration)
+## Executable isolated example
 
-The following transcript belongs to the earlier declaration before Green was
-admitted. It is preserved as history, not rerun against the current declaration:
-Green is already present, so appending it now would duplicate an identifier and
-colour. It is not evidence of current admission or of a ninth-line test. For
-the current extension regression, run `uv run pytest tests/test_extensibility.py`;
-that test uses a fixed hypothetical identifier and colour currently distinct
-from the declaration, and derives its appended working position from the
-declaration's length.
-Conceptual admission is separate human work in the [dossier](admission/dossier.md).
+This example uses the same hypothetical teal entry as the suite. It constructs
+real temporary packages with distinct names, independent of installed siblings.
+The package source under `src/` is unchanged.
 
-The historical example appends a
-hypothetical entry at runtime, runs the whole offline battery over the extended
-declaration, takes a live reading, and compares the declaration digest before
-and after. Nothing in `src/line_set/` is modified by it.
+The fixture uses a fixed hypothetical identifier and colour currently distinct
+from the declaration; only its working position is derived. A real extension
+must choose unused values. Conceptual admission is separate human work in the
+[dossier](admission/dossier.md).
 
 ```python
-import sys
-sys.path.insert(0, "src")
-from line_set import (
-    LINE_SET, SHARED_TOKENS, LineEntry,
-    all_invariants, read_set, registry_digest, sibling_path_resolver,
-)
+from tempfile import TemporaryDirectory
+from pathlib import Path
+from line_set import LINE_SET, SHARED_TOKENS, all_invariants, read_set, registry_digest
+from tests.test_extensibility import APPENDED
+from tests.support import import_sandbox, load_line_package, resolved, write_line_package
 
-green = LineEntry(
-    id="green_line",
-    color="green",
-    question="What is still growing?",
-    job="Placeholder used only to demonstrate extension",
-    must_not_become="A real instrument without its own project",
-    opus_stage=None,
-    working_position=len(LINE_SET) + 1,
-    package_name="green_line",
-    registry_noun="growth records",
-    verdict_noun="growth status",
-)
-extended = LINE_SET + (green,)
-
-for result in all_invariants(extended, SHARED_TOKENS):
-    print(f"{'PASS' if result.passed else 'FAIL'}  {result.name}")
-
-reading = read_set(extended, SHARED_TOKENS,
-                   resolver=sibling_path_resolver(), as_of="2026-07-29")
+extended = LINE_SET + (APPENDED,)
+assert APPENDED.id not in {entry.id for entry in LINE_SET}
+assert all(result.passed for result in all_invariants(extended, SHARED_TOKENS))
+with TemporaryDirectory() as directory, import_sandbox():
+    root = Path(directory)
+    answers = {}
+    for index, entry in enumerate(LINE_SET):
+        write_line_package(root, entry.package_name, (f"TOKEN_{index}",))
+        answers[entry.package_name] = resolved(
+            entry.package_name, load_line_package(root, entry.package_name))
+    from tests.support import canned_resolver
+    reading = read_set(extended, SHARED_TOKENS,
+                       resolver=canned_resolver(answers), as_of="2026-10-21")
+print("membership:", tuple(entry.id for entry in LINE_SET))
+print("lines:", len(LINE_SET), "->", len(extended))
 print("status:", reading.status.value)
 print("counts:", reading.counts())
-print("digest before:", registry_digest(LINE_SET, SHARED_TOKENS)[:16])
-print("digest after: ", registry_digest(extended, SHARED_TOKENS)[:16])
+print("digest before:", registry_digest(LINE_SET, SHARED_TOKENS))
+print("digest after:", registry_digest(extended, SHARED_TOKENS))
 ```
 
-Measured output, run from the project root on 2026-07-29 with the sibling
-checkouts present:
+The executable example is bound by
+`tests/test_review_regressions.py::test_documented_extension_executes_without_siblings`.
+Its date is explicit, its resolver is an injected callable over temporary package
+sources, and its coverage is every declared identity plus the absent hypothetical
+entry. The review base was `3be000b`; the release packet records the implementing
+commit and the separate pinned sibling reading. This fixture is namespace evidence,
+not a measurement of any sibling.
 
-```text
-PASS  distinct_line_ids
-PASS  distinct_colours
-PASS  distinct_opus_stages
-PASS  contiguous_working_positions
-PASS  orders_diverge
-PASS  must_not_become_declared
-PASS  shared_tokens_disambiguated
-status: set_partial
-counts: {'resolved': 4, 'not_installed': 1, 'import_failed': 0, 'no_vocabulary': 0}
-digest before: 40db5e0e3e038707
-digest after:  aef45330a26f53ce
-```
-
-Three things in that output are worth naming.
-
-The whole offline battery passes on the extended declaration with no code
-change, because every check takes `lines` as an argument and none of them names
-an individual line.
-
-The reading is `SET_PARTIAL`, not an error, because `green_line` is a name with
-no package behind it. Declaring a line before writing it is a normal state and
-the reader reports it as one: the entry resolves to `not_installed`, its
-version, registry size, and digest stay `None`, and the other real lines are
-still read and still checked for collisions. A declaration is allowed to run
-ahead of an installation.
-
-The declaration digest changes, which is the intended behaviour and the whole
-use of the digest: a set whose declaration grew is a different declaration. It
-is not evidence that the growth was legitimate — see the tamper-evidence
-paragraph in [claim_boundaries.md](claim_boundaries.md).
+The old 2026-07-29 transcript described an earlier membership. It is superseded by
+the executable fixture above; its historical bytes remain in Git history at
+`3be000b:docs/extensibility.md`. Green is already declared and cannot be used as
+an unused identity.
 
 ## Files this touches
 

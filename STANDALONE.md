@@ -71,6 +71,16 @@ instruments' own repositories — `docxology/red_line`, `docxology/black_line`,
 (the set's own membership, as declared in `src/line_set/registry.py`, is
 authoritative if this list and it ever disagree).
 
+## Admission, provenance and replay
+
+The public reader raises `DeclarationError` for empty or ambiguous declarations
+before imports. Small custom sets need no opus convention or exemption table.
+Published root enum names include aliases; class aliases do not inflate the
+census. Discovery coverage and binding provenance travel in the reading even
+when the namespace is legible. See [the binding contract](docs/binding_contract.md)
+for descriptors, exact-record hashes and schema migration. Archived readings
+retain their original date and are not current verification of absent siblings.
+
 ## Clean copy
 
 Copy the project tree, `uv.lock`, and the manuscript together. Do not copy the

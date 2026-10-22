@@ -229,10 +229,14 @@ def header(
     parts = [
         text(MARGIN, KICKER_Y, kicker, 28, accent, "700"),
         text(MARGIN, TITLE_Y, title, 40, INK, "700"),
-        text(MARGIN, SUBTITLE_Y, subtitle, 29, MUTED),
     ]
+    subtitle_lines = wrap_to_width(subtitle, CONTENT_RIGHT - MARGIN, 29)
+    for index, value in enumerate(subtitle_lines):
+        parts.append(text(MARGIN, SUBTITLE_Y + index * 32, value, 29, MUTED))
     if note:
-        parts.append(text(MARGIN, NOTE_Y, note, 28, accent, "700"))
+        note_top = max(NOTE_Y, SUBTITLE_Y + 32 * len(subtitle_lines))
+        for index, value in enumerate(wrap_to_width(note, CONTENT_RIGHT - MARGIN, 28)):
+            parts.append(text(MARGIN, note_top + index * 32, value, 28, accent, "700"))
     return parts
 
 
@@ -260,6 +264,11 @@ def wrap(value: str, width: int) -> list[str]:
     # falsify is a branch that reads as caution and tests as noise.
     lines.append(current)
     return lines
+
+
+def wrap_to_width(value: str, width: float, size: int) -> list[str]:
+    """Use a deterministic character budget; raster checks measure actual glyphs."""
+    return wrap(value, max(1, int(width / (size * 0.6))))
 
 
 #: Endings that take ``-es`` rather than ``-s``.
@@ -311,4 +320,5 @@ __all__ = [
     "rect",
     "text",
     "wrap",
+    "wrap_to_width",
 ]

@@ -11,8 +11,8 @@ what a sibling concluded.
 Absence is an ordinary outcome, not an error. A line that is not installed
 yields :attr:`~line_set.models.ReadCode.NOT_INSTALLED` and no version, no
 size, and no digest. A line that raises on import yields ``IMPORT_FAILED``
-and the exception text. Nothing here raises out of a resolution and nothing
-here invents a value for a package it could not read.
+and bounded exception diagnostics. Ordinary resolution failures are contained;
+process-control exceptions propagate. No value is invented for an unread package.
 
 Resolution goes through the normal import system by default. Sibling source
 directories are added to ``sys.path`` only when a caller explicitly asks for
@@ -26,16 +26,18 @@ import dataclasses
 import enum
 import importlib
 import importlib.util
+import importlib.metadata
+import json
 import os
 import pkgutil
 import sys
 from collections.abc import Iterable, Sequence
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 from pathlib import Path
 from types import ModuleType
 from typing import Protocol
 
-from .models import ReadCode
+from .models import BindingProvenance, Diagnostic, Discovery, ReadCode
 
 #: Attributes consulted, in order, for a package's version string.
 VERSION_ATTRS: tuple[str, ...] = ("__version__", "PROJECT_VERSION")
@@ -87,6 +89,8 @@ class Resolution:
     code: ReadCode
     module: ModuleType | None
     detail: str
+    provenance: BindingProvenance = BindingProvenance()
+    diagnostics: tuple[Diagnostic, ...] = ()
 
 
 @dataclass(frozen=True)
@@ -103,6 +107,9 @@ class Vocabulary:
     registry_digest: str | None
     tokens: tuple[str, ...]
     detail: str
+    binding_schema: str = "convention-heuristic"
+    registry_identity: str | None = None
+    diagnostics: tuple[Diagnostic, ...] = ()
 
 
 class PackageResolver(Protocol):
@@ -138,11 +145,13 @@ def exported_enums(module: ModuleType) -> tuple[type[enum.Enum], ...]:
     different classes.
     """
     return tuple(
-        value
-        for value in vars(module).values()
-        if isinstance(value, type)
-        and issubclass(value, enum.Enum)
-        and value.__module__ != enum.__name__
+        dict.fromkeys(
+            value
+            for value in vars(module).values()
+            if isinstance(value, type)
+            and issubclass(value, enum.Enum)
+            and value.__module__ != enum.__name__
+        )
     )
 
 
@@ -154,7 +163,7 @@ def enum_tokens(module: ModuleType) -> tuple[str, ...]:
     """
     names: set[str] = set()
     for exported in exported_enums(module):
-        names.update(member.name for member in exported)
+        names.update(exported.__members__)
     return tuple(sorted(names))
 
 
@@ -168,14 +177,16 @@ class VocabularyCensus:
     wrong thing to quote as "how many names this package declares", so the two
     counts are kept apart here rather than conflated in prose.
 
-    ``declared_members`` counts every member of every exported enum, repeats
+    ``declared_members`` counts every declared name including aliases, repeats
     included. ``distinct_names`` is what survives deduplication and is exactly
-    ``len(enum_tokens(module))``.
+    ``len(enum_tokens(module))``. ``canonical_members`` counts ordinary enum
+    iteration separately. Root class aliases do not duplicate a class.
     """
 
     enum_classes: int
     declared_members: int
     distinct_names: int
+    canonical_members: int = 0
 
     @property
     def within_line_repeats(self) -> int:
@@ -191,11 +202,12 @@ def vocabulary_census(module: ModuleType) -> VocabularyCensus:
     classes.
     """
     exported = exported_enums(module)
-    declared = [member.name for item in exported for member in item]
+    declared = [name for item in exported for name in item.__members__]
     return VocabularyCensus(
         enum_classes=len(exported),
         declared_members=len(declared),
         distinct_names=len(set(declared)),
+        canonical_members=sum(len(item) for item in exported),
     )
 
 
@@ -232,7 +244,8 @@ def _registry_tuple(module: ModuleType) -> tuple[object, ...] | None:
         (member_type,) = member_types
         if not dataclasses.is_dataclass(member_type):
             continue
-        candidates.append(value)
+        if not any(value is candidate for candidate in candidates):
+            candidates.append(value)
     if not candidates:
         return None
     largest = max(len(candidate) for candidate in candidates)
@@ -244,7 +257,7 @@ def _registry_tuple(module: ModuleType) -> tuple[object, ...] | None:
 
 def _registry_digest(
     module: ModuleType, registry: tuple[object, ...] | None
-) -> tuple[str | None, str]:
+) -> tuple[str | None, str, tuple[Diagnostic, ...]]:
     """Ask the package for its own registry digest.
 
     The digest is the package's, computed by the package's own function over
@@ -253,7 +266,7 @@ def _registry_digest(
     sibling agrees with it.
     """
     if registry is None:
-        return None, "no registry tuple was found, so no digest was requested"
+        return None, "no registry tuple was found, so no digest was requested", ()
     for attr in DIGEST_ATTRS:
         function = getattr(module, attr, None)
         if not callable(function):
@@ -261,18 +274,87 @@ def _registry_digest(
         try:
             value = function(registry)
         except Exception as exc:  # noqa: BLE001 - a sibling must not crash us
-            return None, f"{attr}() raised {type(exc).__name__}: {exc}"
+            issue = diagnostic("digest", exc)
+            return (
+                None,
+                f"{attr}() raised {issue.exception_type}: {issue.detail}",
+                (issue,),
+            )
         if isinstance(value, str) and value.strip():
-            return value, f"digest read from {attr}()"
-        return None, f"{attr}() returned no digest string"
-    return None, "the package exposes no registry digest function"
+            return value, f"digest read from {attr}()", ()
+        return None, f"{attr}() returned no digest string", ()
+    return None, "the package exposes no registry digest function", ()
 
 
 def read_vocabulary(module: ModuleType) -> Vocabulary:
     """Read everything this module is willing to read from one package."""
     tokens = enum_tokens(module)
-    registry = _registry_tuple(module)
-    digest, digest_detail = _registry_digest(module, registry)
+    descriptor = getattr(module, "LINE_SET_BINDING", None)
+    schema = "convention-heuristic"
+    identity = None
+    diagnostics: tuple[Diagnostic, ...] = ()
+    if descriptor is None:
+        registry = _registry_tuple(module)
+        digest, digest_detail, diagnostics = _registry_digest(module, registry)
+    else:
+        if (
+            not isinstance(descriptor, dict)
+            or descriptor.get("schema") != "line-set-binding/1"
+        ):
+            raise ValueError("unsupported LINE_SET_BINDING schema")
+        names = descriptor.get("vocabulary_enums")
+        if (
+            not isinstance(names, tuple)
+            or not names
+            or any(not isinstance(n, str) or not n.strip() for n in names)
+        ):
+            raise ValueError("descriptor vocabulary_enums must name root enums")
+        selected = tuple(getattr(module, name) for name in names)
+        if set(selected) != set(exported_enums(module)) or len(set(selected)) != len(
+            selected
+        ):
+            raise ValueError(
+                "descriptor must name every published root enum exactly once"
+            )
+        identity = descriptor.get("registry")
+        if (
+            not isinstance(identity, str)
+            or not identity
+            or any(
+                not part.isidentifier() or part.startswith("_")
+                for part in identity.split(".")
+            )
+        ):
+            raise ValueError("descriptor registry must be a public attribute path")
+        target: object = module
+        for part in identity.split("."):
+            target = getattr(target, part)
+        if not isinstance(target, tuple):
+            raise ValueError("descriptor registry must resolve to a tuple")
+        registry = target
+        digest_name = descriptor.get("digest")
+        if (
+            not isinstance(digest_name, str)
+            or not digest_name.isidentifier()
+            or digest_name.startswith("_")
+        ):
+            raise ValueError("descriptor digest must name a public root callable")
+        function = getattr(module, digest_name)
+        if not callable(function):
+            raise ValueError("descriptor digest is not callable")
+        schema = descriptor["schema"]
+        try:
+            value = function(registry)
+        except Exception as exc:
+            diagnostics = (diagnostic("digest", exc),)
+            digest, digest_detail = None, diagnostics[0].detail
+        else:
+            digest = value if isinstance(value, str) and value.strip() else None
+            digest_detail = (
+                f"digest read from {digest_name}()"
+                if digest
+                else f"{digest_name}() returned no digest string"
+            )
     details = [digest_detail]
     if not tokens:
         details.append("the package root exports no enum")
@@ -284,7 +366,75 @@ def read_vocabulary(module: ModuleType) -> Vocabulary:
         registry_digest=digest,
         tokens=tokens,
         detail="; ".join(details),
+        binding_schema=schema,
+        registry_identity=identity,
+        diagnostics=diagnostics,
     )
+
+
+def diagnostic(phase: str, error: Exception) -> Diagnostic:
+    return Diagnostic(phase, type(error).__name__, str(error)[:500])
+
+
+def valid_source_revision(value: object) -> bool:
+    return (
+        isinstance(value, str)
+        and len(value) == 40
+        and all(character in "0123456789abcdef" for character in value)
+    )
+
+
+def resolve_package(resolver: PackageResolver, name: str) -> Resolution:
+    try:
+        result = resolver(name)
+        if not isinstance(result, Resolution) or not isinstance(result.code, ReadCode):
+            raise TypeError("resolver did not return a well-formed Resolution")
+        if (
+            not isinstance(result.detail, str)
+            or not isinstance(result.provenance, BindingProvenance)
+            or not isinstance(result.diagnostics, tuple)
+            or any(not isinstance(item, Diagnostic) for item in result.diagnostics)
+        ):
+            raise TypeError(
+                "resolver returned malformed diagnostic or provenance fields"
+            )
+        if result.package_name != name:
+            raise ValueError(
+                f"requested {name}, resolver returned {result.package_name}"
+            )
+        if result.code is ReadCode.RESOLVED:
+            if not isinstance(result.module, ModuleType):
+                raise TypeError(
+                    f"resolver reported resolved but supplied no module or a non-module: {result.detail}"
+                )
+            if result.module.__name__ != name:
+                raise ValueError(
+                    f"requested {name}, module identifies as {result.module.__name__}"
+                )
+        elif result.code not in (ReadCode.NOT_INSTALLED, ReadCode.IMPORT_FAILED):
+            raise ValueError("resolver may not report a binding outcome")
+        provenance = result.provenance
+        if result.module is not None:
+            provenance = replace(
+                provenance,
+                requested_package=name,
+                resolved_package=result.module.__name__,
+                module_origin=provenance.module_origin
+                or vars(result.module).get("__file__"),
+            )
+        diagnostics = result.diagnostics
+        if result.code is ReadCode.IMPORT_FAILED and not diagnostics:
+            diagnostics = (Diagnostic("resolve", "ImportFailure", result.detail[:500]),)
+        return replace(result, provenance=provenance, diagnostics=diagnostics)
+    except Exception as exc:
+        issue = diagnostic("resolve", exc)
+        return Resolution(
+            name,
+            ReadCode.IMPORT_FAILED,
+            None,
+            f"resolve {issue.exception_type}: {issue.detail}",
+            diagnostics=(issue,),
+        )
 
 
 class ImportResolver:
@@ -315,7 +465,7 @@ class ImportResolver:
         self._paths_ready = True
 
     def __call__(self, package_name: str) -> Resolution:
-        """Resolve one package by name, never raising."""
+        """Resolve one package, containing ordinary import failures."""
         self._ensure_paths()
         if not isinstance(package_name, str) or not package_name.strip():
             return Resolution(
@@ -326,12 +476,14 @@ class ImportResolver:
             )
         try:
             spec = importlib.util.find_spec(package_name)
-        except (ImportError, ValueError, TypeError) as exc:
+        except Exception as exc:
+            issue = diagnostic("resolve", exc)
             return Resolution(
                 package_name=package_name,
                 code=ReadCode.IMPORT_FAILED,
                 module=None,
-                detail=f"find_spec raised {type(exc).__name__}: {exc}",
+                detail=f"find_spec raised {issue.exception_type}: {issue.detail}",
+                diagnostics=(issue,),
             )
         if spec is None:
             return Resolution(
@@ -340,20 +492,90 @@ class ImportResolver:
                 module=None,
                 detail="the import system found no such package",
             )
+        expected = next(
+            (
+                Path(root) / package_name / "__init__.py"
+                for root in self.search_paths
+                if (Path(root) / package_name / "__init__.py").is_file()
+            ),
+            None,
+        )
+        if expected is not None and (
+            spec.origin is None or Path(spec.origin).resolve() != expected.resolve()
+        ):
+            issue = Diagnostic(
+                "resolve",
+                "SourceMismatch",
+                f"cached/import source {spec.origin} differs from requested {expected}"[
+                    :500
+                ],
+            )
+            return Resolution(
+                package_name,
+                ReadCode.IMPORT_FAILED,
+                None,
+                issue.detail,
+                diagnostics=(issue,),
+            )
         try:
             module = importlib.import_module(package_name)
         except Exception as exc:  # noqa: BLE001 - a sibling must not crash us
+            issue = diagnostic("resolve", exc)
             return Resolution(
                 package_name=package_name,
                 code=ReadCode.IMPORT_FAILED,
                 module=None,
-                detail=f"import raised {type(exc).__name__}: {exc}",
+                detail=f"import raised {issue.exception_type}: {issue.detail}",
+                diagnostics=(issue,),
+            )
+        try:
+            provenance = self._provenance(package_name, module)
+        except Exception as exc:
+            issue = diagnostic("resolve", exc)
+            return Resolution(
+                package_name,
+                ReadCode.IMPORT_FAILED,
+                None,
+                f"provenance: {issue.detail}",
+                diagnostics=(issue,),
             )
         return Resolution(
             package_name=package_name,
             code=ReadCode.RESOLVED,
             module=module,
             detail="resolved through the import system",
+            provenance=provenance,
+        )
+
+    def _provenance(self, name: str, module: ModuleType) -> BindingProvenance:
+        origin = vars(module).get("__file__")
+        distribution = distribution_version = revision = None
+        policy = "explicit-source-paths" if self.search_paths else "normal-import"
+        if isinstance(origin, str):
+            path = Path(origin).resolve()
+            for parent in path.parents:
+                receipt = parent / ".line-set-source.json"
+                if receipt.is_file():
+                    source = json.loads(receipt.read_text(encoding="utf-8"))
+                    revision = source.get("revision")
+                    if not valid_source_revision(revision):
+                        raise ValueError("source receipt has no full commit revision")
+                    origin = f"{name}/{path.relative_to(parent).as_posix()}"
+                    policy = "pinned-source-snapshot"
+                    break
+        if policy == "normal-import":
+            names = importlib.metadata.packages_distributions().get(name, [])
+            if len(names) == 1:
+                distribution = names[0]
+                distribution_version = importlib.metadata.version(distribution)
+        return BindingProvenance(
+            name,
+            module.__name__,
+            origin,
+            distribution,
+            distribution_version,
+            policy,
+            source_revision=revision,
         )
 
     def candidates(self) -> tuple[str, ...]:
@@ -388,20 +610,40 @@ def candidate_packages(resolver: object) -> tuple[str, ...] | None:
     reported inability, not an empty answer: a reader that got ``None`` must
     say it did not scan rather than say it found nothing.
     """
-    lister = getattr(resolver, "candidates", None)
+    result = discover_packages(resolver)
+    return result.candidates if result.completed else None
+
+
+def discover_packages(resolver: object) -> Discovery:
+    try:
+        lister = getattr(resolver, "candidates", None)
+    except Exception as exc:
+        return Discovery(
+            attempted=True, diagnostics=(diagnostic("enumerate-call", exc),)
+        )
     if not callable(lister):
-        return None
+        return Discovery()
     try:
         found = lister()
-    except Exception:  # noqa: BLE001 - an unwilling resolver is not a crash
-        return None
-    if isinstance(found, (str, bytes)) or found is None:
-        return None
+        if isinstance(found, (str, bytes)) or found is None:
+            raise TypeError("candidates() must return an iterable of package names")
+    except Exception as exc:
+        return Discovery(True, True, diagnostics=(diagnostic("enumerate-call", exc),))
+    names: set[str] = set()
     try:
-        names = tuple(str(name) for name in found)
-    except TypeError:
-        return None
-    return tuple(sorted(set(names)))
+        for name in found:
+            if not isinstance(name, str) or not name.isidentifier():
+                raise ValueError("candidate must be a top-level Python package name")
+            names.add(name)
+    except Exception as exc:
+        return Discovery(
+            True,
+            True,
+            False,
+            tuple(sorted(names)),
+            diagnostics=(diagnostic("enumerate-iteration", exc),),
+        )
+    return Discovery(True, True, True, tuple(sorted(names)))
 
 
 def sibling_source_roots(

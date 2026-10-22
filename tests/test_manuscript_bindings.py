@@ -21,7 +21,7 @@ is, how many fields a record has, what the set digest is — depend on nothing
 outside this package and are checked unconditionally.
 
 **Reading claims** — sibling versions, registry sizes, per-line token counts,
-and the token arithmetic — are facts about the four packages installed on the
+and the token arithmetic — are facts about the declared packages installed on the
 review machine on the review date. They are checked when those packages can be
 read and reported as skipped when they cannot, because a test that required
 them would pass only inside one working tree. The manuscript is explicit that
@@ -35,7 +35,7 @@ from __future__ import annotations
 
 import dataclasses
 import enum
-import importlib
+import sys
 import json
 import re
 from collections import Counter
@@ -62,6 +62,7 @@ from line_set import (
 )
 from line_set.reader import READER_STAGES, STATUS_PRECEDENCE
 from line_set.registry import WRAPPER_LINE
+from tests.test_extensibility import APPENDED
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 MANUSCRIPT = PROJECT_ROOT / "docs" / "manuscript"
@@ -126,7 +127,7 @@ ORDINALS = {
 
 def word(count: int) -> str:
     """The spelled-out form of a derived count."""
-    return WORDS[count]
+    return WORDS.get(count, str(count))
 
 
 def ordinal(count: int) -> str:
@@ -340,10 +341,12 @@ def test_the_read_codes_are_counted_and_named() -> None:
 
 def test_the_battery_sizes_are_stated_correctly() -> None:
     offline = len(all_invariants())
+    next_check = ordinal(offline + 1)
+    article = "an" if next_check[0] in "aeiou" else "a"
     must_say(
         "00_abstract.md",
         f"{word(offline).capitalize()} structural checks run offline",
-        f"an {ordinal(offline + 1)},",
+        f"{article} {next_check},",
     )
     must_say(
         "02_method.md",
@@ -354,7 +357,7 @@ def test_the_battery_sizes_are_stated_correctly() -> None:
 
 
 def test_the_live_battery_is_the_offline_one_plus_the_self_check() -> None:
-    """The eighth check is a claim about a count and about which check it is."""
+    """The live battery adds exactly the named self-check to the offline checks."""
     offline = [result.name for result in all_invariants()]
     live = [
         result.name for result in live_invariants(resolver=lambda name: _absent(name))
@@ -403,7 +406,8 @@ def test_the_observation_never_invents_a_field_the_prose_promises_stay_unset() -
     assert sorted(optional) == ["registry_digest", "registry_size", "version"]
     must_say(
         "02_method.md",
-        "no version, no registry size, and no digest, and those fields stay `None`",
+        "`NOT_INSTALLED` and `IMPORT_FAILED` leave version, registry size and digest as `None`",
+        "`NO_VOCABULARY` preserves whatever metadata was actually read",
     )
 
 
@@ -437,18 +441,7 @@ def test_the_set_digest_in_the_prose_is_the_digest_of_the_declaration() -> None:
 
 def test_the_extension_example_reports_what_the_package_actually_returns() -> None:
     """Every printed line of the executed block, re-executed here."""
-    fifth = LineEntry(
-        id="teal_line",
-        color="teal",
-        question="What does keeping this alive cost?",
-        job="Standing upkeep, dependencies, and the bill for continued existence",
-        must_not_become="A reason to drop work that is merely expensive",
-        opus_stage=None,
-        working_position=len(LINE_SET) + 1,
-        package_name="teal_line",
-        registry_noun="upkeep records",
-        verdict_noun="upkeep status",
-    )
+    fifth = APPENDED
     extended = LINE_SET + (fifth,)
     before = registry_digest(LINE_SET, SHARED_TOKENS)[:12]
     after = registry_digest(extended, SHARED_TOKENS)[:12]
@@ -476,8 +469,7 @@ def test_the_extension_example_reports_what_the_package_actually_returns() -> No
     )
     for result in results:
         must_say("03_extensibility.md", f"PASS  {result.name}")
-    for field in dataclasses.fields(LineEntry):
-        must_say("03_extensibility.md", f"{field.name}=")
+    must_say("03_extensibility.md", "from tests.test_extensibility import APPENDED")
 
 
 def test_the_extension_examples_partial_reading_is_reproduced_exactly(
@@ -497,18 +489,7 @@ def test_the_extension_examples_partial_reading_is_reproduced_exactly(
         resolved,
     )
 
-    fifth = LineEntry(
-        id="teal_line",
-        color="teal",
-        question="What does keeping this alive cost?",
-        job="Standing upkeep, dependencies, and the bill for continued existence",
-        must_not_become="A reason to drop work that is merely expensive",
-        opus_stage=None,
-        working_position=len(LINE_SET) + 1,
-        package_name="teal_line",
-        registry_noun="upkeep records",
-        verdict_noun="upkeep status",
-    )
+    fifth = APPENDED
     extended = LINE_SET + (fifth,)
 
     with import_sandbox():
@@ -778,7 +759,7 @@ def test_the_token_arithmetic_is_stated_correctly_everywhere_it_appears() -> Non
 
 
 def test_the_within_line_repeats_are_attributed_to_the_right_lines() -> None:
-    """The abstract explains 80 against 76 by naming which lines repeat."""
+    """The worked reading attributes repeated names to their carrying lines."""
     per_line = record()["vocabulary_census"]["per_line"]
     repeats = {
         line_id: item["within_line_repeats"]
@@ -786,7 +767,6 @@ def test_the_within_line_repeats_are_attributed_to_the_right_lines() -> None:
         if item["within_line_repeats"]
     }
     assert repeats, "no line repeats a name; the sentence below would be wrong"
-    token = SHARED_TOKENS[0].token
     declared = record()["vocabulary_census"]["declared_members"]
     must_say(
         "04_examples.md",
@@ -794,26 +774,12 @@ def test_the_within_line_repeats_are_attributed_to_the_right_lines() -> None:
         "repeating a word it already uses",
     )
     attribution_order = [entry.id for entry in LINE_SET if entry.id in repeats]
-    assert repeats == {
-        "red_line": 1,
-        "black_line": 3,
-        "white_line": 4,
-        "silver_line": 3,
-        "violet_line": 3,
-        "blue_line": 3,
-        "green_line": 3,
-    }, "the attributions spelled out below must be re-derived if this changes"
-    fragments = []
-    for line_id in attribution_order:
-        if line_id == "red_line":
-            fragments.append(
-                f"red_line spells `{token}` in {word(repeats[line_id] + 1)} of its enums"
-            )
-        else:
-            fragments.append(
-                f"{line_id} repeats {word(repeats[line_id])} names across its "
-                f"{word(per_line[line_id]['enum_classes'])}"
-            )
+    fragments = [
+        f"{line_id} repeats {word(repeats[line_id])} "
+        f"{'name' if repeats[line_id] == 1 else 'names'} across its "
+        f"{word(per_line[line_id]['enum_classes'])} enum classes"
+        for line_id in attribution_order
+    ]
     must_say("04_examples.md", *fragments)
 
 
@@ -841,15 +807,25 @@ def test_the_independent_derivation_agrees_with_the_recorded_one() -> None:
     declared = 0
     per_line: dict[str, set[str]] = {}
     for entry in LINE_SET:
-        module = importlib.import_module(entry.package_name)
+        module = sys.modules[entry.package_name]
         names: set[str] = set()
+        seen: set[int] = set()
+        canonical_members = 0
         for value in vars(module).values():
-            if isinstance(value, type) and issubclass(value, enum.Enum):
+            if (
+                isinstance(value, type)
+                and issubclass(value, enum.Enum)
+                and value.__module__ != enum.__name__
+                and id(value) not in seen
+            ):
+                seen.add(id(value))
                 classes += 1
-                members = [member.name for member in value]
+                members = list(value.__members__)
+                canonical_members += len(value)
                 declared += len(members)
                 names.update(members)
         per_line[entry.id] = names
+        assert canonical_members == census["per_line"][entry.id]["canonical_members"]
 
     carriers = Counter(name for names in per_line.values() for name in names)
     assert classes == census["enum_classes"]

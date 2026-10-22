@@ -1,5 +1,19 @@
 # Changelog
 
+## 0.5.0 (2026-10-21)
+
+Implement the deep review received on 2026-10-21. Admit declarations before
+resolving packages, include enum aliases in the published-name contract, and
+support explicit versioned binding declarations with recorded source provenance.
+Contain ordinary import and discovery failures with structured diagnostics;
+retain discovery coverage and exact exemption meanings independently of status.
+Version canonical declaration and reading schemas, validate replayed facts, and
+exercise every exemption against its complete table. Correct executable extension
+documentation and narrow status and formalism claims to what the reader measures.
+Preserve the earlier reading as historical evidence. Replace clipped figures with
+measured layouts and a sparse vocabulary matrix retaining every observed name and
+carrier. Keep the additional-topics synthesis and its human-review boundaries.
+
 ## 0.4.0 (2026-10-21)
 
 Implement the additional-topics synthesis as human admission materials, a

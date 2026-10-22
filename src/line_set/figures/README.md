@@ -9,10 +9,10 @@ line package or touches `sys.path` at import time.
 | --- | --- |
 | `set_compass` | the declaration — one card per line, plus the wrapper below a rule |
 | `two_orders` | the declaration and `OPUS_STAGE_ORDER`, with the live divergence check |
-| `vocabulary_matrix` | a live reading — every token against the lines that export it |
+| `vocabulary_matrix` | a live reading — faceted rows of every observed name and its carrying working positions; unread lines stay unknown |
 | `set_reading_pipeline` | `READER_STAGES` and `STATUS_PRECEDENCE` |
 | `installation_surface` | a live reading — what this machine could actually read |
-| `exemption_gate` | `line_set.probes` — the production matcher over a declared exemption and six weakenings |
+| `exemption_gate` | `line_set.probes` — the production matcher over the full exemption table and its named mutation controls |
 | `self_application` | the reading that includes the wrapper, with the verdict from `invariants.self_disjointness_from_reading()` |
 | `line_set_cover` | the declaration — the title-page cover: one stroke per declared line in a dotted register, the reader beneath |
 

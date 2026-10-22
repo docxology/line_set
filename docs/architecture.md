@@ -14,6 +14,8 @@ That split is the whole design, and most of what follows is a consequence of it.
 | `src/line_set/models.py` | What are the record types — entry, exemption, observation, collision, stage, reading? |
 | `src/line_set/registry.py` | What is the set? `LINE_SET`, `SHARED_TOKENS`, and the wrapper's own entry. |
 | `src/line_set/binding.py` | How is one sibling package resolved and read? The only module that imports one. |
+| `src/line_set/admission.py` | Are identities unambiguous and fields serializable before imports? |
+| `src/line_set/recording.py` | How is a dated reading and vocabulary census recorded and compared? |
 | `src/line_set/reader.py` | How does a reading follow, in recorded stages, from what resolved? |
 | `src/line_set/invariants.py` | Is the declaration well formed, and does this package survive its own check? |
 | `src/line_set/serialization.py` | What is the canonical form and digest of a declaration or a reading? |
@@ -30,6 +32,11 @@ adding a colour a one-file edit; see [extensibility.md](extensibility.md).
 `read_set(lines, shared, *, resolver=None, as_of=None)` runs five stages and
 records each one into the returned `SetReading.derivation`, so a reading can be
 re-read instead of trusted.
+
+Before imports, shared minimal admission rejects an empty declaration, duplicate
+or blank line/package identities and malformed line fields with `DeclarationError`.
+Historical ordering conventions remain separate, so valid small custom sets and
+no-exemption sets remain readable. The offline battery uses the same validator.
 
 1. **resolve** — ask the resolver for each declared `package_name`. The outcome
    is a `ReadCode`: `RESOLVED`, `NOT_INSTALLED`, `IMPORT_FAILED`, or
@@ -91,13 +98,19 @@ evaluator, never passes a sibling any data, and never computes a digest on a
 sibling's behalf — a value this package derived would say nothing about whether
 the sibling agrees with it.
 
-Registry-size discovery is a convention read, stated generically rather than
+Without a descriptor, registry-size discovery is a convention read, stated generically rather than
 per-package: the primary registry is the public, non-empty tuple in the
 package's `registry` submodule whose members are all instances of one dataclass
 type. When several qualify, the strictly largest wins; a tie yields `None`
 rather than a guess. A package that keeps its registry elsewhere or under a
 private name simply reports no size, and a reported `None` means *not found*,
 never *not present*.
+
+The explicit descriptor, provenance, discovery and replay contracts are specified
+in [binding_contract.md](binding_contract.md). They include alias names, class and
+tuple identity deduplication, bounded phase diagnostics, coverage-related exemption
+mismatches and versioned exact-record hashes. These contracts do not expand the
+reader into substantive evaluation.
 
 Undeclared-line discovery is likewise conventional — a top-level package whose
 name ends in `LINE_PACKAGE_SUFFIX`, plus what is already in `sys.modules`. It is

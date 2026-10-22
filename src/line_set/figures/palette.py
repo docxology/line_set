@@ -15,7 +15,7 @@ what actually carry the distinction.
 **A new colour must not need an edit here.** :func:`line_fill` and
 :func:`line_ink` know the four colours declared today and fall back to a
 deterministic accent for anything else, and :func:`shape_for` cycles by
-working position. Appending a fifth :class:`~line_set.models.LineEntry` to the
+working position. Appending another :class:`~line_set.models.LineEntry` to the
 registry therefore renders without touching this module. The maps that must
 stay exhaustive are the ones keyed by an enumeration this package owns, and
 :func:`verify_coverage` fails the build when one of those falls behind.
@@ -166,8 +166,8 @@ SET_STATUS_CONDITION: dict[SetStatus, str] = {
 SET_STATUS_GLOSS: dict[SetStatus, str] = {
     SetStatus.SET_COLLIDING: "two lines carry one token and nothing declares it",
     SetStatus.SET_UNDECLARED: "a line package resolved that the declaration omits",
-    SetStatus.SET_PARTIAL: "what was read still holds; the rest was not read",
-    SetStatus.SET_LEGIBLE: "every declared line was read and no two share a token",
+    SetStatus.SET_PARTIAL: "some declared vocabulary was unread or unavailable",
+    SetStatus.SET_LEGIBLE: "all read; no unexempted published-name collision",
 }
 
 STAGE_GLOSS: dict[str, str] = {

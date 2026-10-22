@@ -1,12 +1,12 @@
 # line_set — manuscript configuration.
-# The fifth work in the line set: a wrapper and reader, not a fifth instrument.
+# The set's wrapper and reader, not a substantive instrument.
 
 paper:
   title: "The Line Set: Holding Instruments Apart"
   subtitle: "A Declaration, a Reader, and a Non-Overlap Contract for a Growing Set of Small Instruments"
-  version: "0.4.0"
+  version: "0.5.0"
   date: "2026-10-21"
-  description: "A thin wrapper that declares what the line set is, reads the sibling packages that are installed, and checks that no two of them share a status token."
+  description: "A thin wrapper that declares the line set, reads available sibling vocabularies, and reports unexempted collisions in published enum member names."
   cover:
     image: "../../output/figures/line_set_cover.png"
     alt: "Cover art for The Line Set: separated line bands held apart over a shared dark field"

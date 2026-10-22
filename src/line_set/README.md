@@ -15,9 +15,10 @@ resolves through the ordinary import system by default and puts sibling source
 directories on `sys.path` only when a caller asks. A line that is not
 installed is an ordinary outcome, not an error.
 
-The reading is narrow on purpose. `SET_LEGIBLE` says the declared
-vocabularies of the lines that could be read do not overlap. It says nothing
-about whether those lines are correct, complete, or worth having.
+The reading is narrow on purpose. `SET_LEGIBLE` says every declared vocabulary
+was readable and no unexempted published-name collision was found. Declared
+exemptions remain visible. It says nothing about whether those lines are
+correct, complete, or worth having.
 
 Run `uv run pytest tests/ --cov=src --cov-branch --cov-report=term-missing`
 for the full package check.

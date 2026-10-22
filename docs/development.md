@@ -1,10 +1,13 @@
 # Development
 
 The package is pure standard library with no runtime dependencies. The local
-validation surface is four commands:
+validation surface is:
 
 ```bash
 uv run pytest tests/ --cov=src --cov-branch --cov-report=term-missing
+uv run ruff check src tests scripts
+uv run ruff format --check src tests scripts
+uv run mypy src/line_set
 uv run python scripts/check_registry.py
 uv run python scripts/check_set.py
 uv run python scripts/build_figures.py
@@ -24,6 +27,27 @@ measurement drift still fail.
 Comparison reads raw bytes and requires canonical UTF-8 with LF line endings;
 CRLF, lone CR, a byte-order mark or another encoding fails even if JSON values
 match. New writes use those same canonical bytes on every platform.
+For an offline lane, point `LINE_SET_SIBLINGS` at an empty directory before the
+suite and registry check. `check_set.py` must fail there with `SET_PARTIAL`;
+absence is an outcome, not a successful integration result.
+
+For the separate release integration lane, place each sibling at its released
+tag in a read-only source snapshot, with a `.line-set-source.json` custody
+receipt recording its full `revision`, and set `LINE_SET_SIBLINGS` to their
+common parent. Never point this lane at an actively edited sibling checkout.
+Use real Git clones when these snapshots also supply rendered artifacts to the
+compiled volume, so the rendering engine's file inventory stays within each
+repository boundary.
+
+```bash
+uv run python scripts/check_set.py --require-pinned --as-of YYYY-MM-DD
+uv run python scripts/record_reading.py --check
+```
+
+The pinned gate fails on an empty scan, missing package metadata, unpinned
+sources or incomplete discovery. It is a reproducible namespace lane, not an
+evaluation or certification of sibling behavior. The release packet records the
+exact tags, commits and gate results. See [binding_contract.md](binding_contract.md).
 
 ## What each command needs
 
@@ -125,6 +149,13 @@ matcher over the declaration alone.
 
 Never hand-edit anything under `output/`. Rebuild it.
 
+`uv run pytest tests/test_figure_layout.py` measures glyph widths through the
+existing `rsvg-convert` backend, checking each standalone plate against its
+horizontal viewport and card boundaries and checking text overlap near the same
+baseline. A planted overflowing,
+overlapping SVG must fail. These measurements accompany the printed-point
+floor and visual inspection of the generated PNGs and final PDF.
+
 ## Rendering the manuscript
 
 **Rendering is an external dependency, and it is stated as one rather than
@@ -159,12 +190,24 @@ TEMPLATE=/wherever/you/want/template
 PROJECTS_ROOT=/wherever/you/keep/projects      # must contain working/line_set
 
 cd "$TEMPLATE"
-uv sync
+uv sync --frozen --group rendering
 export TEMPLATE_PRIVATE_PROJECTS_ROOT="$PROJECTS_ROOT"
 uv run python -m infrastructure.orchestration link-projects --dry-run
-uv run python scripts/maintenance/rerender_working_pdfs.py --project line_set
+uv run python -m infrastructure.orchestration link-projects
+uv run python scripts/pipeline/stage_03_render.py --project working/line_set --skip-manuscript-hydration
 uv run python scripts/pipeline/stage_04_validate.py --project working/line_set
 ```
+
+Use a Git-indexed engine checkout: its rendered provenance gate fingerprints
+tracked engine implementation files. A source archive can render, but cannot
+supply that index. The `--skip-manuscript-hydration` option retains this
+repository's authored `docs/manuscript` layout. For the compiled volume, first
+run this repository's omnibus builder and then render its generated manuscript.
+The builder selects a configured source tree before considering an unconfigured
+directory. If both `docs/manuscript/` and `manuscript/` have `config.yaml`, the
+former wins. A partial migration without a config cannot shadow the configured
+source. Corpus tests use the same explicit `LINE_SET_SIBLINGS` location as the
+reader and assembler.
 
 `working/line_set` is the qualified project name for a project mirrored from
 `<root>/working/`; link it under a different lifecycle folder and the qualified

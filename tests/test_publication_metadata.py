@@ -161,6 +161,7 @@ def test_no_absolute_local_path_is_shipped() -> None:
         ".pytest_cache",
         ".ruff_cache",
         "node_modules",
+        "graft",
     }
     text_suffixes = {
         ".py",

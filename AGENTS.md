@@ -1,7 +1,7 @@
 # Line Set project guidance
 
-Line Set is its own repository — `docxology/line_set`, currently private — and
-it is developed inside a larger private projects tree that also holds the four
+Line Set is its own repository — `docxology/line_set`, public — and
+it is developed inside a larger projects tree that also holds the
 sibling works. It is not a subdirectory of anything it depends on: a clone of
 this repository alone installs, tests, checks its declaration, builds its
 figures, and explains itself. Every rule below is written for that clone as much
@@ -12,7 +12,7 @@ non-overlap check. Its source of truth is
 `src/line_set/`, its executable contract is tested under `tests/`, and its
 manuscript and generated figures must stay synchronized with the declaration.
 
-It is a wrapper and a reader. It is not a fifth instrument, a meta-evaluator, a
+It is a wrapper and a reader. It is not a substantive instrument, a meta-evaluator, a
 merge of the eight lines, or a ranking of them. Every rule below exists to keep it
 from becoming one.
 
@@ -27,7 +27,7 @@ from becoming one.
   call the package's own digest function, collect exported enum member names.
   Never call a sibling's evaluator, never pass it data, never form an opinion
   about what it concluded, and never compute a digest on its behalf.
-- **Never modify a sibling line project.** Red, Black, Golden, and White Line are
+- **Never modify a sibling line project.** Every sibling is
   read-only from here — no edits, no fixes, no "small" corrections. If a reading
   implies a sibling should change, that is a finding to report to a person, not
   an edit to make from this tree. Do not copy their prose, registries, figure

@@ -8,7 +8,7 @@ to an SVG string. A plate reads; it never decides.
 - **A plate takes its data as an argument.** No plate imports `LINE_SET` or
   calls `read_set()`. The build passes `lines`, `shared`, `reading`, and
   `wrapper` in. That is what makes the extensibility claim testable: append a
-  fifth entry at runtime, pass it, and the plate must change.
+  new entry at runtime, pass it, and the plate must change.
 - **No module here names an individual line.** Layout comes from
   `len(entries)` and from each entry's `working_position`; colours and shapes
   come from `palette`. A branch on `entry.id == "red_line"` would break the
@@ -34,7 +34,7 @@ to an SVG string. A plate reads; it never decides.
 ## Validation
 
 - `uv run python scripts/build_figures.py`, then read the PNGs.
-- Append a fifth `LineEntry` at runtime, rebuild into a scratch root, and
+- Append a new `LineEntry` at runtime, rebuild into a scratch root, and
   confirm `set_compass`, `two_orders`, `vocabulary_matrix`, and
   `installation_surface` all change while no module here was edited.
   `set_reading_pipeline` must *not* change: it is drawn from the reader's

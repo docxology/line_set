@@ -2,7 +2,10 @@
 
 ## How to cite
 
-Cite this work via its minted DOI or repository:
+The package's current release version is declared in `pyproject.toml`. The
+latest verified archived edition remains the following DOI; reserving and minting
+a DOI for a later software release is a separate author step. The collected
+volume's citation title differs from the constituent wrapper manuscript title.
 
 > Friedman, D. A. (2026). *The Line Set: Holding Instruments Apart* (version
 > 0.2.0) [Software and manuscript]. Zenodo.
@@ -37,6 +40,13 @@ and repository URL when identifying code that is not yet deposited.
 `.zenodo.json` carries the deposit metadata. The version declarations are
 synchronized with `docs/manuscript/config.yaml`; publication metadata is checked
 by `tests/test_publication_metadata.py`.
+
+On 2026-10-21 the [Zenodo API](https://zenodo.org/api/records/22833507)
+reported that DOI as version 0.2.0 under
+the title *The Line Set: Holding Instruments Apart*. The repository's collected
+volume citation title follows the owner's recorded title decision; the archive
+metadata has not yet been harmonized with it. Daniel's next deposition should
+reconcile that title as well as assigning its reserved version DOI.
 
 ## Persistent Identifiers and Verification
 

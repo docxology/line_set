@@ -52,7 +52,16 @@ def isolated_env(**overrides: str) -> dict[str, str]:
 
 
 #: Directories a working checkout carries that a copy of it does not need.
-NOT_COPIED = (".venv", "__pycache__", ".git", "output", ".pytest_cache", ".ruff_cache")
+NOT_COPIED = (
+    ".venv",
+    "__pycache__",
+    ".git",
+    "output",
+    ".pytest_cache",
+    ".ruff_cache",
+    "graft",
+    ".ignore",
+)
 
 
 def every_script() -> tuple[Path, ...]:
@@ -68,15 +77,19 @@ def run(
     script: Path, *args: str, cwd: Path, source: Path, live_siblings: bool = False
 ) -> subprocess.CompletedProcess:
     """Run one script as a subprocess, resolving ``line_set`` from ``source``."""
-    env = isolated_env(PYTHONPATH=str(source))
-    if live_siblings and SIBLING_BASE_ENV in os.environ:
-        env[SIBLING_BASE_ENV] = os.environ[SIBLING_BASE_ENV]
+    overrides = {"PYTHONPATH": str(source)}
+    if (
+        live_siblings
+        and source.resolve() == (PROJECT_ROOT / "src").resolve()
+        and SIBLING_BASE_ENV in os.environ
+    ):
+        overrides[SIBLING_BASE_ENV] = os.environ[SIBLING_BASE_ENV]
     return subprocess.run(
         [sys.executable, str(script), *args],
         capture_output=True,
         text=True,
         cwd=str(cwd),
-        env=env,
+        env=isolated_env(**overrides),
     )
 
 
@@ -136,6 +149,19 @@ def test_every_script_documents_itself(script: Path) -> None:
 
 
 # ------------------------------------------------------------ check_registry
+
+
+def test_canonical_commands_preserve_the_explicit_sibling_lane(tmp_path: Path) -> None:
+    from tests.support import environment
+
+    script = tmp_path / "read_environment.py"
+    script.write_text('import os\nprint(os.environ.get("LINE_SET_SIBLINGS"))\n')
+    with environment(SIBLING_BASE_ENV, str(tmp_path)):
+        result = run(
+            script, cwd=PROJECT_ROOT, source=PROJECT_ROOT / "src", live_siblings=True
+        )
+    assert result.returncode == 0, result.stderr
+    assert result.stdout.strip() == str(tmp_path)
 
 
 def test_check_registry_passes_on_the_shipped_declaration() -> None:
@@ -363,7 +389,12 @@ def test_an_ambient_sibling_override_cannot_defeat_the_isolated_runs(
         assert SIBLING_BASE_ENV not in isolated_env(PYTHONPATH="x")
 
         source = copy_project(tmp_path)
-        result = run(SCRIPTS / "check_set.py", cwd=source.parent, source=source / "src")
+        result = run(
+            SCRIPTS / "check_set.py",
+            cwd=source.parent,
+            source=source / "src",
+            live_siblings=True,
+        )
     finally:
         if previous is None:
             os.environ.pop(SIBLING_BASE_ENV, None)

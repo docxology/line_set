@@ -6,7 +6,7 @@ the set to misread: it looks like an auditor, it is shaped like an auditor, and
 it is not one. It reads declarations.
 
 The whole positive claim fits in one sentence. **A `SET_LEGIBLE` reading says
-that the declared lines the reader could import each exported a set of enum
+that every declared line yielded a readable vocabulary of published enum
 member names, and that no name appeared in more than one of them except where
 an exemption was declared in advance with a distinct meaning per line.** Every
 sentence below is a restatement of what that does *not* reach.
@@ -62,8 +62,8 @@ different questions would be a number with no referent.
 in the project. The check is over spellings of enum member names. Two lines can
 be about substantially the same thing in different words and read `SET_LEGIBLE`;
 two lines can be entirely distinct in substance and collide because they both
-liked a word. Non-overlap of vocabulary is a necessary condition for the set's
-separation contract and nowhere near a sufficient one. Conceptual overlap is
+liked a word. `SET_LEGIBLE` requires no unexempted published-name collisions;
+that lexical requirement establishes no conceptual separation. Conceptual overlap is
 found by reading the instruments, which is human work this package does not do
 and does not shorten.
 
@@ -92,6 +92,39 @@ guarantees the disambiguation was *written down*, not that it is true.
 
 **It cannot tell you whether a line is worth having.** There is no path from any
 output of this package to that question.
+
+**Admission is structural.** `read_set` rejects an empty or ambiguously identified
+declaration with `DeclarationError` before imports. A valid small custom set
+needs no opus convention or exemption table. Admission establishes neither a
+distinct substantive question nor a sound rationale.
+
+**Published names include aliases.** Publication means all package-root enum
+bindings, independently of `__all__`. Enum class objects are counted once even
+when re-exported twice. All `__members__` keys, including aliases, are names;
+ordinary enum iteration counts canonical members separately. Submodule-only
+names remain outside the scope.
+
+**Binding provenance is observed metadata.** A versioned root descriptor can
+identify a registry and its own digest callable; convention-based binding remains
+marked `convention-heuristic`. Neither path verifies the registry's substance.
+Source receipts record an observed pinned revision, not an authenticated claim.
+Missing source/distribution identity remains missing and cannot support a
+reproducible full-family claim. Imports execute package code in process; this
+reader is not a sandbox and promises no time or resource bound for a hanging import.
+
+**Discovery coverage is separate from namespace status.** Capability, attempted
+enumeration, completion, iteration failures and candidate-resolution outcomes
+are serialized. A legible declared namespace can coexist with incomplete
+discovery. An exemption missing an unread third carrier stays unexempted;
+the collision retains observed, declared and unread carriers. This conservative
+result is not evidence that the unread package changed its vocabulary.
+
+**Reading hashes compare exact records.** Diagnostics, provenance and dates can
+change a reading hash without changing the declaration digest. Canonical schema
+versions identify this distinction. Replay recomputes collision and status facts;
+it does not authenticate imported observations or recover unrecorded history.
+The finite mutation suite covers every shipped exemption and named mutation,
+not every possible input and not whether meanings are genuinely distinct.
 
 **Self-disjointness is a claim about tokens, not about restraint.**
 `check_self_disjointness` establishes that this package's own status names do

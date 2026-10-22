@@ -17,7 +17,7 @@ below is invertible, and the suite inverts them back to the source bytes.
 
 The compilation asserts nothing the individual papers do not assert. The one
 claim it adds is the reading this package computed over the declared set, and
-that reading says only that the declared vocabularies did not overlap.
+that reading says only that no unexempted published-name collision was found.
 
 Absence is reported, never smoothed. A declared work whose manuscript is not in
 the tree is named in the front matter as missing, and the volume goes out
@@ -66,17 +66,22 @@ def _source_figure_basename(target: str) -> str | None:
 
 
 def _manuscript_dir(project_root: Path) -> Path:
-    """A work's manuscript directory, docs-first, root layout as fallback.
+    """A work's configured manuscript directory, docs-first when both exist.
 
     The line set's canonical manuscript tree lives under ``docs/manuscript/``;
-    a detached clone or synthetic fixture may still keep ``manuscript/`` at
-    the repository root. Every reader here resolves through this helper so the
-    set contract cannot bind to one layout while the siblings sit in the other.
+    a sibling or synthetic fixture may keep ``manuscript/`` at the root.
+    An unconfigured migration fragment must not shadow a configured source.
+    Without either config, retain the directory-based absence behavior.
     """
     docs = project_root / "docs" / "manuscript"
+    legacy = project_root / "manuscript"
+    if (docs / "config.yaml").is_file():
+        return docs
+    if (legacy / "config.yaml").is_file():
+        return legacy
     if docs.is_dir():
         return docs
-    return project_root / "manuscript"
+    return legacy
 
 
 #: Where a compiled volume is written, relative to the project root.
@@ -1446,7 +1451,7 @@ def assemble(
         raise OmnibusError("the assembling work declares no manuscript configuration")
 
     reading = read_set(
-        lines,
+        lines if lines else (wrapper,),
         shared,
         resolver=(
             sibling_path_resolver(

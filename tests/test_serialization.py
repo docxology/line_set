@@ -57,7 +57,7 @@ def test_canonical_registry_is_stable_under_input_reordering() -> None:
 
 def test_canonical_registry_sorts_lines_and_exemptions_by_identity() -> None:
     payload = json.loads(canonical_registry(LINE_SET, SHARED_TOKENS))
-    assert set(payload) == {"lines", "shared_tokens"}
+    assert set(payload) == {"schema_version", "lines", "shared_tokens"}
     assert [item["id"] for item in payload["lines"]] == sorted(
         entry.id for entry in LINE_SET
     )
@@ -124,6 +124,7 @@ def test_adding_or_removing_a_line_changes_the_digest() -> None:
     extra = dataclasses.replace(
         LINE_SET[-1],
         id="chartreuse_line",
+        package_name="chartreuse_line",
         color="chartreuse",
         working_position=len(LINE_SET) + 1,
     )
@@ -153,6 +154,9 @@ def test_canonical_reading_records_every_part_of_the_reading() -> None:
     reading = _reading()
     payload = json.loads(canonical_reading(reading))
     assert set(payload) == {
+        "schema_version",
+        "discovery",
+        "exemptions",
         "status",
         "observations",
         "collisions",

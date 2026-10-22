@@ -27,6 +27,7 @@ from line_set import (
     read_set,
     reading_digest,
     sibling_path_resolver,
+    check_pinned_sources,
 )
 
 
@@ -38,6 +39,14 @@ def main() -> None:
         action="store_true",
         help="resolve through the ordinary import system only",
     )
+    parser.add_argument(
+        "--as-of", help="explicit ISO date for a reproducible release reading"
+    )
+    parser.add_argument(
+        "--require-pinned",
+        action="store_true",
+        help="also require pinned snapshot sources, complete metadata and discovery",
+    )
     args = parser.parse_args()
     resolver = (
         default_resolver
@@ -45,7 +54,7 @@ def main() -> None:
         else sibling_path_resolver(entry.package_name for entry in LINE_SET)
     )
 
-    reading = read_set(LINE_SET, SHARED_TOKENS, resolver=resolver)
+    reading = read_set(LINE_SET, SHARED_TOKENS, resolver=resolver, as_of=args.as_of)
     for observation in sorted(reading.observations, key=lambda item: item.line_id):
         print(
             f"{observation.line_id:<12} {observation.code.value:<14} "
@@ -62,7 +71,11 @@ def main() -> None:
     for stage in reading.derivation:
         print(f"[{stage.name}] {stage.detail}")
 
-    results = live_invariants(LINE_SET, SHARED_TOKENS, resolver=resolver)
+    results = live_invariants(
+        LINE_SET, SHARED_TOKENS, resolver=resolver, as_of=args.as_of
+    )
+    if args.require_pinned:
+        results += (check_pinned_sources(reading),)
     for result in results:
         print(f"{'PASS' if result.passed else 'FAIL'} {result.name}: {result.detail}")
     print(

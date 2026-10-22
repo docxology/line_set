@@ -372,7 +372,7 @@ def test_the_fail_closed_proposition_counts_the_weakenings_the_probes_run() -> N
     producing.
     """
     probes = exemption_probes(LINE_SET, SHARED_TOKENS)
-    refusals = [probe for probe in probes if not probe.expected_match]
+    refusals = {probe.name for probe in probes if not probe.expected_match}
     assert refusals, "a probe set with no refusal would make the claim empty"
     text = section_text(FORMALISM)
     expected = f"{_word(len(refusals)).capitalize()} weakenings are therefore refused"
@@ -526,7 +526,7 @@ def _reading_stub():
     def resolver(name: str) -> Resolution:
         return Resolution(name, ReadCode.NOT_INSTALLED, None, "absent")
 
-    return read_set((), (), resolver=resolver, as_of="2026-01-01")
+    return read_set(LINE_SET[:1], (), resolver=resolver, as_of="2026-01-01")
 
 
 def _filter_path() -> Path | None:
@@ -720,7 +720,9 @@ def test_a_declaration_with_no_spare_line_derives_the_adopting_one() -> None:
         rationale="every declared line carries it",
     )
     probes = exemption_probes(LINE_SET, (wide,))
-    assert len(probes) == len(exemption_probes(LINE_SET, SHARED_TOKENS))
+    assert len(probes) * len(SHARED_TOKENS) == len(
+        exemption_probes(LINE_SET, SHARED_TOKENS)
+    )
     assert probes_hold(probes)
     assert any(derived in probe.query_lines for probe in probes)
 
@@ -746,14 +748,7 @@ def test_the_gate_plate_reports_an_empty_table_rather_than_drawing_a_clean_sheet
 
 
 def test_vocabulary_disjointness_holds_over_the_collision_partition() -> None:
-    """Every token maps to exactly one registry entry; no term is ambiguous.
-
-    The reading partitions tokens into lines that carry them. After exempted
-    collisions are removed, any token appearing in more than one vocabulary
-    is an unexempted collision. This test derives the partition from the
-    collision function and asserts that the exempted/unexempted split is
-    deterministic and complete.
-    """
+    from dataclasses import replace
     from line_set.reader import _collide
 
     # Minimal observations: each line has a unique vocabulary.
@@ -781,6 +776,9 @@ def test_vocabulary_disjointness_holds_over_the_collision_partition() -> None:
     unex, ex = _collide((obs_a, obs_b), ())
     assert unex == ()
     assert ex == ()
+    assert _collide(
+        (replace(obs_a, registry_size=42), replace(obs_b, registry_size=0)), ()
+    ) == ((), ())
 
     # Two lines carrying the same token with no exemption -> unexempted collision.
     obs_shared_a = LineObservation(
@@ -808,5 +806,5 @@ def test_vocabulary_disjointness_holds_over_the_collision_partition() -> None:
 
     # The text of the proposition must exist in the manuscript.
     text = (MANUSCRIPT / "02a_formalism.md").read_text(encoding="utf-8")
-    assert "Each vocabulary term maps to exactly one registry entry" in text
-    assert "no term is ambiguous across the line set" in text
+    assert "maps every observed token to the lines that carry it" in text
+    assert "no mapping from those spellings to registry entries or concepts" in text

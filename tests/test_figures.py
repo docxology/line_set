@@ -609,6 +609,53 @@ def test_the_matrix_draws_the_grid_once_two_lines_are_legible(tmp_path: Path) ->
     assert "REFUSED" in body
 
 
+def test_the_sparse_matrix_retains_every_token_and_its_visible_carriers(
+    tmp_path: Path,
+) -> None:
+    import xml.etree.ElementTree as ET
+
+    with live_reading(tmp_path) as reading:
+        body = plates_for(LINE_SET, reading)["vocabulary_matrix"].render()
+    root = ET.fromstring(body)
+    ns = "{http://www.w3.org/2000/svg}"
+    rows = {
+        node.attrib["data-token"]: node
+        for node in root.iter(ns + "g")
+        if "data-token" in node.attrib
+    }
+    assert rows, "no vocabulary rows were drawn"
+    positions = {entry.id: entry.working_position for entry in LINE_SET}
+    expected = {}
+    for observation in reading.observations:
+        for token in observation.tokens:
+            expected.setdefault(token, []).append(positions[observation.line_id])
+    assert set(rows) == set(expected)
+    exempted = {item.token for item in reading.exempted_collisions}
+    colliding = {item.token for item in reading.collisions}
+    for token, row in rows.items():
+        name = row.find(f"{ns}g[@class='token-name']")
+        carriers = row.find(f"{ns}g[@class='token-carriers']")
+        assert name is not None and carriers is not None
+        assert "".join(node.text or "" for node in name.iter(ns + "text")) == token
+        visible = "".join(node.text or "" for node in carriers.iter(ns + "text"))
+        assert visible == ",".join(
+            str(position) for position in sorted(expected[token])
+        )
+        assert row.attrib["data-kind"] == (
+            "exempted"
+            if token in exempted
+            else "collision"
+            if token in colliding
+            else "unique"
+        )
+        if token in exempted:
+            assert row.find(ns + "polygon") is not None
+        elif token in colliding:
+            assert len(row.findall(ns + "rect")) == 2
+        else:
+            assert len(row.findall(ns + "rect")) == 1
+
+
 def test_an_unresolved_row_shows_no_metric_rather_than_a_zero() -> None:
     """A line that could not be read has no size, not a size of zero."""
     reading = make_reading(

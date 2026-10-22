@@ -1,7 +1,7 @@
 """Assemble the Line Set plates and their declared provenance.
 
 :func:`figure_plates` is a function rather than a module-level tuple on
-purpose. Three of the seven plates are drawn from a live reading, and a reading
+purpose. The live plates are drawn from a reading, and a reading
 means importing sibling packages; building the plate list lazily keeps
 ``import line_set.figures`` free of that side effect and lets each reading be
 computed once and handed to every plate that needs it.
@@ -147,18 +147,18 @@ def figure_plates(
             (
                 f"Every token this build's reading collected — {plural(tokens, 'token')} "
                 f"across {plural(legible, 'legible line')} — against the lines "
-                "that export it, with a filled cell for carried and an outlined "
-                "cell for not. The band above the grid holds the tokens more "
-                f"than one line carries: {len(undeclared)} covered by no "
+                "that export it, as faceted name-to-carrier rows. Carrier numbers "
+                "are declaration working positions; unread lines stay unknown. "
+                f"Shared names include {len(undeclared)} covered by no "
                 f"declaration and {len(exempted)} covered by one"
                 + (f" ({', '.join(exempted)})" if exempted else "")
                 + f". The declaration records {plural(len(exemptions), 'exemption')}"
                 + (f" ({', '.join(exemptions)})" if exemptions else "")
                 + ". A declared exemption and an undeclared collision are "
                 "separated by marker shape, by fill, and by the words on the "
-                "row, so the distinction survives a greyscale print. A grid "
-                "with no undeclared collision says the declared names do not "
-                "overlap; it does not say the lines do not."
+                "row, so the distinction survives a greyscale print. A reading "
+                "with no unexempted name collision establishes neither sibling "
+                "correctness nor conceptual separation."
             )
             if legible >= 2
             else (
@@ -230,9 +230,9 @@ def figure_plates(
                 "The exemption matcher run over "
                 f"{plural(len(probes), 'input')}: "
                 "the declaration as written, asked for exactly the lines it "
-                f"names, and {len(probes) - 1} weakenings of it. Every outcome "
+                f"names, and {sum(not probe.expected_match for probe in probes)} weakenings. Every outcome "
                 "column is what `exemption_for` returned, not a claim typed "
-                "into the plate, and the first row is the positive control "
+                "into the plate, and each token has its own positive control "
                 "without which the refusals below would be equally consistent "
                 "with a matcher that refuses everything. A refusal leaves the "
                 "collision standing, which is the direction the matcher is "
@@ -247,7 +247,7 @@ def figure_plates(
                 "that ran over no input demonstrated nothing."
             ),
             (
-                f"{plural(len(probes), 'row')}, each with a marker and a word "
+                f"{plural(len(set(probe.declared_token for probe in probes)), 'token row')}, each with a cell per mutation and a marker and word "
                 "for honoured or refused, the condition it varies, the token "
                 "and lines it asked about, and whether the matcher agreed with "
                 "the specification, above a summary panel and a reading rule."

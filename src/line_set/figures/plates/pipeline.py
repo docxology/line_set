@@ -26,7 +26,7 @@ from ..canvas import (
     path,
     rect,
     text,
-    wrap,
+    wrap_to_width,
 )
 from ..palette import (
     ACCENT,
@@ -54,7 +54,10 @@ _TOP = 320
 
 def _stage_lines(stage: str) -> tuple[list[str], list[str]]:
     """Wrap one stage's gloss and its narrower note."""
-    return wrap(STAGE_GLOSS[stage], 82), wrap(STAGE_NOTE[stage], 88)
+    width = _STAGE_WIDTH - 116
+    return wrap_to_width(STAGE_GLOSS[stage], width, 24), wrap_to_width(
+        STAGE_NOTE[stage], width, 24
+    )
 
 
 def _stage_height(stage: str) -> int:
@@ -65,12 +68,13 @@ def _stage_height(stage: str) -> int:
 
 def _rung_lines(status: SetStatus) -> list[str]:
     """Wrap one ladder rung's gloss."""
-    return wrap(SET_STATUS_GLOSS[status], 44)
+    return wrap_to_width(SET_STATUS_GLOSS[status], _LADDER_WIDTH - 96, 24)
 
 
 def _rung_height(status: SetStatus) -> int:
     """Rung height derived from the gloss it carries."""
-    return 92 + 22 * len(_rung_lines(status))
+    conditions = wrap_to_width(SET_STATUS_CONDITION[status], _LADDER_WIDTH - 96, 24)
+    return 98 + 26 * (len(conditions) + len(_rung_lines(status)))
 
 
 def set_reading_pipeline() -> str:
@@ -80,11 +84,14 @@ def set_reading_pipeline() -> str:
     rung_heights = [_rung_height(status) for status in STATUS_PRECEDENCE]
     column = sum(height + 26 for height in stage_heights)
     ladder = sum(height + 20 for height in rung_heights)
-    height = _TOP + max(column, ladder + 46) + 190
-    parts = open_canvas(1600, height)
+    ladder_note = wrap_to_width(
+        "Read downward; no later condition is tested after a match.", _LADDER_WIDTH, 24
+    )
+    body_height = max(column, ladder + 26 * (len(ladder_note) + 1))
+    parts: list[str] = []
     parts += header(
         "READING THE SET",
-        "Five stages, then the first condition that matches",
+        "Reader stages, then the first condition that matches",
         "Each stage records what it did into the reading's derivation, so a "
         "reading can be re-read rather than trusted.",
         f"{len(READER_STAGES)} STAGES · "
@@ -188,20 +195,16 @@ def set_reading_pipeline() -> str:
         parts.append(
             text(_LADDER_LEFT + 72, rung_top + 40, status.value, 26, ink, "700")
         )
-        parts.append(
-            text(
-                _LADDER_LEFT + 72,
-                rung_top + 66,
-                SET_STATUS_CONDITION[status],
-                24,
-                MUTED,
-                "700",
-            )
-        )
-        row = rung_top + 92
+        row = rung_top + 66
+        for entry in wrap_to_width(
+            SET_STATUS_CONDITION[status], _LADDER_WIDTH - 96, 24
+        ):
+            parts.append(text(_LADDER_LEFT + 72, row, entry, 24, MUTED, "700"))
+            row += 26
+        row += 8
         for entry in _rung_lines(status):
             parts.append(text(_LADDER_LEFT + 72, row, entry, 24, INK))
-            row += 22
+            row += 26
         parts.append(
             text(
                 _LADDER_LEFT + _LADDER_WIDTH - 16,
@@ -224,54 +227,32 @@ def set_reading_pipeline() -> str:
                 )
             )
         rung_top += box_height + 20
-    parts.append(
-        text(
-            _LADDER_LEFT,
-            rung_top + 26,
-            "read downward · no condition below is tested",
-            24,
-            MUTED,
-            "700",
+    for index, entry in enumerate(ladder_note):
+        parts.append(
+            text(_LADDER_LEFT, rung_top + 26 + index * 26, entry, 24, MUTED, "700")
         )
-    )
-    parts.append(
-        text(
-            _LADDER_LEFT,
-            rung_top + 50,
-            "once one above it has matched",
-            24,
-            MUTED,
-            "700",
-        )
-    )
 
-    footer = _TOP + max(column, ladder + 46) + 40
+    footer = _TOP + body_height + 40
     parts.append(line(MARGIN, footer, CONTENT_RIGHT, footer, RULE, 2))
     parts.append(
         text(MARGIN, footer + 36, "WHAT AN EXIT ESTABLISHES", 24, ACCENT, "700")
     )
-    parts.append(
-        text(
-            MARGIN,
-            footer + 68,
-            "An exit reports what the reader found in the declared names. It is "
-            "not a finding about how any line behaves, and no exit grades a line.",
-            24,
+    row = footer + 68
+    for value, ink in (
+        (
+            "An exit reports what the reader found in the declared names. It is not a finding about how any line behaves, and no exit grades a line.",
             INK,
-        )
-    )
-    parts.append(
-        text(
-            MARGIN,
-            footer + 98,
-            "A line that could not be read contributes no version, no registry "
-            "size, and no digest; those stay empty rather than being filled in.",
-            24,
+        ),
+        (
+            "A line that could not be read contributes no version, no registry size, and no digest; those stay empty rather than being filled in.",
             MUTED,
-        )
-    )
-    parts.append(close_canvas())
-    return "".join(parts)
+        ),
+    ):
+        for entry in wrap_to_width(value, CONTENT_RIGHT - MARGIN, 24):
+            parts.append(text(MARGIN, row, entry, 24, ink))
+            row += 28
+        row += 8
+    return "".join([*open_canvas(1600, row + 32), *parts, close_canvas()])
 
 
 __all__ = ["set_reading_pipeline"]

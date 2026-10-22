@@ -1,4 +1,4 @@
-# Introduction: what keeps four instruments from becoming one {#sec:introduction}
+# Introduction: what keeps separate instruments from becoming one {#sec:introduction}
 
 For most of the time the four lines have existed, their separation was a sentence in a markdown file. Each project's documentation said it did not duplicate the others' registries, evaluators, figures, or conclusions. I believed it, and I had written it, and nothing anywhere checked it.
 
@@ -10,11 +10,11 @@ by the mechanism defined in [@def:shared-token]. Someone reading a stored findin
 to already know which line produced it before it means anything; if they
 guess wrong, they read a refusal as a competence judgement. The second is
 that one instrument slowly takes on another's job — an aspiration registry
-acquires a prohibition, a method checklist starts issuing permissions — until the set is one instrument wearing four names. The second failure is the more serious of the two. It is also the one I cannot check by machine.
+acquires a prohibition, a method checklist starts issuing permissions — until the set is one instrument wearing multiple names. The second failure is the more serious of the two. It is also the one I cannot check by machine.
 
 So this work addresses the first, and it addresses it narrowly. It declares the set as data, reads whichever line packages are installed, collects the enum member names each of them publishes at its package root, and reports whether any name is carried by more than one line. A name carried by two lines is a collision. A collision the set has already written down, with a separate meaning recorded for each line, is exempted. Any other collision makes the reading `SET_COLLIDING`, and that is the whole of the contract.
 
-I want to be exact about the size of that claim, because a wrapper is the easiest place in a project to overstate one. Disjoint vocabularies are a necessary condition for the separation I want, not a sufficient one. Two lines can share no spelling whatsoever and be duplicating each other's judgement in every particular; the reader would call that set legible and be technically right and substantively useless. The check catches the failure that produces silent misreads downstream. It does not catch conceptual overlap, and nothing in this package should be cited as though it did.
+I want to be exact about the size of that claim, because a wrapper is the easiest place in a project to overstate one. The declared namespace contract requires a matching exemption for every shared spelling. That requirement establishes no conceptual separation. Two lines can share no spelling whatsoever and be duplicating each other's judgement in every particular; the reader would call that set legible and be technically right and substantively useless. The check identifies those shared spellings. It does not catch conceptual overlap, and nothing in this package should be cited as though it did.
 
 There is a hazard specific to being the bookkeeping work, and I have tried to design against it rather than promise around it. An instrument that sits above the others is well positioned to become a scoreboard for them — to start reporting which line is healthiest, which is best maintained, which one earns its place. The eight lines are peers. Nothing here ranks them, aggregates them, merges them, or evaluates them, and the package's own entry in `registry.py` records that as the thing it must not become, in the same field every line uses for the same purpose. The entry is deliberately colourless and carries no stage, because the wrapper answers no question about refusal, method, aspiration, or absence.
 

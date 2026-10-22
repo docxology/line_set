@@ -6,9 +6,12 @@ markers.
 
 ## Modules
 
+- `admission.py` supplies minimal identity/field validation shared by public reader admission and the offline battery; historical ordering conventions stay separate.
+- `recording.py` owns dated record and census generation and comparison; its script delegates. The current binding, discovery and replay contracts are in `docs/binding_contract.md`.
+
 - `__init__.py` re-exports the supported public API; `__all__` is sorted and duplicate-free.
 - `binding.py` defines `Resolution`, `Vocabulary`, `VocabularyCensus`, `ImportResolver`, `default_resolver`, `sibling_path_resolver()`, `sibling_source_roots()`, `candidate_packages()`, `exported_enums()`, `enum_tokens()`, `vocabulary_census()`, and `read_vocabulary()`. `exported_enums()` is the single place the exported set is decided, so the token reader and the census cannot come to describe different classes; anything that needs the package's enums goes through it.
-- `invariants.py` defines `SoundnessResult`, the seven offline structural checks, `self_disjointness_from_reading()`, `check_self_disjointness()`, `all_invariants()`, `live_invariants()`, and `registry_sound()`. The self-check is split so the judgement is pure: `check_self_disjointness()` takes the reading and delegates, and a figure drawing the property calls the same judgement instead of a second copy of it.
+- `invariants.py` defines `SoundnessResult`, the offline structural checks, `self_disjointness_from_reading()`, `check_self_disjointness()`, `all_invariants()`, `live_invariants()`, and `registry_sound()`. The self-check is split so the judgement is pure: `check_self_disjointness()` takes the reading and delegates, and a figure drawing the property calls the same judgement instead of a second copy of it.
 - `probes.py` defines `ExemptionProbe`, `exemption_probes()`, `probes_hold()`, `spare_line_id()`, and `DERIVED_LINE_SUFFIX`. It weakens a *declared* exemption six ways and reports what `exemption_for()` did with each. It checks nothing and demonstrates detection over the inputs it names; a probe built from a literal instead of from the declaration would stop tracking the declaration.
 - `models.py` defines `SetStatus`, `ReadCode`, `OPUS_STAGE_ORDER`, `LineEntry`, `SharedToken`, `LineObservation`, `TokenCollision`, `DerivationStage`, and `SetReading`.
 - `reader.py` defines `read_set(lines=LINE_SET, shared=SHARED_TOKENS, *, resolver=None, as_of=None)`, `exemption_for()`, `READER_STAGES`, and `STATUS_PRECEDENCE`.

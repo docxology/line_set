@@ -1,5 +1,5 @@
 {
-  "package_version": "0.1.0",
+  "package_version": "0.5.0",
   "reading": {
     "collisions": [],
     "counts": {
@@ -26,14 +26,14 @@
       {
         "detail": "read version, registry size, digest, and enum member names from each package that resolved",
         "items": [
-          "black_line: 10 tokens, version=0.4.0, registry_size=11",
-          "blue_line: 8 tokens, version=0.1.0, registry_size=12",
-          "golden_line: 7 tokens, version=0.4.0, registry_size=9",
-          "green_line: 10 tokens, version=0.1.0, registry_size=11",
+          "black_line: 10 tokens, version=0.5.0, registry_size=11",
+          "blue_line: 8 tokens, version=0.2.0, registry_size=12",
+          "golden_line: 7 tokens, version=0.5.0, registry_size=9",
+          "green_line: 10 tokens, version=0.2.0, registry_size=11",
           "red_line: 40 tokens, version=0.3.0, registry_size=7",
-          "silver_line: 11 tokens, version=0.1.0, registry_size=11",
-          "violet_line: 16 tokens, version=0.1.0, registry_size=8",
-          "white_line: 24 tokens, version=0.7.0, registry_size=11"
+          "silver_line: 12 tokens, version=0.2.0, registry_size=11",
+          "violet_line: 16 tokens, version=0.2.0, registry_size=8",
+          "white_line: 24 tokens, version=0.8.0, registry_size=11"
         ],
         "name": "bind"
       },
@@ -57,7 +57,7 @@
         "name": "declare"
       },
       {
-        "detail": "set_legible: all 8 declared line(s) were read and their vocabularies do not overlap",
+        "detail": "set_legible: no unexempted published-name collisions among all 8 declared readable vocabularies; 8 declared exemption(s)",
         "items": [
           "set_colliding",
           "set_undeclared",
@@ -67,46 +67,140 @@
         "name": "status"
       }
     ],
+    "discovery": {
+      "attempted": true,
+      "candidates": [
+        "black_line",
+        "blue_line",
+        "golden_line",
+        "green_line",
+        "red_line",
+        "silver_line",
+        "violet_line",
+        "white_line"
+      ],
+      "capable": true,
+      "completed": true,
+      "diagnostics": [],
+      "outcomes": []
+    },
     "exempted_collisions": [
       {
+        "declared_carriers": [
+          "black_line",
+          "green_line"
+        ],
         "exempted": true,
+        "fully_observed": true,
         "lines": [
           "black_line",
           "green_line"
         ],
+        "meanings": [
+          [
+            "black_line",
+            "a family of communication practices in the practice registry"
+          ],
+          [
+            "green_line",
+            "a family of communication capacities in the growth-marker vocabulary"
+          ]
+        ],
         "rationale": "Same divergence as METHOD and VERIFICATION, for communication: established practice families in Black Line, domains of deliberately incomplete capacity in Green Line.",
-        "token": "COMMUNICATION"
+        "token": "COMMUNICATION",
+        "unread_declared_carriers": []
       },
       {
+        "declared_carriers": [
+          "silver_line",
+          "violet_line"
+        ],
         "exempted": true,
+        "fully_observed": true,
         "lines": [
           "silver_line",
           "violet_line"
         ],
+        "meanings": [
+          [
+            "silver_line",
+            "declared custody of a keepsake read as adequate at the review date"
+          ],
+          [
+            "violet_line",
+            "a consent record accepted into the ledger at the review date"
+          ]
+        ],
         "rationale": "Silver Line is about custody of what persists; Violet Line is about recording what affected parties said. A KEPT keepsake and a KEPT consent record are different facts about different objects, and neither implies the other.",
-        "token": "KEPT"
+        "token": "KEPT",
+        "unread_declared_carriers": []
       },
       {
+        "declared_carriers": [
+          "black_line",
+          "green_line"
+        ],
         "exempted": true,
+        "fully_observed": true,
         "lines": [
           "black_line",
           "green_line"
         ],
+        "meanings": [
+          [
+            "black_line",
+            "a family of disciplined practices in the practice registry"
+          ],
+          [
+            "green_line",
+            "a family of method capacities in the growth-marker vocabulary"
+          ]
+        ],
         "rationale": "Black Line enumerates established practice families; Green Line enumerates domains where capacity is still growing. The same family name labels a discipline held in Black Line and a discipline still being built in Green Line.",
-        "token": "METHOD"
+        "token": "METHOD",
+        "unread_declared_carriers": []
       },
       {
+        "declared_carriers": [
+          "black_line",
+          "green_line",
+          "silver_line"
+        ],
         "exempted": true,
+        "fully_observed": true,
         "lines": [
           "black_line",
           "green_line",
           "silver_line"
         ],
+        "meanings": [
+          [
+            "black_line",
+            "an attempt whose declared evidence fails the discipline's checks"
+          ],
+          [
+            "green_line",
+            "a cultivation attempt whose staged markers do not yet support the claim"
+          ],
+          [
+            "silver_line",
+            "a keepsake whose declared custody fails the succession checks"
+          ]
+        ],
         "rationale": "Three lines each need a rework verdict, but the material being reworked differs: a practice attempt, a growth claim, and a succession declaration. A rework of one is not a rework of the others, so the shared spelling is declared rather than accidental.",
-        "token": "NEEDS_REWORK"
+        "token": "NEEDS_REWORK",
+        "unread_declared_carriers": []
       },
       {
+        "declared_carriers": [
+          "black_line",
+          "blue_line",
+          "green_line",
+          "red_line",
+          "silver_line"
+        ],
         "exempted": true,
+        "fully_observed": true,
         "lines": [
           "black_line",
           "blue_line",
@@ -114,32 +208,269 @@
           "red_line",
           "silver_line"
         ],
+        "meanings": [
+          [
+            "black_line",
+            "an attempt outside the discipline's evaluation scope"
+          ],
+          [
+            "blue_line",
+            "a submission that names no keepable commitment"
+          ],
+          [
+            "green_line",
+            "an attempt outside the growth-marker vocabulary"
+          ],
+          [
+            "red_line",
+            "a complete, evidenced intake that implicates no red line"
+          ],
+          [
+            "silver_line",
+            "a submission outside the succession vocabulary"
+          ]
+        ],
+        "rationale": "Five instruments each needed a name for input their own question does not reach. The sense is parallel but each line says it about its own intake: a refusal scope, a practice scope, a commitment scope, a growth scope, and a succession scope are five different scopes. Violet Line deliberately spells its token OUT_OF_SCOPE instead, so it is not carried here.",
+        "token": "OUTSIDE_SCOPE",
+        "unread_declared_carriers": []
+      },
+      {
+        "declared_carriers": [
+          "blue_line",
+          "white_line"
+        ],
+        "exempted": true,
+        "fully_observed": true,
+        "lines": [
+          "blue_line",
+          "white_line"
+        ],
+        "meanings": [
+          [
+            "blue_line",
+            "a maintained commitment whose declared care signals fall outside the freshness window"
+          ],
+          [
+            "white_line",
+            "an absence record whose review horizon has lapsed"
+          ]
+        ],
+        "rationale": "Blue Line's staleness is about care-signal freshness for living commitments; White Line's is about the age of a recorded absence against its own review horizon. Both mark time passed, but over different objects with different consequences.",
+        "token": "STALE",
+        "unread_declared_carriers": []
+      },
+      {
+        "declared_carriers": [
+          "black_line",
+          "green_line"
+        ],
+        "exempted": true,
+        "fully_observed": true,
+        "lines": [
+          "black_line",
+          "green_line"
+        ],
+        "meanings": [
+          [
+            "black_line",
+            "a family of stewardship practices in the practice registry"
+          ],
+          [
+            "green_line",
+            "a family of stewardship capacities in the growth-marker vocabulary"
+          ]
+        ],
+        "rationale": "Same divergence as the other shared family names: Black Line's stewardship is a practised discipline, Green Line's is a capacity still growing. The exemption records the overlap so the collision check can distinguish declaration from accident.",
+        "token": "STEWARDSHIP",
+        "unread_declared_carriers": []
+      },
+      {
+        "declared_carriers": [
+          "black_line",
+          "green_line"
+        ],
+        "exempted": true,
+        "fully_observed": true,
+        "lines": [
+          "black_line",
+          "green_line"
+        ],
+        "meanings": [
+          [
+            "black_line",
+            "a family of verification practices in the practice registry"
+          ],
+          [
+            "green_line",
+            "a family of verification capacities in the growth-marker vocabulary"
+          ]
+        ],
+        "rationale": "Same divergence as METHOD: an established verification practice in Black Line versus verification still under cultivation in Green Line. Declared here so the shared spelling stays a declaration.",
+        "token": "VERIFICATION",
+        "unread_declared_carriers": []
+      }
+    ],
+    "exemptions": [
+      {
+        "lines": [
+          "black_line",
+          "green_line"
+        ],
+        "meanings": [
+          [
+            "black_line",
+            "a family of communication practices in the practice registry"
+          ],
+          [
+            "green_line",
+            "a family of communication capacities in the growth-marker vocabulary"
+          ]
+        ],
+        "rationale": "Same divergence as METHOD and VERIFICATION, for communication: established practice families in Black Line, domains of deliberately incomplete capacity in Green Line.",
+        "token": "COMMUNICATION"
+      },
+      {
+        "lines": [
+          "silver_line",
+          "violet_line"
+        ],
+        "meanings": [
+          [
+            "silver_line",
+            "declared custody of a keepsake read as adequate at the review date"
+          ],
+          [
+            "violet_line",
+            "a consent record accepted into the ledger at the review date"
+          ]
+        ],
+        "rationale": "Silver Line is about custody of what persists; Violet Line is about recording what affected parties said. A KEPT keepsake and a KEPT consent record are different facts about different objects, and neither implies the other.",
+        "token": "KEPT"
+      },
+      {
+        "lines": [
+          "black_line",
+          "green_line"
+        ],
+        "meanings": [
+          [
+            "black_line",
+            "a family of disciplined practices in the practice registry"
+          ],
+          [
+            "green_line",
+            "a family of method capacities in the growth-marker vocabulary"
+          ]
+        ],
+        "rationale": "Black Line enumerates established practice families; Green Line enumerates domains where capacity is still growing. The same family name labels a discipline held in Black Line and a discipline still being built in Green Line.",
+        "token": "METHOD"
+      },
+      {
+        "lines": [
+          "black_line",
+          "green_line",
+          "silver_line"
+        ],
+        "meanings": [
+          [
+            "black_line",
+            "an attempt whose declared evidence fails the discipline's checks"
+          ],
+          [
+            "green_line",
+            "a cultivation attempt whose staged markers do not yet support the claim"
+          ],
+          [
+            "silver_line",
+            "a keepsake whose declared custody fails the succession checks"
+          ]
+        ],
+        "rationale": "Three lines each need a rework verdict, but the material being reworked differs: a practice attempt, a growth claim, and a succession declaration. A rework of one is not a rework of the others, so the shared spelling is declared rather than accidental.",
+        "token": "NEEDS_REWORK"
+      },
+      {
+        "lines": [
+          "black_line",
+          "blue_line",
+          "green_line",
+          "red_line",
+          "silver_line"
+        ],
+        "meanings": [
+          [
+            "black_line",
+            "an attempt outside the discipline's evaluation scope"
+          ],
+          [
+            "blue_line",
+            "a submission that names no keepable commitment"
+          ],
+          [
+            "green_line",
+            "an attempt outside the growth-marker vocabulary"
+          ],
+          [
+            "red_line",
+            "a complete, evidenced intake that implicates no red line"
+          ],
+          [
+            "silver_line",
+            "a submission outside the succession vocabulary"
+          ]
+        ],
         "rationale": "Five instruments each needed a name for input their own question does not reach. The sense is parallel but each line says it about its own intake: a refusal scope, a practice scope, a commitment scope, a growth scope, and a succession scope are five different scopes. Violet Line deliberately spells its token OUT_OF_SCOPE instead, so it is not carried here.",
         "token": "OUTSIDE_SCOPE"
       },
       {
-        "exempted": true,
         "lines": [
           "blue_line",
           "white_line"
+        ],
+        "meanings": [
+          [
+            "blue_line",
+            "a maintained commitment whose declared care signals fall outside the freshness window"
+          ],
+          [
+            "white_line",
+            "an absence record whose review horizon has lapsed"
+          ]
         ],
         "rationale": "Blue Line's staleness is about care-signal freshness for living commitments; White Line's is about the age of a recorded absence against its own review horizon. Both mark time passed, but over different objects with different consequences.",
         "token": "STALE"
       },
       {
-        "exempted": true,
         "lines": [
           "black_line",
           "green_line"
+        ],
+        "meanings": [
+          [
+            "black_line",
+            "a family of stewardship practices in the practice registry"
+          ],
+          [
+            "green_line",
+            "a family of stewardship capacities in the growth-marker vocabulary"
+          ]
         ],
         "rationale": "Same divergence as the other shared family names: Black Line's stewardship is a practised discipline, Green Line's is a capacity still growing. The exemption records the overlap so the collision check can distinguish declaration from accident.",
         "token": "STEWARDSHIP"
       },
       {
-        "exempted": true,
         "lines": [
           "black_line",
           "green_line"
+        ],
+        "meanings": [
+          [
+            "black_line",
+            "a family of verification practices in the practice registry"
+          ],
+          [
+            "green_line",
+            "a family of verification capacities in the growth-marker vocabulary"
+          ]
         ],
         "rationale": "Same divergence as METHOD: an established verification practice in Black Line versus verification still under cultivation in Green Line. Declared here so the shared spelling stays a declaration.",
         "token": "VERIFICATION"
@@ -149,7 +480,19 @@
       {
         "code": "resolved",
         "detail": "digest read from registry_digest()",
+        "diagnostics": [],
         "line_id": "black_line",
+        "provenance": {
+          "binding_schema": "convention-heuristic",
+          "distribution": null,
+          "distribution_version": null,
+          "module_origin": "black_line/src/black_line/__init__.py",
+          "registry_identity": null,
+          "requested_package": "black_line",
+          "resolved_package": "black_line",
+          "resolver_policy": "pinned-source-snapshot",
+          "source_revision": "79056aacf0f86b4287322dd5dced9d301882cb03"
+        },
         "registry_digest": "a02bff47a767b545bdeca7677bd1a2e1b24f1147d0847ec361fa9ee8b9ea1846",
         "registry_size": 11,
         "tokens": [
@@ -164,12 +507,24 @@
           "TRACEABILITY",
           "VERIFICATION"
         ],
-        "version": "0.4.0"
+        "version": "0.5.0"
       },
       {
         "code": "resolved",
         "detail": "digest read from registry_digest()",
+        "diagnostics": [],
         "line_id": "blue_line",
+        "provenance": {
+          "binding_schema": "convention-heuristic",
+          "distribution": null,
+          "distribution_version": null,
+          "module_origin": "blue_line/src/blue_line/__init__.py",
+          "registry_identity": null,
+          "requested_package": "blue_line",
+          "resolved_package": "blue_line",
+          "resolver_policy": "pinned-source-snapshot",
+          "source_revision": "15ef8043833fd790e0d52a8fa47289905e4d867f"
+        },
         "registry_digest": "9ae7cae1f0f7389f2f58bd7f75a2038a4c48d791166bf79c100d78f2f379e8fd",
         "registry_size": 12,
         "tokens": [
@@ -182,12 +537,24 @@
           "STALE",
           "SYSTEM"
         ],
-        "version": "0.1.0"
+        "version": "0.2.0"
       },
       {
         "code": "resolved",
         "detail": "digest read from registry_digest()",
+        "diagnostics": [],
         "line_id": "golden_line",
+        "provenance": {
+          "binding_schema": "convention-heuristic",
+          "distribution": null,
+          "distribution_version": null,
+          "module_origin": "golden_line/src/golden_line/__init__.py",
+          "registry_identity": null,
+          "requested_package": "golden_line",
+          "resolved_package": "golden_line",
+          "resolver_policy": "pinned-source-snapshot",
+          "source_revision": "23095f7f9759a3027e5ceb8380310d54c87cd977"
+        },
         "registry_digest": "3e0a7e38ececb156336d57ed7cc60b6bf08a3d8f2edfc678270c307820df57e3",
         "registry_size": 9,
         "tokens": [
@@ -199,12 +566,24 @@
           "TOWARD",
           "UNKNOWN_ID"
         ],
-        "version": "0.4.0"
+        "version": "0.5.0"
       },
       {
         "code": "resolved",
         "detail": "digest read from registry_digest()",
+        "diagnostics": [],
         "line_id": "green_line",
+        "provenance": {
+          "binding_schema": "convention-heuristic",
+          "distribution": null,
+          "distribution_version": null,
+          "module_origin": "green_line/src/green_line/__init__.py",
+          "registry_identity": null,
+          "requested_package": "green_line",
+          "resolved_package": "green_line",
+          "resolver_policy": "pinned-source-snapshot",
+          "source_revision": "e05007f9858bb55194b0d867aed7bed7d51777e2"
+        },
         "registry_digest": "2d40bfefb9a57d898412861a06d3d1718d0cc6425fc36b8be526f0306063cc57",
         "registry_size": 11,
         "tokens": [
@@ -219,12 +598,24 @@
           "STEWARDSHIP",
           "VERIFICATION"
         ],
-        "version": "0.1.0"
+        "version": "0.2.0"
       },
       {
         "code": "resolved",
         "detail": "digest read from registry_hash()",
+        "diagnostics": [],
         "line_id": "red_line",
+        "provenance": {
+          "binding_schema": "convention-heuristic",
+          "distribution": null,
+          "distribution_version": null,
+          "module_origin": "red_line/src/red_line/__init__.py",
+          "registry_identity": null,
+          "requested_package": "red_line",
+          "resolved_package": "red_line",
+          "resolver_policy": "pinned-source-snapshot",
+          "source_revision": "375e8ae9b7a111bcdb66f0ba33872c078083983c"
+        },
         "registry_digest": "72835fd81d1f7ecf70f47b1e0061cd56c385273dd846879ab639225913f5aad7",
         "registry_size": 7,
         "tokens": [
@@ -274,11 +665,24 @@
       {
         "code": "resolved",
         "detail": "digest read from registry_digest()",
+        "diagnostics": [],
         "line_id": "silver_line",
-        "registry_digest": "3d4f90f50de380657fdd16c1b1626b065d455497ca0dc1b8f3cbe95bc23f9efd",
+        "provenance": {
+          "binding_schema": "convention-heuristic",
+          "distribution": null,
+          "distribution_version": null,
+          "module_origin": "silver_line/src/silver_line/__init__.py",
+          "registry_identity": null,
+          "requested_package": "silver_line",
+          "resolved_package": "silver_line",
+          "resolver_policy": "pinned-source-snapshot",
+          "source_revision": "3ff05b23a6a59c0f68b7a11e4cd70696f321fe0d"
+        },
+        "registry_digest": "30711e134eec17166275097b066c195c04e37f4bbd17db1a1115c64c3237af16",
         "registry_size": 11,
         "tokens": [
           "ACCEPTED",
+          "DECLARED_RELEASE",
           "ENTRUSTMENT",
           "KEPT",
           "LAPSE",
@@ -290,13 +694,25 @@
           "SET_ASIDE",
           "TRANSMISSION"
         ],
-        "version": "0.1.0"
+        "version": "0.2.0"
       },
       {
         "code": "resolved",
         "detail": "digest read from registry_digest()",
+        "diagnostics": [],
         "line_id": "violet_line",
-        "registry_digest": "cc2df72dfdbad157bff9881e1fefae68782952705853c65600150de0b4a0c99a",
+        "provenance": {
+          "binding_schema": "convention-heuristic",
+          "distribution": null,
+          "distribution_version": null,
+          "module_origin": "violet_line/src/violet_line/__init__.py",
+          "registry_identity": null,
+          "requested_package": "violet_line",
+          "resolved_package": "violet_line",
+          "resolver_policy": "pinned-source-snapshot",
+          "source_revision": "4bb20dbdc1c2df6cd505faee0b9729979d3892bd"
+        },
+        "registry_digest": "6494a6bcafbdfa2a85ce293e03a58419505a2238223ee7bb5438cfcc81c9926b",
         "registry_size": 8,
         "tokens": [
           "ACCOUNTED",
@@ -316,12 +732,24 @@
           "UNRECORDED",
           "WITHDRAWN"
         ],
-        "version": "0.1.0"
+        "version": "0.2.0"
       },
       {
         "code": "resolved",
         "detail": "digest read from registry_digest()",
+        "diagnostics": [],
         "line_id": "white_line",
+        "provenance": {
+          "binding_schema": "convention-heuristic",
+          "distribution": null,
+          "distribution_version": null,
+          "module_origin": "white_line/src/white_line/__init__.py",
+          "registry_identity": null,
+          "requested_package": "white_line",
+          "resolved_package": "white_line",
+          "resolver_policy": "pinned-source-snapshot",
+          "source_revision": "869aaab63c37aa118f469497cb513cf29697acda"
+        },
         "registry_digest": "11047a641a8e80c985f2bbd8a45b67a0e67048b235020aa52aa46da1cc02682a",
         "registry_size": 11,
         "tokens": [
@@ -350,25 +778,38 @@
           "UNTYPED_STATE",
           "WITHHELD"
         ],
-        "version": "0.7.0"
+        "version": "0.8.0"
       }
     ],
-    "read_as_of": "2026-09-01",
-    "set_digest": "7b7e70b70c5c22eaf5daeac59dd54d3c8b771fee3b1193d7446f66c0a1b156b4",
+    "read_as_of": "2026-10-21",
+    "schema_version": "line-set-reading/2",
+    "set_digest": "de4bd085666ef66ff73aaa934cc94946530df33ad8d35d69669d514e9dcf6140",
     "status": "set_legible",
     "undeclared_lines": []
   },
-  "reading_digest": "afae36b01400bf9148553f774c52ddaaae68ff9cf1b33acd0c82a033c7a9f36e",
-  "recorded_on": "2026-09-01",
-  "schema_version": "1.0",
-  "set_digest": "7b7e70b70c5c22eaf5daeac59dd54d3c8b771fee3b1193d7446f66c0a1b156b4",
-  "set_version": "2026.07.27",
+  "reading_digest": "d6c2743319f69caed551f5a6fcde4bf99ac851e6f1a17262f044fe1f6afc0bfe",
+  "recorded_on": "2026-10-21",
+  "resolver_mode": "sibling_path_resolver",
+  "schema_version": "2.0",
+  "set_digest": "de4bd085666ef66ff73aaa934cc94946530df33ad8d35d69669d514e9dcf6140",
+  "set_version": "2026.10.21",
+  "source_revisions": {
+    "black_line": "79056aacf0f86b4287322dd5dced9d301882cb03",
+    "blue_line": "15ef8043833fd790e0d52a8fa47289905e4d867f",
+    "golden_line": "23095f7f9759a3027e5ceb8380310d54c87cd977",
+    "green_line": "e05007f9858bb55194b0d867aed7bed7d51777e2",
+    "red_line": "375e8ae9b7a111bcdb66f0ba33872c078083983c",
+    "silver_line": "3ff05b23a6a59c0f68b7a11e4cd70696f321fe0d",
+    "violet_line": "4bb20dbdc1c2df6cd505faee0b9729979d3892bd",
+    "white_line": "869aaab63c37aa118f469497cb513cf29697acda"
+  },
   "vocabulary_census": {
-    "declared_members": 146,
-    "distinct_names": 114,
+    "canonical_members": 148,
+    "declared_members": 148,
+    "distinct_names": 115,
     "enum_classes": 34,
-    "line_and_name_pairs": 126,
-    "method": "Every enum exported at each declared package's root was counted, together with the members it declares. declared_members counts repeats; distinct_names is what survives deduplication within one line, which is what the collision scan compares.",
+    "line_and_name_pairs": 127,
+    "method": "Every enum exported at each declared package's root was counted, together with all __members__ names including aliases, deduplicating class objects. canonical_members counts values reached by ordinary enum iteration; declared_members counts names with repeats; distinct_names is what survives deduplication within one line, which is what the collision scan compares.",
     "names_carried_by_more_than_one_line": [
       "COMMUNICATION",
       "KEPT",
@@ -381,48 +822,56 @@
     ],
     "per_line": {
       "black_line": {
+        "canonical_members": 13,
         "declared_members": 13,
         "distinct_names": 10,
         "enum_classes": 3,
         "within_line_repeats": 3
       },
       "blue_line": {
+        "canonical_members": 11,
         "declared_members": 11,
         "distinct_names": 8,
         "enum_classes": 3,
         "within_line_repeats": 3
       },
       "golden_line": {
+        "canonical_members": 7,
         "declared_members": 7,
         "distinct_names": 7,
         "enum_classes": 2,
         "within_line_repeats": 0
       },
       "green_line": {
+        "canonical_members": 13,
         "declared_members": 13,
         "distinct_names": 10,
         "enum_classes": 3,
         "within_line_repeats": 3
       },
       "red_line": {
+        "canonical_members": 41,
         "declared_members": 41,
         "distinct_names": 40,
         "enum_classes": 7,
         "within_line_repeats": 1
       },
       "silver_line": {
-        "declared_members": 14,
-        "distinct_names": 11,
+        "canonical_members": 16,
+        "declared_members": 16,
+        "distinct_names": 12,
         "enum_classes": 4,
-        "within_line_repeats": 3
+        "within_line_repeats": 4
       },
       "violet_line": {
+        "canonical_members": 19,
         "declared_members": 19,
         "distinct_names": 16,
         "enum_classes": 5,
         "within_line_repeats": 3
       },
       "white_line": {
+        "canonical_members": 28,
         "declared_members": 28,
         "distinct_names": 24,
         "enum_classes": 7,

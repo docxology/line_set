@@ -112,11 +112,22 @@ def _probe(
     )
 
 
-def exemption_probes(
+def _unpublished_spelling(
+    preferred: str, token: str, shared: tuple[SharedToken, ...]
+) -> str:
+    published = {item.token for item in shared if isinstance(item, SharedToken)}
+    candidate = preferred if preferred != token else token + "_mutation"
+    while candidate in published:
+        candidate += "_mutation"
+    return candidate
+
+
+def _entry_probes(
     lines: tuple[LineEntry, ...],
     shared: tuple[SharedToken, ...],
+    index: int,
 ) -> tuple[ExemptionProbe, ...]:
-    """Weaken the first declared exemption six ways and report each outcome.
+    """Weaken one indexed exemption while retaining the complete table.
 
     The first probe is the positive control: the shipped declaration, asked for
     exactly the lines it names, must match. Without it the five refusals below
@@ -127,13 +138,10 @@ def exemption_probes(
     that as an absence rather than as a clean sheet; every gate in this project
     fails on an empty scan set for the same reason.
     """
-    declared = tuple(entry for entry in shared if isinstance(entry, SharedToken))
-    if not declared:
-        return ()
-    entry = declared[0]
+    entry = shared[index]
     token = entry.token
     carrying = tuple(entry.lines)
-    table = (entry,)
+    table = (entry, *shared[:index], *shared[index + 1 :])
     third, from_declaration = spare_line_id(lines, carrying)
 
     probes = [
@@ -146,26 +154,29 @@ def exemption_probes(
             expected_match=True,
         ),
         _probe(
-            "truncated token",
-            "a proper prefix of the token; no substring test",
+            "changed token spelling",
+            "a proper prefix when unpublished; otherwise a changed spelling absent from the full table",
             table,
-            token[:-1],
+            _unpublished_spelling(token[:-1], token, shared),
             carrying,
             expected_match=False,
         ),
         _probe(
-            "case-folded token",
-            "the token in another case; no case folding",
+            "changed token case or spelling",
+            "another case when unpublished; otherwise a changed spelling absent from the full table",
             table,
-            token.lower() if token.lower() != token else token.upper(),
+            _unpublished_spelling(token.swapcase(), token, shared),
             carrying,
             expected_match=False,
         ),
         _probe(
-            "a third line carries it"
-            if from_declaration
-            else "a further line carries it",
-            "one more line carries the token than the exemption names; no subset test",
+            "an additional line carries it",
+            "one more line carries the token than the exemption names; no subset test; "
+            + (
+                "the spare id is declared"
+                if from_declaration
+                else "the spare id is derived"
+            ),
             table,
             token,
             (*carrying, third),
@@ -175,7 +186,7 @@ def exemption_probes(
             "declaration names a line that does not carry it",
             "the exemption names one line more than carries the token; no "
             "superset test",
-            (replace(entry, lines=(*carrying, third)),),
+            (replace(entry, lines=(*carrying, third)), *table[1:]),
             token,
             carrying,
             expected_match=False,
@@ -183,7 +194,7 @@ def exemption_probes(
         _probe(
             "a named line has no meaning",
             "a line is named with no meaning recorded for it",
-            (replace(entry, meanings=entry.meanings[:-1]),),
+            (replace(entry, meanings=entry.meanings[:-1]), *table[1:]),
             token,
             carrying,
             expected_match=False,
@@ -191,13 +202,30 @@ def exemption_probes(
         _probe(
             "two declarations of one token",
             "the same token declared twice; an ambiguous exemption exempts nothing",
-            (entry, entry),
+            (*table, entry),
             token,
             carrying,
             expected_match=False,
         ),
     ]
     return tuple(probes)
+
+
+def exemption_probes(
+    lines: tuple[LineEntry, ...], shared: tuple[SharedToken, ...]
+) -> tuple[ExemptionProbe, ...]:
+    return tuple(
+        probe
+        for index, entry in enumerate(shared)
+        if isinstance(entry, SharedToken)
+        and isinstance(entry.token, str)
+        and entry.token
+        and isinstance(entry.lines, tuple)
+        and len(entry.lines) >= 2
+        and all(isinstance(name, str) and name.strip() for name in entry.lines)
+        and isinstance(entry.meanings, tuple)
+        for probe in _entry_probes(lines, shared, index)
+    )
 
 
 def probes_hold(probes: tuple[ExemptionProbe, ...]) -> bool:

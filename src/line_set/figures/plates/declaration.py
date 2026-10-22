@@ -26,6 +26,7 @@ from ..canvas import (
     rect,
     text,
     wrap,
+    wrap_to_width,
 )
 from ..palette import (
     ACCENT,
@@ -53,14 +54,14 @@ def _row_lines(entry: LineEntry) -> tuple[list[str], list[str], list[str]]:
     return (
         wrap(f"asks — {entry.question}", 84),
         wrap(f"does — {entry.job}", 94),
-        wrap(f"must not become — {entry.must_not_become}", 94),
+        wrap(f"must not become — {entry.must_not_become}", 84),
     )
 
 
 def _row_height(entry: LineEntry) -> int:
     """Card height derived from how much text the entry actually carries."""
     asks, does, avoids = _row_lines(entry)
-    return 150 + 36 * len(asks) + 30 * len(does) + 30 * len(avoids)
+    return 130 + 36 * len(asks) + 30 * len(does) + 30 * len(avoids)
 
 
 def _draw_card(
@@ -237,16 +238,16 @@ def set_compass(lines: tuple[LineEntry, ...], wrapper: LineEntry) -> str:
     )
     parts.append(
         text(
-            CONTENT_RIGHT,
-            cursor + 30,
-            "the wrapper declares no refusal, method, aspiration, or absence",
+            MARGIN,
+            cursor + 62,
+            "the wrapper adds no instrument and no cross-line score",
             28,
             MUTED,
             "400",
-            "end",
+            "start",
         )
     )
-    cursor += 50
+    cursor += 90
     parts += _draw_card(
         wrapper,
         cursor,
@@ -299,16 +300,20 @@ def two_orders(lines: tuple[LineEntry, ...]) -> str:
     unstaged = tuple(entry for entry in working if entry not in staged)
     divergence = check_orders_diverge(lines)
 
-    row_h = 118
-    box_h = 92
     box_w = 540
+    questions = {
+        entry.id: wrap_to_width(entry.question, box_w - 112, 26) for entry in working
+    }
+    box_h = 100 + 28 * (
+        max((len(value) for value in questions.values()), default=1) - 1
+    )
+    row_h = box_h + 26
     left_x = MARGIN
     right_x = CONTENT_RIGHT - box_w
-    top = 306
+    top = 342
     rows = max(len(working), len(staged), 1)
     unstaged_block = 0 if not unstaged else 84 + 30 * len(unstaged)
-    height = top + rows * row_h + unstaged_block + 250
-    parts = open_canvas(1600, height)
+    parts: list[str] = []
     parts += header(
         "TWO ORDERS",
         "The working order is not the opus order",
@@ -318,19 +323,7 @@ def two_orders(lines: tuple[LineEntry, ...]) -> str:
         ACCENT,
     )
     parts.append(text(left_x, top - 26, "WORKING ORDER", 28, ACCENT, "700"))
-    parts.append(
-        text(left_x + 200, top - 26, "refuse → method → aspire → absence", 28, MUTED)
-    )
     parts.append(text(right_x, top - 26, "OPUS ORDER", 28, ACCENT, "700"))
-    parts.append(
-        text(
-            right_x + 150,
-            top - 26,
-            " → ".join(OPUS_STAGE_ORDER),
-            28,
-            MUTED,
-        )
-    )
 
     left_centre: dict[str, float] = {}
     for index, entry in enumerate(working):
@@ -351,19 +344,18 @@ def two_orders(lines: tuple[LineEntry, ...]) -> str:
         )
         parts.append(text(left_x + 92, y + 40, entry.color, 26, ink, "700"))
         parts.append(
-            text(left_x + 92, y + 68, f"position {entry.working_position}", 28, MUTED)
-        )
-        parts.append(
             text(
                 left_x + box_w - 20,
                 y + 40,
-                entry.question,
-                28,
+                f"position {entry.working_position}",
+                24,
                 MUTED,
                 "400",
                 "end",
             )
         )
+        for row, question in enumerate(questions[entry.id]):
+            parts.append(text(left_x + 92, y + 76 + row * 28, question, 26, MUTED))
         left_centre[entry.id] = y + box_h / 2
 
     right_centre: dict[str, float] = {}
@@ -441,8 +433,7 @@ def two_orders(lines: tuple[LineEntry, ...]) -> str:
                 text(
                     right_x + 24,
                     cursor + 62 + index * 30,
-                    f"the {entry.color} line keeps its working position and "
-                    "borrows no stage name",
+                    f"{entry.color} · position {entry.working_position}",
                     28,
                     MUTED,
                 )
@@ -473,14 +464,19 @@ def two_orders(lines: tuple[LineEntry, ...]) -> str:
             "700",
         )
     )
-    parts.append(text(MARGIN, cursor + 74, divergence.detail, 28, INK))
+    cursor += 74
+    for sentence in wrap_to_width(divergence.detail, CONTENT_RIGHT - MARGIN, 26):
+        parts.append(text(MARGIN, cursor, sentence, 26, INK))
+        cursor += 28
+    cursor += 18
     for index, note in enumerate(_ORDER_NOTES):
-        parts.append(
-            text(MARGIN, cursor + 112 + index * 32, f"{index + 1}.", 28, MUTED, "700")
-        )
-        parts.append(text(MARGIN + 32, cursor + 112 + index * 32, note, 28, INK))
-    parts.append(close_canvas())
-    return "".join(parts)
+        for sentence in wrap_to_width(
+            f"{index + 1}. {note}", CONTENT_RIGHT - MARGIN, 26
+        ):
+            parts.append(text(MARGIN, cursor, sentence, 26, INK))
+            cursor += 28
+        cursor += 8
+    return "".join([*open_canvas(1600, cursor + 40), *parts, close_canvas()])
 
 
 __all__ = ["set_compass", "two_orders"]

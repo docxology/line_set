@@ -9,7 +9,7 @@ in its detail.
 Each check is also handed an empty registry. Passing on nothing is the failure
 mode that makes a whole battery decorative, so an empty scan set must fail.
 
-Check eight, self-disjointness, is not here. It needs to read the lines, and
+The live check, self-disjointness, is not here. It needs to read the lines, and
 its tests live in ``test_self_disjointness.py``.
 """
 
@@ -26,6 +26,7 @@ from line_set import (
     SharedToken,
     all_invariants,
     check_contiguous_working_positions,
+    check_declaration_admission,
     check_distinct_colours,
     check_distinct_line_ids,
     check_distinct_opus_stages,
@@ -39,6 +40,7 @@ from line_set.invariants import _LINE_CHECKS
 REAL = LINE_SET
 
 OFFLINE_LINE_CHECKS = (
+    check_declaration_admission,
     check_distinct_line_ids,
     check_distinct_colours,
     check_distinct_opus_stages,

@@ -10,7 +10,7 @@ The reader, the checks, and the serialization take the declaration as an
 argument and do not name any line individually, so nothing else has to change.
 
 The wrapper's own entry, ``WRAPPER_LINE``, is kept out of ``LINE_SET``. It is
-not a fifth instrument; it exists so the wrapper's own vocabulary can be put
+not a substantive instrument; it exists so the wrapper's own vocabulary can be put
 through the wrapper's own collision check.
 """
 

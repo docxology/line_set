@@ -19,6 +19,7 @@ identical results whether or not any line package is installed.
 
 | Check | What breakage it detects | Planted-bad input |
 | --- | --- | --- |
+| `declaration_admission` | Empty or ambiguous line/package identities and malformed line fields before import. Shares the public reader's minimal validator. | Empty declaration, duplicate package names, blank identity or a non-text field. |
 | `distinct_line_ids` | A duplicate id, which makes every observation about that id ambiguous. | Two entries sharing one `id`. |
 | `distinct_colours` | A duplicate colour, which is how a line is named in prose and figures. | Two entries sharing one `color`. |
 | `distinct_opus_stages` | A stage claimed twice, or a name that is not an opus stage at all. `None` is allowed and ignored, but a declaration where *no* entry carries a stage reports that distinctness is unestablished rather than passing. | An entry re-using `rubedo`; an entry claiming an invented stage. |
@@ -87,13 +88,18 @@ against a subset is not disjointness across the set.
 
 ## Demonstrating the matcher rather than asserting it
 
-`src/line_set/probes.py` builds a declared exemption's six weakenings — a
+`src/line_set/probes.py` builds every declared exemption's six weakenings — a
 truncated token, a case-folded token, a query naming one line more than the
 record does, a record naming one line more than carries the token, a record
 missing a meaning for a line it names, and two records for one token — and hands
 each to `exemption_for()`. Every probe carries the specification (`should this
 match?`) and the answer (`did it?`) separately, and `probes_hold()` is true only
 when they agree on every probe *and* there was at least one probe.
+
+Query spelling mutations must be absent from the complete exemption table.
+If a prefix or case change names another valid exemption, the probe records a
+changed unpublished spelling instead. A legitimate query for another token is
+not a matcher failure.
 
 The first probe is the positive control: the declaration as written, asked for
 exactly the lines it names, must match. Without it, six refusals would be
@@ -123,6 +129,7 @@ input passing is compatible with a check that returns `True` unconditionally.
 **Every check fails on an empty scan set**, and the failure detail says why:
 
 ```text
+declaration_admission        passed=False  declaration is empty; there is nothing to check
 distinct_line_ids             passed=False  the declaration is empty; there is nothing to check
 distinct_colours              passed=False  the declaration is empty; there is nothing to check
 distinct_opus_stages          passed=False  the declaration is empty; there is nothing to check

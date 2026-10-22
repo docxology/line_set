@@ -29,7 +29,7 @@ from pathlib import Path
 
 import pytest
 
-from line_set import LINE_SET, WRAPPER_LINE, LineEntry
+from line_set import LINE_SET, WRAPPER_LINE, LineEntry, sibling_base
 from line_set.omnibus import (
     GENERATED_ORDERING_MARKER,
     SOURCE_FIGURE_PREFIX,
@@ -61,12 +61,12 @@ from line_set.omnibus import (
     volume_config,
     volume_order,
 )
-from tests.support import absent, canned_resolver, import_sandbox
+from tests.support import absent, canned_resolver, environment, import_sandbox
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 
 #: The sibling checkouts the declared works live in.
-CORPUS_BASE = PROJECT_ROOT.parent
+CORPUS_BASE = sibling_base()
 
 #: A single-pixel PNG, written so a copied plate is a real file with real bytes.
 PNG_BYTES = bytes.fromhex(
@@ -353,6 +353,43 @@ def test_a_work_reports_only_the_plates_it_embeds(tmp_path: Path) -> None:
     )
     paper = discover_papers(base, declaration("one"), wrapper_entry("two", 2))[1]
     assert [path.name for path in paper.figures] == ["mine.png"]
+
+
+@pytest.mark.parametrize("configured_docs", [False, True])
+def test_a_partial_migration_does_not_shadow_the_configured_source(
+    tmp_path: Path, configured_docs: bool
+) -> None:
+    base = tmp_path / "works"
+    root = write_paper(base, "one")
+    legacy = root / "manuscript"
+    docs = root / "docs" / "manuscript"
+    docs.mkdir(parents=True)
+    (docs / "01_fragment.md").write_text("# Fragment\n", encoding="utf-8")
+    if configured_docs:
+        (docs / "config.yaml").write_bytes((legacy / "config.yaml").read_bytes())
+    paper = discover_paper(declaration("one")[0], base)
+    expected = docs if configured_docs else legacy
+    assert paper.sections
+    assert all(path.parent == expected for path in paper.sections)
+
+
+def test_the_corpus_gate_honours_the_explicit_snapshot_directory(
+    tmp_path: Path,
+) -> None:
+    code = (
+        "import runpy, sys; from pathlib import Path; "
+        "scope = runpy.run_path(sys.argv[1]); "
+        "assert scope['CORPUS_BASE'] == Path(sys.argv[2]), scope['CORPUS_BASE']"
+    )
+    with environment("LINE_SET_SIBLINGS", str(tmp_path)):
+        result = subprocess.run(
+            [sys.executable, "-c", code, str(Path(__file__)), str(tmp_path)],
+            cwd=PROJECT_ROOT,
+            capture_output=True,
+            text=True,
+            timeout=30,
+        )
+    assert result.returncode == 0, result.stdout + result.stderr
 
 
 def test_a_detached_repo_finds_its_own_manuscript_at_the_repository_root(
