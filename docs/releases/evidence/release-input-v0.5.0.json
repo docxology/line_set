@@ -4,52 +4,52 @@
       "coverage_percent": 96.9429909115946,
       "errors": 0,
       "failures": 0,
-      "log": "audit-r3-schema-fixed-absent-suite.log",
-      "passed": 637,
+      "log": "audit-r4-fixed-absent-suite.log",
+      "passed": 638,
       "receipt": {
-        "elapsed_seconds": 62.18214587500552,
+        "elapsed_seconds": 139.9080357500061,
         "exit_code": 0,
         "git_after": [
-          "0c600b7eb5008d5c4f83a03d10cd3f6a71d03750",
-          "16ec34a0bcd2486d434227356328fec214735f90"
+          "ab95b6183d0c43101591e8e615597249a97ae6f3",
+          "fc8a77f977c467f918394a4e8cc1fe3ebfb4ff8f"
         ],
         "git_before": [
-          "0c600b7eb5008d5c4f83a03d10cd3f6a71d03750",
-          "16ec34a0bcd2486d434227356328fec214735f90"
+          "ab95b6183d0c43101591e8e615597249a97ae6f3",
+          "fc8a77f977c467f918394a4e8cc1fe3ebfb4ff8f"
         ],
-        "log_sha256": "584cca00e42655c0ee09276ec472c1a6d3f5e1caa2878a7489f6815e2e857ad4",
-        "started_at": "2026-10-22T08:01:10.537244+00:00",
+        "log_sha256": "a615a9de948fca588e53b067000904ddf3bf00e638eff95e103bf2791283fd49",
+        "started_at": "2026-10-22T08:34:57.490695+00:00",
         "timed_out": false
       },
       "skipped": 16,
-      "tests": 653
+      "tests": 654
     },
     "present": {
       "coverage_percent": 97.41118149270173,
       "errors": 0,
       "failures": 0,
-      "log": "audit-r3-schema-fixed-present-suite.log",
-      "passed": 653,
+      "log": "audit-r4-fixed-present-suite.log",
+      "passed": 654,
       "receipt": {
-        "elapsed_seconds": 105.9944574169931,
+        "elapsed_seconds": 194.96867758297594,
         "exit_code": 0,
         "git_after": [
-          "0c600b7eb5008d5c4f83a03d10cd3f6a71d03750",
-          "16ec34a0bcd2486d434227356328fec214735f90"
+          "ab95b6183d0c43101591e8e615597249a97ae6f3",
+          "fc8a77f977c467f918394a4e8cc1fe3ebfb4ff8f"
         ],
         "git_before": [
-          "0c600b7eb5008d5c4f83a03d10cd3f6a71d03750",
-          "16ec34a0bcd2486d434227356328fec214735f90"
+          "ab95b6183d0c43101591e8e615597249a97ae6f3",
+          "fc8a77f977c467f918394a4e8cc1fe3ebfb4ff8f"
         ],
-        "log_sha256": "503dbe2831933f23ce76d226cb1bddab3dd792bb0d92e193670e2ea8c6f5fb6b",
-        "started_at": "2026-10-22T08:01:10.537118+00:00",
+        "log_sha256": "3c73f8c16916dabeb4d9fc3711dcda3911906ceca42adfca9e7f85c3eaf1edb1",
+        "started_at": "2026-10-22T08:34:57.490844+00:00",
         "timed_out": false
       },
       "skipped": 0,
-      "tests": 653
+      "tests": 654
     }
   },
-  "implementation_revision": "0c600b7eb5008d5c4f83a03d10cd3f6a71d03750",
+  "implementation_revision": "ab95b6183d0c43101591e8e615597249a97ae6f3",
   "native_nonblocking_number_notices": [
     "029_red_line_10_limitations.md:73: unsupported number 300",
     "035_black_line_01c_scholarship.md:109: unsupported number 1576",
@@ -59,10 +59,10 @@
   "rendered": {
     "standalone-final": {
       "checksums": {
-        "output/epub/line_set_combined.epub": "aa9f1f73bfe85bc5760e133f40e9abcfa27ab43ae43e35e3446d966fa2fa3cf3",
+        "output/epub/line_set_combined.epub": "4756ecaf1d387977832f5956c378e1ea8f4abb80725a4ed5b43905b563522a57",
         "output/figures/exemption_gate.png": "55106742ac644e29f11d4741fdb9ba1339e284b7bd44a447dd8da372ff9794da",
         "output/figures/exemption_gate.svg": "263d23eb24aaf64a7f6eb409cfb26733ef82c7f59825e799e2b637759cab15e8",
-        "output/figures/figure_registry.json": "d2f06ea7981207cc63eb8e1d4594e71db3d5583521d28f03c7dfc01793b7063f",
+        "output/figures/figure_registry.json": "edf25ff79898078a953b414a7bb3c70c1fe038b9b926c7a25ced1f35268e4c71",
         "output/figures/installation_surface.png": "4b5d29098453e3c68509a1c1dbed49c653c85bda7b3df77735cf7a2a5f05a22b",
         "output/figures/installation_surface.svg": "af486bb4f2af2fc9b34a9a560c28f873ac0edc874e99734a4716ac2b8659288a",
         "output/figures/line_set_cover.png": "87235e6fa4ed897db517b91ebe6ae76baff9001dbb56e6774283b27c53057eaf",
@@ -82,7 +82,7 @@
         "output/manuscript/01_introduction.md": "d0e221b64a62af256c82f4bfa7b9164da258b6c72ea21ad1f54d588d23b2f53e",
         "output/manuscript/01b_the_set.md": "18d6970b4d29710e6ee9501ca190fd7614d66091b9f609dbd2363e39a130503f",
         "output/manuscript/02_method.md": "29d69d93a4c279e5ddcbb07183156cd3bd546d17776f263ff16305a6791868cb",
-        "output/manuscript/02a_formalism.md": "00838b001a24179124b87b01369f61fc4c47efeafd844774d20725309ddde29b",
+        "output/manuscript/02a_formalism.md": "09ff57a8dc1956c1aa985ad9f74f429bc0b58d29c03b91c263eea8cfb9780a76",
         "output/manuscript/02b_scholarship.md": "13d818f9db30c027062a8f1679fe250c33467eb5f06135779239b2e6e97001fc",
         "output/manuscript/03_extensibility.md": "a605f7dc2f2482ddce8931dce07ed5c03c0a9fc0ae97e3778c8160cd52df86fd",
         "output/manuscript/04_examples.md": "ebdf243f975462d802799cc9bf952436a3dd2157ba1a3f3d8dca6da9a5f5bf7a",
@@ -96,22 +96,23 @@
         "output/manuscript/preamble.md": "7ef68c4e2ce25fd303a9dbcf66de2462a7bb73df9cbe229cb833d85883b29e1b",
         "output/manuscript/reading_record.json": "58077008d8a70c3d2742042703eec9818a415a595f01c748ac5970a1381622dc",
         "output/manuscript/references.bib": "2c7734bd6884b8e3cea1e5844d55b5b07d987723cb2b5777c60227181f8e1cb5",
-        "output/pdf/line_set_combined.pdf": "b766268f3191d102e237d7bbe4241c58853d4511e8e6ca2016e441925f28f3cc",
-        "output/reports/artifact_manifest.json": "ba1d7a4422969efdc637070934241daba6c439460e0c83a8f7f610d7dc0aa6d5",
+        "output/pdf/line_set_combined.pdf": "e7203789120b78e6b361463d33cae075fef5a1abd947b8a34b174e7235ddb40d",
+        "output/pdf/references.bib": "2c7734bd6884b8e3cea1e5844d55b5b07d987723cb2b5777c60227181f8e1cb5",
+        "output/reports/artifact_manifest.json": "56a3b350cc645dbcb21ef26e2c6fe80566d13f3683ec991d97b2fb08e033e0cd",
         "output/reports/evidence_registry.json": "0733d942db6d7203b53528bab657402af647c606be392ac9c033cd398211d2fc",
-        "output/reports/manuscript_composition.json": "c285267965f3f514a95dea2ff58d57fc221d435f31bb60fdd6c4b5850b3f1239",
-        "output/reports/rendered_provenance.json": "5219e879b1133e20ae0944240b4f26e613c760a4bd2ba7a4a99a2d4043e37f3a",
-        "output/reports/validation_report.json": "5c2ed0661e42b8324c01cb058e893e4f1beef169629a29783bcc9b5bdbf68077",
+        "output/reports/manuscript_composition.json": "df7bfcaf842faf54c11b8a45f94fc540bf4e1b2cfd2f938293ece0125b5cb527",
+        "output/reports/rendered_provenance.json": "ed6b1f7d461da174776f83e6de26c8edef490bb9d6d343a11dac0191ee2f4c34",
+        "output/reports/validation_report.json": "b7b5b8b424ee59d6de4941b31fa4ac083391650c3819ae6843ae950f00fff277",
         "output/reports/validation_report.md": "941f269e88f8e2e35a10aeddfc91afd1ccd694a1a202f0a8f849c67596c227a6",
-        "output/web/_combined_manuscript.md": "8116ca801aa2634159a3d04f8427dc40a9def781a5823f6ce881839d27e6a2ac",
+        "output/web/_combined_manuscript.md": "c9cf9c02f7fc3b3f2ec080454b254acf97349fc243b495425394a02f803ee4cf",
         "output/web/assets/source-web-fonts.js": "b622eb3bc6314efd31d40d5a4e6d4c444132d0408179b91e0f781853397d30e8",
         "output/web/favicon.ico": "6ca6e9ffbb22550f6d94bf216e743cc7469a7fc50d8dcf0737b11bf800de7dad",
-        "output/web/index.html": "5052b956664275ed0bfc35bd5df20670d703fd5b8597f9a558173579f991e6b7",
+        "output/web/index.html": "f9ec10f96aa2fdccb0b052e4931df4a02f22874c3a4dd825346881003bd10459",
         "output/web/manuscript__00_abstract.html": "c3171f687feb7bcb1f62e610dcf7b876a2d5c9d7c3985d3376cf2aca05459000",
         "output/web/manuscript__01_introduction.html": "6857442207fb1de0898455aa14d102654bfab88a1a458cd20060b5dcdf6f528b",
         "output/web/manuscript__01b_the_set.html": "926d30411a378d6eb254739b41165cc15c0feaa99f600c8fda732171d3d32b47",
         "output/web/manuscript__02_method.html": "ada99db0fd43c99f5bbce2a56b4d2299048e4713e2d0bdd3875794b469c1c0fa",
-        "output/web/manuscript__02a_formalism.html": "20e8e32959c221201bc00258aaee9415b577cbcb621118d4c495a7eb9cc648db",
+        "output/web/manuscript__02a_formalism.html": "1c88ba4baaf90141a16d475f39b316b2eea05ac52a48081e33d37e89fc9f4cb6",
         "output/web/manuscript__02b_scholarship.html": "5cf40280e2a91657421473800ba23e94a2ae93674818796ebb41601aefcf80d8",
         "output/web/manuscript__03_extensibility.html": "38421231cd149822d0e164d6cafb5d488bf14d77c4ac92b1c329b2f6d74b6696",
         "output/web/manuscript__04_examples.html": "b4fecc2e2fb67a70edeba8de096b53f2c77c469a7030985aa4ba4ed92d82f73d",
@@ -119,7 +120,7 @@
         "output/web/manuscript__06_conclusion.html": "75cd86806af7a1ef4aced8e1fde2872e4ea8b595dfab6d9add34a361faad146c",
         "output/web/manuscript__99_references.html": "9fa94ba3b6add210c87e403edd019bc85e460a35722fdce4fbec9c94d2004b01",
         "reading_record.json": "58077008d8a70c3d2742042703eec9818a415a595f01c748ac5970a1381622dc",
-        "render_source.json": "0e1bd5fed0f2fe6ede8e03b5e6e8147a3dbdddac941bf6b33d8df74f2dc579d5"
+        "render_source.json": "f47aa988b09901d293a1a32c4dee3707fdbd3f8faab2714a2e91e4e126e6cac6"
       },
       "pages": 28
     },
@@ -135,7 +136,7 @@
         "native_evidence/white_line/claim_ledger.json": "82311107e88df1c3a4dbb8c9b3fe4a18a186b4ec1ab1822a5d5019d8b66f41a8",
         "native_evidence/white_line/formalism_claim_ledger.json": "84630bbe750bb7a2035fd11449f1c8b4937762ccf1f4ea7927a028c79fca0193",
         "omnibus_quoted_claim_ledger.json": "165e5b14510f9e9bd302af457c4bae0e3d55a45046e0dbee86d34729904824b3",
-        "output/epub/line_set_combined.epub": "85adb3fb32203e9ae2f07919298d2e1ac9530b754e4cf9d89b1faf57b46e231f",
+        "output/epub/line_set_combined.epub": "843bd17d27578383264c142252740c7646d2c1b0810f9cd25475dc830ef7cef9",
         "output/figures/aspiration_registry_map.png": "a1d1b73fcd82511bb8667c57fa8546a1af05da6cde0e786d35ec0e5a9a12717f",
         "output/figures/batch_reading_overview.png": "675259fcedbb413c4228bca36c23aac7df872fedccb5dec801376636255479cd",
         "output/figures/black-line-cover-cover_art.png": "585623a69dc1284a945e0945a6520012a1a1011abc4d233d4d1f31418c4b91e2",
@@ -170,7 +171,7 @@
         "output/figures/exemption_gate.png": "55106742ac644e29f11d4741fdb9ba1339e284b7bd44a447dd8da372ff9794da",
         "output/figures/exemption_gate.svg": "263d23eb24aaf64a7f6eb409cfb26733ef82c7f59825e799e2b637759cab15e8",
         "output/figures/exemption_trigger_semantics.png": "acad4f0d7f7d760634b802b07251436451d58b2b97b03061568442bd37b1c57e",
-        "output/figures/figure_registry.json": "130a2d2e5f69e25c6371e971a6985ce21e32679659c78697ce709581a9d45769",
+        "output/figures/figure_registry.json": "f6c39c54f9cc5abb3bbb474cc027c017e4239b838be1b4d5fb6970299ab2f20f",
         "output/figures/finding_field_matrix.png": "8ae890d7fc64058db08147322caa1e0f5d1170424f71f7793428fb34a0be5b33",
         "output/figures/golden-line-cover-golden-line-cover.png": "c6401c8dd22cf957670ff6ad96a523b534c6844a696dd56ce071ee1b8212941f",
         "output/figures/golden_horizon_thread.png": "06b4f98e78a7708360418652aff5c1a4bda29d339be5e5caf3c31779cec6b269",
@@ -236,7 +237,7 @@
         "output/manuscript/003_line_set_01_introduction.md": "760e7aff4947ac97a49faa9b446b53ece50804e7a08fb26074214ea0a36c604f",
         "output/manuscript/004_line_set_01b_the_set.md": "ae359220529776216671a9241a95f1a8c231c83b198554a406d85290a02e5653",
         "output/manuscript/005_line_set_02_method.md": "7b7826d60602351c25743cf335e59e6829a56c1d3cf4b8a8aaab8ffcba97859f",
-        "output/manuscript/006_line_set_02a_formalism.md": "8001b396034f6760837c6f6611d913ce4d90fbc1cb7ff82ffd7d545f8cc0529e",
+        "output/manuscript/006_line_set_02a_formalism.md": "80aa1d47c41642a74310af7112f1172e8ee9166a637d31f8bd07828c9de2023f",
         "output/manuscript/007_line_set_02b_scholarship.md": "5a422dbc2d30b5e97cf823cc8e9f748eeb49256d591ede75701cc1290eb69276",
         "output/manuscript/008_line_set_03_extensibility.md": "94a5047d95a3dbe25554c3deb0e33c3a2ffbcfd844349679a20c793e325af256",
         "output/manuscript/009_line_set_04_examples.md": "686df0be95936eb6b26c7d0d7bc966a03ab887fba241b524fe6b0cffe157dff7",
@@ -345,25 +346,27 @@
         "output/manuscript/preamble.md": "7ef68c4e2ce25fd303a9dbcf66de2462a7bb73df9cbe229cb833d85883b29e1b",
         "output/manuscript/reading_record.json": "58077008d8a70c3d2742042703eec9818a415a595f01c748ac5970a1381622dc",
         "output/manuscript/references.bib": "19c611be432034d22d4aa781ae878ff8bb33a0bc298b5d91b9c7e70ded963a8a",
-        "output/pdf/line_set_combined.pdf": "d6f32cfbd2f50845c88ff283e39cdc94dd9bcae023a8c6c579e0be02b288077a",
-        "output/reports/artifact_manifest.json": "529ececcf352025ff27669aa6506f814de410b3c49efd7a0b4d462a5dab9eeb7",
+        "output/pdf/line_set_combined.pdf": "de3ae784a6407439be569ac5e2ddc5a17d256d96c24a6d9b5fdfc865f03ab365",
+        "output/pdf/omnibus_references.bib": "88a0ff7701bbe178037dc210ddfe343f19165db259a1cd479312ad5770f8412f",
+        "output/pdf/references.bib": "19c611be432034d22d4aa781ae878ff8bb33a0bc298b5d91b9c7e70ded963a8a",
+        "output/reports/artifact_manifest.json": "6e00edc02c4ee90d798fa1762b6dce748d3d15a86637f9db9f5d32b43d27b89b",
         "output/reports/diagnostics.json": "b81ab6fd65a5f5db990854fb0c20de7cbb98d1793ca02007aa48dabd2df24b9f",
         "output/reports/evidence_registry.json": "e94788aeb5519113bb89bf71e8cc80ca4e692ac5f78987c8cfb876161e29d8d6",
-        "output/reports/manuscript_composition.json": "f3f7bb09acf11af487b11c993d9e1a6fecbdbfec595bec74e07378ecf945fa87",
-        "output/reports/rendered_provenance.json": "935b248d43b18121722efe8fd84d1e8e37b6cc4cf2c1c3b58f96e0f9f6d3013d",
-        "output/reports/validation_report.json": "7bea9bebd4d0982209abb3e887e3762ea044650ef7ba213c9a1f76e9f2c31725",
+        "output/reports/manuscript_composition.json": "ca65ab7dee66d37668a4f2f69daab7dd0e4bd6e67b640b77fbd2d5fced846824",
+        "output/reports/rendered_provenance.json": "68eb5aa03db0724a45f3fabcb73d19cf616c107b8c8db639530cb641dccd1312",
+        "output/reports/validation_report.json": "4b8dccfe1bca7241f6982087898fa252361531b7d158aabbccc724822b88ba44",
         "output/reports/validation_report.md": "941f269e88f8e2e35a10aeddfc91afd1ccd694a1a202f0a8f849c67596c227a6",
-        "output/web/_combined_manuscript.md": "c26f85437a470fcb726a314e9abcb705d77064df0ea832963581d59970c574fa",
+        "output/web/_combined_manuscript.md": "9f8ce2381d4d421e4708a091fe3d5efc91f16466fdce4502bc7ee92fc25b13ab",
         "output/web/assets/source-web-fonts.js": "b622eb3bc6314efd31d40d5a4e6d4c444132d0408179b91e0f781853397d30e8",
         "output/web/favicon.ico": "6ca6e9ffbb22550f6d94bf216e743cc7469a7fc50d8dcf0737b11bf800de7dad",
-        "output/web/index.html": "bfde92af4e2d962c3b173f76ea04aa40a937436bc6bb5b35eca0812e836421b5",
+        "output/web/index.html": "4ee8858b53a0d391d722eff8c4fe74d22e3f62647d33817c0e2d8d7317ac0e5c",
         "output/web/manuscript__000_front_matter.html": "748e27018cca1ef19c353ecd59cb6d493177535e56e3e547bdc01596ca3d5676",
         "output/web/manuscript__001_part_line_set.html": "b6d96650634c1a2c878356049fb8d4f2dea3b9619622b3f1f478b1afab727e2c",
         "output/web/manuscript__002_line_set_00_abstract.html": "9897c8a9b9aa661f1443f6f0c90d0ca3d77671b95ccc48c8d0fc4e2ac77a5a4a",
         "output/web/manuscript__003_line_set_01_introduction.html": "c2bc99d825eee6889da53203c9981a4513dbb7389474ce38a5a386e51c9079cb",
         "output/web/manuscript__004_line_set_01b_the_set.html": "7188f5c6c635c3f65f11959ece23d6da28b6fc1cc500e830ea21c15917d29743",
         "output/web/manuscript__005_line_set_02_method.html": "16e9552b46b30a77d32bb7669916444ac07c1498b10e6f2667d190db1013b5cc",
-        "output/web/manuscript__006_line_set_02a_formalism.html": "7fb7e563e979eb8b9544b65567de16acfb9f55fc0531e3f662264bb3e51348f5",
+        "output/web/manuscript__006_line_set_02a_formalism.html": "a2827b6a68897fb041797f9f4d8b9a17a4e2e5ab922ebf09019c23ead086ba1a",
         "output/web/manuscript__007_line_set_02b_scholarship.html": "c3fcc42b2fa86260808cdffff238c0f0f0db57357e07542d3168e7c6d99fa8bd",
         "output/web/manuscript__008_line_set_03_extensibility.html": "7081f53bc862771cf6155bf7318db467d6fd052d47fa5ae02ba0b625ad8bcc1f",
         "output/web/manuscript__009_line_set_04_examples.html": "2661a3a88fbf20705de20aaed23e206538055ca0ed8cb1ac3096a3035d922447",
@@ -466,8 +469,8 @@
         "output/web/manuscript__106_green_line_06_conclusion.html": "cbc57e52175af296ed1cf1a23bbeafe43c487b1a7777fd6104008d930d8ff62a",
         "output/web/manuscript__107_volume_references.html": "b8daec50009cba88d7d963b59a7f799c516ec714797ce05df0aa08f537f8c05b",
         "reading_record.json": "58077008d8a70c3d2742042703eec9818a415a595f01c748ac5970a1381622dc",
-        "render_source.json": "9d1ed743050efa870ea278c5ac15ce9b3fc9a49bcab001857de45129aefbf60f",
-        "volume_render_projection.json": "c7b1deb20bfa15442536ce384d3d2605bf07819475b1460916c9a8aca94b7e90"
+        "render_source.json": "f6ba63e683f2704ce428dbc0a0a09d0fceed581c47b298e9547979fcafea43bf",
+        "volume_render_projection.json": "0374d4f3a7742abed39a753dabd4c589cb52d25c33abb58ec33592bab082ac95"
       },
       "pages": 244
     }
