@@ -24,9 +24,6 @@ _LAB = re.compile(
     re.MULTILINE,
 )
 
-#: The census keys the ledger declares, in the order the binding test reads them.
-_CENSUS_KEYS = ("declared_members", "line_and_name_pairs", "distinct_names")
-
 
 def declared_labels() -> list[tuple[str, Path]]:
     """Every formalism-block label declared in the manuscript."""
@@ -56,26 +53,53 @@ def citation_row(label: str, path: Path) -> dict[str, object]:
     }
 
 
+def _number_row(key: str, value: int, source: str) -> dict[str, object]:
+    return {
+        "claim_id": f"census_{key}",
+        "kind": "number",
+        "value": value,
+        "source": f"docs/manuscript/reading_record.json {source}",
+        "source_field": source,
+        "source_path": "docs/manuscript/reading_record.json",
+        "source_tier": "recorded_reading_census",
+        "freshness": "active",
+    }
+
+
 def number_rows() -> list[dict[str, object]]:
     """The recorded vocabulary census, re-read from the record."""
 
-    record = json.loads(READING_RECORD.read_text(encoding="utf-8"))
-    return [
-        {
-            "claim_id": f"census_{key}",
-            "kind": "number",
-            "value": record["vocabulary_census"][key],
-            "source": (
-                "docs/manuscript/reading_record.json vocabulary_census."
-                f"{key} (re-derived from the live packages by "
-                "scripts/record_reading.py)"
-            ),
-            "source_path": "docs/manuscript/reading_record.json",
-            "source_tier": "recorded_reading_census",
-            "freshness": "active",
-        }
-        for key in _CENSUS_KEYS
+    census = json.loads(READING_RECORD.read_text(encoding="utf-8"))["vocabulary_census"]
+    rows = [
+        _number_row(key, value, f"vocabulary_census.{key}")
+        for key, value in sorted(census.items())
+        if isinstance(value, int) and not isinstance(value, bool)
     ]
+    for line_id, fields in sorted(census["per_line"].items()):
+        rows.extend(
+            _number_row(
+                f"{line_id}_{key}", value, f"vocabulary_census.per_line.{line_id}.{key}"
+            )
+            for key, value in sorted(fields.items())
+        )
+    rows.extend(
+        [
+            _number_row(
+                "within_line_repeats",
+                sum(
+                    fields["within_line_repeats"]
+                    for fields in census["per_line"].values()
+                ),
+                "sum(vocabulary_census.per_line.*.within_line_repeats)",
+            ),
+            _number_row(
+                "cross_line_repeats",
+                census["line_and_name_pairs"] - census["distinct_names"],
+                "vocabulary_census.line_and_name_pairs - vocabulary_census.distinct_names",
+            ),
+        ]
+    )
+    return rows
 
 
 def build_ledger() -> str:

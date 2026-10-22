@@ -150,6 +150,27 @@ def test_number_rows_match_the_recorded_census() -> None:
     assert numbers["census_distinct_names"] == census["distinct_names"]
 
 
+def test_all_census_scalar_fields_have_exact_ledger_rows() -> None:
+    census = json.loads(READING_RECORD.read_text(encoding="utf-8"))["vocabulary_census"]
+    expected = {
+        f"census_{key}": value
+        for key, value in census.items()
+        if isinstance(value, int) and not isinstance(value, bool)
+    }
+    for line_id, fields in census["per_line"].items():
+        expected.update(
+            {f"census_{line_id}_{key}": value for key, value in fields.items()}
+        )
+    expected["census_within_line_repeats"] = sum(
+        fields["within_line_repeats"] for fields in census["per_line"].values()
+    )
+    expected["census_cross_line_repeats"] = (
+        census["line_and_name_pairs"] - census["distinct_names"]
+    )
+    assert expected
+    assert _ledger_numbers() == expected
+
+
 # ------------------------------------------------------- negative controls
 
 

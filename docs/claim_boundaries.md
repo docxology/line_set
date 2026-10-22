@@ -67,6 +67,11 @@ that lexical requirement establishes no conceptual separation. Conceptual overla
 found by reading the instruments, which is human work this package does not do
 and does not shorten.
 
+The publication claim ledger exposes recorded scalar census fields and derived
+repeat totals to the external renderer. A row identifies its source in the
+reading record; it does not independently verify the measurement or confer
+weight on a manuscript claim.
+
 **It does not read behaviour, and it does not read all the names.**
 `enum_tokens` collects members of enums exported at the *package root*. A token
 defined in a submodule and not re-exported is invisible to the reader by design:

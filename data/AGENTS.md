@@ -8,3 +8,6 @@ instead of reporting them as unsupported bibliography citations. Every row is
 derived from the manuscript or `docs/manuscript/reading_record.json`;
 `tests/test_formalism_claim_ledger.py` re-derives the whole set and fails if a
 block is added, renamed, or removed without this file following.
+The numeric binding covers every scalar census field, each per-line field and
+the within-line and cross-line repeat totals. Generate these rows from the
+record; never add an unrelated number merely to satisfy the renderer.

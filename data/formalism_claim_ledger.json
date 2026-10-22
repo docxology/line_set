@@ -76,19 +76,21 @@
       "freshness": "active"
     },
     {
-      "claim_id": "census_declared_members",
+      "claim_id": "census_canonical_members",
       "kind": "number",
-      "value": 146,
-      "source": "docs/manuscript/reading_record.json vocabulary_census.declared_members (re-derived from the live packages by scripts/record_reading.py)",
+      "value": 148,
+      "source": "docs/manuscript/reading_record.json vocabulary_census.canonical_members",
+      "source_field": "vocabulary_census.canonical_members",
       "source_path": "docs/manuscript/reading_record.json",
       "source_tier": "recorded_reading_census",
       "freshness": "active"
     },
     {
-      "claim_id": "census_line_and_name_pairs",
+      "claim_id": "census_declared_members",
       "kind": "number",
-      "value": 126,
-      "source": "docs/manuscript/reading_record.json vocabulary_census.line_and_name_pairs (re-derived from the live packages by scripts/record_reading.py)",
+      "value": 148,
+      "source": "docs/manuscript/reading_record.json vocabulary_census.declared_members",
+      "source_field": "vocabulary_census.declared_members",
       "source_path": "docs/manuscript/reading_record.json",
       "source_tier": "recorded_reading_census",
       "freshness": "active"
@@ -96,8 +98,449 @@
     {
       "claim_id": "census_distinct_names",
       "kind": "number",
-      "value": 114,
-      "source": "docs/manuscript/reading_record.json vocabulary_census.distinct_names (re-derived from the live packages by scripts/record_reading.py)",
+      "value": 115,
+      "source": "docs/manuscript/reading_record.json vocabulary_census.distinct_names",
+      "source_field": "vocabulary_census.distinct_names",
+      "source_path": "docs/manuscript/reading_record.json",
+      "source_tier": "recorded_reading_census",
+      "freshness": "active"
+    },
+    {
+      "claim_id": "census_enum_classes",
+      "kind": "number",
+      "value": 34,
+      "source": "docs/manuscript/reading_record.json vocabulary_census.enum_classes",
+      "source_field": "vocabulary_census.enum_classes",
+      "source_path": "docs/manuscript/reading_record.json",
+      "source_tier": "recorded_reading_census",
+      "freshness": "active"
+    },
+    {
+      "claim_id": "census_line_and_name_pairs",
+      "kind": "number",
+      "value": 127,
+      "source": "docs/manuscript/reading_record.json vocabulary_census.line_and_name_pairs",
+      "source_field": "vocabulary_census.line_and_name_pairs",
+      "source_path": "docs/manuscript/reading_record.json",
+      "source_tier": "recorded_reading_census",
+      "freshness": "active"
+    },
+    {
+      "claim_id": "census_black_line_canonical_members",
+      "kind": "number",
+      "value": 13,
+      "source": "docs/manuscript/reading_record.json vocabulary_census.per_line.black_line.canonical_members",
+      "source_field": "vocabulary_census.per_line.black_line.canonical_members",
+      "source_path": "docs/manuscript/reading_record.json",
+      "source_tier": "recorded_reading_census",
+      "freshness": "active"
+    },
+    {
+      "claim_id": "census_black_line_declared_members",
+      "kind": "number",
+      "value": 13,
+      "source": "docs/manuscript/reading_record.json vocabulary_census.per_line.black_line.declared_members",
+      "source_field": "vocabulary_census.per_line.black_line.declared_members",
+      "source_path": "docs/manuscript/reading_record.json",
+      "source_tier": "recorded_reading_census",
+      "freshness": "active"
+    },
+    {
+      "claim_id": "census_black_line_distinct_names",
+      "kind": "number",
+      "value": 10,
+      "source": "docs/manuscript/reading_record.json vocabulary_census.per_line.black_line.distinct_names",
+      "source_field": "vocabulary_census.per_line.black_line.distinct_names",
+      "source_path": "docs/manuscript/reading_record.json",
+      "source_tier": "recorded_reading_census",
+      "freshness": "active"
+    },
+    {
+      "claim_id": "census_black_line_enum_classes",
+      "kind": "number",
+      "value": 3,
+      "source": "docs/manuscript/reading_record.json vocabulary_census.per_line.black_line.enum_classes",
+      "source_field": "vocabulary_census.per_line.black_line.enum_classes",
+      "source_path": "docs/manuscript/reading_record.json",
+      "source_tier": "recorded_reading_census",
+      "freshness": "active"
+    },
+    {
+      "claim_id": "census_black_line_within_line_repeats",
+      "kind": "number",
+      "value": 3,
+      "source": "docs/manuscript/reading_record.json vocabulary_census.per_line.black_line.within_line_repeats",
+      "source_field": "vocabulary_census.per_line.black_line.within_line_repeats",
+      "source_path": "docs/manuscript/reading_record.json",
+      "source_tier": "recorded_reading_census",
+      "freshness": "active"
+    },
+    {
+      "claim_id": "census_blue_line_canonical_members",
+      "kind": "number",
+      "value": 11,
+      "source": "docs/manuscript/reading_record.json vocabulary_census.per_line.blue_line.canonical_members",
+      "source_field": "vocabulary_census.per_line.blue_line.canonical_members",
+      "source_path": "docs/manuscript/reading_record.json",
+      "source_tier": "recorded_reading_census",
+      "freshness": "active"
+    },
+    {
+      "claim_id": "census_blue_line_declared_members",
+      "kind": "number",
+      "value": 11,
+      "source": "docs/manuscript/reading_record.json vocabulary_census.per_line.blue_line.declared_members",
+      "source_field": "vocabulary_census.per_line.blue_line.declared_members",
+      "source_path": "docs/manuscript/reading_record.json",
+      "source_tier": "recorded_reading_census",
+      "freshness": "active"
+    },
+    {
+      "claim_id": "census_blue_line_distinct_names",
+      "kind": "number",
+      "value": 8,
+      "source": "docs/manuscript/reading_record.json vocabulary_census.per_line.blue_line.distinct_names",
+      "source_field": "vocabulary_census.per_line.blue_line.distinct_names",
+      "source_path": "docs/manuscript/reading_record.json",
+      "source_tier": "recorded_reading_census",
+      "freshness": "active"
+    },
+    {
+      "claim_id": "census_blue_line_enum_classes",
+      "kind": "number",
+      "value": 3,
+      "source": "docs/manuscript/reading_record.json vocabulary_census.per_line.blue_line.enum_classes",
+      "source_field": "vocabulary_census.per_line.blue_line.enum_classes",
+      "source_path": "docs/manuscript/reading_record.json",
+      "source_tier": "recorded_reading_census",
+      "freshness": "active"
+    },
+    {
+      "claim_id": "census_blue_line_within_line_repeats",
+      "kind": "number",
+      "value": 3,
+      "source": "docs/manuscript/reading_record.json vocabulary_census.per_line.blue_line.within_line_repeats",
+      "source_field": "vocabulary_census.per_line.blue_line.within_line_repeats",
+      "source_path": "docs/manuscript/reading_record.json",
+      "source_tier": "recorded_reading_census",
+      "freshness": "active"
+    },
+    {
+      "claim_id": "census_golden_line_canonical_members",
+      "kind": "number",
+      "value": 7,
+      "source": "docs/manuscript/reading_record.json vocabulary_census.per_line.golden_line.canonical_members",
+      "source_field": "vocabulary_census.per_line.golden_line.canonical_members",
+      "source_path": "docs/manuscript/reading_record.json",
+      "source_tier": "recorded_reading_census",
+      "freshness": "active"
+    },
+    {
+      "claim_id": "census_golden_line_declared_members",
+      "kind": "number",
+      "value": 7,
+      "source": "docs/manuscript/reading_record.json vocabulary_census.per_line.golden_line.declared_members",
+      "source_field": "vocabulary_census.per_line.golden_line.declared_members",
+      "source_path": "docs/manuscript/reading_record.json",
+      "source_tier": "recorded_reading_census",
+      "freshness": "active"
+    },
+    {
+      "claim_id": "census_golden_line_distinct_names",
+      "kind": "number",
+      "value": 7,
+      "source": "docs/manuscript/reading_record.json vocabulary_census.per_line.golden_line.distinct_names",
+      "source_field": "vocabulary_census.per_line.golden_line.distinct_names",
+      "source_path": "docs/manuscript/reading_record.json",
+      "source_tier": "recorded_reading_census",
+      "freshness": "active"
+    },
+    {
+      "claim_id": "census_golden_line_enum_classes",
+      "kind": "number",
+      "value": 2,
+      "source": "docs/manuscript/reading_record.json vocabulary_census.per_line.golden_line.enum_classes",
+      "source_field": "vocabulary_census.per_line.golden_line.enum_classes",
+      "source_path": "docs/manuscript/reading_record.json",
+      "source_tier": "recorded_reading_census",
+      "freshness": "active"
+    },
+    {
+      "claim_id": "census_golden_line_within_line_repeats",
+      "kind": "number",
+      "value": 0,
+      "source": "docs/manuscript/reading_record.json vocabulary_census.per_line.golden_line.within_line_repeats",
+      "source_field": "vocabulary_census.per_line.golden_line.within_line_repeats",
+      "source_path": "docs/manuscript/reading_record.json",
+      "source_tier": "recorded_reading_census",
+      "freshness": "active"
+    },
+    {
+      "claim_id": "census_green_line_canonical_members",
+      "kind": "number",
+      "value": 13,
+      "source": "docs/manuscript/reading_record.json vocabulary_census.per_line.green_line.canonical_members",
+      "source_field": "vocabulary_census.per_line.green_line.canonical_members",
+      "source_path": "docs/manuscript/reading_record.json",
+      "source_tier": "recorded_reading_census",
+      "freshness": "active"
+    },
+    {
+      "claim_id": "census_green_line_declared_members",
+      "kind": "number",
+      "value": 13,
+      "source": "docs/manuscript/reading_record.json vocabulary_census.per_line.green_line.declared_members",
+      "source_field": "vocabulary_census.per_line.green_line.declared_members",
+      "source_path": "docs/manuscript/reading_record.json",
+      "source_tier": "recorded_reading_census",
+      "freshness": "active"
+    },
+    {
+      "claim_id": "census_green_line_distinct_names",
+      "kind": "number",
+      "value": 10,
+      "source": "docs/manuscript/reading_record.json vocabulary_census.per_line.green_line.distinct_names",
+      "source_field": "vocabulary_census.per_line.green_line.distinct_names",
+      "source_path": "docs/manuscript/reading_record.json",
+      "source_tier": "recorded_reading_census",
+      "freshness": "active"
+    },
+    {
+      "claim_id": "census_green_line_enum_classes",
+      "kind": "number",
+      "value": 3,
+      "source": "docs/manuscript/reading_record.json vocabulary_census.per_line.green_line.enum_classes",
+      "source_field": "vocabulary_census.per_line.green_line.enum_classes",
+      "source_path": "docs/manuscript/reading_record.json",
+      "source_tier": "recorded_reading_census",
+      "freshness": "active"
+    },
+    {
+      "claim_id": "census_green_line_within_line_repeats",
+      "kind": "number",
+      "value": 3,
+      "source": "docs/manuscript/reading_record.json vocabulary_census.per_line.green_line.within_line_repeats",
+      "source_field": "vocabulary_census.per_line.green_line.within_line_repeats",
+      "source_path": "docs/manuscript/reading_record.json",
+      "source_tier": "recorded_reading_census",
+      "freshness": "active"
+    },
+    {
+      "claim_id": "census_red_line_canonical_members",
+      "kind": "number",
+      "value": 41,
+      "source": "docs/manuscript/reading_record.json vocabulary_census.per_line.red_line.canonical_members",
+      "source_field": "vocabulary_census.per_line.red_line.canonical_members",
+      "source_path": "docs/manuscript/reading_record.json",
+      "source_tier": "recorded_reading_census",
+      "freshness": "active"
+    },
+    {
+      "claim_id": "census_red_line_declared_members",
+      "kind": "number",
+      "value": 41,
+      "source": "docs/manuscript/reading_record.json vocabulary_census.per_line.red_line.declared_members",
+      "source_field": "vocabulary_census.per_line.red_line.declared_members",
+      "source_path": "docs/manuscript/reading_record.json",
+      "source_tier": "recorded_reading_census",
+      "freshness": "active"
+    },
+    {
+      "claim_id": "census_red_line_distinct_names",
+      "kind": "number",
+      "value": 40,
+      "source": "docs/manuscript/reading_record.json vocabulary_census.per_line.red_line.distinct_names",
+      "source_field": "vocabulary_census.per_line.red_line.distinct_names",
+      "source_path": "docs/manuscript/reading_record.json",
+      "source_tier": "recorded_reading_census",
+      "freshness": "active"
+    },
+    {
+      "claim_id": "census_red_line_enum_classes",
+      "kind": "number",
+      "value": 7,
+      "source": "docs/manuscript/reading_record.json vocabulary_census.per_line.red_line.enum_classes",
+      "source_field": "vocabulary_census.per_line.red_line.enum_classes",
+      "source_path": "docs/manuscript/reading_record.json",
+      "source_tier": "recorded_reading_census",
+      "freshness": "active"
+    },
+    {
+      "claim_id": "census_red_line_within_line_repeats",
+      "kind": "number",
+      "value": 1,
+      "source": "docs/manuscript/reading_record.json vocabulary_census.per_line.red_line.within_line_repeats",
+      "source_field": "vocabulary_census.per_line.red_line.within_line_repeats",
+      "source_path": "docs/manuscript/reading_record.json",
+      "source_tier": "recorded_reading_census",
+      "freshness": "active"
+    },
+    {
+      "claim_id": "census_silver_line_canonical_members",
+      "kind": "number",
+      "value": 16,
+      "source": "docs/manuscript/reading_record.json vocabulary_census.per_line.silver_line.canonical_members",
+      "source_field": "vocabulary_census.per_line.silver_line.canonical_members",
+      "source_path": "docs/manuscript/reading_record.json",
+      "source_tier": "recorded_reading_census",
+      "freshness": "active"
+    },
+    {
+      "claim_id": "census_silver_line_declared_members",
+      "kind": "number",
+      "value": 16,
+      "source": "docs/manuscript/reading_record.json vocabulary_census.per_line.silver_line.declared_members",
+      "source_field": "vocabulary_census.per_line.silver_line.declared_members",
+      "source_path": "docs/manuscript/reading_record.json",
+      "source_tier": "recorded_reading_census",
+      "freshness": "active"
+    },
+    {
+      "claim_id": "census_silver_line_distinct_names",
+      "kind": "number",
+      "value": 12,
+      "source": "docs/manuscript/reading_record.json vocabulary_census.per_line.silver_line.distinct_names",
+      "source_field": "vocabulary_census.per_line.silver_line.distinct_names",
+      "source_path": "docs/manuscript/reading_record.json",
+      "source_tier": "recorded_reading_census",
+      "freshness": "active"
+    },
+    {
+      "claim_id": "census_silver_line_enum_classes",
+      "kind": "number",
+      "value": 4,
+      "source": "docs/manuscript/reading_record.json vocabulary_census.per_line.silver_line.enum_classes",
+      "source_field": "vocabulary_census.per_line.silver_line.enum_classes",
+      "source_path": "docs/manuscript/reading_record.json",
+      "source_tier": "recorded_reading_census",
+      "freshness": "active"
+    },
+    {
+      "claim_id": "census_silver_line_within_line_repeats",
+      "kind": "number",
+      "value": 4,
+      "source": "docs/manuscript/reading_record.json vocabulary_census.per_line.silver_line.within_line_repeats",
+      "source_field": "vocabulary_census.per_line.silver_line.within_line_repeats",
+      "source_path": "docs/manuscript/reading_record.json",
+      "source_tier": "recorded_reading_census",
+      "freshness": "active"
+    },
+    {
+      "claim_id": "census_violet_line_canonical_members",
+      "kind": "number",
+      "value": 19,
+      "source": "docs/manuscript/reading_record.json vocabulary_census.per_line.violet_line.canonical_members",
+      "source_field": "vocabulary_census.per_line.violet_line.canonical_members",
+      "source_path": "docs/manuscript/reading_record.json",
+      "source_tier": "recorded_reading_census",
+      "freshness": "active"
+    },
+    {
+      "claim_id": "census_violet_line_declared_members",
+      "kind": "number",
+      "value": 19,
+      "source": "docs/manuscript/reading_record.json vocabulary_census.per_line.violet_line.declared_members",
+      "source_field": "vocabulary_census.per_line.violet_line.declared_members",
+      "source_path": "docs/manuscript/reading_record.json",
+      "source_tier": "recorded_reading_census",
+      "freshness": "active"
+    },
+    {
+      "claim_id": "census_violet_line_distinct_names",
+      "kind": "number",
+      "value": 16,
+      "source": "docs/manuscript/reading_record.json vocabulary_census.per_line.violet_line.distinct_names",
+      "source_field": "vocabulary_census.per_line.violet_line.distinct_names",
+      "source_path": "docs/manuscript/reading_record.json",
+      "source_tier": "recorded_reading_census",
+      "freshness": "active"
+    },
+    {
+      "claim_id": "census_violet_line_enum_classes",
+      "kind": "number",
+      "value": 5,
+      "source": "docs/manuscript/reading_record.json vocabulary_census.per_line.violet_line.enum_classes",
+      "source_field": "vocabulary_census.per_line.violet_line.enum_classes",
+      "source_path": "docs/manuscript/reading_record.json",
+      "source_tier": "recorded_reading_census",
+      "freshness": "active"
+    },
+    {
+      "claim_id": "census_violet_line_within_line_repeats",
+      "kind": "number",
+      "value": 3,
+      "source": "docs/manuscript/reading_record.json vocabulary_census.per_line.violet_line.within_line_repeats",
+      "source_field": "vocabulary_census.per_line.violet_line.within_line_repeats",
+      "source_path": "docs/manuscript/reading_record.json",
+      "source_tier": "recorded_reading_census",
+      "freshness": "active"
+    },
+    {
+      "claim_id": "census_white_line_canonical_members",
+      "kind": "number",
+      "value": 28,
+      "source": "docs/manuscript/reading_record.json vocabulary_census.per_line.white_line.canonical_members",
+      "source_field": "vocabulary_census.per_line.white_line.canonical_members",
+      "source_path": "docs/manuscript/reading_record.json",
+      "source_tier": "recorded_reading_census",
+      "freshness": "active"
+    },
+    {
+      "claim_id": "census_white_line_declared_members",
+      "kind": "number",
+      "value": 28,
+      "source": "docs/manuscript/reading_record.json vocabulary_census.per_line.white_line.declared_members",
+      "source_field": "vocabulary_census.per_line.white_line.declared_members",
+      "source_path": "docs/manuscript/reading_record.json",
+      "source_tier": "recorded_reading_census",
+      "freshness": "active"
+    },
+    {
+      "claim_id": "census_white_line_distinct_names",
+      "kind": "number",
+      "value": 24,
+      "source": "docs/manuscript/reading_record.json vocabulary_census.per_line.white_line.distinct_names",
+      "source_field": "vocabulary_census.per_line.white_line.distinct_names",
+      "source_path": "docs/manuscript/reading_record.json",
+      "source_tier": "recorded_reading_census",
+      "freshness": "active"
+    },
+    {
+      "claim_id": "census_white_line_enum_classes",
+      "kind": "number",
+      "value": 7,
+      "source": "docs/manuscript/reading_record.json vocabulary_census.per_line.white_line.enum_classes",
+      "source_field": "vocabulary_census.per_line.white_line.enum_classes",
+      "source_path": "docs/manuscript/reading_record.json",
+      "source_tier": "recorded_reading_census",
+      "freshness": "active"
+    },
+    {
+      "claim_id": "census_white_line_within_line_repeats",
+      "kind": "number",
+      "value": 4,
+      "source": "docs/manuscript/reading_record.json vocabulary_census.per_line.white_line.within_line_repeats",
+      "source_field": "vocabulary_census.per_line.white_line.within_line_repeats",
+      "source_path": "docs/manuscript/reading_record.json",
+      "source_tier": "recorded_reading_census",
+      "freshness": "active"
+    },
+    {
+      "claim_id": "census_within_line_repeats",
+      "kind": "number",
+      "value": 21,
+      "source": "docs/manuscript/reading_record.json sum(vocabulary_census.per_line.*.within_line_repeats)",
+      "source_field": "sum(vocabulary_census.per_line.*.within_line_repeats)",
+      "source_path": "docs/manuscript/reading_record.json",
+      "source_tier": "recorded_reading_census",
+      "freshness": "active"
+    },
+    {
+      "claim_id": "census_cross_line_repeats",
+      "kind": "number",
+      "value": 12,
+      "source": "docs/manuscript/reading_record.json vocabulary_census.line_and_name_pairs - vocabulary_census.distinct_names",
+      "source_field": "vocabulary_census.line_and_name_pairs - vocabulary_census.distinct_names",
       "source_path": "docs/manuscript/reading_record.json",
       "source_tier": "recorded_reading_census",
       "freshness": "active"

@@ -38,6 +38,11 @@ compares the exact dated record, including diagnostics and provenance, and may
 change while the declaration digest stays fixed. Historical records retain
 their original identity; the release reading uses separately pinned sources.
 
+The generated publication ledger exposes scalar census fields, per-line counts
+and derived repeat totals from that reading record to the renderer's evidence
+registry. Each row names its source field or arithmetic. It records what the
+reading reported and supplies no independent verification of the measurement.
+
 A `LineEntry` has ten fields. Four are identity and prose — the line's id, its colour, the question it answers, the job it does. One is the boundary: `must_not_become`, which every line fills in and which a structural check refuses to let go blank. Two are ordering: `opus_stage`, which may be absent, and `working_position`, a one-based integer that must land in a contiguous `1..N` across the whole declaration. The last three are addresses. `package_name` is what the reader asks the import system for, and it is kept separate from `id` so that a line's identity in the declaration does not depend on how its code happens to be distributed. `registry_noun` and `verdict_noun` are prose labels for what a line keeps and what it emits; figures and manuscript text use them, and the reader never uses them to find anything.
 
 A `SharedToken` has four: the token, the tuple of line ids allowed to carry it, a tuple of per-line meanings, and a rationale. The meanings tuple is the load-bearing one. A shared token with no meaning recorded for each line it names is a label, and a label cannot show that two uses of one spelling are two different things.

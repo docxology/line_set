@@ -10,6 +10,7 @@ uv run ruff format --check src tests scripts
 uv run mypy src/line_set
 uv run python scripts/check_registry.py
 uv run python scripts/check_set.py
+uv run python scripts/gen_formalism_ledger.py
 uv run python scripts/build_figures.py
 uv run python scripts/record_reading.py --as-of <recorded-review-date> --check
 ```
@@ -56,7 +57,7 @@ exact tags, commits and gate results. See [binding_contract.md](binding_contract
 | `pytest` | No | The package's own behaviour, including all four reading statuses driven through injected resolvers. |
 | `check_registry.py` | No | The offline structural battery over the declaration. |
 | `check_set.py` | Yes, for a full reading | A live reading plus `live_invariants()`. Without them it reports `SET_PARTIAL` and an unestablished self-disjointness — an honest result, not a pass. |
-| `build_figures.py` | No — it needs `rsvg-convert` instead | Deterministic SVG/PNG pairs and the figure registry under `output/figures/`. Two plates are drawn from a live reading; with the siblings absent they render that absence visibly and the run still succeeds. |
+| `build_figures.py` | No — it needs `rsvg-convert` instead | Deterministic SVG/PNG pairs and the figure registry under `output/figures/`. Live plates are drawn from a reading; with the siblings absent they render that absence visibly and the run still succeeds. |
 | `record_reading.py` | Yes | Writes `docs/manuscript/reading_record.json`, the dated reading the manuscript's measured numbers are bound to. Refuses to write anything but a `SET_LEGIBLE` reading of every declared line — an incomplete measurement in the place a complete one is expected is worse than no record. `--check` compares without rewriting. |
 
 ## Why the manuscript's measured numbers have a record
@@ -76,7 +77,10 @@ invalidates it with no sibling installed and no network.
 
 After changing the declaration, or after a sibling release, rerun
 `record_reading.py` and update any prose whose numbers moved. The suite will
-name which ones.
+name which ones. Regenerate `data/formalism_claim_ledger.json` with
+`scripts/gen_formalism_ledger.py` after refreshing the record: it exposes every
+scalar census field and the derived repeat totals to the external renderer's
+evidence registry, with the record as its source.
 
 **The test suite must not depend on the siblings being importable.** Coverage of
 `src/` is measured with them absent as well as present; a suite that only passes
@@ -140,8 +144,8 @@ one: a canvas floor alone measures a unit the page never sees, and while that
 was the only check the plates were rendering at 4.27pt. Nothing here reads a
 PDF, so the check runs on a fresh checkout with only the figures built.
 
-Three of the figures — the vocabulary matrix, the installation surface, and the
-self-application plate — are drawn from a live reading, so they need the
+The vocabulary matrix, installation surface and self-application plate are
+drawn from a live reading, so they need the
 siblings importable. A figure built with a sibling absent must render that
 absence visibly rather than omitting the row; an omitted row is a figure that
 lies by being tidy. The exemption gate needs no sibling: it runs the production
@@ -203,6 +207,9 @@ tracked engine implementation files. A source archive can render, but cannot
 supply that index. The `--skip-manuscript-hydration` option retains this
 repository's authored `docs/manuscript` layout. For the compiled volume, first
 run this repository's omnibus builder and then render its generated manuscript.
+Keep the actual project clone's basename `line_set` as well as its qualified
+link name: the engine's output-structure check derives the expected combined
+PDF filename from the resolved clone basename.
 The builder selects a configured source tree before considering an unconfigured
 directory. If both `docs/manuscript/` and `manuscript/` have `config.yaml`, the
 former wins. A partial migration without a config cannot shadow the configured
