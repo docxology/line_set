@@ -215,6 +215,9 @@ directory. If both `docs/manuscript/` and `manuscript/` have `config.yaml`, the
 former wins. A partial migration without a config cannot shadow the configured
 source. Corpus tests use the same explicit `LINE_SET_SIBLINGS` location as the
 reader and assembler.
+Paper sections exclude the engine's operational control files, including
+`MANUSCRIPT_STATUS.md`; the compiled volume reproduces authored body sections
+and handles preambles separately.
 
 `working/line_set` is the qualified project name for a project mirrored from
 `<root>/working/`; link it under a different lifecycle folder and the qualified

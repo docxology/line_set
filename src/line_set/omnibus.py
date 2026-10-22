@@ -48,7 +48,7 @@ from .serialization import reading_digest, registry_digest
 
 #: Manuscript filenames the render toolchain never treats as a section.
 NON_SECTION_NAMES: frozenset[str] = frozenset(
-    {"AGENTS.md", "README.md", "SYNTAX.md", "preamble.md"}
+    {"AGENTS.md", "MANUSCRIPT_STATUS.md", "README.md", "SYNTAX.md", "preamble.md"}
 )
 
 #: A source manuscript embed points at the work's own plate directory with a

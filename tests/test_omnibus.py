@@ -373,6 +373,25 @@ def test_a_partial_migration_does_not_shadow_the_configured_source(
     assert all(path.parent == expected for path in paper.sections)
 
 
+def test_manuscript_control_files_are_not_reproduced_as_sections(
+    tmp_path: Path,
+) -> None:
+    base = tmp_path / "works"
+    write_paper(
+        base,
+        "one",
+        sections={
+            "00_abstract.md": "# Paper\n\nAuthored body.\n",
+            "AGENTS.md": "# Agent instructions\n",
+            "MANUSCRIPT_STATUS.md": "# Operational status\n",
+            "README.md": "# Directory notes\n",
+            "SYNTAX.md": "# Authoring syntax\n",
+        },
+    )
+    paper = discover_paper(declaration("one")[0], base)
+    assert tuple(path.name for path in paper.sections) == ("00_abstract.md",)
+
+
 def test_the_corpus_gate_honours_the_explicit_snapshot_directory(
     tmp_path: Path,
 ) -> None:
