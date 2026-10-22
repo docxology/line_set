@@ -1613,6 +1613,34 @@ def assemble(
         _clear_previous(target)
         for name, text in plan:
             (target / name).write_text(text, encoding="utf-8")
+        reference_rows = [
+            {
+                "claim_id": label.replace(":", "_"),
+                "kind": "citation",
+                "value": label,
+                "source": f"output/manuscript/{name}: declared formalism label",
+                "source_path": f"output/manuscript/{name}",
+                "source_tier": "manuscript_formalism_block",
+                "freshness": "active",
+            }
+            for name, text in plan
+            for label in collect_anchors(text)
+            if label.partition(":")[0]
+            in {"def", "prop", "thm", "lem", "cor", "rem", "ax", "clm", "ex"}
+        ]
+        (target / "omnibus_claim_ledger.json").write_text(
+            json.dumps(
+                {
+                    "schema": "line-set-volume-reference-ledger/1",
+                    "boundary": "Label declarations only; no proposition is verified and no sibling metric is computed.",
+                    "claims": reference_rows,
+                },
+                indent=2,
+                sort_keys=True,
+            )
+            + "\n",
+            encoding="utf-8",
+        )
         (target / SOURCE_BIB_NAME).write_text(
             merged.render(_keys_of(carrier)), encoding="utf-8"
         )

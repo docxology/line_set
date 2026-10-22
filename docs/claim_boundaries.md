@@ -13,6 +13,12 @@ sentence below is a restatement of what that does *not* reach.
 
 ## The non-claims, flatly
 
+The compiled volume's reference ledger records only formalism labels declared
+in its assembled sections. It supplies reference identity to the renderer;
+it does not endorse a proposition, evaluate a sibling, or recompute a sibling's
+numeric evidence. A generated render projection and its custody hashes bind
+the assembled files to their sources without adding scientific verification.
+
 **It does not establish that the instruments are correct.** The reader never
 calls a sibling's evaluator, never passes it an input, and never looks at what
 it concluded. `binding.py` reads a version string, counts a tuple, calls the

@@ -955,6 +955,48 @@ def test_the_report_counts_what_was_written(tmp_path: Path) -> None:
     assert "1 work(s) assembled" in report.summary()
 
 
+def test_volume_carries_only_declared_formal_reference_support(tmp_path: Path) -> None:
+    base = tmp_path / "works"
+    write_paper(
+        base,
+        "carrier",
+        sections={
+            "00_a.md": "# A\n\n::: {.definition #def:a}\nA.\n:::\n\nSee [@def:a].\n"
+        },
+    )
+    out = tmp_path / "out"
+    assemble(
+        out,
+        base,
+        (),
+        (),
+        wrapper_entry("carrier", 1),
+        resolver=blind_resolver(),
+        write=True,
+    )
+    manuscript = out / "output" / "manuscript"
+    payload = json.loads((manuscript / "omnibus_claim_ledger.json").read_text())
+    assert [row["value"] for row in payload["claims"]] == ["def:carrier-a"]
+    for row in payload["claims"]:
+        assert row["kind"] == "citation"
+        source = out / row["source_path"]
+        assert source.is_file()
+        assert row["value"] in collect_anchors(source.read_text())
+    (base / "carrier" / "manuscript" / "00_a.md").write_text(
+        "# A\n\n::: {.definition #def:a}\nA.\n:::\n\nSee [@def:missing].\n"
+    )
+    with pytest.raises(OmnibusError, match="missing"):
+        assemble(
+            out,
+            base,
+            (),
+            (),
+            wrapper_entry("carrier", 1),
+            resolver=blind_resolver(),
+            write=True,
+        )
+
+
 def test_a_plan_writes_nothing(tmp_path: Path) -> None:
     """The analysis stage runs this command bare; a bare run must be inert."""
     base = tmp_path / "works"

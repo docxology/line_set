@@ -205,8 +205,32 @@ uv run python scripts/pipeline/stage_04_validate.py --project working/line_set
 Use a Git-indexed engine checkout: its rendered provenance gate fingerprints
 tracked engine implementation files. A source archive can render, but cannot
 supply that index. The `--skip-manuscript-hydration` option retains this
-repository's authored `docs/manuscript` layout. For the compiled volume, first
-run this repository's omnibus builder and then render its generated manuscript.
+repository's authored `docs/manuscript` layout.
+
+For the compiled volume, first run this repository's omnibus builder in a
+separate render clone. Preserve its authored `docs/manuscript` outside that
+clone, then copy the assembled `output/manuscript` to `docs/manuscript` in the
+render clone. Record the release revision and hashes of both manuscript trees,
+and commit this generated source projection locally in that clone. Render and
+validate this derivative with the commands above. Keep its projection receipt,
+assembly report, sibling-source custody and native provenance with the artifacts.
+Retain the recorded reading alongside the projected sources, relocate the
+wrapper's evidence-metadata source paths to its generated section filenames,
+and mirror the gathered figures at `docs/figures` for source-relative inspection.
+Record those metadata relocations and mirrored-file hashes in the projection
+receipt. The assembler writes `omnibus_claim_ledger.json` from the formalism
+anchors actually declared in the assembled sections, so the engine can resolve
+their namespaced cross-references. Its rows record label presence only.
+Never apply this projection to the canonical source checkout or publish its
+scratch commit as the software release.
+
+The engine requires each rendered manuscript filename to have a canonical
+source counterpart. Rendering assembled filenames against the wrapper's authored
+source tree produces `UNCONSUMED_MANUSCRIPT`; the generated projection gives the
+complete volume its own explicit canonical render inputs. Native provenance
+then binds that derivative, while the assembler's source-preservation gates and
+the separate custody receipt bind it back to the released works. It does not
+turn the generated volume into independently authored or verified sibling work.
 Keep the actual project clone's basename `line_set` as well as its qualified
 link name: the engine's output-structure check derives the expected combined
 PDF filename from the resolved clone basename.

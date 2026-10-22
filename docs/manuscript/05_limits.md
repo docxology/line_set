@@ -60,3 +60,8 @@ Self-disjointness needs the siblings importable and fails when they are not — 
 Each structural check is backed by a test that plants its defined bad input and proves the check rejects it. What that establishes is detection of the planted defect. It is not evidence that no other defect exists in the declaration, and it says nothing at all about the packages the declaration describes.
 
 Finally, the colours. The alchemical resonance is a naming resonance held in Jung's symbolic register and nothing further [@jung1953alchemy]. No line is a stage of anyone's transformation, the working order does not re-enact the opus, and the borrowed names carry none of the opus's direction. A structural check pins the divergence of the two orders; nothing pins how a reader will hear the names, and the honest safeguard there is to keep saying what the echo is not.
+
+The compiled volume's reference ledger records that its formalism labels are
+declared. A generated render projection binds those assembled files to their
+source custody; neither procedure verifies a proposition or recomputes a
+sibling's numeric evidence.
