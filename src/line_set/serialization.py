@@ -141,11 +141,20 @@ def validate_reading(reading: SetReading) -> None:
     date.fromisoformat(reading.read_as_of)
     _admit_shared(reading.exemptions)
     discovery = reading.discovery
+    if any(
+        type(value) is not bool
+        for value in (discovery.capable, discovery.attempted, discovery.completed)
+    ):
+        raise ValueError("discovery flags must be booleans")
+    if discovery.diagnostics and (discovery.completed or not discovery.attempted):
+        raise ValueError("discovery failure requires an incomplete recorded attempt")
     if discovery.completed and (not discovery.capable or not discovery.attempted):
         raise ValueError("completed discovery requires capability and an attempt")
     if discovery.capable and not discovery.attempted:
         raise ValueError("capable discovery has no recorded attempt")
     names = discovery.candidates
+    if names and not discovery.capable:
+        raise ValueError("discovery candidates require enumeration capability")
     if any(
         not isinstance(name, str) or not name.isidentifier() for name in names
     ) or len(set(names)) != len(names):

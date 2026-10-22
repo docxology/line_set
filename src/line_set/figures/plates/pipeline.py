@@ -244,7 +244,7 @@ def set_reading_pipeline() -> str:
             INK,
         ),
         (
-            "A line that could not be read contributes no version, no registry size, and no digest; those stay empty rather than being filled in.",
+            "NOT_INSTALLED and IMPORT_FAILED leave version, registry size and digest empty. NO_VOCABULARY retains metadata actually read; missing values are never filled in.",
             MUTED,
         ),
     ):

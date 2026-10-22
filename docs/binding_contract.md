@@ -46,6 +46,10 @@ only the current schema, recomputes collision/status facts and checks derived
 counts. `self_disjointness_from_reading` recomputes wrapper token intersections.
 Every discovered candidate outside the declared package identities requires a
 resolution outcome, including retained candidates from partial enumeration.
+Capability, attempt and completion flags must be booleans. Enumeration failures
+require an incomplete recorded attempt; candidates require enumeration capability.
+Replay and the pinned-source gate share these checks, so a truthy string or a
+completion claim accompanied by an enumeration failure cannot pass either boundary.
 Source revisions use the same full hexadecimal commit grammar on import,
 replay and the pinned-source gate.
 Optional package versions and digests must remain non-blank strings when

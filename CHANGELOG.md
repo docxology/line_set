@@ -15,6 +15,9 @@ See the [release packet](docs/releases/v0.5.0.md).
 Preserve the earlier reading as historical evidence. Replace clipped figures with
 measured layouts and a sparse vocabulary matrix retaining every observed name and
 carrier. Keep the additional-topics synthesis and its human-review boundaries.
+Reject non-boolean discovery flags and contradictory completion evidence at
+replay and pinned-source admission. Describe vocabulary-less imports as partial
+readings that retain metadata actually read in the status table and pipeline plate.
 
 ## 0.4.0 (2026-10-21)
 

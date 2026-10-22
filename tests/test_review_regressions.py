@@ -707,6 +707,130 @@ def _pinned_audit_reading(root: Path, extra: bool = False):
     )
 
 
+@pytest.mark.parametrize("field", ["capable", "attempted", "completed"])
+@pytest.mark.parametrize("value", ["false", 1, None])
+@pytest.mark.parametrize("boundary", ["replay", "pinned"])
+def test_discovery_flags_require_booleans_at_replay_and_pinned_gate(
+    tmp_path: Path, field: str, value, boundary: str
+) -> None:
+    import json
+    from line_set import canonical_reading, check_pinned_sources, reading_from_canonical
+
+    with import_sandbox():
+        reading = _pinned_audit_reading(tmp_path)
+        assert check_pinned_sources(reading).passed
+        payload = json.loads(canonical_reading(reading))
+        payload["discovery"][field] = value
+        malformed = replace(
+            reading, discovery=replace(reading.discovery, **{field: value})
+        )
+        if boundary == "replay":
+            with pytest.raises(ValueError, match="boolean"):
+                reading_from_canonical(json.dumps(payload))
+        else:
+            assert not check_pinned_sources(malformed).passed
+
+
+@pytest.mark.parametrize("phase", ["enumerate-call", "enumerate-iteration"])
+@pytest.mark.parametrize("boundary", ["replay", "pinned"])
+def test_completed_discovery_cannot_retain_an_enumeration_failure(
+    tmp_path: Path, phase: str, boundary: str
+) -> None:
+    import json
+    from line_set import canonical_reading, check_pinned_sources, reading_from_canonical
+    from line_set.models import Diagnostic
+
+    with import_sandbox():
+        reading = _pinned_audit_reading(tmp_path)
+        assert check_pinned_sources(reading).passed
+        payload = json.loads(canonical_reading(reading))
+        failure = Diagnostic(phase, "RuntimeError", "planted enumeration failure")
+        payload["discovery"]["diagnostics"] = [
+            {
+                "phase": failure.phase,
+                "exception_type": failure.exception_type,
+                "detail": failure.detail,
+            }
+        ]
+        malformed = replace(
+            reading, discovery=replace(reading.discovery, diagnostics=(failure,))
+        )
+        if boundary == "replay":
+            with pytest.raises(ValueError, match="discovery"):
+                reading_from_canonical(json.dumps(payload))
+        else:
+            assert not check_pinned_sources(malformed).passed
+
+
+@pytest.mark.parametrize("description", ["register", "plate"])
+def test_partial_reading_descriptions_preserve_vocabularyless_metadata(
+    tmp_path: Path,
+    description: str,
+) -> None:
+    import xml.etree.ElementTree as ET
+    from line_set.figures.plates.pipeline import set_reading_pipeline
+
+    with import_sandbox():
+        entry = LINE_SET[0]
+        write_line_package(
+            tmp_path,
+            entry.package_name,
+            enums={},
+            version="4.2.0",
+            registry_sizes={"PRIMARY": 2},
+        )
+        module = load_line_package(tmp_path, entry.package_name)
+        reading = read_set((entry,), (), resolver=lambda n: resolved(n, module))
+        observation = reading.observations[0]
+        assert reading.status is SetStatus.SET_PARTIAL
+        assert observation.code is ReadCode.NO_VOCABULARY
+        assert observation.version == "4.2.0"
+        assert observation.registry_size == 2
+        assert observation.registry_digest is not None
+    if description == "register":
+        register = (
+            Path(__file__).resolve().parents[1] / "docs/claim_boundaries.md"
+        ).read_text()
+        row = next(
+            row for row in register.splitlines() if row.startswith("| `SET_PARTIAL`")
+        )
+        assert "no readable exported vocabulary" in row
+        assert "metadata actually read is retained" in row
+    else:
+        plate = ET.fromstring(set_reading_pipeline())
+        text = " ".join(plate.itertext())
+        assert "NOT_INSTALLED and IMPORT_FAILED" in text
+        assert "NO_VOCABULARY retains metadata actually read" in text
+
+
+@pytest.mark.parametrize("case", ["unattempted_failure", "incapable_candidates"])
+def test_discovery_evidence_requires_the_corresponding_capability_and_attempt(
+    tmp_path: Path, case: str
+) -> None:
+    import json
+    from line_set import canonical_reading, check_pinned_sources, reading_from_canonical
+    from line_set.models import Diagnostic
+
+    with import_sandbox():
+        reading = _pinned_audit_reading(tmp_path)
+        payload = json.loads(canonical_reading(reading))
+        if case == "unattempted_failure":
+            discovery = replace(
+                reading.discovery,
+                capable=False,
+                attempted=False,
+                completed=False,
+                candidates=(),
+                diagnostics=(Diagnostic("enumerate-call", "RuntimeError", "planted"),),
+            )
+        else:
+            discovery = replace(reading.discovery, capable=False, completed=False)
+        payload["discovery"] = discovery.canonical()
+        with pytest.raises(ValueError, match="discovery"):
+            reading_from_canonical(json.dumps(payload))
+        assert not check_pinned_sources(replace(reading, discovery=discovery)).passed
+
+
 def test_replay_requires_an_outcome_for_every_extra_candidate(tmp_path: Path) -> None:
     import json
     from line_set import canonical_reading, reading_from_canonical

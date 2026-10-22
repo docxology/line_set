@@ -158,7 +158,7 @@ spellings.
 | Status | Means | Does not mean |
 | --- | --- | --- |
 | `SET_LEGIBLE` | Every declared line was read; no unexempted token appeared in more than one. | That the lines are correct, complete, well chosen, or non-overlapping in substance. |
-| `SET_PARTIAL` | At least one declared line could not be imported. What was read still holds. | That the set is broken, or that the missing line is missing from the world rather than from this environment. |
+| `SET_PARTIAL` | At least one declared line could not be imported or has no readable exported vocabulary; metadata actually read is retained. | That the set is broken, or that the unread vocabulary is absent from the world rather than from this environment. |
 | `SET_COLLIDING` | A token is carried by more than one line with no well-formed exemption. | That either line is wrong. It means the separation contract needs a decision — split the token, or declare the overlap with a meaning per line. |
 | `SET_UNDECLARED` | A package that resolved looks like a line and is not in the declaration. | That the package is illegitimate. It means the declaration is behind the installation. |
 
