@@ -289,11 +289,12 @@ def _registry_digest(
 def read_vocabulary(module: ModuleType) -> Vocabulary:
     """Read everything this module is willing to read from one package."""
     tokens = enum_tokens(module)
-    descriptor = getattr(module, "LINE_SET_BINDING", None)
+    missing = object()
+    descriptor = getattr(module, "LINE_SET_BINDING", missing)
     schema = "convention-heuristic"
     identity = None
     diagnostics: tuple[Diagnostic, ...] = ()
-    if descriptor is None:
+    if descriptor is missing:
         registry = _registry_tuple(module)
         digest, digest_detail, diagnostics = _registry_digest(module, registry)
     else:
@@ -435,6 +436,13 @@ def resolve_package(resolver: PackageResolver, name: str) -> Resolution:
             f"resolve {issue.exception_type}: {issue.detail}",
             diagnostics=(issue,),
         )
+
+
+class _CandidateEnumerationError(Exception):
+    def __init__(self, candidates: tuple[str, ...], issue: Diagnostic) -> None:
+        super().__init__(issue.detail)
+        self.candidates = candidates
+        self.issue = issue
 
 
 class ImportResolver:
@@ -587,15 +595,18 @@ class ImportResolver:
         """
         self._ensure_paths()
         names = {
-            info.name
-            for info in pkgutil.iter_modules()
-            if info.ispkg and info.name.endswith(LINE_PACKAGE_SUFFIX)
-        }
-        names.update(
             name
             for name in sys.modules
             if "." not in name and name.endswith(LINE_PACKAGE_SUFFIX)
-        )
+        }
+        try:
+            for info in pkgutil.iter_modules():
+                if info.ispkg and info.name.endswith(LINE_PACKAGE_SUFFIX):
+                    names.add(info.name)
+        except Exception as exc:
+            raise _CandidateEnumerationError(
+                tuple(sorted(names)), diagnostic("enumerate-iteration", exc)
+            ) from exc
         return tuple(sorted(names))
 
 
@@ -623,10 +634,14 @@ def discover_packages(resolver: object) -> Discovery:
         )
     if not callable(lister):
         return Discovery()
+    issues: tuple[Diagnostic, ...] = ()
     try:
         found = lister()
         if isinstance(found, (str, bytes)) or found is None:
             raise TypeError("candidates() must return an iterable of package names")
+    except _CandidateEnumerationError as exc:
+        found = exc.candidates
+        issues = (exc.issue,)
     except Exception as exc:
         return Discovery(True, True, diagnostics=(diagnostic("enumerate-call", exc),))
     names: set[str] = set()
@@ -641,9 +656,9 @@ def discover_packages(resolver: object) -> Discovery:
             True,
             False,
             tuple(sorted(names)),
-            diagnostics=(diagnostic("enumerate-iteration", exc),),
+            diagnostics=(*issues, diagnostic("enumerate-iteration", exc)),
         )
-    return Discovery(True, True, True, tuple(sorted(names)))
+    return Discovery(True, True, not issues, tuple(sorted(names)), diagnostics=issues)
 
 
 def sibling_source_roots(

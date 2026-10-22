@@ -20,6 +20,10 @@ replay and pinned-source admission. Describe vocabulary-less imports as partial
 readings that retain metadata actually read in the status table and pipeline plate.
 Require boolean collision flags and preserve scalar types during canonical replay
 comparison, so numeric equality cannot erase collision classifications.
+Require the declaration digest's canonical string shape, refuse an explicitly
+invalid binding descriptor, retain names yielded before real finder failures,
+and generate a spare probe carrier outside the complete carrier set. Correct
+the integration recipe's retained date and the earlier DOI's archived title.
 
 ## 0.4.0 (2026-10-21)
 

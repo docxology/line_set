@@ -180,6 +180,10 @@ measurements of the declared packages on one machine on one date, recorded in
 stays at none: counting spellings is not evidence that keeping instruments
 apart this way does any good.
 
+Canonical reading admission checks the declaration digest's string type and
+lowercase SHA-256 shape. Shape admission does not authenticate the declaration
+or establish agreement with declaration bytes absent from that reading.
+
 ## Admission materials and optional replay profile
 
 The [admission dossier and case library](admission/README.md) are human review

@@ -15,7 +15,8 @@ The census separates declared names, canonical members and distinct spellings.
 Submodule-only names remain outside the contract.
 
 The optional `line-set-binding/1` descriptor selects the package's own registry
-and digest callable. Otherwise binding is marked `convention-heuristic`; tuple
+and digest callable. An invalid present descriptor, including `None`, fails
+binding. Only absence selects `convention-heuristic`; tuple
 aliases do not create false ambiguity. Provenance records requested/resolved
 identity, module origin, distribution when available, resolver policy, binding
 schema and source revision when known. I refuse a cached source mismatch rather
@@ -27,7 +28,8 @@ attempts and cannot coexist with a completion claim; the pinned-source gate uses
 the same admission check. A partial reading includes an imported package without
 readable exported vocabulary, while retaining metadata that was actually read.
 Discovery capability, attempt, completion and candidate outcomes are separate
-from namespace status. An unread declared exemption carrier remains unknown:
+from namespace status. The real importer retains and resolves candidates yielded
+before a finder fails. An unread declared exemption carrier remains unknown:
 exact equality still refuses the exemption, and the collision retains observed,
 declared and unread carriers. Exempted collisions retain per-line meanings.
 Imports run package code in process and are not a sandbox.
@@ -35,7 +37,8 @@ Imports run package code in process and are not a sandbox.
 Canonical declarations and readings carry schema versions. Replay recomputes
 collision and status facts and rejects malformed package metadata: present
 versions and digests are non-blank strings, and registry sizes are non-negative
-integers, excluding booleans. These field checks do not verify what a sibling
+integers, excluding booleans. The declaration digest requires its canonical
+lowercase SHA-256 shape. These field checks do not verify what a sibling
 reports. Self-disjointness recomputes wrapper token
 intersections rather than trusting a supplied collision list. A reading hash
 compares the exact dated record, including diagnostics and provenance, and may

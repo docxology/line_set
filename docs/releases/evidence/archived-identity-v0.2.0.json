@@ -1,0 +1,9 @@
+{
+  "doi": "10.5281/zenodo.22833507",
+  "response_sha256": "90e0179641a9cdb0f96c354a8ae041dae557c7ff472fdf00271dd05cf2cd85af",
+  "schema": "line-set-archived-identity/1",
+  "source": "https://zenodo.org/api/records/22833507",
+  "source_kind": "retained_published_zenodo_response",
+  "title": "The Line Set: Holding Instruments Apart",
+  "version": "0.2.0"
+}

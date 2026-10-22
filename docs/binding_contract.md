@@ -16,7 +16,9 @@ name every distinct root enum class exactly once; it cannot hide a published
 enum. Registry identity is a public attribute path and digest is a public root
 callable. The reader passes that package's own registry to its own callable.
 An invalid descriptor fails binding and never silently selects the heuristic.
-Older packages remain readable with `binding_schema=convention-heuristic`.
+An explicitly present `None` is invalid; only an absent attribute selects the
+legacy convention. Older packages remain readable with
+`binding_schema=convention-heuristic`.
 Tuple aliases are deduplicated by identity before the largest-tuple rule.
 
 Each observation retains requested/resolved package, origin, distribution and
@@ -30,7 +32,10 @@ Resolve, bind, digest, enumeration-call and enumeration-iteration failures retai
 bounded diagnostic text and exception type. Cancellation and process-control
 exceptions propagate. `Discovery` separately records capability, attempt,
 completion, retained candidate names and resolution outcomes. Partial enumeration
-preserves yielded names and never becomes a completed empty scan. A collision
+preserves yielded names and never becomes a completed empty scan.
+The real import resolver retains names yielded by a finder before it raises,
+then resolves those candidates while recording incomplete enumeration.
+A collision
 that fails an exemption records observed, declared and unread carriers plus
 coverage. Exact carrier equality is unchanged; exempted collisions carry meanings.
 
@@ -44,6 +49,9 @@ Canonical declaration and reading schemas are `line-set-declaration/2` and
 observation identity duplicates are refused. `reading_from_canonical` accepts
 only the current schema, recomputes collision/status facts and checks derived
 counts. `self_disjointness_from_reading` recomputes wrapper token intersections.
+The declaration digest must have the lowercase SHA-256 spelling produced by
+this package. This admits its type and shape; it does not authenticate a
+declaration or compare it with a declaration that was not supplied.
 Every discovered candidate outside the declared package identities requires a
 resolution outcome, including retained candidates from partial enumeration.
 Capability, attempt and completion flags must be booleans. Enumeration failures

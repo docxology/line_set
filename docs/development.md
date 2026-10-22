@@ -42,8 +42,11 @@ repository boundary.
 
 ```bash
 uv run python scripts/check_set.py --require-pinned --as-of YYYY-MM-DD
-uv run python scripts/record_reading.py --check
+uv run python scripts/record_reading.py --as-of YYYY-MM-DD --check
 ```
+
+Use the retained record's `reading.read_as_of` for both date arguments when
+checking that record; the publication date may differ.
 
 The pinned gate fails on an empty scan, missing package metadata, unpinned
 sources or incomplete discovery. It is a reproducible namespace lane, not an

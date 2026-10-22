@@ -36,7 +36,7 @@ abstract: >-
   collision was found.
 references:
   - type: software
-    title: "The Line Set: The Collected Volume"
+    title: "The Line Set: Holding Instruments Apart"
     version: "0.2.0"
     authors:
       - family-names: "Friedman"

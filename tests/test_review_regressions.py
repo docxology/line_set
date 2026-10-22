@@ -458,6 +458,7 @@ def test_pinned_integration_gate_has_real_positive_and_negative_inputs(
 @pytest.mark.parametrize(
     "descriptor",
     [
+        "None",
         "42",
         "{'schema':'unknown'}",
         "{'schema':'line-set-binding/1', 'vocabulary_enums': ()}",
@@ -1042,3 +1043,121 @@ def test_real_importer_preserves_caught_exception_type(
         assert result.code is ReadCode.IMPORT_FAILED
         assert result.diagnostics[0].exception_type == "RuntimeError"
         assert result.diagnostics[0].phase == "resolve"
+
+
+@pytest.mark.parametrize("value", [7, None, True, [], "", "a" * 63, "z" * 64, "A" * 64])
+@pytest.mark.parametrize("boundary", ["replay", "pinned"])
+def test_declaration_digest_requires_canonical_sha256_at_admission(
+    tmp_path: Path, value, boundary: str
+) -> None:
+    import json
+    from line_set import canonical_reading, check_pinned_sources, reading_from_canonical
+
+    with import_sandbox():
+        reading = _pinned_audit_reading(tmp_path)
+        assert check_pinned_sources(reading).passed
+        if boundary == "pinned":
+            assert not check_pinned_sources(replace(reading, set_digest=value)).passed
+        else:
+            payload = json.loads(canonical_reading(reading))
+            payload["set_digest"] = value
+            with pytest.raises(ValueError, match="digest"):
+                reading_from_canonical(json.dumps(payload))
+
+
+@pytest.mark.parametrize("failure", [None, RuntimeError, KeyboardInterrupt, ValueError])
+def test_real_importer_retains_candidates_yielded_before_finder_failure(
+    tmp_path: Path, failure
+) -> None:
+    import sys
+    from importlib.abc import MetaPathFinder
+    from importlib.machinery import PathFinder
+    from line_set import canonical_reading, reading_from_canonical
+    from line_set.binding import ImportResolver
+
+    source = tmp_path / "src"
+    declared = "audit_declared_line"
+    extra = "audit_extra_line"
+
+    class Finder(MetaPathFinder):
+        def find_spec(self, fullname, path=None, target=None):
+            if fullname in {declared, extra}:
+                return PathFinder.find_spec(fullname, [str(source)])
+            return None
+
+        def iter_modules(self, prefix=""):
+            yield prefix + extra, True
+            if failure is ValueError:
+                yield prefix + "invalid-name_line", True
+            if failure is not None:
+                raise failure("planted finder iteration failure")
+
+    with import_sandbox():
+        write_line_package(source, declared, ("DECLARED",))
+        write_line_package(source, extra, ("EXTRA",))
+        finder = Finder()
+        sys.meta_path.insert(0, finder)
+        try:
+            if failure is KeyboardInterrupt:
+                with pytest.raises(KeyboardInterrupt):
+                    read_set(
+                        (replace(LINE_SET[0], package_name=declared),),
+                        (),
+                        resolver=ImportResolver([source]),
+                    )
+                return
+            reading = read_set(
+                (replace(LINE_SET[0], package_name=declared),),
+                (),
+                resolver=ImportResolver([source]),
+            )
+        finally:
+            sys.meta_path.remove(finder)
+        assert extra in reading.discovery.candidates
+        assert extra in reading.undeclared_lines
+        outcome = next(
+            item for item in reading.discovery.outcomes if item.package_name == extra
+        )
+        assert outcome.code is ReadCode.RESOLVED
+        assert reading.discovery.completed is (failure is None)
+        if failure is not None:
+            assert reading.discovery.diagnostics[0].phase == "enumerate-iteration"
+            assert reading.discovery.diagnostics[0].exception_type == failure.__name__
+        assert "invalid-name_line" not in reading.discovery.candidates
+        replayed = reading_from_canonical(canonical_reading(reading))
+        assert replayed.discovery == reading.discovery
+
+
+@pytest.mark.parametrize("carrier_count", [2, 3])
+def test_derived_probe_carrier_is_absent_from_the_complete_carrier_set(
+    carrier_count: int,
+) -> None:
+    from line_set import SharedToken, exemption_probes, probes_hold
+    from line_set.probes import spare_line_id
+
+    ids = tuple("a" + "_adopter" * index for index in range(carrier_count))
+    entries = tuple(replace(entry, id=name) for entry, name in zip(LINE_SET, ids))
+    exemption = SharedToken(
+        "SHARED", ids, tuple((name, "meaning " + name) for name in ids), "distinct uses"
+    )
+    assert exemption_for((exemption,), "SHARED", ids) is exemption
+    spare, from_declaration = spare_line_id(entries, ids)
+    assert not from_declaration and spare not in ids
+    probes = exemption_probes(entries, (exemption,))
+    assert probes_hold(probes)
+    additional = next(p for p in probes if p.name == "an additional line carries it")
+    assert len(set(additional.query_lines)) == len(ids) + 1
+
+
+def test_integration_recipe_preserves_the_retained_reading_date() -> None:
+    import shlex
+
+    text = (Path(__file__).resolve().parents[1] / "docs/development.md").read_text()
+    integration = text.split("For the separate release integration lane,", 1)[1]
+    recipe = integration.split("```bash\n", 1)[1].split("```", 1)[0]
+    commands = [shlex.split(line) for line in recipe.splitlines() if line.strip()]
+    record = next(
+        command for command in commands if "scripts/record_reading.py" in command
+    )
+    assert "--check" in record and "--as-of" in record
+    assert record[record.index("--as-of") + 1] == "YYYY-MM-DD"

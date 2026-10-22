@@ -47,6 +47,8 @@ the title *The Line Set: Holding Instruments Apart*. The repository's collected
 volume citation title follows the owner's recorded title decision; the archive
 metadata has not yet been harmonized with it. Daniel's next deposition should
 reconcile that title as well as assigning its reserved version DOI.
+The [archived identity receipt](releases/evidence/archived-identity-v0.2.0.json)
+binds that reference's title, version and DOI to the retained API response hash.
 
 ## Persistent Identifiers and Verification
 

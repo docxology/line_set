@@ -14,6 +14,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import re
 from datetime import date
 
 from .models import LineEntry, SetReading, SharedToken
@@ -139,6 +140,11 @@ def validate_reading(reading: SetReading) -> None:
     from .models import ReadCode, SetStatus
 
     date.fromisoformat(reading.read_as_of)
+    if (
+        not isinstance(reading.set_digest, str)
+        or re.fullmatch(r"[0-9a-f]{64}", reading.set_digest) is None
+    ):
+        raise ValueError("declaration digest must be a lowercase SHA-256 string")
     _admit_shared(reading.exemptions)
     if any(
         type(value) is not bool

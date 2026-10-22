@@ -78,7 +78,10 @@ def spare_line_id(
     for entry in sorted(lines, key=lambda item: item.working_position):
         if entry.id not in taken:
             return entry.id, True
-    return f"{sorted(taken)[0]}{DERIVED_LINE_SUFFIX}", False
+    candidate = f"{sorted(taken)[0]}{DERIVED_LINE_SUFFIX}"
+    while candidate in taken:
+        candidate += DERIVED_LINE_SUFFIX
+    return candidate, False
 
 
 def _probe(

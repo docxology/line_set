@@ -105,6 +105,13 @@ def test_the_archived_doi_cannot_identify_the_current_candidate() -> None:
     archive = references.split("  - type: software", 2)[1]
     assert f'version: "{archive_version}"' in archive
     assert f'doi: "{archive_doi}"' in archive
+    assert 'title: "The Line Set: Holding Instruments Apart"' in archive
+    identity = json.loads(
+        (ROOT / "docs/releases/evidence/archived-identity-v0.2.0.json").read_text()
+    )
+    assert identity["doi"] == archive_doi
+    assert identity["version"] == archive_version
+    assert f'title: "{identity["title"]}"' in archive
 
 
 def test_every_sibling_is_referenced_by_its_exact_public_url() -> None:
