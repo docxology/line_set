@@ -183,6 +183,8 @@ apart this way does any good.
 Canonical reading admission checks the declaration digest's string type and
 lowercase SHA-256 shape. Shape admission does not authenticate the declaration
 or establish agreement with declaration bytes absent from that reading.
+Nested-field type admission checks the record's shape; it does not verify the
+truth of its provenance declarations, diagnostics or explanatory prose.
 
 ## Admission materials and optional replay profile
 

@@ -15,7 +15,11 @@ from __future__ import annotations
 import hashlib
 import json
 import re
+from dataclasses import fields, is_dataclass
 from datetime import date
+from functools import cache
+from types import UnionType
+from typing import get_args, get_origin, get_type_hints
 
 from .models import LineEntry, SetReading, SharedToken
 from .admission import DeclarationError, admit_declaration
@@ -135,29 +139,59 @@ def reading_digest(reading: SetReading) -> str:
     return hashlib.sha256(canonical_reading(reading).encode("utf-8")).hexdigest()
 
 
+@cache
+def _record_field_types(model: type) -> dict[str, object]:
+    return get_type_hints(model)
+
+
+def _admit_record_field(value: object, kind: object, path: str) -> None:
+    origin = get_origin(kind)
+    arguments = get_args(kind)
+    if origin is UnionType:
+        for option in arguments:
+            try:
+                _admit_record_field(value, option, path)
+            except ValueError:
+                continue
+            return
+    elif origin is tuple and isinstance(value, tuple):
+        if len(arguments) == 2 and arguments[1] is Ellipsis:
+            for index, item in enumerate(value):
+                _admit_record_field(item, arguments[0], f"{path}[{index}]")
+            return
+        if len(value) == len(arguments):
+            for index, (item, expected) in enumerate(zip(value, arguments)):
+                _admit_record_field(item, expected, f"{path}[{index}]")
+            return
+    elif isinstance(kind, type):
+        if is_dataclass(kind) and isinstance(value, kind):
+            expected_fields = _record_field_types(kind)
+            for field in fields(kind):
+                _admit_record_field(
+                    getattr(value, field.name),
+                    expected_fields[field.name],
+                    f"{path}.{field.name}",
+                )
+            return
+        if kind in (bool, int):
+            if type(value) is kind:
+                return
+        elif isinstance(value, kind):
+            return
+    requirement = "booleans" if kind is bool else str(kind)
+    raise ValueError(f"reading metadata field {path} requires {requirement}")
+
+
 def validate_reading(reading: SetReading) -> None:
     from .reader import _collide
     from .models import ReadCode, SetStatus
 
+    _admit_record_field(reading, SetReading, "reading")
     date.fromisoformat(reading.read_as_of)
-    if (
-        not isinstance(reading.set_digest, str)
-        or re.fullmatch(r"[0-9a-f]{64}", reading.set_digest) is None
-    ):
+    if re.fullmatch(r"[0-9a-f]{64}", reading.set_digest) is None:
         raise ValueError("declaration digest must be a lowercase SHA-256 string")
     _admit_shared(reading.exemptions)
-    if any(
-        type(value) is not bool
-        for collision in reading.collisions + reading.exempted_collisions
-        for value in (collision.exempted, collision.fully_observed)
-    ):
-        raise ValueError("collision flags must be booleans")
     discovery = reading.discovery
-    if any(
-        type(value) is not bool
-        for value in (discovery.capable, discovery.attempted, discovery.completed)
-    ):
-        raise ValueError("discovery flags must be booleans")
     if discovery.diagnostics and (discovery.completed or not discovery.attempted):
         raise ValueError("discovery failure requires an incomplete recorded attempt")
     if discovery.completed and (not discovery.capable or not discovery.attempted):
@@ -167,9 +201,7 @@ def validate_reading(reading: SetReading) -> None:
     names = discovery.candidates
     if names and not discovery.capable:
         raise ValueError("discovery candidates require enumeration capability")
-    if any(
-        not isinstance(name, str) or not name.isidentifier() for name in names
-    ) or len(set(names)) != len(names):
+    if any(not name.isidentifier() for name in names) or len(set(names)) != len(names):
         raise ValueError("discovery has invalid or duplicate candidate identities")
     outcome_names = [item.package_name for item in discovery.outcomes]
     if len(set(outcome_names)) != len(outcome_names) or not set(outcome_names).issubset(
@@ -196,21 +228,15 @@ def validate_reading(reading: SetReading) -> None:
         raise ValueError("undeclared lines disagree with discovery outcomes")
     for item in reading.observations:
         if any(
-            value is not None and (not isinstance(value, str) or not value.strip())
+            value is not None and not value.strip()
             for value in (item.version, item.registry_digest)
-        ) or (
-            item.registry_size is not None
-            and (type(item.registry_size) is not int or item.registry_size < 0)
-        ):
+        ) or (item.registry_size is not None and item.registry_size < 0):
             raise ValueError("reading has malformed package metadata")
         revision = item.provenance.source_revision
         if revision is not None and not valid_source_revision(revision):
             raise ValueError("reading provenance has an invalid source revision")
-        if (
-            not isinstance(item.code, ReadCode)
-            or not isinstance(item.tokens, tuple)
-            or any(not isinstance(token, str) or not token for token in item.tokens)
-            or len(set(item.tokens)) != len(item.tokens)
+        if any(not token for token in item.tokens) or len(set(item.tokens)) != len(
+            item.tokens
         ):
             raise ValueError("reading has malformed vocabulary or read code")
         if (item.code is ReadCode.RESOLVED) != bool(item.tokens):
@@ -222,11 +248,7 @@ def validate_reading(reading: SetReading) -> None:
             raise ValueError("unread package has invented metadata")
 
     ids = [item.line_id for item in reading.observations]
-    if (
-        not ids
-        or any(not isinstance(name, str) or not name.strip() for name in ids)
-        or len(set(ids)) != len(ids)
-    ):
+    if not ids or any(not name.strip() for name in ids) or len(set(ids)) != len(ids):
         raise ValueError("reading has empty, blank or duplicate observation identities")
     collisions, exempted = _collide(reading.observations, reading.exemptions)
 

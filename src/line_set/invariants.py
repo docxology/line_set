@@ -462,7 +462,7 @@ def check_pinned_sources(reading: SetReading) -> SoundnessResult:
     try:
         validate_reading(reading)
     except ValueError as error:
-        problems.append(str(error))
+        return SoundnessResult("pinned_sources", False, str(error))
     if not reading.observations:
         problems.append("no observations were scanned")
     for observation in reading.observations:

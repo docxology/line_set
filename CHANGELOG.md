@@ -24,6 +24,9 @@ Require the declaration digest's canonical string shape, refuse an explicitly
 invalid binding descriptor, retain names yielded before real finder failures,
 and generate a spare probe carrier outside the complete carrier set. Correct
 the integration recipe's retained date and the earlier DOI's archived title.
+Validate nested reading field and container types before semantic admission,
+including provenance, diagnostics and derivation, and return a failed pinned
+gate result for a malformed record.
 
 ## 0.4.0 (2026-10-21)
 

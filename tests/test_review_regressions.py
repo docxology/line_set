@@ -1161,3 +1161,74 @@ def test_integration_recipe_preserves_the_retained_reading_date() -> None:
     )
     assert "--check" in record and "--as-of" in record
     assert record[record.index("--as-of") + 1] == "YYYY-MM-DD"
+
+
+@pytest.mark.parametrize(
+    "path",
+    [
+        ("observations", 0, "detail"),
+        ("observations", 0, "provenance", "module_origin"),
+        ("observations", 0, "provenance", "resolved_package"),
+        ("observations", 0, "provenance", "distribution_version"),
+        ("observations", 0, "provenance", "binding_schema"),
+        ("observations", 0, "provenance", "registry_identity"),
+        ("observations", 0, "diagnostics", 0, "phase"),
+        ("observations", 0, "diagnostics", 0, "exception_type"),
+        ("observations", 0, "diagnostics", 0, "detail"),
+        ("derivation", 0, "name"),
+        ("derivation", 0, "detail"),
+        ("derivation", 0, "items", 0),
+    ],
+)
+@pytest.mark.parametrize("boundary", ["replay", "pinned"])
+def test_nested_reading_metadata_retains_its_declared_types(
+    tmp_path: Path, path: tuple[str | int, ...], boundary: str
+) -> None:
+    import json
+    from line_set import canonical_reading, check_pinned_sources, reading_from_canonical
+    from line_set.models import Diagnostic
+
+    def changed(value, parts):
+        if not parts:
+            return 7
+        head, *tail = parts
+        if isinstance(head, int):
+            return (*value[:head], changed(value[head], tail), *value[head + 1 :])
+        return replace(value, **{head: changed(getattr(value, head), tail)})
+
+    with import_sandbox():
+        reading = _pinned_audit_reading(tmp_path)
+        reading = replace(
+            reading,
+            observations=(
+                replace(
+                    reading.observations[0],
+                    diagnostics=(Diagnostic("bind", "Observation", "retained note"),),
+                ),
+            ),
+        )
+        assert check_pinned_sources(reading).passed
+        if boundary == "pinned":
+            assert not check_pinned_sources(changed(reading, path)).passed
+        else:
+            payload = json.loads(canonical_reading(reading))
+            parent = payload
+            for part in path[:-1]:
+                parent = parent[part]
+            parent[path[-1]] = 7
+            with pytest.raises(ValueError):
+                reading_from_canonical(json.dumps(payload))
+
+
+@pytest.mark.parametrize(
+    "field", ["observations", "collisions", "exemptions", "derivation", "discovery"]
+)
+def test_pinned_gate_returns_a_failure_for_malformed_record_containers(
+    tmp_path: Path, field: str
+) -> None:
+    from line_set import check_pinned_sources
+
+    with import_sandbox():
+        reading = _pinned_audit_reading(tmp_path)
+        assert check_pinned_sources(reading).passed
+        assert not check_pinned_sources(replace(reading, **{field: None})).passed

@@ -35,7 +35,9 @@ declared and unread carriers. Exempted collisions retain per-line meanings.
 Imports run package code in process and are not a sandbox.
 
 Canonical declarations and readings carry schema versions. Replay recomputes
-collision and status facts and rejects malformed package metadata: present
+collision and status facts. Shared admission first checks nested field and
+container types, including provenance, diagnostics and derivation. It rejects
+malformed package metadata: present
 versions and digests are non-blank strings, and registry sizes are non-negative
 integers, excluding booleans. The declaration digest requires its canonical
 lowercase SHA-256 shape. These field checks do not verify what a sibling

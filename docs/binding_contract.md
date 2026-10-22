@@ -49,6 +49,10 @@ Canonical declaration and reading schemas are `line-set-declaration/2` and
 observation identity duplicates are refused. `reading_from_canonical` accepts
 only the current schema, recomputes collision/status facts and checks derived
 counts. `self_disjointness_from_reading` recomputes wrapper token intersections.
+Shared admission checks the declared types of every nested reading field,
+including provenance, diagnostics, derivation and tuple containers, before
+checking their relationships. The pinned gate returns a failed result for a
+malformed record instead of continuing into fields it cannot safely inspect.
 The declaration digest must have the lowercase SHA-256 spelling produced by
 this package. This admits its type and shape; it does not authenticate a
 declaration or compare it with a declaration that was not supplied.
