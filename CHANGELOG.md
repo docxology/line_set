@@ -10,6 +10,8 @@ retain discovery coverage and exact exemption meanings independently of status.
 Version canonical declaration and reading schemas, validate replayed facts, and
 exercise every exemption against its complete table. Correct executable extension
 documentation and narrow status and formalism claims to what the reader measures.
+See the [release packet](docs/releases/v0.5.0.md).
+
 Preserve the earlier reading as historical evidence. Replace clipped figures with
 measured layouts and a sparse vocabulary matrix retaining every observed name and
 carrier. Keep the additional-topics synthesis and its human-review boundaries.
