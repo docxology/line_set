@@ -171,6 +171,18 @@ def test_all_census_scalar_fields_have_exact_ledger_rows() -> None:
     assert _ledger_numbers() == expected
 
 
+def test_the_number_row_generator_agrees_with_the_committed_ledger() -> None:
+    from line_set.formalism_ledger import number_rows
+
+    rows = number_rows()
+    assert rows
+    assert {row["claim_id"]: row["value"] for row in rows} == _ledger_numbers()
+    assert all(
+        row["source_path"] == "docs/manuscript/reading_record.json" for row in rows
+    )
+    assert all(row["source_field"] for row in rows)
+
+
 # ------------------------------------------------------- negative controls
 
 

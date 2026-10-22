@@ -4,6 +4,8 @@
 
 This reading was taken on 2026-10-21 using `sibling_path_resolver` against read-only Git clones. Released lines were read at their tags; Red was read at its current `origin/main` after the dispatcher stopped its release wait following an engine infrastructure timeout. The source revisions below identify the bytes read; the release packet identifies each source policy and the artifact checksums. All declared vocabularies were readable. This is a namespace reading, not verification of sibling conclusions. The previous environment's record remains unchanged in `docs/releases/evidence/reading-record-20260901-v1.json`.
 
+The transcript is wrapped for display; the canonical JSON record retains its exact bytes.
+
 ```python
 from line_set import read_set, sibling_path_resolver
 
@@ -27,7 +29,8 @@ counts        : {'resolved': 8, 'not_installed': 0, 'import_failed': 0, 'no_voca
   [bind] read version, registry size, digest, and enum member names from each package that resolved
   [collide] 0 unexempted and 8 exempted cross-line token collisions
   [declare] scanned 8 candidate packages and found 0 that resolved but were not declared
-  [status] set_legible: no unexempted published-name collisions among all 8 declared readable vocabularies; 8 declared exemption(s)
+  [status] set_legible: no unexempted published-name collisions among all 8 declared readable
+    vocabularies; 8 declared exemption(s)
 ```
 
 | Package | Reported version | Source revision | Binding policy |

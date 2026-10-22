@@ -186,6 +186,16 @@ def test_every_declared_section_is_present_and_written() -> None:
     assert found == sorted(expected), found
 
 
+@pytest.mark.parametrize("name", ["03_extensibility.md", "04_examples.md"])
+def test_display_transcripts_have_bounded_line_lengths(name: str) -> None:
+    blocks = re.findall(r"```text\n(.*?)\n```", section(name), re.S)
+    assert blocks, f"{name}: no display transcript found"
+    overflowing = [
+        line for block in blocks for line in block.splitlines() if len(line) > 100
+    ]
+    assert not overflowing, f"{name}: display lines exceed 100 columns: {overflowing}"
+
+
 def test_the_paper_version_is_the_package_version() -> None:
     """Two version numbers that can disagree eventually do."""
     from line_set import __version__
