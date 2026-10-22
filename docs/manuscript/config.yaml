@@ -5,7 +5,7 @@ paper:
   title: "The Line Set: Holding Instruments Apart"
   subtitle: "A Declaration, a Reader, and a Non-Overlap Contract for a Growing Set of Small Instruments"
   version: "0.5.0"
-  date: "2026-10-21"
+  date: "2026-10-22"
   description: "A thin wrapper that declares the line set, reads available sibling vocabularies, and reports unexempted collisions in published enum member names."
   cover:
     image: "../../output/figures/line_set_cover.png"

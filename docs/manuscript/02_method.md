@@ -22,7 +22,7 @@ schema and source revision when known. I refuse a cached source mismatch rather
 than silently unloading modules. These fields record custody, not correctness.
 
 Resolve, bind, digest and discovery failures retain bounded phase diagnostics.
-Replay requires boolean discovery flags. Enumeration failures remain incomplete
+Replay requires boolean discovery and collision flags. Enumeration failures remain incomplete
 attempts and cannot coexist with a completion claim; the pinned-source gate uses
 the same admission check. A partial reading includes an imported package without
 readable exported vocabulary, while retaining metadata that was actually read.

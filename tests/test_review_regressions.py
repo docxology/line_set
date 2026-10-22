@@ -846,6 +846,108 @@ def test_replay_requires_an_outcome_for_every_extra_candidate(tmp_path: Path) ->
             reading_from_canonical(json.dumps(payload))
 
 
+def _pinned_collision_reading(root: Path, exempted: bool):
+    import json
+    from line_set import SharedToken
+    from line_set.binding import ImportResolver
+
+    entries = tuple(
+        replace(entry, id=name, package_name=name)
+        for entry, name in zip(LINE_SET[:2], ("audit_first_line", "audit_second_line"))
+    )
+    for index, entry in enumerate(entries):
+        write_line_package(
+            root / "src",
+            entry.package_name,
+            ("SHARED", f"UNIQUE_{index}"),
+            registry_sizes={"PRIMARY": 1},
+        )
+    (root / ".line-set-source.json").write_text(json.dumps({"revision": "a" * 40}))
+    shared = (
+        (
+            SharedToken(
+                "SHARED",
+                tuple(entry.id for entry in entries),
+                tuple(
+                    (entry.id, f"meaning {index}")
+                    for index, entry in enumerate(entries)
+                ),
+                "distinct declared fixture meanings",
+            ),
+        )
+        if exempted
+        else ()
+    )
+    return entries, read_set(
+        entries, shared, resolver=ImportResolver([root / "src"]), as_of="2026-10-21"
+    )
+
+
+@pytest.mark.parametrize("exempted", [False, True])
+@pytest.mark.parametrize("field", ["exempted", "fully_observed"])
+@pytest.mark.parametrize("representation", [int, float])
+@pytest.mark.parametrize("boundary", ["replay", "pinned"])
+def test_collision_flags_require_booleans_before_replay_or_pinned_admission(
+    tmp_path: Path, exempted: bool, field: str, representation, boundary: str
+) -> None:
+    import json
+    from line_set import canonical_reading, check_pinned_sources, reading_from_canonical
+
+    with import_sandbox():
+        _, reading = _pinned_collision_reading(tmp_path, exempted)
+        assert check_pinned_sources(reading).passed
+        collection = "exempted_collisions" if exempted else "collisions"
+        (collision,) = getattr(reading, collection)
+        malformed = replace(
+            collision, **{field: representation(getattr(collision, field))}
+        )
+        if boundary == "pinned":
+            assert not check_pinned_sources(
+                replace(reading, **{collection: (malformed,)})
+            ).passed
+        else:
+            payload = json.loads(canonical_reading(reading))
+            payload[collection][0][field] = getattr(malformed, field)
+            with pytest.raises(ValueError, match="boolean"):
+                reading_from_canonical(json.dumps(payload))
+
+
+@pytest.mark.parametrize("exempted", [False, True])
+def test_valid_replayed_collisions_keep_their_figure_classification(
+    tmp_path: Path, exempted: bool
+) -> None:
+    import xml.etree.ElementTree as ET
+    from line_set import canonical_reading, check_pinned_sources, reading_from_canonical
+    from line_set.figures.plates.reading import vocabulary_matrix
+
+    with import_sandbox():
+        entries, reading = _pinned_collision_reading(tmp_path, exempted)
+        replayed = reading_from_canonical(canonical_reading(reading))
+        assert check_pinned_sources(replayed).passed
+        root = ET.fromstring(vocabulary_matrix(entries, replayed))
+        rows = {
+            node.attrib["data-token"]: node.attrib["data-kind"]
+            for node in root.iter()
+            if "data-token" in node.attrib
+        }
+        assert rows["SHARED"] == ("exempted" if exempted else "collision")
+        assert rows["UNIQUE_0"] == rows["UNIQUE_1"] == "unique"
+
+
+def test_replay_does_not_coerce_a_derived_integer_count_to_float(
+    tmp_path: Path,
+) -> None:
+    import json
+    from line_set import canonical_reading, reading_from_canonical
+
+    with import_sandbox():
+        _, reading = _pinned_collision_reading(tmp_path, True)
+        payload = json.loads(canonical_reading(reading))
+        payload["counts"]["resolved"] = float(payload["counts"]["resolved"])
+        with pytest.raises(ValueError, match="canonical"):
+            reading_from_canonical(json.dumps(payload))
+
+
 @pytest.mark.parametrize("revision", ["not-a-revision", "f" * 39, "g" * 40, 12])
 def test_replay_and_pinned_gate_reject_malformed_revisions(
     tmp_path: Path, revision

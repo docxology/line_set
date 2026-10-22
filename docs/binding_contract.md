@@ -50,6 +50,10 @@ Capability, attempt and completion flags must be booleans. Enumeration failures
 require an incomplete recorded attempt; candidates require enumeration capability.
 Replay and the pinned-source gate share these checks, so a truthy string or a
 completion claim accompanied by an enumeration failure cannot pass either boundary.
+Collision exemption and observation-completeness flags also require booleans;
+integer or floating-point substitutes cannot pass Python's numeric equality as
+canonical flags. Replay compares normalized JSON with types intact, including
+derived integer counts. Valid replayed collisions retain their figure markers.
 Source revisions use the same full hexadecimal commit grammar on import,
 replay and the pinned-source gate.
 Optional package versions and digests must remain non-blank strings when

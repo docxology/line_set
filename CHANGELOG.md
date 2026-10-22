@@ -1,6 +1,6 @@
 # Changelog
 
-## 0.5.0 (2026-10-21)
+## 0.5.0 (2026-10-22)
 
 Implement the deep review received on 2026-10-21. Admit declarations before
 resolving packages, include enum aliases in the published-name contract, and
@@ -18,6 +18,8 @@ carrier. Keep the additional-topics synthesis and its human-review boundaries.
 Reject non-boolean discovery flags and contradictory completion evidence at
 replay and pinned-source admission. Describe vocabulary-less imports as partial
 readings that retain metadata actually read in the status table and pipeline plate.
+Require boolean collision flags and preserve scalar types during canonical replay
+comparison, so numeric equality cannot erase collision classifications.
 
 ## 0.4.0 (2026-10-21)
 

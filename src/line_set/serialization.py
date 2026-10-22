@@ -140,6 +140,12 @@ def validate_reading(reading: SetReading) -> None:
 
     date.fromisoformat(reading.read_as_of)
     _admit_shared(reading.exemptions)
+    if any(
+        type(value) is not bool
+        for collision in reading.collisions + reading.exempted_collisions
+        for value in (collision.exempted, collision.fully_observed)
+    ):
+        raise ValueError("collision flags must be booleans")
     discovery = reading.discovery
     if any(
         type(value) is not bool
@@ -335,7 +341,9 @@ def reading_from_canonical(text: str) -> SetReading:
             ),
         )
         validate_reading(reading)
-        if json.loads(canonical_reading(reading)) != payload:
+        if canonical_reading(reading) != json.dumps(
+            payload, ensure_ascii=False, sort_keys=True, separators=(",", ":")
+        ):
             raise ValueError(
                 "reading fields or derived counts disagree with canonical schema"
             )
