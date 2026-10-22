@@ -997,6 +997,31 @@ def test_volume_carries_only_declared_formal_reference_support(tmp_path: Path) -
         )
 
 
+def test_front_matter_reports_the_reading_without_claiming_no_overlap(
+    tmp_path: Path,
+) -> None:
+    base = tmp_path / "works"
+    write_paper(base, "carrier")
+    out = tmp_path / "out"
+    assemble(
+        out,
+        base,
+        (),
+        (),
+        wrapper_entry("carrier", 1),
+        resolver=blind_resolver(),
+        write=True,
+    )
+    text = (out / "output/manuscript/000_front_matter.md").read_text()
+    assert "did not overlap" not in text
+    assert "same spelling to different things" not in text
+    assert "exempted published-name collisions" in text
+    assert "readable vocabularies" in text
+    assert "0 exempted published-name collisions" in text
+    assert "0 unexempted published-name collisions" in text
+    assert "0 of 1 readable vocabularies" in text
+
+
 def test_a_plan_writes_nothing(tmp_path: Path) -> None:
     """The analysis stage runs this command bare; a bare run must be inert."""
     base = tmp_path / "works"

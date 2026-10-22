@@ -16,8 +16,8 @@ round-trip in :func:`invert_section` is the statement of that: every transform
 below is invertible, and the suite inverts them back to the source bytes.
 
 The compilation asserts nothing the individual papers do not assert. The one
-claim it adds is the reading this package computed over the declared set, and
-that reading says only that no unexempted published-name collision was found.
+claim it adds is the lexical reading this package computed over the declared
+set: observed published-name collisions and exact declared exemptions.
 
 Absence is reported, never smoothed. A declared work whose manuscript is not in
 the tree is named in the front matter as missing, and the volume goes out
@@ -1053,20 +1053,25 @@ def front_matter(
         "",
         "This is a compiled volume. It adds no substantive instrument. The work "
         "that assembled it declares the set, reads whichever declared packages "
-        "are installed, and checks that no two of them gave the same spelling to "
-        "different things; it does not evaluate, rank, reconcile, or summarise "
+        "are installed, and checks published enum-member-name collisions under "
+        "exact declared exemptions; it does not evaluate, rank, reconcile, or summarise "
         "the works it reproduces.",
         "",
         f"Each of the {len(present)} works below is reproduced from its own source "
         "at the version and registry digest stated in the table, unchanged in "
         "substance. The compilation asserts nothing the individual works do not "
         "assert. Its one added claim is the reading recorded immediately below, "
-        "and that reading says only that the declared vocabularies of the works "
-        "that could be read did not overlap.",
+        "and that reading records published spellings and declared exemptions "
+        "among the vocabularies that could be read. It does not establish "
+        "conceptual separation.",
         "",
         f"The reading, computed at assembly: status `{reading.status.value}`, "
         f"read as of {reading.read_as_of}, set digest `{reading.set_digest[:12]}...`, "
-        f"reading digest `{reading_digest(reading)[:12]}...`. It is not a finding "
+        f"reading digest `{reading_digest(reading)[:12]}...`; "
+        f"{len(reading.exempted_collisions)} exempted published-name collisions and "
+        f"{len(reading.collisions)} unexempted published-name collisions; "
+        f"{reading.counts()[ReadCode.RESOLVED.value]} of {len(reading.observations)} "
+        "readable vocabularies. It is not a finding "
         "that the instruments are correct, complete, good, or worth having, and "
         "it is not a finding about behaviour.",
         "",

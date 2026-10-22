@@ -18,6 +18,10 @@ in its assembled sections. It supplies reference identity to the renderer;
 it does not endorse a proposition, evaluate a sibling, or recompute a sibling's
 numeric evidence. A generated render projection and its custody hashes bind
 the assembled files to their sources without adding scientific verification.
+Numeric evidence carried into that projection remains a quotation of a pinned
+producer ledger, with its original row and byte hash. The separate quoted tier
+does not assert that the wrapper reran the producer's tests or verified the
+value. Missing support must remain visible rather than being filled from prose.
 
 **It does not establish that the instruments are correct.** The reader never
 calls a sibling's evaluator, never passes it an input, and never looks at what

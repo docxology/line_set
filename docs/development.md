@@ -214,13 +214,27 @@ render clone. Record the release revision and hashes of both manuscript trees,
 and commit this generated source projection locally in that clone. Render and
 validate this derivative with the commands above. Keep its projection receipt,
 assembly report, sibling-source custody and native provenance with the artifacts.
-Retain the recorded reading alongside the projected sources, relocate the
+Retain the wrapper's unchanged preamble and recorded reading alongside the
+projected sources, relocate the
 wrapper's evidence-metadata source paths to its generated section filenames,
 and mirror the gathered figures at `docs/figures` for source-relative inspection.
 Record those metadata relocations and mirrored-file hashes in the projection
 receipt. The assembler writes `omnibus_claim_ledger.json` from the formalism
 anchors actually declared in the assembled sections, so the engine can resolve
 their namespaced cross-references. Its rows record label presence only.
+Carry each included work's published numeric claim ledgers as byte-exact
+producer artifacts outside the engine's automatic ledger scan roots. A generated
+ledger under `data/` may quote their numeric rows, retaining producer identity,
+revision, original row and raw-ledger hash, with a distinct
+`quoted_sibling_ledger` source tier and source path to the copied artifact.
+Preserve producer freshness flags. This carries existing numerical evidence
+without executing a sibling or presenting its original test tier as a test run
+by the wrapper. Never manufacture support by harvesting numbers from prose.
+Any remaining unsupported required value blocks validation and is an owner
+finding. Retain these quoted artifacts and their custody with the volume.
+The dated release evidence retains the projection and native-ledger custody
+helpers used for these operator steps. They run in the external renderer's
+environment, including its YAML reader; they are not package runtime dependencies.
 Never apply this projection to the canonical source checkout or publish its
 scratch commit as the software release.
 
