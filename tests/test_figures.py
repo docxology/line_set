@@ -340,6 +340,23 @@ def test_every_declared_plate_renders_well_formed_svg(tmp_path: Path) -> None:
         assert body.count("<svg") == body.count("</svg>") == 1, name
 
 
+def test_exemption_descriptions_identify_the_rendered_matrix(tmp_path: Path) -> None:
+    with live_reading(tmp_path) as reading:
+        plate = plates_for(LINE_SET, reading)["exemption_gate"]
+    manuscript = (
+        Path(__file__).resolve().parents[1] / "docs/manuscript/02a_formalism.md"
+    ).read_text()
+    caption = next(
+        line for line in manuscript.splitlines() if "{#fig:exemption-gate" in line
+    )
+    for description in (plate.caption, plate.alt, caption):
+        assert "token row" in description
+        assert "mutation column" in description
+        assert "PASS" in description and "FAIL" in description
+        assert "summary panel" not in description
+        assert "lines it asked about" not in description
+
+
 def test_plate_provenance_is_complete_and_unique(tmp_path: Path) -> None:
     with live_reading(tmp_path) as reading:
         plates = plates_for(LINE_SET, reading, make_self_reading())

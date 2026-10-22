@@ -230,10 +230,11 @@ def figure_plates(
                 "The exemption matcher run over "
                 f"{plural(len(probes), 'input')}: "
                 "the declaration as written, asked for exactly the lines it "
-                f"names, and {sum(not probe.expected_match for probe in probes)} weakenings. Every outcome "
-                "column is what `exemption_for` returned, not a claim typed "
-                "into the plate, and each token has its own positive control "
-                "without which the refusals below would be equally consistent "
+                f"names, and {sum(not probe.expected_match for probe in probes)} weakenings. Each token row "
+                "has a cell per mutation column, showing the outcome returned "
+                "by `exemption_for` and a PASS/FAIL comparison with the specified "
+                "result. Each token has its own positive control "
+                "without which the refusals would be equally consistent "
                 "with a matcher that refuses everything. A refusal leaves the "
                 "collision standing, which is the direction the matcher is "
                 "written to fail in. The plate shows detection over these "
@@ -247,10 +248,10 @@ def figure_plates(
                 "that ran over no input demonstrated nothing."
             ),
             (
-                f"{plural(len(set(probe.declared_token for probe in probes)), 'token row')}, each with a cell per mutation and a marker and word "
-                "for honoured or refused, the condition it varies, the token "
-                "and lines it asked about, and whether the matcher agreed with "
-                "the specification, above a summary panel and a reading rule."
+                f"{plural(len(set(probe.declared_token for probe in probes)), 'token row')}, each with a cell per mutation column. "
+                "A circle means honoured and a square refused; PASS/FAIL compares "
+                "each returned outcome with its specified result. Column headings "
+                "name the mutations, and a legend explains the outcome glyphs."
             )
             if probes
             else (

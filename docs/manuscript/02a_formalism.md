@@ -26,7 +26,7 @@ The token and carrier conditions in [@def:exemption-match] require exact equalit
 
 [@prop:fail-closed] names six weakenings, and the plate below is those six run through the matcher the reader actually calls, together with the declaration as written. Each token's first column is the positive control: without it, six refusals would be equally consistent with a matcher that refuses everything.
 
-![The exemption gate. Each row weakens the declaration or the query in one way and reports what `exemption_for` returned for it; the outcome column is a return value, not a claim written into the plate. Each token row includes the declaration as shipped and every named mutation. A circle is honoured and a square refused; PASS means agreement with the specified result, not approval of a line. A refusal leaves its collision standing.](../../output/figures/exemption_gate.png){#fig:exemption-gate width=100%}
+![The exemption gate. Each token row has a cell per mutation column, including the declaration as shipped and every named mutation. Each cell reports what `exemption_for` returned: a circle is honoured and a square refused. PASS/FAIL compares that outcome with the specified result; it does not approve a line. A refusal leaves its collision standing.](../../output/figures/exemption_gate.png){#fig:exemption-gate width=100%}
 
 ## The reading
 

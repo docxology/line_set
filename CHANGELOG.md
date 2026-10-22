@@ -27,6 +27,8 @@ the integration recipe's retained date and the earlier DOI's archived title.
 Validate nested reading field and container types before semantic admission,
 including provenance, diagnostics and derivation, and return a failed pinned
 gate result for a malformed record.
+Align exemption-figure descriptions with the rendered matrix and retain the
+compiled bibliography at its native manifest path in the release bundle.
 
 ## 0.4.0 (2026-10-21)
 
