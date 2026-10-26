@@ -86,10 +86,11 @@ These are not represented anywhere as hidden features:
 - **The declaration is source-configured in Python.** Moving `LINE_SET` and
   `SHARED_TOKENS` to an editable data file would need its own validation and
   provenance contract — the same ladder the sibling instruments record.
-- **Public release.** This project has its own repository, `docxology/line_set`,
-  and that repository is private. Making it public needs a citation/release
-  workflow, a release packet with the exact command outputs attached, and a
-  re-render at the release tree.
+- **Public release.** This project has its own public repository,
+  `docxology/line_set`, with release packets under `docs/releases/`. What is
+  still an author step is the citation workflow: reserving and minting a DOI for
+  the current release and re-rendering at the release tree, as
+  [publication.md](docs/publication.md) sets out.
 
 ## Standing discipline
 

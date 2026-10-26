@@ -87,7 +87,7 @@ define it.
 | `white_line` | line — what is absent, withheld, or unknowable (absence ledger) | <https://github.com/docxology/white_line> | `https://doi.org/10.5281/zenodo.21754242` |
 | `witness_register` | companion beside the set — co-registration without aggregation | <https://github.com/docxology/witness_register> | `https://doi.org/10.5281/zenodo.21754246` |
 
-## Before the repository goes public
+## Before a public release
 
 - [ ] Every gate in `AGENTS.md` green on a clean checkout.
 - [ ] `LICENSE` present and accurate.
