@@ -27,7 +27,7 @@ def main() -> None:
 
     The gate takes no options. It still parses its command line, because a gate
     that ignores an argument it was given cannot be told apart from one that
-    honoured it, and the failure mode is a run that looks like it checked
+    honored it, and the failure mode is a run that looks like it checked
     something it never looked at.
     """
     argparse.ArgumentParser(description=__doc__).parse_args()

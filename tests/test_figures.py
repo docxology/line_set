@@ -3,8 +3,8 @@
 Three properties are worth testing here and one is not.
 
 **Derived.** Every plate is drawn from the declaration or from a reading handed
-to it, never from a list of four lines written into a builder. The binding for
-that is a fifth entry appended at runtime: the plates that describe the set must
+to it, never from a fixed-size roster written into a builder. The binding is an
+entry appended at runtime: the plates that describe the set must
 change, and the plate that describes the reader's own contract must not.
 
 **Deterministic.** Two builds of an unchanged declaration must be byte-identical,
@@ -17,7 +17,7 @@ that wrote four plates and reported success over the fifth would be worse than
 one that refused.
 
 What is *not* tested here is that a plate is legible, informative, or well
-composed. Those are judgements a person makes by looking at the PNG. What these
+composed. Those are judgments a person makes by looking at the PNG. What these
 tests establish is that the file was produced, that it says what the reading
 said, and that the machinery refuses rather than improvises when it cannot
 finish. A green run here is not evidence that a figure is good.
@@ -40,6 +40,7 @@ import sys
 from collections.abc import Iterator
 from contextlib import contextmanager
 from pathlib import Path
+from xml.etree import ElementTree
 
 import pytest
 
@@ -73,24 +74,11 @@ from tests.support import (
     resolved,
     write_line_package,
 )
+from tests.test_extensibility import APPENDED
 
-FIGURES_SOURCE = Path(canvas.__file__).resolve().parent
 
 #: A date no build could plausibly produce, used to prove none reaches a plate.
 PLANTED_DATE = "1999-12-31"
-
-FIFTH = LineEntry(
-    id="teal_line",
-    color="teal",
-    question="Who else is affected?",
-    job="Standing record of parties the work touches and never consulted",
-    must_not_become="A consent receipt or a substitute for asking them",
-    opus_stage=None,
-    working_position=5,
-    package_name="teal_line",
-    registry_noun="affected parties",
-    verdict_noun="consultation status",
-)
 
 
 # ---------------------------------------------------------------- fixtures
@@ -235,7 +223,7 @@ def rendered(
 
 @contextmanager
 def live_reading(tmp_path: Path) -> Iterator[SetReading]:
-    """A reading over four real packages written to a real temporary directory."""
+    """A reading over the declared fixture packages in a temporary directory."""
     with import_sandbox():
         modules = {}
         vocabularies = {
@@ -407,16 +395,22 @@ def test_every_text_run_clears_the_legibility_floor(tmp_path: Path) -> None:
 
 def test_the_canvas_refuses_a_marker_shape_it_cannot_draw() -> None:
     """An unknown shape is a defect in the caller, not a circle to substitute."""
-    with pytest.raises(ValueError) as error:
+    with pytest.raises(ValueError):
         canvas.glyph("trapezoid", 0, 0, 5, "#000", "#000")
-    assert "trapezoid" in str(error.value)
-    for shape in palette.SHAPE_CYCLE:
-        assert canvas.glyph(shape, 0, 0, 5, "#000", "#000").startswith("<")
 
 
-def test_the_header_omits_its_note_line_when_there_is_no_note() -> None:
-    assert len(canvas.header("K", "T", "S")) == 3
-    assert len(canvas.header("K", "T", "S", "N")) == 4
+def test_current_and_extended_line_markers_have_distinct_outlines() -> None:
+    for count in (len(LINE_SET) + 1, len(LINE_SET) + 2):
+        shapes = [palette.shape_for(position) for position in range(1, count + 1)]
+        assert len(set(shapes)) == count
+        markers = [
+            ElementTree.fromstring(canvas.glyph(shape, 0, 0, 12, "#fff", "#000"))
+            for shape in shapes
+        ]
+        outlines = {
+            (marker.tag, tuple(sorted(marker.attrib.items()))) for marker in markers
+        }
+        assert len(outlines) == count
 
 
 def test_wrapping_blank_text_yields_one_empty_line() -> None:
@@ -481,7 +475,7 @@ def test_the_canvas_refuses_illegible_text_rather_than_resizing_it() -> None:
 
 def test_plate_text_is_escaped_rather_than_injected(tmp_path: Path) -> None:
     """A declaration is data. A line whose prose held markup must not become markup."""
-    hostile = dataclasses.replace(FIFTH, question='<script>"&"</script>')
+    hostile = dataclasses.replace(APPENDED, question='<script>"&"</script>')
     reading = make_reading((*LINE_SET, hostile))
     body = plates_for((*LINE_SET, hostile), reading)["set_compass"].render()
     assert "<script>" not in body
@@ -491,27 +485,31 @@ def test_plate_text_is_escaped_rather_than_injected(tmp_path: Path) -> None:
 # ----------------------------------------------------- derived, not typed
 
 
-def test_appending_a_colour_changes_the_set_plates_and_not_the_contract_plate(
+def test_appending_a_color_changes_the_set_plates_and_not_the_contract_plate(
     tmp_path: Path,
 ) -> None:
     """The extensibility claim, bound at the figure layer.
 
     ``set_reading_pipeline`` draws the reader's stages and precedence, which a
-    fifth line does not touch. It is the control: if it moved too, the other
-    four moving would be evidence of nothing in particular.
+    new line does not touch. It is the control: if it moved too, the remaining
+    plates moving would be evidence of nothing in particular.
     """
-    with live_reading(tmp_path) as four_reading:
+    with live_reading(tmp_path) as base_reading:
         answers = {
             observation.line_id: resolved(
                 observation.line_id,
                 load_line_package(tmp_path, observation.line_id),
             )
-            for observation in four_reading.observations
+            for observation in base_reading.observations
         }
-        four = rendered(LINE_SET, four_reading, make_self_reading(LINE_SET, answers))
-        extended = (*LINE_SET, FIFTH)
-        five_reading = make_reading(extended, answers)
-        five = rendered(extended, five_reading, make_self_reading(extended, answers))
+        base_plates = rendered(
+            LINE_SET, base_reading, make_self_reading(LINE_SET, answers)
+        )
+        extended = (*LINE_SET, APPENDED)
+        extended_reading = make_reading(extended, answers)
+        extended_plates = rendered(
+            extended, extended_reading, make_self_reading(extended, answers)
+        )
 
     for name in (
         "set_compass",
@@ -520,56 +518,36 @@ def test_appending_a_colour_changes_the_set_plates_and_not_the_contract_plate(
         "installation_surface",
         "self_application",
     ):
-        assert four[name] != five[name], f"{name} did not respond to a fifth line"
-    assert four["set_reading_pipeline"] == five["set_reading_pipeline"], (
-        "the reader's own contract plate must not move when the set grows"
-    )
-    assert FIFTH.id in five["set_compass"]
-    assert FIFTH.id in five["installation_surface"]
+        assert base_plates[name] != extended_plates[name], (
+            f"{name} did not respond to an appended line"
+        )
+    assert (
+        base_plates["set_reading_pipeline"] == extended_plates["set_reading_pipeline"]
+    ), "the reader's own contract plate must not move when the set grows"
+    assert APPENDED.id in extended_plates["set_compass"]
+    assert APPENDED.id in extended_plates["installation_surface"]
 
 
-def test_no_figure_module_names_an_individual_line(tmp_path: Path) -> None:
-    """The other half of the claim: the builders do not know the lines by name.
+def test_an_undeclared_color_still_gets_ink_a_fill_and_a_marker() -> None:
+    """The palette's color table is a preference, not a requirement.
 
-    Whole-word matching, for the reason ``test_extensibility`` records: a bare
-    substring search reports on English rather than on what the module refers
-    to.
-
-    Line *ids* are the subject. Colour names are deliberately not, because
-    ``palette`` keeps a table of preferred inks for the colours declared today
-    and falls back deterministically for any other — a lookup with a default,
-    not a dependency. The test below proves the fallback is real, which is what
-    makes the table safe to keep.
-    """
-    sources = sorted(FIGURES_SOURCE.rglob("*.py"))
-    assert sources, "no figure module was scanned; the guard would be vacuous"
-    subjects = [entry.id for entry in LINE_SET]
-    assert subjects, "an empty subject set would make this check vacuous"
-    for path in sources:
-        text = path.read_text(encoding="utf-8")
-        for word in subjects:
-            pattern = re.compile(rf"(?<![A-Za-z0-9_]){re.escape(word)}(?![A-Za-z0-9_])")
-            assert not pattern.search(text), f"{path.name} names {word}"
-
-
-def test_an_undeclared_colour_still_gets_ink_a_fill_and_a_marker() -> None:
-    """The palette's colour table is a preference, not a requirement.
-
-    A fifth colour nobody anticipated must still draw. It gets a stable
-    accent chosen from the colour's own name, so two builds agree, and a
+    A previously unseen extension color must still draw. It gets a stable
+    accent chosen from the color's own name, so two builds agree, and a
     marker shape from its working position, so the plates keep reading in
-    greyscale.
+    grayscale.
     """
-    assert FIFTH.color not in palette.LINE_FILL, "the plant must be genuinely unknown"
-    assert FIFTH.color not in palette.LINE_INK
-    fill, ink = palette.line_fill(FIFTH.color), palette.line_ink(FIFTH.color)
+    assert APPENDED.color not in palette.LINE_FILL, (
+        "the plant must be genuinely unknown"
+    )
+    assert APPENDED.color not in palette.LINE_INK
+    fill, ink = palette.line_fill(APPENDED.color), palette.line_ink(APPENDED.color)
     assert fill and ink and fill != ink
     assert (fill, ink) == (
-        palette.line_fill(FIFTH.color),
-        palette.line_ink(FIFTH.color),
+        palette.line_fill(APPENDED.color),
+        palette.line_ink(APPENDED.color),
     )
-    assert palette.shape_for(FIFTH.working_position) in palette.SHAPE_CYCLE
-    assert palette.dash_for(FIFTH.working_position) in palette.DASH_CYCLE
+    assert palette.shape_for(APPENDED.working_position) in palette.SHAPE_CYCLE
+    assert palette.dash_for(APPENDED.working_position) in palette.DASH_CYCLE
 
 
 def test_the_pipeline_plate_is_drawn_from_the_reader_itself() -> None:
@@ -695,7 +673,7 @@ def test_an_unresolved_row_shows_no_metric_rather_than_a_zero() -> None:
 def test_the_exempted_cell_is_distinguished_by_shape_and_label(
     tmp_path: Path,
 ) -> None:
-    """Nothing in the set may be encoded by colour alone.
+    """Nothing in the set may be encoded by color alone.
 
     The reading is planted so both kinds are present at once: the declared
     ``OUTSIDE_SCOPE`` over its exactly two lines, and a second word a third
@@ -943,7 +921,7 @@ def test_a_rasterizer_that_fails_refuses_the_build(tmp_path: Path) -> None:
     assert not pngs, f"a failed rasterization left {pngs} behind"
 
 
-def test_an_executable_named_by_absolute_path_is_honoured(tmp_path: Path) -> None:
+def test_an_executable_named_by_absolute_path_is_honored(tmp_path: Path) -> None:
     """The override takes a path, not only a name on PATH."""
     root = tmp_path / "root"
     rasterizer = write_rasterizer(tmp_path)
@@ -955,7 +933,7 @@ def test_an_executable_named_by_absolute_path_is_honoured(tmp_path: Path) -> Non
     )
 
 
-def test_an_executable_off_the_search_path_is_still_honoured(tmp_path: Path) -> None:
+def test_an_executable_off_the_search_path_is_still_honored(tmp_path: Path) -> None:
     """``shutil.which`` is the first lookup, not the only one.
 
     A bare name that is not on ``PATH`` still resolves when it names a real

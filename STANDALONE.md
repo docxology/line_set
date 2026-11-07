@@ -53,17 +53,16 @@ usually holds nothing to do with the set, and the resolver correctly finds
 nothing. A copy that does have the set somewhere says where with
 `LINE_SET_SIBLINGS` rather than being relocated into a layout; a copy that does
 not should say plainly that the lines are not available here. The layout is a
-default, never a requirement, and the eight instruments are their own
-repositories — `docxology/red_line`, `docxology/black_line`,
-`docxology/golden_line`, `docxology/white_line` — which is where a copy that
-wants them gets them.
+default, never a requirement. Each declared instrument is an independent
+repository; the complete roster below provides its durable reference. Source
+access and installation are separate from membership in the declaration.
 
 **Its ancestor.** The short internal note `docs/line-set.md`, in the author's
 private projects tree, is what this project grew from. It is unpublished and
 does not travel with this repository, so — this copy being the separated one —
 it is cited here by name rather than linked: a relative path out of the
 repository root resolves to nothing for anyone holding only this repository. The
-acknowledgement stays and the ancestor's prose is never pasted into the
+acknowledgment stays and the ancestor's prose is never pasted into the
 manuscript in its place. The durable references for the set are the
 instruments' own repositories — `docxology/red_line`, `docxology/black_line`,
 `docxology/golden_line`, `docxology/white_line`, `docxology/silver_line`,

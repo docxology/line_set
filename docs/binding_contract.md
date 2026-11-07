@@ -83,3 +83,12 @@ They are never silently upgraded. A current record requires a new pinned reading
 with an explicit date. Schema fixtures and replay negative controls live in the
 test suite. A diagnostic change can change the reading hash while the declaration
 digest stays fixed.
+
+The explicit public reading-record view uses outer schema `2.0-public`; the
+nested reading remains `line-set-reading/2`. Its sorted `withheld_sources`
+list identifies sources whose module origin and revision are omitted. Complete
+source resolution, metadata, pin and discovery admission happens before that
+projection. Its reading digest belongs to the projected reading, which does not
+pass the complete public pinned-source gate. Public `--check` compares newly
+admitted disclosed measurements, not continuity of a withheld revision. Full
+`2.0` records and their stricter source-identity comparison remain unchanged.

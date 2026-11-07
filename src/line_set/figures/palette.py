@@ -1,4 +1,4 @@
-"""Colours, shapes, and display maps for the Line Set plates.
+"""Colors, shapes, and display maps for the Line Set plates.
 
 Nothing here reads a sibling package or decides anything about a reading. It
 holds the visual vocabulary the plates draw with, and the short glosses that
@@ -6,18 +6,18 @@ name what each declared code and status means.
 
 Two rules shape every map below.
 
-**No distinction is carried by colour alone.** Every line, every read code, and
-every set status is drawn with a shape *and* labelled with its own name, so a
-greyscale print and a colour print say the same thing. The inks are chosen so
+**No distinction is carried by color alone.** Every line, every read code, and
+every set status is drawn with a shape *and* labeled with its own name, so a
+grayscale print and a color print say the same thing. The inks are chosen so
 their luminances differ as well, which helps, but the shape and the label are
 what actually carry the distinction.
 
-**A new colour must not need an edit here.** :func:`line_fill` and
-:func:`line_ink` know the four colours declared today and fall back to a
-deterministic accent for anything else, and :func:`shape_for` cycles by
-working position. Appending another :class:`~line_set.models.LineEntry` to the
-registry therefore renders without touching this module. The maps that must
-stay exhaustive are the ones keyed by an enumeration this package owns, and
+**A new color must not need an edit here.** :func:`line_fill` and
+:func:`line_ink` prefer the named colors already declared and fall back to a
+deterministic accent for anything else. :func:`shape_for` cycles through a
+finite set of redundant markers; written identities remain authoritative.
+An appended registry entry therefore renders without touching this module.
+Maps keyed by an enumeration this package owns must stay exhaustive;
 :func:`verify_coverage` fails the build when one of those falls behind.
 """
 
@@ -41,33 +41,38 @@ WARN = "#9a2f26"
 GOOD = "#33604a"
 OCHRE = "#7a5a2a"
 
-#: Fills and inks for the colours the set declares today.
+#: Fills and inks for the colors the set declares today.
 #:
 #: The white line cannot be drawn in white on paper, so its swatch is a very
 #: light fill carried by a dark outline and its ink is a slate that reads at
-#: the same weight as the others in greyscale.
+#: the same weight as the others in grayscale.
 LINE_FILL: dict[str, str] = {
     "red": "#d9a49d",
     "black": "#b8b2a8",
     "golden": "#e8c98a",
     "white": "#fbfaf7",
-    "colourless": "#ece8e0",
+    "silver": "#d9dde2",
+    "violet": "#dfcdf7",
+    "blue": "#c6d9ef",
+    "green": "#c8dfc9",
+    "colorless": "#ece8e0",
 }
 LINE_INK: dict[str, str] = {
     "red": "#9a2f26",
     "black": "#22201d",
     "golden": "#8a6512",
     "white": "#5c7079",
-    "colourless": "#6c655c",
+    "silver": "#565d66",
+    "violet": "#6d28a6",
+    "blue": "#245b9f",
+    "green": "#246b37",
+    "colorless": "#6c655c",
 }
 
-#: Stroke colours for the cover plate, one per declared line colour.
+#: Stroke colors for the cover plate, one per declared line color.
 #:
-#: Each hex is the colour-named stroke constant from that line's own figure
-#: module, so the cover shows each instrument in the colour its own book
-#: draws it. Silver and blue publish no colour-named stroke constant, so the
-#: muted stand-ins below carry them. The white stroke cannot read on paper
-#: alone; the cover plate draws it over a thin dark under-stroke.
+#: Cover strokes are presentation choices, not measurements of sibling behavior.
+#: The white stroke needs the thin dark under-stroke drawn by the cover plate.
 COVER_STROKE: dict[str, str] = {
     "black": "#2d2d2d",
     "golden": "#b47a16",
@@ -78,10 +83,8 @@ COVER_STROKE: dict[str, str] = {
     "green": "#1a7a3a",
 }
 
-#: The order the cover presents the strokes in: the canonical colour
-#: sequence the set is read in, which is not the working order the cards
-#: use. A colour this tuple does not know follows the known ones, by
-#: working position, so an appended colour still draws in a stable place.
+#: Cover layout order, deliberately separate from the declaration's working order.
+#: An unknown color follows the known ones by working position.
 COVER_ORDER: tuple[str, ...] = (
     "black",
     "golden",
@@ -93,10 +96,10 @@ COVER_ORDER: tuple[str, ...] = (
     "green",
 )
 
-#: Fill/ink pairs handed to a colour this module has never seen.
+#: Fill/ink pairs handed to a color this module has never seen.
 #:
-#: The choice is deterministic — a digest of the colour name picks the pair —
-#: so a given new colour always draws the same way, on any machine and in any
+#: The choice is deterministic — a digest of the color name picks the pair —
+#: so a given new color always draws the same way, on any machine and in any
 #: run order.
 ACCENT_CYCLE: tuple[tuple[str, str], ...] = (
     ("#a9c6c0", "#2f5d62"),
@@ -106,7 +109,8 @@ ACCENT_CYCLE: tuple[tuple[str, str], ...] = (
     ("#cfc3b0", "#5c5044"),
 )
 
-#: Marker shapes, cycled by working position so every line looks different.
+#: Distinct markers cover the declared set and its wrapper, including one extension.
+#: Labels remain authoritative if a larger declaration exhausts the cycle.
 SHAPE_CYCLE: tuple[str, ...] = (
     "circle",
     "square",
@@ -114,6 +118,10 @@ SHAPE_CYCLE: tuple[str, ...] = (
     "diamond",
     "pentagon",
     "hexagon",
+    "star",
+    "cross",
+    "bar",
+    "chevron",
 )
 
 #: Stroke dash patterns, cycled by working position for the order connectors.
@@ -201,28 +209,28 @@ STAGE_NOTE: dict[str, str] = {
 
 
 def _accent_for(color: str) -> tuple[str, str]:
-    """Pick a stable fill/ink pair for a colour name this module does not know."""
+    """Pick a stable fill/ink pair for a color name this module does not know."""
     digest = hashlib.sha256(color.encode("utf-8")).digest()
     return ACCENT_CYCLE[digest[0] % len(ACCENT_CYCLE)]
 
 
 def line_fill(color: str) -> str:
-    """Swatch fill for a declared colour name."""
+    """Swatch fill for a declared color name."""
     known = LINE_FILL.get(color)
     return known if known is not None else _accent_for(color)[0]
 
 
 def line_ink(color: str) -> str:
-    """Stroke and label ink for a declared colour name."""
+    """Stroke and label ink for a declared color name."""
     known = LINE_INK.get(color)
     return known if known is not None else _accent_for(color)[1]
 
 
 def cover_stroke(color: str) -> str:
-    """Cover stroke for a declared colour name.
+    """Cover stroke for a declared color name.
 
     Falls back to the same deterministic ink the other plates use, so a
-    colour the cover map has never seen still draws, the same way, everywhere.
+    color the cover map has never seen still draws, the same way, everywhere.
     """
     known = COVER_STROKE.get(color)
     return known if known is not None else line_ink(color)

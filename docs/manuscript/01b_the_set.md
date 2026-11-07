@@ -21,9 +21,9 @@ Eight spellings are carried by more than one line, and each is an exemption the 
 
 Every one of these overlaps is recorded in `SHARED_TOKENS`, which names the token, the exactly the lines allowed to carry it, a distinct meaning for each, and a rationale. The exemption table is part of the declaration and travels inside the set digest, so a set whose exemptions changed is a different set even when its lines did not.
 
-## The colours, said plainly
+## The colors, said plainly
 
-Four of the colour names openly echo the classical stages of the alchemical *magnum opus*: nigredo the blackening, albedo the whitening, citrinitas the yellowing, rubedo the reddening. Anyone who knows the opus will hear it, and it is meant to be heard. I read it in exactly one register — the symbolic-psychological one, following Jung's treatment of the stages as figures for individuation rather than as laboratory chemistry [@jung1953alchemy]. The echo is a naming resonance. It is not an empirical, mystical, or causal claim; the colour of a line has no operative power. It is also not a doctrinal endorsement of alchemy or of Jung's psychology, which would be a much larger commitment than borrowing four words.
+Four of the color names openly echo the classical stages of the alchemical *magnum opus*: nigredo the blackening, albedo the whitening, citrinitas the yellowing, rubedo the reddening. Anyone who knows the opus will hear it, and it is meant to be heard. I read it in exactly one register — the symbolic-psychological one, following Jung's treatment of the stages as figures for individuation rather than as laboratory chemistry [@jung1953alchemy]. The echo is a naming resonance. It is not an empirical, mystical, or causal claim; the color of a line has no operative power. It is also not a doctrinal endorsement of alchemy or of Jung's psychology, which would be a much larger commitment than borrowing four words.
 
 Three caveats keep the resonance from being read as more than it is, and the first two of them are checked in code rather than merely promised here.
 
@@ -31,7 +31,7 @@ Three caveats keep the resonance from being read as more than it is, and the fir
 
 **Citrinitas is kept distinct on purpose.** After the fifteenth century the yellowing stage was frequently folded into the reddening, leaving a three-stage nigredo–albedo–rubedo reading. The set does not perform that collapse. Golden Line stays its own instrument with its own question, and `OPUS_STAGE_ORDER` carries four stages rather than three, so a future edit that dropped citrinitas would have to do so visibly.
 
-**No borrowed telos and no ranking.** The opus is a teleological arc toward gold and a completed stone. The set borrows the stage names as symbols and claims none of the direction. Calling Red Line rubedo does not make it final, perfected, or the culmination of the other three; calling Black Line nigredo implies no deficiency in it. The colours are peers. No line completes, supersedes, or outranks another, and this package has no aggregate, no score, and no ordering by merit to offer.
+**No borrowed telos and no ranking.** The opus is a teleological arc toward gold and a completed stone. The set borrows the stage names as symbols and claims none of the direction. Calling Red Line rubedo does not make it final, perfected, or the culmination of the other three; calling Black Line nigredo implies no deficiency in it. The colors are peers. No line completes, supersedes, or outranks another, and this package has no aggregate, no score, and no ordering by merit to offer.
 
 ![Two orders: the working sequence (refuse, method, aspire, absence) drawn against the opus sequence (nigredo, albedo, citrinitas, rubedo), with connectors showing where they cross. The divergence is deliberate, and citrinitas is deliberately not collapsed into rubedo. Position in either column encodes sequence only, never rank.](../../output/figures/two_orders.png){#fig:two-orders width=100%}
 

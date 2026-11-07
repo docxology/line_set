@@ -2,8 +2,8 @@
 
 The cover is drawn from the declaration alone, exactly like the declaration
 plates: the strokes are laid out from ``len(entries)`` and each stroke wears
-the colour its own book draws it in (``palette.COVER_STROKE``), labelled with
-its declared colour name. Nothing here names an individual line, so a colour
+the color its own book draws it in (``palette.COVER_STROKE``), labeled with
+its declared color name. Nothing here names an individual line, so a color
 appended to the declaration appears on the cover without an edit in this
 module.
 
@@ -92,11 +92,11 @@ def _stroke(entry: LineEntry, center: float) -> list[str]:
 
 
 def _display_order(entries: tuple[LineEntry, ...]) -> tuple[LineEntry, ...]:
-    """The strokes in the cover's canonical colour sequence.
+    """The strokes in the cover's canonical color sequence.
 
-    Known colours take their :data:`palette.COVER_ORDER` place; a colour the
+    Known colors take their :data:`palette.COVER_ORDER` place; a color the
     sequence does not know follows them, by working position, so an appended
-    colour still draws in a stable place without an edit here.
+    color still draws in a stable place without an edit here.
     """
     return tuple(
         sorted(
@@ -117,7 +117,7 @@ def cover_svg(entries: tuple[LineEntry, ...]) -> str:
     The stroke centers divide the row into ``len(entries)`` equal slots, and
     each stroke is shorter than its slot, so two strokes cannot meet whatever
     the set's size. The reader's stroke beneath spans past the register: it is
-    what holds the set, and it holds nothing by being a colour.
+    what holds the set, and it holds nothing by being a color.
     """
     ordered = _display_order(entries)
     body = open_canvas(WIDTH, HEIGHT)

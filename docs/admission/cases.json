@@ -419,7 +419,7 @@
       "scenario": "Maintainer time, a compute budget and an access accommodation are proposed under declared limits, with a contested burden.",
       "question": "Which quantities are measured, estimated, proposed, authorized or disputed?",
       "matched_case": null,
-      "constraint": "Retain units, periods, assumptions, scope and attribution; first test a Witness decision record, not an allocation colour.",
+      "constraint": "Retain units, periods, assumptions, scope and attribution; first test a Witness decision record, not an allocation color.",
       "source_class": "hypothetical",
       "existing_family_representation": null,
       "witness_relations_and_returns": null,

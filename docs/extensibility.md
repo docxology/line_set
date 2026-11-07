@@ -1,13 +1,13 @@
-# Adding a colour
+# Adding a color
 
 The set is meant to grow. This page is the exact recipe, the list of files an
 addition touches, and the list of files it must not touch. The second list is
-the interesting one: if adding a colour ever requires editing the reader or the
+the interesting one: if adding a color ever requires editing the reader or the
 checks, the design has failed and the fix is the design, not the edit.
 
 ## The recipe
 
-Before adding a colour, a person records its distinct question, explicit
+Before adding a color, a person records its distinct question, explicit
 must-not-become boundary, package identity, published vocabulary and dated
 binding evidence, and reviews any proposed exemption meanings. These are
 substantive admission decisions; a namespace reading cannot make them.
@@ -29,21 +29,21 @@ convention:
 | Field | Constraint | Check that catches a violation |
 | --- | --- | --- |
 | `id` | Unique across the declaration. | `check_distinct_line_ids` |
-| `color` | Unique across the declaration. | `check_distinct_colours` |
+| `color` | Unique across the declaration. | `check_distinct_colors` |
 | `opus_stage` | Either `None`, or an unused member of `OPUS_STAGE_ORDER`. | `check_distinct_opus_stages` |
 | `working_position` | Extends the sequence to a contiguous `1..N`. | `check_contiguous_working_positions` |
 | `must_not_become` | Non-blank. | `check_must_not_become_declared` |
 
 The `opus_stage` constraint bites immediately in practice. `OPUS_STAGE_ORDER`
 has one member per classical stage and the existing lines already use each of
-them, so **another colour added today must carry `opus_stage=None`.** That is
+them, so **another color added today must carry `opus_stage=None`.** That is
 the correct outcome rather than an obstacle: the opus supplies four stage names
 and the set never claimed the naming resonance would extend to arbitrary
 growth. Inventing a ninth stage name is rejected — `opus_stage="viriditas"`
 fails `distinct_opus_stages` with `stages that are not opus stages:
 ['viriditas']` — and reusing an existing one fails the same check with
-`duplicate opus stages: ['rubedo']`. A colourless, stageless ninth line is what
-the declaration is shaped to accept.
+`duplicate opus stages: ['rubedo']`. An additional distinct color with no opus
+stage is what the declaration is shaped to accept.
 
 **2. Declare an exemption only if the new line genuinely shares a token.** Add a
 `SharedToken` to `SHARED_TOKENS` in the same file, naming *exactly* the lines
@@ -62,7 +62,7 @@ This example uses the same hypothetical teal entry as the suite. It constructs
 real temporary packages with distinct names, independent of installed siblings.
 The package source under `src/` is unchanged.
 
-The fixture uses a fixed hypothetical identifier and colour currently distinct
+The fixture uses a fixed hypothetical identifier and color currently distinct
 from the declaration; only its working position is derived. A real extension
 must choose unused values. Conceptual admission is separate human work in the
 [dossier](admission/dossier.md).
@@ -139,7 +139,7 @@ an unused identity.
   arguments and names no line. Nothing in the resolve, bind, collide, declare,
   or status stage is per-line logic.
 - **`src/line_set/invariants.py`.** Every check takes the declaration as an
-  argument. Adding a colour adds no check and changes no check.
+  argument. Adding a color adds no check and changes no check.
 - **`src/line_set/binding.py`.** Resolution is by `package_name` from the entry.
   A new line is resolved by the same code path as an old one.
 - **`src/line_set/models.py` and `src/line_set/serialization.py`.** The types
@@ -152,7 +152,7 @@ If a change to the set requires touching anything in the second list, stop and
 ask whether the thing being added is a line at all, or a second concern wearing
 a line's shape.
 
-## Removing a colour
+## Removing a color
 
 The same edit in reverse, with one extra step: `working_position` must be
 renumbered so the remaining entries are still contiguous from `1`, and any
@@ -164,7 +164,7 @@ the fail-closed direction, and it is the reason not to relax the equality rule.
 
 ## What the extensibility claim is
 
-That adding a colour is a `registry.py` edit is a claim about *this* package's
+That adding a color is a `registry.py` edit is a claim about *this* package's
 coupling, and it is bound by a test. It is not a claim that adding a line to the
 set is cheap: the new line needs its own project, its own question, its own
 registry, its own tests, and its own manuscript. This package makes the

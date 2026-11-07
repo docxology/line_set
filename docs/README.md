@@ -21,7 +21,7 @@ about to change it.
 - [invariants.md](invariants.md) — the offline structural battery, the live
   self-disjointness check, the proof-of-detection discipline, and the rule that
   an empty scan set fails.
-- [extensibility.md](extensibility.md) — the exact recipe for adding a colour,
+- [extensibility.md](extensibility.md) — the exact recipe for adding a color,
   with an executed example, and the list of files it does and does not touch.
 - [development.md](development.md) — the local command surface, what each
   command needs, figures, and the render path.
@@ -45,7 +45,7 @@ is [`../src/line_set/AGENTS.md`](../src/line_set/AGENTS.md); repository working
 rules are [`../AGENTS.md`](../AGENTS.md).
 
 This project's ancestor is `docs/line-set.md`, a short internal note in the
-author's private projects tree that first recorded the set, its colours, and its
+author's private projects tree that first recorded the set, its colors, and its
 non-overlap contract. It is unpublished and does not travel with this
 repository, so it is named rather than linked. It stays as the short map; this
 project is the paper. The durable references for the eight instruments are their

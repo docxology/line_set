@@ -111,6 +111,6 @@ unmodified (a 2026-07-29 observation about the then-four-line set, kept
 here dated rather than updated in place; the set's current membership is
 the registry's to state) — the convention recorded here observed working end to end. It
 remains a companion, not a member — it is not in `LINE_SET`, it is not a
-colour, and nothing further about its contents is asserted here. This package declares the lines of the set and records this shared data contract, and that is the whole of its
+color, and nothing further about its contents is asserted here. This package declares the lines of the set and records this shared data contract, and that is the whole of its
 part: the reader will not collect envelopes, will not store them, and will
 not compute anything across them.

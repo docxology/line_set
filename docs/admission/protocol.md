@@ -38,7 +38,7 @@ must fairly assess nearest-neighbor extensions, not only a weak baseline.
 small native extensions, publish a reasoned **do not add** memo and stop
 expansion. An unresolved representation is not evidence of a gap by itself.
 
-For remaining gaps compare three plain-text arms, without colour names in the
+For remaining gaps compare three plain-text arms, without color names in the
 reader-facing materials: current composition; composition with targeted native
 extensions; genuinely separate repair record. Keep the researcher's native
 provenance map outside the blinded materials. Counterbalance presentation order
@@ -56,7 +56,7 @@ boundary violation. Do not compute a composite usefulness or fairness score.
 
 A proposed pilot uses six to eight voluntary readers. Record selection,
 familiarity, consent, withdrawals, redactions and exact materials. A smaller
-pilot is formative only and must be labelled. No recruitment, collection or
+pilot is formative only and must be labeled. No recruitment, collection or
 study execution is authorized by this scaffold. All results remain absent.
 
 ## Explicit decision paths

@@ -37,6 +37,16 @@ def test_only_producer_version_may_differ() -> None:
     assert not record_matches(held, current)
 
 
+@pytest.mark.parametrize("held_value,current_value", [(True, 1), (False, 0), (1, 1.0)])
+def test_measurement_comparison_preserves_nested_scalar_types(
+    held_value: object, current_value: object
+) -> None:
+    held = {"package_version": "0.5.0", "measurements": [{"count": held_value}]}
+    current = {"package_version": "0.6.0", "measurements": [{"count": current_value}]}
+    assert not record_matches(held, current)
+    assert not record_matches(current, held)
+
+
 @pytest.mark.parametrize("version", [None, "", "not-a-version", 1])
 def test_absent_or_malformed_producer_is_refused(version: object) -> None:
     held = json.loads(RECORD.read_text(encoding="utf-8"))
@@ -90,6 +100,8 @@ def test_cli_refuses_noncanonical_line_endings(tmp_path: Path, newline: bytes) -
             siblings / line.package_name / "src",
             line.package_name,
             tokens=(f"TOKEN_{index}",),
+            registry_sizes={"PRIMARY": 1},
+            source_revision=f"{index + 1:040x}",
         )
     env = {
         **os.environ,

@@ -1,9 +1,9 @@
-# Extensibility: adding a colour is an edit to one file {#sec:extensibility}
+# Extensibility: adding a color is an edit to one file {#sec:extensibility}
 
-The set has grown before and may grow again, so the cost of adding a line is a design property rather than a convenience. The target is that a new colour costs one appended record in `registry.py` ([@def:line-entry]) and nothing else: no branch in the reader, no case in a check, no new figure code.
+The set has grown before and may grow again, so the cost of adding a line is a design property rather than a convenience. The target is that a new color costs one appended record in `registry.py` ([@def:line-entry]) and nothing else: no branch in the reader, no case in a check, no new figure code.
 
 Cheap registration is not conceptual admission. At this revision I do not add a
-colour. Contestation and repair remains a hypothesis for a bounded comparison
+color. Contestation and repair remains a hypothesis for a bounded comparison
 with existing instruments, their native extensions and Witness relations and
 returns. The repository's admission dossier and hypothetical case library are
 human review materials outside the reader; no study has run. A documented
@@ -11,56 +11,64 @@ decision to add nothing is an allowed outcome. Resource and burden allocation
 remains a lower-priority hypothesis. A renamed instrument can avoid every token
 collision and still duplicate another instrument's question.
 
-Parnas treats extension and contraction as one problem and puts the cost of both in the *uses* relation rather than in the size of the edit: what makes a subset removable, or an addition cheap, is that nothing outside it names it [@parnas1979extension]. That is the property claimed here, and it is claimed narrowly. He is designing families of programs whose minimal subsets are chosen in advance and whose uses relation is documented and enforced; I have one package, and the only uses relation I have measured is which modules mention a line id as a whole word. Those are different standards of evidence for the same-shaped claim, and the second is the one this section supports.
+Parnas treats extension and contraction as one problem and locates their cost in the *uses* relation [@parnas1979extension]. His program families and documented uses relations set a stronger standard than this small wrapper. Here I exercise a bounded observable property: the existing reader, checks and figures accept a distinct appended declaration without an instrument-specific implementation branch. This does not measure every possible caller or establish a useful new question.
 
-The claim holds because no module outside `registry.py` names an individual line. Every function that does work takes `lines` and `shared` as arguments and computes over whatever it was handed. Searching the package for the eight line ids as whole words finds them only in `registry.py`, four and fourteen and two and four and eight and four and six and fourteen times; `reader.py`, `invariants.py`, `binding.py`, `serialization.py`, `models.py`, and `__init__.py` contain none of them. One mention of `OUTSIDE_SCOPE` survives in `reader.py`, inside the exemption matcher's docstring, where it is the worked example of a substring the matcher must refuse. It is prose, not a branch.
+The evidence is behavioral rather than a word-count scan of source files. Temporary packages expose distinct vocabularies; the extended reading retains all known entries and reports the missing appended package explicitly. Display maps may choose an ink or outline, but they do not interpret an instrument's result.
 
 ## The executable isolated example
 
 The hypothetical teal entry is bookkeeping test material, not an admission
-proposal or a new member of the set. Its identifier and colour are fixed
+proposal or a new member of the set. Its identifier and color are fixed
 examples, currently unused; its working position is derived from the
 declaration. The fixture reading below is separate from the preserved
 historical sibling record and from the current pinned release reading.
 
 ```python
-from line_set import (LINE_SET, SHARED_TOKENS, LineEntry, all_invariants,
-                      read_set, registry_digest, sibling_path_resolver)
-
+from tempfile import TemporaryDirectory
+from pathlib import Path
+from line_set import LINE_SET, SHARED_TOKENS, all_invariants, read_set, registry_digest
 from tests.test_extensibility import APPENDED
+from tests.support import (
+    canned_resolver, import_sandbox, load_line_package, resolved, write_line_package,
+)
 
-appended = APPENDED
-extended = LINE_SET + (appended,)
-
+extended = LINE_SET + (APPENDED,)
 print("lines:", len(LINE_SET), "->", len(extended))
 print("digest:", registry_digest(LINE_SET, SHARED_TOKENS)[:12],
       "->", registry_digest(extended, SHARED_TOKENS)[:12])
-for r in all_invariants(extended, SHARED_TOKENS):
-    print(f"  {'PASS' if r.passed else 'FAIL'}  {r.name}")
-reading = read_set(extended, SHARED_TOKENS,
-                   resolver=sibling_path_resolver(), as_of="2026-10-21")
+for result in all_invariants(extended, SHARED_TOKENS):
+    print(f"  {'PASS' if result.passed else 'FAIL'}  {result.name}")
+with TemporaryDirectory() as directory, import_sandbox():
+    root = Path(directory)
+    answers = {}
+    for index, entry in enumerate(LINE_SET):
+        write_line_package(root, entry.package_name, (f"TOKEN_{index}",))
+        answers[entry.package_name] = resolved(
+            entry.package_name, load_line_package(root, entry.package_name))
+    reading = read_set(extended, SHARED_TOKENS,
+                       resolver=canned_resolver(answers), as_of="2026-11-06")
 print("status:", reading.status.value)
 print("counts:", reading.counts())
 print("reason:", reading.derivation[-1].detail)
+assert all(result.passed for result in all_invariants(extended, SHARED_TOKENS))
+assert reading.counts()["resolved"] == len(LINE_SET)
+assert reading.counts()["not_installed"] == 1
 ```
 
-The output below was reproduced on 2026-10-21 with isolated temporary packages,
-one distinct vocabulary per declared identity, and the same unused teal fixture
-as the suite. It covers all declared identities plus the absent appended one;
-it is separate from the pinned sibling measurement. The reviewed source base
-was `3be000b`; the release packet identifies the implementation. To reproduce
-without siblings, run the executable recipe in `docs/extensibility.md` or the
-manuscript binding tests. With released siblings, the snippet uses the explicitly
-selected `LINE_SET_SIBLINGS` directory.
+This output was reproduced for the 2026-11-06 review using the exact code above.
+Its injected resolver reads real temporary packages and explicitly leaves the
+hypothetical entry absent; installed siblings cannot change that fixture.
+It is namespace evidence, not a native sibling measurement or a pinned record.
+The shorter recipe in `docs/extensibility.md` exercises the same contract.
 
 The measured fixture output:
 
 ```text
 lines: 8 -> 9
-digest: de4bd085666e -> fdd7e5719dc8
+digest: 018f930a1459 -> e60aafda008d
   PASS  declaration_admission
   PASS  distinct_line_ids
-  PASS  distinct_colours
+  PASS  distinct_colors
   PASS  distinct_opus_stages
   PASS  contiguous_working_positions
   PASS  orders_diverge
@@ -71,7 +79,7 @@ counts: {'resolved': 8, 'not_installed': 1, 'import_failed': 0, 'no_vocabulary':
 reason: set_partial: 1 declared line(s) could not be read: ['teal_line']
 ```
 
-All eight structural checks pass on the nine-entry declaration. Position contiguity now expects `1..9` and gets it. Colour distinctness has a ninth colour to consider. The orders still diverge, because the appended entry declares no opus stage and is therefore ignored by that comparison — a line may join the set without being assigned a stage, and the set has in fact grown past four while the four borrowed stage names stayed exactly four.
+All eight structural checks pass on the nine-entry declaration. Position contiguity now expects `1..9` and gets it. Color distinctness has a ninth color to consider. The orders still diverge, because the appended entry declares no opus stage and is therefore ignored by that comparison — a line may join the set without being assigned a stage, and the set has in fact grown past four while the four borrowed stage names stayed exactly four.
 
 The wrapper's own collision check ([@prop:self-disjointness]) applies to any extended declaration.
 
@@ -79,7 +87,7 @@ The reading is `SET_PARTIAL`, and that is the correct answer rather than a short
 
 ## What the digest change means
 
-The set digest moved from `de4bd085666e` to `fdd7e5719dc8`. That is the intended behaviour: the digest covers the lines and the exemption table together, so a set with an appended line is a different set. It is also worth noticing that the digest binds to the *content* of the entry and not merely to its presence. Rewording the appended line's question produces a different digest, which is what makes the value useful for spotting that two people are reading different declarations.
+The fixture's digest changes from `018f930a1459` to `e60aafda008d`: the declaration and exemption table together identify a different set. Rewording an entry's question also changes the digest; membership alone is not the identity being compared.
 
 The value is a comparison handle and nothing more. It tells you that a declaration you hold differs from a declaration someone else holds. It does not tell you which one is right, it does not record who changed what, and it is not tamper evidence.
 
@@ -87,6 +95,6 @@ The value is a comparison handle and nothing more. It tells you that a declarati
 
 What the run above shows is that the declaration is extensible without touching the reader or the checks: the battery passed on the nine-entry declaration, the reading was taken, and no module outside `registry.py` was edited to make either happen. Two nearby claims are not shown and should not be read in.
 
-Adding a colour is cheap in code. It is not cheap in judgement: the hard part of another line is deciding whether the set actually has another question, and nothing in this package can help with that. A line whose question overlaps an existing line's would pass every check here, because the checks read names.
+Adding a color is cheap in code. It is not cheap in judgment: the hard part of another line is deciding whether the set actually has another question, and nothing in this package can help with that. A line whose question overlaps an existing line's would pass every check here, because the checks read names.
 
-The same requirement is placed on the figure builders — they draw from the declaration rather than from a fixed list of four, and a test appends a colour and re-renders to hold them to it. A passing render is a weaker result than it sounds. It says the plate was produced, not that it is still readable at five entries, or at nine.
+Figure builders also accept the appended fixture. Labels remain authoritative, and the current outlines distinguish the declared members and wrapper; the extension regression additionally compares actual glyph geometry. The outline cycle is finite, so larger declarations can repeat a shape. A produced plate is not proof of unbounded capacity, legibility at an arbitrary embed size, or readability in physical grayscale print.

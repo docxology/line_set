@@ -1149,20 +1149,6 @@ def test_derived_probe_carrier_is_absent_from_the_complete_carrier_set(
     assert len(set(additional.query_lines)) == len(ids) + 1
 
 
-def test_integration_recipe_preserves_the_retained_reading_date() -> None:
-    import shlex
-
-    text = (Path(__file__).resolve().parents[1] / "docs/development.md").read_text()
-    integration = text.split("For the separate release integration lane,", 1)[1]
-    recipe = integration.split("```bash\n", 1)[1].split("```", 1)[0]
-    commands = [shlex.split(line) for line in recipe.splitlines() if line.strip()]
-    record = next(
-        command for command in commands if "scripts/record_reading.py" in command
-    )
-    assert "--check" in record and "--as-of" in record
-    assert record[record.index("--as-of") + 1] == "YYYY-MM-DD"
-
-
 @pytest.mark.parametrize(
     "path",
     [

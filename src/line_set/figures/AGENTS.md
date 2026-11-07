@@ -9,7 +9,7 @@ not already decide.
 - `__init__.py` re-exports `build_figures()`, `figure_summary()`, `figure_plates()`, `FigurePlate`, the rasterizer constants, and the legibility surface (`measure_project()`, `illegible()`, `FigureLegibility`, `MIN_LEGIBLE_PT`).
 - `build.py` defines `build_figures()`, `figure_summary()`, `RSVG_CONVERT`, `RSVG_ENV_VAR`, `BUILD_PROVENANCE`, and `PROJECT_ROOT`.
 - `canvas.py` defines the SVG primitives — `text()`, `rect()`, `line()`, `path()`, `glyph()`, `hatch_defs()`, `open_canvas()`, `header()`, `close_canvas()`, `wrap()`, `plural()` — plus `WIDTH`, `MARGIN`, `CONTENT_RIGHT`, and `MIN_TEXT_UNITS`.
-- `legibility.py` derives what a canvas unit becomes in printed points — `measure_project()`, `measure_plate()`, `illegible()`, `parse_page_geometry()`, `parse_embeds()`, `parse_height_fraction()`, `MIN_LEGIBLE_PT` — from `manuscript/config.yaml`, the embed widths, and the built SVGs. It draws nothing.
+- `legibility.py` derives what a canvas unit becomes in printed points — `measure_project()`, `measure_plate()`, `illegible()`, `parse_page_geometry()`, `parse_embeds()`, `parse_height_fraction()`, `MIN_LEGIBLE_PT` — from `docs/manuscript/config.yaml`, the embed widths, and the built SVGs. It draws nothing.
 - `palette.py` defines the inks, `line_fill()`/`line_ink()`/`shape_for()`/`dash_for()`, the enumeration-keyed display maps, and `verify_coverage()`.
 - `plates/__init__.py` defines `FigurePlate` and `figure_plates(lines, shared, reading, wrapper, self_reading)`. Two readings are passed: `reading` covers the declared lines, `self_reading` covers them plus the wrapper and is the one the self-check itself runs.
 - `plates/declaration.py` draws `set_compass` and `two_orders`.
@@ -39,14 +39,14 @@ gate and the printed-point legibility gate must pass.
   tokens sort, collisions sort. No `dict` or `set` iteration order reaches an
   artifact. Coordinates are formatted to one decimal place so a trigonometric
   polygon cannot carry a floating-point difference into the file.
-- **No distinction is carried by colour alone.** Every line, read code, and
+- **No distinction is carried by color alone.** Every line, read code, and
   status has a marker shape *and* a written label. The sparse vocabulary matrix
   writes each carrier's working position beside the token and keys those
   positions to named lines; fill alone never identifies a carrier. The exempted collision and
   the undeclared one differ by shape, by fill, and by the words on the row.
-  Check any new encoding against a greyscale conversion before shipping it.
+  Check any new encoding against a grayscale conversion before shipping it.
 - **The written label has to survive the page, not just the canvas.** The
-  greyscale mitigation is worthless if the word repeating the colour is too
+  grayscale mitigation is worthless if the word repeating the color is too
   small to read once the plate has been scaled into the text block, and a floor
   in canvas units cannot tell you whether it is. `MIN_TEXT_UNITS` stops a label
   being authored too small; `legibility.py` derives where it lands in points and
@@ -68,8 +68,8 @@ gate and the printed-point legibility gate must pass.
   and digests all come from the declaration or the reading, including the ones
   in captions. A caption that states a number the plate does not derive will
   drift away from the plate.
-- **A new colour needs no edit here.** `line_fill()`/`line_ink()` fall back to
-  a deterministic accent and `shape_for()` cycles, so an unknown colour draws.
+- **A new color needs no edit here.** `line_fill()`/`line_ink()` fall back to
+  a deterministic accent and `shape_for()` cycles, so an unknown color draws.
   The maps that must stay exhaustive are keyed by `ReadCode`, `SetStatus`, and
   `READER_STAGES`, and `verify_coverage()` fails the build when one falls
   behind.
@@ -93,6 +93,6 @@ evidence.
 - `uv run pytest tests/test_figure_layout.py` — measures native glyph widths
   and refuses horizontal overflow or text overlap near the same baseline,
   with a planted bad SVG control.
-- Convert a plate to greyscale and confirm every distinction survives.
+- Convert a plate to grayscale and confirm every distinction survives.
 - Build once with a resolver that finds no sibling; `installation_surface`
   must hatch every row and `vocabulary_matrix` must draw its honest panel.

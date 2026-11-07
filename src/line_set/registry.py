@@ -5,7 +5,7 @@ the question it answers, the job it does, and the thing it must not become.
 ``SHARED_TOKENS`` is the exemption table — the tokens two lines are allowed to
 share, with a distinct meaning recorded per line.
 
-Adding another colour to the set means appending one :class:`LineEntry` here.
+Adding another color to the set means appending one :class:`LineEntry` here.
 The reader, the checks, and the serialization take the declaration as an
 argument and do not name any line individually, so nothing else has to change.
 
@@ -140,15 +140,15 @@ LINE_SET: tuple[LineEntry, ...] = (
 
 #: The wrapper's own entry, for self-application only.
 #:
-#: It is deliberately colourless and carries no opus stage: it names no
+#: It is deliberately colorless and carries no opus stage: it names no
 #: refusal, method, aspiration, or absence, and it is not a stage of anything.
 #: Its ``working_position`` continues the sequence so that appending it to
 #: ``LINE_SET`` still yields a contiguous ``1..N``.
 WRAPPER_LINE: LineEntry = LineEntry(
     id="line_set",
-    color="colourless",
+    color="colorless",
     question="How does a growing set of instruments stay separate?",
-    job="Declare the set, read it, check non-overlap, admit new colours",
+    job="Declare the set, read it, check non-overlap, admit new colors",
     must_not_become=(
         "A meta-evaluator, a substantive instrument of its own, a merge of the "
         "eight, or a ranking of them"
@@ -315,7 +315,7 @@ SHARED_TOKENS: tuple[SharedToken, ...] = (
         ),
         rationale=(
             "Same divergence as the other shared family names: Black Line's "
-            "stewardship is a practised discipline, Green Line's is a "
+            "stewardship is a practiced discipline, Green Line's is a "
             "capacity still growing. The exemption records the overlap so "
             "the collision check can distinguish declaration from accident."
         ),

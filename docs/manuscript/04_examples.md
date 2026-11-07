@@ -1,52 +1,53 @@
 # Worked readings {#sec:examples}
 
-## The pinned source reading
+## The pinned measurement and public view
 
-This reading was taken on 2026-10-21 using `sibling_path_resolver` against read-only Git clones. Released lines were read at their tags; Red was read at its current `origin/main` after the dispatcher stopped its release wait following an engine infrastructure timeout. The source revisions below identify the bytes read; the release packet identifies each source policy and the artifact checksums. All declared vocabularies were readable. This is a namespace reading, not verification of sibling conclusions. The previous environment's record remains unchanged in `docs/releases/evidence/reading-record-20260901-v1.json`.
+This measurement uses an explicit review date of 2026-11-06 against immutable producer commits prepared for the coordinated minor releases. Each source snapshot is checked out at its actual revision, not merely labeled with a caller-supplied SHA. All eight used convention-heuristic binding with `pinned-source-snapshot` provenance. The public `2.0-public` view withholds Violet's private producer revision and module path after complete pinned admission; the full current and initial working-source records remain in private custody. This is a namespace reading, not verification of sibling conclusions or native report correspondence. Previously public historical records remain under `docs/releases/evidence/`.
 
-The transcript is wrapped for display; the canonical JSON record retains its exact bytes.
+The following display summarizes the public JSON view. Select the authorized snapshot parent through `LINE_SET_SIBLINGS`; an ordinary, unpinned checkout cannot produce the underlying canonical record. Replaying this public view verifies its disclosed measurement and digest, not a complete public source-pin proof or continuity of a withheld revision.
 
 ```python
-from line_set import read_set, sibling_path_resolver
+from line_set.recording import build_record
 
-reading = read_set(resolver=sibling_path_resolver(), as_of="2026-10-21")
+record, refusals = build_record("2026-11-06", withheld_sources=("violet_line",))
 ```
 
 ```text
 status        : set_legible
-set_digest    : de4bd085666ef66ff73aaa934cc94946530df33ad8d35d69669d514e9dcf6140
-reading_digest: d6c2743319f69cae
+set_digest    : 018f930a14597e85403beb1397987b2b07865f3327e37a37ab7135817136dd1e
+reading_digest: 43b486f9677313c9
 counts        : {'resolved': 8, 'not_installed': 0, 'import_failed': 0, 'no_vocabulary': 0}
-  black_line   resolved v0.5.0 registry=11 digest=a02bff47a767 tokens=10
-  blue_line    resolved v0.2.0 registry=12 digest=9ae7cae1f0f7 tokens=8
-  golden_line  resolved v0.5.0 registry=9 digest=3e0a7e38ecec tokens=7
-  green_line   resolved v0.2.0 registry=11 digest=2d40bfefb9a5 tokens=10
-  red_line     resolved v0.3.0 registry=7 digest=72835fd81d1f tokens=40
-  silver_line  resolved v0.2.0 registry=11 digest=30711e134eec tokens=12
-  violet_line  resolved v0.2.0 registry=8 digest=6494a6bcafbd tokens=16
-  white_line   resolved v0.8.0 registry=11 digest=11047a641a8e tokens=24
+  black_line   resolved v0.6.0 registry=11 digest=a02bff47a767 tokens=10
+  blue_line    resolved v0.3.0 registry=12 digest=9ae7cae1f0f7 tokens=8
+  golden_line  resolved v0.6.0 registry=9 digest=3e0a7e38ecec tokens=7
+  green_line   resolved v0.3.0 registry=11 digest=7be6d699bb36 tokens=10
+  red_line     resolved v0.5.0 registry=7 digest=72835fd81d1f tokens=41
+  silver_line  resolved v0.3.0 registry=11 digest=ce808709c7db tokens=12
+  violet_line  resolved v0.3.0 registry=8 digest=d049774c40e6 tokens=16
+  white_line   resolved v0.9.0 registry=11 digest=11047a641a8e tokens=24
   [resolve] asked the resolver for 8 declared packages
-  [bind] read version, registry size, digest, and enum member names from each package that resolved
+  [bind] read version, registry size, digest, and enum member names from each package that
+    resolved
   [collide] 0 unexempted and 8 exempted cross-line token collisions
   [declare] scanned 8 candidate packages and found 0 that resolved but were not declared
-  [status] set_legible: no unexempted published-name collisions among all 8 declared readable
-    vocabularies; 8 declared exemption(s)
+  [status] set_legible: no unexempted published-name collisions among all 8 declared
+    readable vocabularies; 8 declared exemption(s)
 ```
 
 | Package | Reported version | Source revision | Binding policy |
 | --- | --- | --- | --- |
-| black_line | 0.5.0 | `79056aacf0f86b4287322dd5dced9d301882cb03` | convention-heuristic |
-| blue_line | 0.2.0 | `15ef8043833fd790e0d52a8fa47289905e4d867f` | convention-heuristic |
-| golden_line | 0.5.0 | `23095f7f9759a3027e5ceb8380310d54c87cd977` | convention-heuristic |
-| green_line | 0.2.0 | `e05007f9858bb55194b0d867aed7bed7d51777e2` | convention-heuristic |
-| red_line | 0.3.0 | `375e8ae9b7a111bcdb66f0ba33872c078083983c` | convention-heuristic |
-| silver_line | 0.2.0 | `3ff05b23a6a59c0f68b7a11e4cd70696f321fe0d` | convention-heuristic |
-| violet_line | 0.2.0 | `4bb20dbdc1c2df6cd505faee0b9729979d3892bd` | convention-heuristic |
-| white_line | 0.8.0 | `869aaab63c37aa118f469497cb513cf29697acda` | convention-heuristic |
+| black_line | 0.6.0 | `4b203050adc812e86e77eee1297ddb1894c7ab4b` | convention-heuristic |
+| blue_line | 0.3.0 | `3d7243d4bb184a54c0e01f3738acc01261448ceb` | convention-heuristic |
+| golden_line | 0.6.0 | `af9bf48ed34e6508f773cce0a5eae9ea2115c166` | convention-heuristic |
+| green_line | 0.3.0 | `3edf49f5426a2c9dfa8c925846d318476206988d` | convention-heuristic |
+| red_line | 0.5.0 | `86674860f3b2d68f58ab1cc3f11f867f64133983` | convention-heuristic |
+| silver_line | 0.3.0 | `96a7996fb6b50833bf4d50f7e5eddf45d74d5467` | convention-heuristic |
+| violet_line | 0.3.0 | Withheld; private producer custody | convention-heuristic |
+| white_line | 0.9.0 | `cc99cbf8588df1be8a3831f344f153acd9881fdb` | convention-heuristic |
 
-The eight packages export 34 enum classes between them — 7 in red_line, 3 in black_line, 2 in golden_line, 7 in white_line, 4 in silver_line, 5 in violet_line, 3 in blue_line, 3 in green_line — and those classes declare 148 members in total, including aliases. Ordinary enum iteration reaches 148 canonical members; root re-exports of one class are counted once. 21 of the 148 are a line repeating a word it already uses in another enum: red_line repeats one name across its seven enum classes; black_line repeats three names across its three enum classes; white_line repeats four names across its seven enum classes; silver_line repeats four names across its four enum classes; violet_line repeats three names across its five enum classes; blue_line repeats three names across its three enum classes; green_line repeats three names across its three enum classes. After that within-line collapse, the reading holds 127 line-and-name pairs — 40 for red_line, 10 for black_line, 7 for golden_line, 24 for white_line, 12 for silver_line, 16 for violet_line, 8 for blue_line, 10 for green_line — spanning 115 distinct names.
+The eight packages export 34 enum classes between them — 7 in red_line, 3 in black_line, 2 in golden_line, 7 in white_line, 4 in silver_line, 5 in violet_line, 3 in blue_line, 3 in green_line — and those classes declare 149 members in total, including aliases. Ordinary enum iteration reaches 149 canonical members; root re-exports of one class are counted once. Twenty-one of the 149 are a line repeating a word it already uses in another enum: red_line repeats one name; black_line repeats three; white_line repeats four; silver_line repeats four; violet_line repeats three; blue_line repeats three; green_line repeats three. After that within-line collapse, the reading holds 128 line-and-name pairs — 41 for red_line, 10 for black_line, 7 for golden_line, 24 for white_line, 12 for silver_line, 16 for violet_line, 8 for blue_line, 10 for green_line — spanning 116 distinct names.
 
-The arithmetic is the whole finding: 127 minus 115 is twelve. The shared spellings are `COMMUNICATION`, `KEPT`, `METHOD`, `NEEDS_REWORK`, `OUTSIDE_SCOPE`, `STALE`, `STEWARDSHIP`, `VERIFICATION`. There are 8 exempted collisions and 0 unexempted collisions; the record retains each exemption's exact carrier set and per-line meanings. Disjoint spellings do not establish distinct concepts.
+The arithmetic is the whole finding: 128 minus 116 is twelve. The shared spellings are `COMMUNICATION`, `KEPT`, `METHOD`, `NEEDS_REWORK`, `OUTSIDE_SCOPE`, `STALE`, `STEWARDSHIP`, `VERIFICATION`. There are 8 exempted collisions and 0 unexempted collisions; the record retains each exemption's exact carrier set and per-line meanings. Disjoint spellings do not establish distinct concepts.
 
 ![Vocabulary matrix: every published name, including aliases, with observed carrier positions keyed to declared lines. Rows distinguish declared exemptions from unexempted collisions using shape and label. Unread lines remain unknown.](../../output/figures/vocabulary_matrix.png){#fig:vocabulary-matrix width=100%}
 

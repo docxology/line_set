@@ -6,7 +6,7 @@ the structural checks over the declaration, and the canonical serialization
 used for digests.
 
 Start with `registry.py` — it is the whole declaration, and appending another
-colour to the set is an edit to that one file. Then `reader.py` for how a
+color to the set is an edit to that one file. Then `reader.py` for how a
 reading is derived in five stages, and `invariants.py` for what is checked
 about the declaration itself.
 

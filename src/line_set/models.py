@@ -1,10 +1,10 @@
 """Types for the line set's declaration and for one reading of it.
 
 This module declares structure only. Nothing here imports a sibling package,
-and no type in it carries a judgement about whether a line is correct,
+and no type in it carries a judgment about whether a line is correct,
 complete, useful, or worth having. A ``SetReading`` records what the declared
 vocabularies were and whether any two of them overlapped; that is the whole
-claim, and it is a claim about names, not about behaviour.
+claim, and it is a claim about names, not about behavior.
 """
 
 from __future__ import annotations
@@ -104,7 +104,7 @@ class SharedToken:
     ``lines`` names every line that is allowed to carry ``token``, and
     ``meanings`` must supply a non-blank meaning for each of them. A shared
     token without a per-line meaning is a label, not a disambiguation, and
-    :func:`line_set.reader.exemption_for` refuses to honour it.
+    :func:`line_set.reader.exemption_for` refuses to honor it.
     """
 
     token: str

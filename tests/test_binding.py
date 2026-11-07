@@ -433,7 +433,7 @@ def test_sibling_source_roots_keeps_only_directories_that_exist(
     assert found == (str(tmp_path / "present_line" / "src"),)
 
 
-def test_sibling_source_roots_defaults_to_the_neighbouring_checkouts() -> None:
+def test_sibling_source_roots_defaults_to_the_neighboring_checkouts() -> None:
     """With no base, the search is whatever :func:`sibling_base` resolved to."""
     found = sibling_source_roots(entry.package_name for entry in LINE_SET)
     for path in found:

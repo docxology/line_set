@@ -37,7 +37,7 @@ class ExemptionProbe:
     """One input handed to the matcher, and what the matcher did with it.
 
     ``expected_match`` is the specification — whether this input *should* be
-    honoured — and ``matched`` is what :func:`line_set.reader.exemption_for`
+    honored — and ``matched`` is what :func:`line_set.reader.exemption_for`
     actually returned. The two are kept apart on purpose: a probe holds only
     when they agree, and the figure and the suite both compare them rather than
     reprinting one of them twice.

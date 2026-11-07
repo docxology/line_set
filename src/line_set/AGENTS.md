@@ -11,7 +11,7 @@ markers.
 
 - `__init__.py` re-exports the supported public API; `__all__` is sorted and duplicate-free.
 - `binding.py` defines `Resolution`, `Vocabulary`, `VocabularyCensus`, `ImportResolver`, `default_resolver`, `sibling_path_resolver()`, `sibling_source_roots()`, `candidate_packages()`, `exported_enums()`, `enum_tokens()`, `vocabulary_census()`, and `read_vocabulary()`. `exported_enums()` is the single place the exported set is decided, so the token reader and the census cannot come to describe different classes; anything that needs the package's enums goes through it.
-- `invariants.py` defines `SoundnessResult`, the offline structural checks, `self_disjointness_from_reading()`, `check_self_disjointness()`, `all_invariants()`, `live_invariants()`, and `registry_sound()`. The self-check is split so the judgement is pure: `check_self_disjointness()` takes the reading and delegates, and a figure drawing the property calls the same judgement instead of a second copy of it.
+- `invariants.py` defines `SoundnessResult`, the offline structural checks, `self_disjointness_from_reading()`, `check_self_disjointness()`, `all_invariants()`, `live_invariants()`, and `registry_sound()`. The self-check is split so the judgment is pure: `check_self_disjointness()` takes the reading and delegates, and a figure drawing the property calls the same judgment instead of a second copy of it.
 - `probes.py` defines `ExemptionProbe`, `exemption_probes()`, `probes_hold()`, `spare_line_id()`, and `DERIVED_LINE_SUFFIX`. It weakens a *declared* exemption six ways and reports what `exemption_for()` did with each. It checks nothing and demonstrates detection over the inputs it names; a probe built from a literal instead of from the declaration would stop tracking the declaration.
 - `models.py` defines `SetStatus`, `ReadCode`, `OPUS_STAGE_ORDER`, `LineEntry`, `SharedToken`, `LineObservation`, `TokenCollision`, `DerivationStage`, and `SetReading`.
 - `reader.py` defines `read_set(lines=LINE_SET, shared=SHARED_TOKENS, *, resolver=None, as_of=None)`, `exemption_for()`, `READER_STAGES`, and `STATUS_PRECEDENCE`.
@@ -40,7 +40,7 @@ markers.
 - **Nothing sorted by accident.** Token collection, collision partitioning,
   candidate discovery, and every canonical form sort before they emit, so no
   `dict` or `set` iteration order can reach a reading or a digest.
-- **Adding a colour is a `registry.py` edit.** No module names an individual
+- **Adding a color is a `registry.py` edit.** No module names an individual
   line; the reader and the checks take `lines` and `shared` as arguments.
 - **Every check fails on an empty scan set.** A check that had nothing to look
   at reports that, rather than passing.
@@ -55,7 +55,7 @@ markers.
 A reading reports which declared vocabularies were legible and whether any two
 of them overlapped. `SET_LEGIBLE` is not a statement that the lines are
 correct, complete, consistent, or worth having. The reader reads declarations,
-not behaviour: two lines can have wholly disjoint vocabularies and still
+not behavior: two lines can have wholly disjoint vocabularies and still
 overlap conceptually. A digest detects disagreement with a digest someone
 already holds; it is not tamper evidence.
 

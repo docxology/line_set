@@ -1,5 +1,5 @@
 {
-  "package_version": "0.5.0",
+  "package_version": "0.6.0",
   "reading": {
     "collisions": [],
     "counts": {
@@ -26,14 +26,14 @@
       {
         "detail": "read version, registry size, digest, and enum member names from each package that resolved",
         "items": [
-          "black_line: 10 tokens, version=0.5.0, registry_size=11",
-          "blue_line: 8 tokens, version=0.2.0, registry_size=12",
-          "golden_line: 7 tokens, version=0.5.0, registry_size=9",
-          "green_line: 10 tokens, version=0.2.0, registry_size=11",
-          "red_line: 40 tokens, version=0.3.0, registry_size=7",
-          "silver_line: 12 tokens, version=0.2.0, registry_size=11",
-          "violet_line: 16 tokens, version=0.2.0, registry_size=8",
-          "white_line: 24 tokens, version=0.8.0, registry_size=11"
+          "black_line: 10 tokens, version=0.6.0, registry_size=11",
+          "blue_line: 8 tokens, version=0.3.0, registry_size=12",
+          "golden_line: 7 tokens, version=0.6.0, registry_size=9",
+          "green_line: 10 tokens, version=0.3.0, registry_size=11",
+          "red_line: 41 tokens, version=0.5.0, registry_size=7",
+          "silver_line: 12 tokens, version=0.3.0, registry_size=11",
+          "violet_line: 16 tokens, version=0.3.0, registry_size=8",
+          "white_line: 24 tokens, version=0.9.0, registry_size=11"
         ],
         "name": "bind"
       },
@@ -280,7 +280,7 @@
             "a family of stewardship capacities in the growth-marker vocabulary"
           ]
         ],
-        "rationale": "Same divergence as the other shared family names: Black Line's stewardship is a practised discipline, Green Line's is a capacity still growing. The exemption records the overlap so the collision check can distinguish declaration from accident.",
+        "rationale": "Same divergence as the other shared family names: Black Line's stewardship is a practiced discipline, Green Line's is a capacity still growing. The exemption records the overlap so the collision check can distinguish declaration from accident.",
         "token": "STEWARDSHIP",
         "unread_declared_carriers": []
       },
@@ -454,7 +454,7 @@
             "a family of stewardship capacities in the growth-marker vocabulary"
           ]
         ],
-        "rationale": "Same divergence as the other shared family names: Black Line's stewardship is a practised discipline, Green Line's is a capacity still growing. The exemption records the overlap so the collision check can distinguish declaration from accident.",
+        "rationale": "Same divergence as the other shared family names: Black Line's stewardship is a practiced discipline, Green Line's is a capacity still growing. The exemption records the overlap so the collision check can distinguish declaration from accident.",
         "token": "STEWARDSHIP"
       },
       {
@@ -491,7 +491,7 @@
           "requested_package": "black_line",
           "resolved_package": "black_line",
           "resolver_policy": "pinned-source-snapshot",
-          "source_revision": "79056aacf0f86b4287322dd5dced9d301882cb03"
+          "source_revision": "4b203050adc812e86e77eee1297ddb1894c7ab4b"
         },
         "registry_digest": "a02bff47a767b545bdeca7677bd1a2e1b24f1147d0847ec361fa9ee8b9ea1846",
         "registry_size": 11,
@@ -507,7 +507,7 @@
           "TRACEABILITY",
           "VERIFICATION"
         ],
-        "version": "0.5.0"
+        "version": "0.6.0"
       },
       {
         "code": "resolved",
@@ -523,7 +523,7 @@
           "requested_package": "blue_line",
           "resolved_package": "blue_line",
           "resolver_policy": "pinned-source-snapshot",
-          "source_revision": "15ef8043833fd790e0d52a8fa47289905e4d867f"
+          "source_revision": "3d7243d4bb184a54c0e01f3738acc01261448ceb"
         },
         "registry_digest": "9ae7cae1f0f7389f2f58bd7f75a2038a4c48d791166bf79c100d78f2f379e8fd",
         "registry_size": 12,
@@ -537,7 +537,7 @@
           "STALE",
           "SYSTEM"
         ],
-        "version": "0.2.0"
+        "version": "0.3.0"
       },
       {
         "code": "resolved",
@@ -553,7 +553,7 @@
           "requested_package": "golden_line",
           "resolved_package": "golden_line",
           "resolver_policy": "pinned-source-snapshot",
-          "source_revision": "23095f7f9759a3027e5ceb8380310d54c87cd977"
+          "source_revision": "af9bf48ed34e6508f773cce0a5eae9ea2115c166"
         },
         "registry_digest": "3e0a7e38ececb156336d57ed7cc60b6bf08a3d8f2edfc678270c307820df57e3",
         "registry_size": 9,
@@ -566,7 +566,7 @@
           "TOWARD",
           "UNKNOWN_ID"
         ],
-        "version": "0.5.0"
+        "version": "0.6.0"
       },
       {
         "code": "resolved",
@@ -582,9 +582,9 @@
           "requested_package": "green_line",
           "resolved_package": "green_line",
           "resolver_policy": "pinned-source-snapshot",
-          "source_revision": "e05007f9858bb55194b0d867aed7bed7d51777e2"
+          "source_revision": "3edf49f5426a2c9dfa8c925846d318476206988d"
         },
-        "registry_digest": "2d40bfefb9a57d898412861a06d3d1718d0cc6425fc36b8be526f0306063cc57",
+        "registry_digest": "7be6d699bb36fe854ebca8525d53cca85b2fe57c063f95f3d9387b0e3c08d718",
         "registry_size": 11,
         "tokens": [
           "APPRENTICESHIP",
@@ -598,7 +598,7 @@
           "STEWARDSHIP",
           "VERIFICATION"
         ],
-        "version": "0.2.0"
+        "version": "0.3.0"
       },
       {
         "code": "resolved",
@@ -614,7 +614,7 @@
           "requested_package": "red_line",
           "resolved_package": "red_line",
           "resolver_policy": "pinned-source-snapshot",
-          "source_revision": "375e8ae9b7a111bcdb66f0ba33872c078083983c"
+          "source_revision": "86674860f3b2d68f58ab1cc3f11f867f64133983"
         },
         "registry_digest": "72835fd81d1f7ecf70f47b1e0061cd56c385273dd846879ab639225913f5aad7",
         "registry_size": 7,
@@ -652,6 +652,7 @@
           "SELF_ASSERTED",
           "STALE_EVIDENCE",
           "STRONG",
+          "TIER_SCOPE_CONFLICT",
           "UNDECLARED_UNKNOWN",
           "UNEXEMPTED_LINE",
           "UNKNOWN_SCOPE",
@@ -660,7 +661,7 @@
           "VERIFIED",
           "VERIFIED_EXEMPTION"
         ],
-        "version": "0.3.0"
+        "version": "0.5.0"
       },
       {
         "code": "resolved",
@@ -676,9 +677,9 @@
           "requested_package": "silver_line",
           "resolved_package": "silver_line",
           "resolver_policy": "pinned-source-snapshot",
-          "source_revision": "3ff05b23a6a59c0f68b7a11e4cd70696f321fe0d"
+          "source_revision": "96a7996fb6b50833bf4d50f7e5eddf45d74d5467"
         },
-        "registry_digest": "30711e134eec17166275097b066c195c04e37f4bbd17db1a1115c64c3237af16",
+        "registry_digest": "ce808709c7db5a60a7e6b06dac30d1a1326dff3c1973b44b5d36dd28a1e15c31",
         "registry_size": 11,
         "tokens": [
           "ACCEPTED",
@@ -694,7 +695,7 @@
           "SET_ASIDE",
           "TRANSMISSION"
         ],
-        "version": "0.2.0"
+        "version": "0.3.0"
       },
       {
         "code": "resolved",
@@ -705,21 +706,21 @@
           "binding_schema": "convention-heuristic",
           "distribution": null,
           "distribution_version": null,
-          "module_origin": "violet_line/src/violet_line/__init__.py",
+          "module_origin": null,
           "registry_identity": null,
           "requested_package": "violet_line",
           "resolved_package": "violet_line",
           "resolver_policy": "pinned-source-snapshot",
-          "source_revision": "4bb20dbdc1c2df6cd505faee0b9729979d3892bd"
+          "source_revision": null
         },
-        "registry_digest": "6494a6bcafbdfa2a85ce293e03a58419505a2238223ee7bb5438cfcc81c9926b",
+        "registry_digest": "d049774c40e6009ab9241dd4704c34ffbfc2b1b7617c333a9d900a7ae64b0f60",
         "registry_size": 8,
         "tokens": [
           "ACCOUNTED",
           "BOUNDING",
           "CONSENTED",
           "DECLINED",
-          "HONOURING",
+          "HONORING",
           "KEPT",
           "NAMING",
           "OUT_OF_SCOPE",
@@ -732,7 +733,7 @@
           "UNRECORDED",
           "WITHDRAWN"
         ],
-        "version": "0.2.0"
+        "version": "0.3.0"
       },
       {
         "code": "resolved",
@@ -748,7 +749,7 @@
           "requested_package": "white_line",
           "resolved_package": "white_line",
           "resolver_policy": "pinned-source-snapshot",
-          "source_revision": "869aaab63c37aa118f469497cb513cf29697acda"
+          "source_revision": "cc99cbf8588df1be8a3831f344f153acd9881fdb"
         },
         "registry_digest": "11047a641a8e80c985f2bbd8a45b67a0e67048b235020aa52aa46da1cc02682a",
         "registry_size": 11,
@@ -778,37 +779,37 @@
           "UNTYPED_STATE",
           "WITHHELD"
         ],
-        "version": "0.8.0"
+        "version": "0.9.0"
       }
     ],
-    "read_as_of": "2026-10-21",
+    "read_as_of": "2026-11-06",
     "schema_version": "line-set-reading/2",
-    "set_digest": "de4bd085666ef66ff73aaa934cc94946530df33ad8d35d69669d514e9dcf6140",
+    "set_digest": "018f930a14597e85403beb1397987b2b07865f3327e37a37ab7135817136dd1e",
     "status": "set_legible",
     "undeclared_lines": []
   },
-  "reading_digest": "d6c2743319f69caed551f5a6fcde4bf99ac851e6f1a17262f044fe1f6afc0bfe",
-  "recorded_on": "2026-10-21",
+  "reading_digest": "43b486f9677313c9f3d33f0f086a59528daa9e735a31c7c3c80375b43a9850f5",
+  "recorded_on": "2026-11-06",
   "resolver_mode": "sibling_path_resolver",
-  "schema_version": "2.0",
-  "set_digest": "de4bd085666ef66ff73aaa934cc94946530df33ad8d35d69669d514e9dcf6140",
-  "set_version": "2026.10.21",
+  "schema_version": "2.0-public",
+  "set_digest": "018f930a14597e85403beb1397987b2b07865f3327e37a37ab7135817136dd1e",
+  "set_version": "2026.11.06",
   "source_revisions": {
-    "black_line": "79056aacf0f86b4287322dd5dced9d301882cb03",
-    "blue_line": "15ef8043833fd790e0d52a8fa47289905e4d867f",
-    "golden_line": "23095f7f9759a3027e5ceb8380310d54c87cd977",
-    "green_line": "e05007f9858bb55194b0d867aed7bed7d51777e2",
-    "red_line": "375e8ae9b7a111bcdb66f0ba33872c078083983c",
-    "silver_line": "3ff05b23a6a59c0f68b7a11e4cd70696f321fe0d",
-    "violet_line": "4bb20dbdc1c2df6cd505faee0b9729979d3892bd",
-    "white_line": "869aaab63c37aa118f469497cb513cf29697acda"
+    "black_line": "4b203050adc812e86e77eee1297ddb1894c7ab4b",
+    "blue_line": "3d7243d4bb184a54c0e01f3738acc01261448ceb",
+    "golden_line": "af9bf48ed34e6508f773cce0a5eae9ea2115c166",
+    "green_line": "3edf49f5426a2c9dfa8c925846d318476206988d",
+    "red_line": "86674860f3b2d68f58ab1cc3f11f867f64133983",
+    "silver_line": "96a7996fb6b50833bf4d50f7e5eddf45d74d5467",
+    "violet_line": null,
+    "white_line": "cc99cbf8588df1be8a3831f344f153acd9881fdb"
   },
   "vocabulary_census": {
-    "canonical_members": 148,
-    "declared_members": 148,
-    "distinct_names": 115,
+    "canonical_members": 149,
+    "declared_members": 149,
+    "distinct_names": 116,
     "enum_classes": 34,
-    "line_and_name_pairs": 127,
+    "line_and_name_pairs": 128,
     "method": "Every enum exported at each declared package's root was counted, together with all __members__ names including aliases, deduplicating class objects. canonical_members counts values reached by ordinary enum iteration; declared_members counts names with repeats; distinct_names is what survives deduplication within one line, which is what the collision scan compares.",
     "names_carried_by_more_than_one_line": [
       "COMMUNICATION",
@@ -850,9 +851,9 @@
         "within_line_repeats": 3
       },
       "red_line": {
-        "canonical_members": 41,
-        "declared_members": 41,
-        "distinct_names": 40,
+        "canonical_members": 42,
+        "declared_members": 42,
+        "distinct_names": 41,
         "enum_classes": 7,
         "within_line_repeats": 1
       },
@@ -878,5 +879,8 @@
         "within_line_repeats": 4
       }
     }
-  }
+  },
+  "withheld_sources": [
+    "violet_line"
+  ]
 }

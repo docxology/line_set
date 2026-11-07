@@ -22,6 +22,7 @@ digest, and a set of enum member names from.
 from __future__ import annotations
 
 import importlib
+import json
 import os
 import sys
 from collections.abc import Iterator, Mapping, Sequence
@@ -135,6 +136,7 @@ def write_line_package(
     digest_body: str = DEFAULT_DIGEST_BODY,
     raise_on_import: str | None = None,
     extra_source: str = "",
+    source_revision: str | None = None,
 ) -> Path:
     """Write a real importable package under ``root`` and return its directory.
 
@@ -183,6 +185,10 @@ def write_line_package(
         blocks.extend([f'raise RuntimeError("{raise_on_import}")', ""])
 
     (package / "__init__.py").write_text("\n".join(blocks), encoding="utf-8")
+    if source_revision is not None:
+        (Path(root) / ".line-set-source.json").write_text(
+            json.dumps({"revision": source_revision}), encoding="utf-8"
+        )
     importlib.invalidate_caches()
     return package
 

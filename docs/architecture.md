@@ -25,7 +25,7 @@ That split is the whole design, and most of what follows is a consequence of it.
 | `src/line_set/figures/legibility.py` | What point size does each plate's smallest label reach on the rendered page? |
 
 No module outside `registry.py` names an individual line. That is what makes
-adding a colour a one-file edit; see [extensibility.md](extensibility.md).
+adding a color a one-file edit; see [extensibility.md](extensibility.md).
 
 ## The staged reading
 
@@ -148,7 +148,7 @@ The mechanism is plain: `SetStatus` members are `SET_`-prefixed so that their
 disjointness from the sibling vocabularies is structural rather than lucky,
 `ReadCode` members carry ordinary names and are subject to the same check with
 no such help, `WRAPPER_LINE` in `registry.py` carries this package's own entry
-(colourless, no opus stage, since it names no refusal, method, aspiration, or
+(colorless, no opus stage, since it names no refusal, method, aspiration, or
 absence and is not a stage of anything), and `check_self_disjointness` runs the
 production reader over `LINE_SET + (WRAPPER_LINE,)`.
 

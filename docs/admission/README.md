@@ -5,7 +5,7 @@ Decision source: the additional-topics synthesis received 2026-10-21; source
 body SHA-256 `acac51e8de78d35d2988fd927e90a74e797fbffcb9c2521eaa273322c88f59c0`.
 The source is an architectural proposal, not a report of executed experiments.
 
-**Do not admit another colour at this revision.** Contestation and repair is
+**Do not admit another color at this revision.** Contestation and repair is
 a research candidate. Resource and burden allocation is a lower-priority,
 deferred hypothesis. Neither has demonstrated independent need. This records
 Daniel's dispatch decision; it does not impersonate a completed human review
@@ -30,7 +30,7 @@ package exports neither native envelopes nor sibling evaluators.
 | Bounded comparison with a separate repair record | Done as protocol and unexecuted corpus; no findings | [protocol](protocol.md) |
 | Admission/no-addition memo | Done: no addition now; future human decision not fabricated | This page and dossier decision section |
 | Native correctness and extension work | Adapted to owner requirements; static findings are not reproduced defects | [handoffs](sibling-requirements.md) |
-| New colour, palette completion, composite score, semantic approval status | Declined under the wrapper contract and this dispatch | [claim boundaries](../claim_boundaries.md) |
+| New color, palette completion, composite score, semantic approval status | Declined under the wrapper contract and this dispatch | [claim boundaries](../claim_boundaries.md) |
 
 The comparison may legitimately conclude **do not add**. No lexical reading,
 filled template, hash, or fixture completeness test can substitute for that
@@ -42,7 +42,7 @@ These are dispositions of the proposed rationales, not of the value of the topic
 
 | Proposal | Decision and reason |
 | --- | --- |
-| Safety/risk | Reject a broad risk colour; route refusals to Red, uncertainty to White, methods to Black. Risk totals must not trade away refusal. |
+| Safety/risk | Reject a broad risk color; route refusals to Red, uncertainty to White, methods to Black. Risk totals must not trade away refusal. |
 | Truth/verification/trust/provenance | Route record identity to infrastructure and practice to Black, uncertainty to White. No reader certifies truth. |
 | Ethics/virtue | Reject a complete ethics system or meta-evaluator. |
 | Reliability/resilience | Route maintenance to Blue, recovery/custody/succession to Silver; telemetry is evidence, not a warranty. |
@@ -54,7 +54,7 @@ These are dispositions of the proposed rationales, not of the value of the topic
 | Coordination/decision | Witness relations and human decision references already address this rationale. Navigation is infrastructure. |
 | Creativity/play | Consider Golden direction, Black craft and Green experimentation first; actual contrast cases are required. |
 | Palette completion | Reject outright; an identifier is not evidence. Any eventual candidate remains stageless. |
-| Resource and burden allocation | Defer; consider a Witness decision record before a colour. Measured quantities, estimates, proposals, authorized allocations and contested burdens must remain distinct, with units, periods, assumptions and attribution. Never price dignity, consent or refusal. |
+| Resource and burden allocation | Defer; consider a Witness decision record before a color. Measured quantities, estimates, proposals, authorized allocations and contested burdens must remain distinct, with units, periods, assumptions and attribution. Never price dignity, consent or refusal. |
 
 ## Evidence custody
 

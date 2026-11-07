@@ -1,6 +1,6 @@
 """The declaration and reading types: shape, immutability, canonical form.
 
-These types carry no judgement, so there is little behaviour to test. What
+These types carry no judgment, so there is little behavior to test. What
 there is matters: the canonical mappings feed every digest, so a field that a
 mapping forgets is a field a digest cannot notice changing.
 """

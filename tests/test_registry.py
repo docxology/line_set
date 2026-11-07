@@ -85,7 +85,7 @@ def test_find_line_hit_and_miss() -> None:
 
 
 def test_the_wrapper_entry_is_not_one_of_the_lines() -> None:
-    """The wrapper is not a fifth instrument; it only exists to be checked."""
+    """The wrapper is not a color instrument; it only exists to be checked."""
     assert WRAPPER_LINE not in LINE_SET
     assert WRAPPER_LINE.id not in line_ids()
     assert WRAPPER_LINE.opus_stage is None

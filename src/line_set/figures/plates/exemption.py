@@ -29,10 +29,10 @@ from ..canvas import (
 )
 from ..palette import ACCENT, GOOD, INK, MUTED, PANEL, PAPER, WARN
 
-#: Marker shape and word for a probe the matcher honoured, and for one it
+#: Marker shape and word for a probe the matcher honored, and for one it
 #: refused. The pair differs in shape, in fill, and in the word on the row, so
-#: the distinction survives a greyscale print.
-HONOURED_SHAPE = "circle"
+#: the distinction survives a grayscale print.
+HONORED_SHAPE = "circle"
 REFUSED_SHAPE = "square"
 
 _CONTENT_WIDTH = CONTENT_RIGHT - MARGIN
@@ -94,7 +94,7 @@ def exemption_gate(
     parts += header(
         "THE EXEMPTION GATE",
         "Every declared exemption, every named mutation",
-        "Circle: honoured. Square: refused. The word PASS means the observed result matched the specified result.",
+        "Circle: honored. Square: refused. The word PASS means the observed result matched the specified result.",
         f"{len(groups)} TOKENS · {len(probes)} INPUTS · {sum(not p.holds for p in probes)} DIVERGENCES",
         ACCENT,
     )
@@ -120,7 +120,7 @@ def exemption_gate(
             ink = GOOD if probe.holds else WARN
             parts.append(
                 glyph(
-                    HONOURED_SHAPE if probe.matched else REFUSED_SHAPE,
+                    HONORED_SHAPE if probe.matched else REFUSED_SHAPE,
                     x - 24,
                     y - 9,
                     9,
@@ -147,4 +147,4 @@ def exemption_gate(
     return "".join(parts)
 
 
-__all__ = ["HONOURED_SHAPE", "REFUSED_SHAPE", "exemption_gate"]
+__all__ = ["HONORED_SHAPE", "REFUSED_SHAPE", "exemption_gate"]

@@ -1,5 +1,47 @@
 # Changelog
 
+## 0.6.0 (2026-11-06)
+
+Release candidate; see the [publication hold and release scope](docs/releases/v0.6.0.md).
+
+- Use American English in maintained prose and owned interfaces:
+  `check_distinct_colors`, `normalize_field`, and the colorless wrapper identity.
+  No spelling aliases are retained; historical records keep their original bytes.
+- Refuse canonical manuscript records from unpinned sources, even when their
+  published vocabularies are readable and collision-free.
+- Give Silver, Violet, Blue, and Green explicit corresponding display inks;
+  extend the outline repertoire and test actual glyph geometry for the current
+  declaration, wrapper, and isolated extension fixture.
+- Replace source-word counts and authored-sentence pins with behavioral
+  extension checks, canonical reading replay, census and source-identity checks.
+- Archive the former root manuscript verbatim under
+  `docs/releases/evidence/manuscript-20260729/`; maintain the eight-color
+  manuscript in `docs/manuscript/`. No new color is admitted.
+- Own the standalone Ruff defaults and Python floor locally instead of
+  inheriting a surrounding collection's unrelated lint configuration.
+- Fail conditional freshness checks on readable pinned collisions instead of
+  treating semantic disagreement as unavailable evidence.
+- Refresh the namespace reading from immutable producer commits prepared for the
+  coordinated minor releases, with an explicit 2026-11-06 review date. Record 149
+  declared enum members, 128 line-and-name pairs, 116 distinct names, eight exact
+  exemptions, and no unexempted collision. Package versions do not by themselves
+  establish published release tags.
+- Preserve the preceding canonical record byte-for-byte as
+  `docs/releases/evidence/reading-record-20261021-v2.json`; document family
+  contract changes and additional-color hypotheses in the refinement note.
+- Preserve nested measurement scalar types during producer-independent record
+  comparison: boolean/integer and integer/float disagreements cannot compare
+  equal merely because Python's numeric equality permits them.
+- Retain the complete initial working-source reading byte-for-byte in private
+  custody rather than newly publishing its private producer locator.
+- Add explicit `--withhold-source` public views under outer schema `2.0-public`;
+  admit every complete pinned source before projection, withhold selected
+  revisions/module paths, and recompute the disclosed reading's digest.
+  Full canonical schema `2.0` remains unchanged. Public replay and `--check`
+  establish disclosed measurement agreement, not withheld-revision continuity.
+- Emit figure registry 2.0 with canonical `alt_text` for the external renderer;
+  retain native declaration/reading schemas and historical figure registries.
+
 ## 0.5.0 (2026-10-22)
 
 Implement the deep review received on 2026-10-21. Admit declarations before

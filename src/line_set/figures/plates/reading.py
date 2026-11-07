@@ -62,7 +62,7 @@ DIGEST_PREFIX = 12
 
 #: The marker shape and label that separate a declared exemption from an
 #: undeclared collision. The two differ in shape, in fill, and in words, so the
-#: distinction survives a greyscale print.
+#: distinction survives a grayscale print.
 EXEMPT_SHAPE = "diamond"
 COLLISION_SHAPE = "square"
 EXEMPT_LABEL = "EXEMPT — declared meanings"
@@ -309,7 +309,7 @@ def vocabulary_matrix(
         144, max(len(value) for value in positions.values()) * 24 * 0.6 + 14
     )
     token_width = column_width - carrier_width - 50
-    budget = max(1, int(token_width / _TOKEN_LABEL_SIZE))
+    budget = max(1, int(token_width / (_TOKEN_LABEL_SIZE * 0.72)))
     rows = tuple(
         _TokenRow(
             token,
@@ -420,9 +420,10 @@ def vocabulary_matrix(
     return "".join([*open_canvas(1600, cursor + 24), *parts, close_canvas()])
 
 
-def _surface_row_height(detail_lines: int) -> int:
-    """Row height derived from how much detail the observation carries."""
-    return 112 + 24 * detail_lines
+def _surface_row_height(detail_lines: int, gloss_lines: int) -> int:
+    """Keep full-width detail below both the gloss and optional metric notes."""
+    gloss_bottom = 68 + 22 * (gloss_lines - 1)
+    return max(88, gloss_bottom) + 44 + 24 * detail_lines
 
 
 def installation_surface(
@@ -433,7 +434,7 @@ def installation_surface(
 
     A row that resolved reports the version, registry size, token count, and
     digest prefix its package published. A row that did not resolve is hatched,
-    is labelled with the code that explains it, and shows an em dash in every
+    is labeled with the code that explains it, and shows an em dash in every
     metric: no value is carried over, defaulted, or guessed.
     """
     verify_coverage()
@@ -451,7 +452,21 @@ def installation_surface(
         )
         for entry in entries
     }
-    heights = [_surface_row_height(len(details[entry.id])) for entry in entries]
+    glosses = {
+        entry.id: wrap(
+            READ_CODE_GLOSS[
+                observations[entry.id].code
+                if entry.id in observations
+                else ReadCode.NOT_INSTALLED
+            ],
+            _GLOSS_WRAP,
+        )
+        for entry in entries
+    }
+    heights = [
+        _surface_row_height(len(details[entry.id]), len(glosses[entry.id]))
+        for entry in entries
+    ]
     declare_stage = next(
         (stage for stage in reading.derivation if stage.name == "declare"), None
     )
@@ -529,7 +544,7 @@ def installation_surface(
         # stat blocks to its right. The room is CONTENT_RIGHT - 20 - four stat
         # blocks - this column's left edge; a wider wrap ran the gloss under
         # the version value.
-        for index, gloss in enumerate(wrap(READ_CODE_GLOSS[code], _GLOSS_WRAP)):
+        for index, gloss in enumerate(glosses[entry.id]):
             parts.append(text(MARGIN + 424, cursor + 68 + index * 22, gloss, 24, MUTED))
         stats = (
             (
@@ -574,8 +589,11 @@ def installation_surface(
             )
             if value == "—":
                 parts.append(text(bx, cursor + 88, "not read", 24, code_ink, "700"))
+        detail_top = row_height - 24 * len(details[entry.id]) - 12
         for index, row in enumerate(details[entry.id]):
-            parts.append(text(MARGIN + 106, cursor + 104 + index * 24, row, 24, MUTED))
+            parts.append(
+                text(MARGIN + 106, cursor + detail_top + index * 24, row, 24, MUTED)
+            )
         cursor += row_height + 20
 
     status_ink = SET_STATUS_INK[reading.status]

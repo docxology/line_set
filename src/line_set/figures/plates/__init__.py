@@ -156,7 +156,7 @@ def figure_plates(
                 + (f" ({', '.join(exemptions)})" if exemptions else "")
                 + ". A declared exemption and an undeclared collision are "
                 "separated by marker shape, by fill, and by the words on the "
-                "row, so the distinction survives a greyscale print. A reading "
+                "row, so the distinction survives a grayscale print. A reading "
                 "with no unexempted name collision establishes neither sibling "
                 "correctness nor conceptual separation."
             )
@@ -249,7 +249,7 @@ def figure_plates(
             ),
             (
                 f"{plural(len(set(probe.declared_token for probe in probes)), 'token row')}, each with a cell per mutation column. "
-                "A circle means honoured and a square refused; PASS/FAIL compares "
+                "A circle means honored and a square refused; PASS/FAIL compares "
                 "each returned outcome with its specified result. Column headings "
                 "name the mutations, and a legend explains the outcome glyphs."
             )
@@ -305,14 +305,14 @@ def figure_plates(
             partial(cover_svg, lines),
             "fig:cover-plate",
             "The set's cover: one short stroke per declared line, each in "
-            "the colour its own book draws it and named beneath, held in one "
+            "the color its own book draws it and named beneath, held in one "
             "dotted register with one longer neutral stroke beneath them. "
             "The strokes stand for instruments that stay separate; the "
             "register and the reader are this volume's claim to hold them "
             "together without merging them. The plate states the set's "
             "composition, not that any line works.",
             "A row of evenly spaced short horizontal strokes, one per "
-            "declared line colour and named beneath, inside a light dotted "
+            "declared line color and named beneath, inside a light dotted "
             "rectangle, with one longer thin neutral stroke spanning the row "
             "beneath the rectangle.",
             "line_set.registry.LINE_SET via figure_plates()",

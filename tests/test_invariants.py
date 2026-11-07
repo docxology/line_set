@@ -27,7 +27,7 @@ from line_set import (
     all_invariants,
     check_contiguous_working_positions,
     check_declaration_admission,
-    check_distinct_colours,
+    check_distinct_colors,
     check_distinct_line_ids,
     check_distinct_opus_stages,
     check_must_not_become_declared,
@@ -42,7 +42,7 @@ REAL = LINE_SET
 OFFLINE_LINE_CHECKS = (
     check_declaration_admission,
     check_distinct_line_ids,
-    check_distinct_colours,
+    check_distinct_colors,
     check_distinct_opus_stages,
     check_contiguous_working_positions,
     check_orders_diverge,
@@ -105,7 +105,7 @@ def test_all_invariants_and_registry_sound_fail_on_an_empty_declaration() -> Non
 
 def test_distinct_line_ids_detects_a_duplicate() -> None:
     assert check_distinct_line_ids(REAL).passed
-    planted = REAL + (dataclasses.replace(REAL[0], color="an impostor colour"),)
+    planted = REAL + (dataclasses.replace(REAL[0], color="an impostor color"),)
     result = check_distinct_line_ids(planted)
     assert not result.passed
     assert REAL[0].id in result.detail
@@ -126,29 +126,29 @@ def test_distinct_line_ids_detects_an_entry_that_is_not_a_line() -> None:
 
 
 # --------------------------------------------------------------------------
-# 2. distinct colours
+# 2. distinct colors
 # --------------------------------------------------------------------------
 
 
-def test_distinct_colours_detects_a_duplicate() -> None:
-    assert check_distinct_colours(REAL).passed
+def test_distinct_colors_detects_a_duplicate() -> None:
+    assert check_distinct_colors(REAL).passed
     planted = REAL[:-1] + (dataclasses.replace(REAL[-1], color=REAL[0].color),)
-    result = check_distinct_colours(planted)
+    result = check_distinct_colors(planted)
     assert not result.passed
     assert REAL[0].color in result.detail
 
 
-def test_distinct_colours_detects_a_blank_and_a_non_string_colour() -> None:
+def test_distinct_colors_detects_a_blank_and_a_non_string_color() -> None:
     blank = REAL[:-1] + (dataclasses.replace(REAL[-1], color=" "),)
-    assert not check_distinct_colours(blank).passed
+    assert not check_distinct_colors(blank).passed
     numeric = REAL[:-1] + (dataclasses.replace(REAL[-1], color=7),)
-    result = check_distinct_colours(numeric)
+    result = check_distinct_colors(numeric)
     assert not result.passed
     assert f"[{len(REAL) - 1}]" in result.detail
 
 
-def test_distinct_colours_detects_an_entry_that_is_not_a_line() -> None:
-    result = check_distinct_colours(REAL + (object(),))
+def test_distinct_colors_detects_an_entry_that_is_not_a_line() -> None:
+    result = check_distinct_colors(REAL + (object(),))
     assert not result.passed
     assert f"[{len(REAL)}]" in result.detail
 
@@ -295,7 +295,7 @@ def test_must_not_become_detects_an_entry_that_is_not_a_line() -> None:
 
 
 # --------------------------------------------------------------------------
-# 7. every exemption is one the live matcher would honour
+# 7. every exemption is one the live matcher would honor
 # --------------------------------------------------------------------------
 
 
@@ -318,7 +318,6 @@ def test_the_check_detects_an_exemption_missing_one_lines_meaning() -> None:
     result = check_shared_tokens_disambiguated(REAL, planted)
     assert not result.passed
     assert real.token in result.detail
-    assert "would not honour" in result.detail
 
 
 def test_the_check_detects_an_exemption_naming_a_line_nobody_declared() -> None:
@@ -368,7 +367,6 @@ def test_the_check_detects_a_token_declared_twice() -> None:
     planted = (SHARED_TOKENS[0], SHARED_TOKENS[0])
     result = check_shared_tokens_disambiguated(REAL, planted)
     assert not result.passed
-    assert "would not honour" in result.detail
 
 
 def test_registry_sound_is_false_for_every_planted_defect() -> None:

@@ -62,6 +62,45 @@ _POLYGON_SIDES: dict[str, int] = {
     "hexagon": 6,
 }
 
+#: Normalized outlines supplement the regular polygons without color-only cues.
+_MARKER_POINTS: dict[str, tuple[tuple[float, float], ...]] = {
+    "star": (
+        (0, -1),
+        (0.23, -0.31),
+        (0.95, -0.31),
+        (0.38, 0.12),
+        (0.59, 0.81),
+        (0, 0.39),
+        (-0.59, 0.81),
+        (-0.38, 0.12),
+        (-0.95, -0.31),
+        (-0.23, -0.31),
+    ),
+    "cross": (
+        (-0.3, -1),
+        (0.3, -1),
+        (0.3, -0.3),
+        (1, -0.3),
+        (1, 0.3),
+        (0.3, 0.3),
+        (0.3, 1),
+        (-0.3, 1),
+        (-0.3, 0.3),
+        (-1, 0.3),
+        (-1, -0.3),
+        (-0.3, -0.3),
+    ),
+    "bar": ((-1, -0.3), (1, -0.3), (1, 0.3), (-1, 0.3)),
+    "chevron": (
+        (-1, -0.75),
+        (0, -0.15),
+        (1, -0.75),
+        (1, 0.15),
+        (0, 0.75),
+        (-1, 0.15),
+    ),
+}
+
 
 def _n(value: float) -> str:
     """Format one coordinate; fixed precision keeps output byte-stable."""
@@ -166,7 +205,7 @@ def glyph(
     """Return one marker of the named shape.
 
     An unknown shape raises. The shapes are how a plate stays readable without
-    colour, so a silent fallback to a circle would quietly merge two things the
+    color, so a silent fallback to a circle would quietly merge two things the
     figure claims to distinguish.
     """
     if shape == "circle":
@@ -185,14 +224,18 @@ def glyph(
             stroke=stroke,
             stroke_width=stroke_width,
         )
-    sides = _POLYGON_SIDES.get(shape)
-    if sides is None:
-        raise ValueError(f"unknown marker shape {shape!r}")
-    points = " ".join(
-        f"{_n(cx + r * math.cos(math.radians(-90 + 360 * index / sides)))},"
-        f"{_n(cy + r * math.sin(math.radians(-90 + 360 * index / sides)))}"
-        for index in range(sides)
-    )
+    outline = _MARKER_POINTS.get(shape)
+    if outline is not None:
+        points = " ".join(f"{_n(cx + r * x)},{_n(cy + r * y)}" for x, y in outline)
+    else:
+        sides = _POLYGON_SIDES.get(shape)
+        if sides is None:
+            raise ValueError(f"unknown marker shape {shape!r}")
+        points = " ".join(
+            f"{_n(cx + r * math.cos(math.radians(-90 + 360 * index / sides)))},"
+            f"{_n(cy + r * math.sin(math.radians(-90 + 360 * index / sides)))}"
+            for index in range(sides)
+        )
     return (
         f'<polygon points="{points}" fill="{fill}" stroke="{stroke}" '
         f'stroke-width="{_n(stroke_width)}"/>'

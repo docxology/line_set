@@ -49,7 +49,7 @@ from line_set.omnibus import (
     merge_bibliographies,
     namespace_anchors,
     namespace_prefix,
-    normalise_field,
+    normalize_field,
     parse_bib,
     promote_headings,
     read_paper_config,
@@ -153,7 +153,7 @@ def declaration(*ids: str) -> tuple[LineEntry, ...]:
     return tuple(
         LineEntry(
             id=line_id,
-            color=f"colour-{position}",
+            color=f"color-{position}",
             question=f"Question {position}?",
             job=f"Job {position}",
             must_not_become=f"Not {position}",
@@ -171,7 +171,7 @@ def wrapper_entry(line_id: str, position: int) -> LineEntry:
     """A fictional wrapper entry to head a fictional volume."""
     return LineEntry(
         id=line_id,
-        color="colourless",
+        color="colorless",
         question="How does the set stay separate?",
         job="Declare and read",
         must_not_become="A fifth instrument",
@@ -392,7 +392,7 @@ def test_manuscript_control_files_are_not_reproduced_as_sections(
     assert tuple(path.name for path in paper.sections) == ("00_abstract.md",)
 
 
-def test_the_corpus_gate_honours_the_explicit_snapshot_directory(
+def test_the_corpus_gate_honors_the_explicit_snapshot_directory(
     tmp_path: Path,
 ) -> None:
     code = (
@@ -502,9 +502,9 @@ def test_identity_ignores_formatting_and_a_per_work_note_but_not_a_title() -> No
     assert first.raw != second.raw, "the formatting really does differ"
 
 
-def test_normalising_collapses_whitespace_and_braces_and_keeps_content() -> None:
-    assert normalise_field("{Ostrom,   Elinor}") == normalise_field("Ostrom, Elinor")
-    assert normalise_field("A Title") != normalise_field("Another Title")
+def test_normalizing_collapses_whitespace_and_braces_and_keeps_content() -> None:
+    assert normalize_field("{Ostrom,   Elinor}") == normalize_field("Ostrom, Elinor")
+    assert normalize_field("A Title") != normalize_field("Another Title")
 
 
 def test_a_bib_entry_with_quoted_and_bare_values_is_read() -> None:
@@ -628,15 +628,15 @@ def test_the_volume_order_is_the_declared_working_order_and_not_a_list() -> None
     assert positions == [entry.working_position for entry in LINE_SET]
 
 
-def test_appending_a_colour_extends_the_volume_without_reordering_it() -> None:
-    extra = declaration("fifth_colour")[0]
+def test_appending_a_color_extends_the_volume_without_reordering_it() -> None:
+    extra = declaration("fifth_color")[0]
     grown = (
         *LINE_SET,
         LineEntry(**{**extra.canonical(), "working_position": len(LINE_SET) + 1}),
     )
     ordered = volume_order(grown, WRAPPER_LINE)
     assert [entry.id for entry in ordered[1:-1]] == [entry.id for entry in LINE_SET]
-    assert ordered[-1].id == "fifth_colour"
+    assert ordered[-1].id == "fifth_color"
 
 
 def test_the_written_filenames_sort_into_reading_order(tmp_path: Path) -> None:
@@ -749,7 +749,7 @@ def test_a_work_whose_plates_were_never_built_is_reported_missing_not_raised(
     assert "this volume is therefore incomplete" in front.lower()
 
 
-def test_a_long_list_of_unbuilt_plates_is_summarised_with_its_count(
+def test_a_long_list_of_unbuilt_plates_is_summarized_with_its_count(
     tmp_path: Path,
 ) -> None:
     """The reason travels into the front matter, so it states a count, not a wall."""

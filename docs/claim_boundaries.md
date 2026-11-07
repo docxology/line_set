@@ -82,7 +82,7 @@ repeat totals to the external renderer. A row identifies its source in the
 reading record; it does not independently verify the measurement or confer
 weight on a manuscript claim.
 
-**It does not read behaviour, and it does not read all the names.**
+**It does not read behavior, and it does not read all the names.**
 `enum_tokens` collects members of enums exported at the *package root*. A token
 defined in a submodule and not re-exported is invisible to the reader by design:
 the contract is about the vocabulary a line publishes. A line could therefore
@@ -141,6 +141,17 @@ it does not authenticate imported observations or recover unrecorded history.
 The finite mutation suite covers every shipped exemption and named mutation,
 not every possible input and not whether meanings are genuinely distinct.
 
+**A public reading view is not full public source-pin proof.** Explicit source
+withholding is applied only after a complete pinned reading has been admitted.
+The `2.0-public` record names withheld sources and omits their revisions and module
+paths; its digest belongs to that projected reading, not the private full record.
+Replay checks the public reading's integrity and census. It cannot recover a
+withheld revision or detect a change confined to that identity. Public `--check`
+compares disclosed measurements with a newly admitted reading; exact private
+revision continuity remains a separate full-record check. This is field-specific
+provenance withholding, not automatic anonymity or disclosure clearance for
+arbitrary metadata, diagnostic prose, native reports, or compiled manuscripts.
+
 **Self-disjointness is a claim about tokens, not about restraint.**
 `check_self_disjointness` establishes that this package's own status names do
 not collide with any line's vocabulary. It is the property the project exists to
@@ -150,7 +161,7 @@ meta-evaluator, or that its prose is modest. Those are read by a person; the
 check only ensures the wrapper is subject to the same rule it applies.
 
 **Nothing here is a claim about a person.** No status describes an author,
-their diligence, or their judgement. `SET_COLLIDING` is a fact about two
+their diligence, or their judgment. `SET_COLLIDING` is a fact about two
 spellings.
 
 ## What each status actually means
@@ -166,19 +177,19 @@ spellings.
 
 | Claim class | What this project supports | Evidence | What it does not support |
 | --- | --- | --- | --- |
-| Structural | The declaration is well formed: ids, colours, and opus stages distinct; positions contiguous; working order and opus order distinct; every entry states what it must not become; every exemption is one the live matcher honours. | `all_invariants()` and its planted-bad detection tests. | That a well-formed declaration is a well-chosen one. |
-| Reading | Which declared packages resolved, what version and registry size each reports, and which tokens are carried by more than one line. | `read_set()`, its recorded five-stage derivation, and the resolver-injection tests. | Anything about the behaviour, quality, or completeness of the packages read. |
-| Self-application | This package's own status tokens are disjoint from every line vocabulary the reader could read. | `check_self_disjointness()`, run against the live siblings. | That the wrapper has honoured its other boundaries, which are prose commitments a person checks. |
+| Structural | The declaration is well formed: ids, colors, and opus stages distinct; positions contiguous; working order and opus order distinct; every entry states what it must not become; every exemption is one the live matcher honors. | `all_invariants()` and its planted-bad detection tests. | That a well-formed declaration is a well-chosen one. |
+| Reading | Which declared packages resolved, what version and registry size each reports, and which tokens are carried by more than one line. | `read_set()`, its recorded five-stage derivation, and the resolver-injection tests. | Anything about the behavior, quality, or completeness of the packages read. |
+| Self-application | This package's own status tokens are disjoint from every line vocabulary the reader could read. | `check_self_disjointness()`, run against the live siblings. | That the wrapper has honored its other boundaries, which are prose commitments a person checks. |
 | Empirical | None. | There is no dataset, no observation of use, and no measurement of whether the set helps anyone. | Any claim that separating instruments this way works, is better than not doing so, or generalizes past one person's practice. |
 
 The Reading row is where the manuscript's counted numbers live — how many enum
 classes the packages export, how many members those classes declare, how
 many distinct names survive, and which name two lines carry. Those are
 measurements of the declared packages on one machine on one date, recorded in
-`docs/manuscript/reading_record.json` and bound to the prose by
-`tests/test_manuscript_bindings.py`. They are not the Empirical row, which
-stays at none: counting spellings is not evidence that keeping instruments
-apart this way does any good.
+`docs/manuscript/reading_record.json`. Tests replay that reading and check its
+hashes, source identities and census consistency; a reviewer checks the prose
+against it. They are not the Empirical row: counting spellings is not evidence
+that keeping instruments apart this way does any good.
 
 Canonical reading admission checks the declaration digest's string type and
 lowercase SHA-256 shape. Shape admission does not authenticate the declaration

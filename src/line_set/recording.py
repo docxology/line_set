@@ -1,22 +1,11 @@
-"""Record the dated reading the manuscript quotes, as a checkable artifact.
+"""Record the complete pinned namespace reading quoted by the manuscript.
 
-The manuscript reports numbers it measured on the review date: sibling
-versions, registry sizes, per-line token counts, digests, and the token
-arithmetic that carries the paper's one empirical claim. Those numbers cannot
-be re-derived on a machine where the sibling packages are absent, which is most
-machines the manuscript will ever reach — so on those machines the claim would
-travel entirely unchecked.
-
-This script closes that gap by splitting the check in two. It writes what the
-reading actually said into ``docs/manuscript/reading_record.json``. The suite then
-binds the prose to the record everywhere, and binds the record to a live
-reading wherever the siblings can be read. Neither half is the whole check and
-neither half is vacuous: prose drift fails on any machine, and a stale record
-fails on the review machine.
-
-The record is not evidence that the numbers were right when they were taken.
-It is a dated statement of what this package read, carried alongside the prose
-that quotes it, so that the two can be compared without the packages present.
+The artifact retains observed sibling versions, registry identities, source
+revisions, published names and a vocabulary census. Tests replay its canonical
+reading and check its identity and arithmetic without requiring the siblings;
+freshness is compared wherever the same pinned sources are accessible.
+Authored prose must be reviewed against the record, not certified by matching
+sentences. None of these measurements evaluates a sibling's conclusions.
 
 The default date comes from ``docs/manuscript/config.yaml``, not the clock.
 When preserving an earlier measurement across a publication update, pass its
@@ -29,15 +18,21 @@ morning. Taking a reading for a *new* review date is a deliberate act: pass
 ``--as-of`` and update the manuscript date, the set version, and any prose
 whose numbers moved.
 
-It fails closed. A reading that is not ``set_legible`` — because a line was not
-installed, or because the vocabularies collided — is not a record of the set,
-and writing one would put an incomplete measurement where a complete one is
-expected. The script refuses and exits non-zero instead.
+Canonical recording additionally requires complete package metadata, pinned
+source receipts and completed discovery. Readable unpinned development
+packages remain valid inputs to ``read_set`` but cannot become canonical
+manuscript evidence.
+
+An explicitly requested public view withholds selected source identities only
+after the complete underlying reading has passed those gates. Its distinct
+schema and withheld-source list disclose that it is not publicly pinned source
+proof. Checking that view recomputes the same admitted measurement and projection.
 """
 
 from __future__ import annotations
 
 import argparse
+from dataclasses import replace
 import json
 import re
 import sys
@@ -52,6 +47,7 @@ from . import (
     __version__,
     canonical_reading,
     read_set,
+    check_pinned_sources,
     reading_digest,
     registry_digest,
     sibling_path_resolver,
@@ -98,6 +94,7 @@ def review_date(config_path: Path = CONFIG_PATH) -> str:
 
 #: Bumped when the record's shape changes, so a reader can tell which it holds.
 SCHEMA_VERSION = "2.0"
+PUBLIC_SCHEMA_VERSION = "2.0-public"
 
 #: How the census was taken, recorded so the numbers are not bare.
 CENSUS_METHOD = (
@@ -109,8 +106,14 @@ CENSUS_METHOD = (
 )
 
 
-def build_record(as_of: str | None) -> tuple[dict[str, object], list[str]]:
-    """Read the set live and assemble the record, plus any refusal reasons."""
+def build_record(
+    as_of: str | None, *, withheld_sources: tuple[str, ...] = ()
+) -> tuple[dict[str, object], list[str]]:
+    """Read pinned sources, optionally withholding identities in a public view."""
+    withheld = tuple(sorted(set(withheld_sources)))
+    unknown = set(withheld) - {entry.id for entry in LINE_SET}
+    if unknown:
+        raise ValueError(f"cannot withhold undeclared sources: {sorted(unknown)}")
     resolver = sibling_path_resolver(entry.package_name for entry in LINE_SET)
     reading = read_set(LINE_SET, SHARED_TOKENS, resolver=resolver, as_of=as_of)
 
@@ -124,6 +127,10 @@ def build_record(as_of: str | None) -> tuple[dict[str, object], list[str]]:
         refusals.append(f"these declared lines could not be read: {unread}")
     if reading.status is not SetStatus.SET_LEGIBLE:
         refusals.append(f"the reading is {reading.status.value}, not set_legible")
+    if not refusals:
+        pinned = check_pinned_sources(reading)
+        if not pinned.passed:
+            refusals.append(pinned.detail)
 
     census: dict[str, dict[str, int]] = {}
     if not refusals:
@@ -142,19 +149,37 @@ def build_record(as_of: str | None) -> tuple[dict[str, object], list[str]]:
     distinct = len(
         {token for observation in reading.observations for token in observation.tokens}
     )
+    recorded_reading = reading
+    if withheld:
+        recorded_reading = replace(
+            reading,
+            observations=tuple(
+                replace(
+                    observation,
+                    provenance=replace(
+                        observation.provenance,
+                        module_origin=None,
+                        source_revision=None,
+                    ),
+                )
+                if observation.line_id in withheld
+                else observation
+                for observation in reading.observations
+            ),
+        )
     record = {
-        "schema_version": SCHEMA_VERSION,
+        "schema_version": PUBLIC_SCHEMA_VERSION if withheld else SCHEMA_VERSION,
         "package_version": __version__,
         "set_version": SET_VERSION,
         "recorded_on": reading.read_as_of,
         "resolver_mode": "sibling_path_resolver",
         "source_revisions": {
             item.line_id: item.provenance.source_revision
-            for item in reading.observations
+            for item in recorded_reading.observations
         },
         "set_digest": registry_digest(LINE_SET, SHARED_TOKENS),
-        "reading_digest": reading_digest(reading),
-        "reading": json.loads(canonical_reading(reading)),
+        "reading_digest": reading_digest(recorded_reading),
+        "reading": json.loads(canonical_reading(recorded_reading)),
         "vocabulary_census": {
             "method": CENSUS_METHOD,
             "per_line": census,
@@ -173,6 +198,8 @@ def build_record(as_of: str | None) -> tuple[dict[str, object], list[str]]:
             ),
         },
     }
+    if withheld:
+        record["withheld_sources"] = list(withheld)
     return record, refusals
 
 
@@ -193,19 +220,32 @@ def main(argv: list[str] | None = None) -> None:
         help="where to write the record (defaults to docs/manuscript/reading_record.json)",
     )
     parser.add_argument(
+        "--withhold-source",
+        action="append",
+        choices=tuple(entry.id for entry in LINE_SET),
+        default=[],
+        help=(
+            "write an explicitly unpinned public view without this line's source "
+            "revision or module path; repeat for additional lines. Complete "
+            "underlying pinned-source admission is still required"
+        ),
+    )
+    parser.add_argument(
         "--check",
         action="store_true",
         help="compare against the record on disk without rewriting it",
     )
     args = parser.parse_args(argv)
 
-    record, refusals = build_record(args.as_of or review_date())
+    record, refusals = build_record(
+        args.as_of or review_date(), withheld_sources=tuple(args.withhold_source)
+    )
     if refusals:
         for reason in refusals:
             print(f"REFUSED {reason}", file=sys.stderr)
         print(
-            "A partial or colliding reading is not a record of the set. Install "
-            "the declared line packages and rerun.",
+            "A canonical record requires a complete, collision-free reading of "
+            "pinned sources. Select source snapshots and rerun.",
             file=sys.stderr,
         )
         sys.exit(1)

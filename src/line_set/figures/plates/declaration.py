@@ -1,7 +1,7 @@
 """Plates drawn from the declaration alone. No sibling package is read here.
 
 ``set_compass`` and ``two_orders`` take the declared lines as an argument and
-compute every position from them, so appending a colour to
+compute every position from them, so appending a color to
 :data:`line_set.registry.LINE_SET` changes both plates without an edit in this
 module. Neither plate says anything about whether a line works, only about
 what the declaration says the line is for.
@@ -75,11 +75,10 @@ def _draw_card(
 ) -> list[str]:
     """Draw one line's card: marker, names, and its three declared sentences.
 
-    ``marker_position`` overrides which shape the marker takes. The wrapper's
-    card uses it: its declared ``working_position`` was fixed when the module
-    was written, so a set that has since grown would give it the same shape as
-    a real line. Passing one past the end of the drawn set keeps every marker
-    on the plate distinct however many lines the declaration holds.
+    ``marker_position`` places the wrapper after the entries actually drawn,
+    rather than reusing its position in the unextended declaration. Current
+    entries and a single-entry extension have distinct markers; larger sets
+    may exhaust the finite shape cycle and still retain full written identities.
     """
     ink = line_ink(entry.color)
     fill = line_fill(entry.color)
@@ -253,7 +252,7 @@ def set_compass(lines: tuple[LineEntry, ...], wrapper: LineEntry) -> str:
         cursor,
         wrapper_height,
         dashed=True,
-        corner_note="wrapper",
+        corner_note="—",
         marker_position=len(entries) + 1,
     )
     cursor += wrapper_height + 42
@@ -325,7 +324,7 @@ def two_orders(lines: tuple[LineEntry, ...]) -> str:
     parts.append(text(left_x, top - 26, "WORKING ORDER", 28, ACCENT, "700"))
     parts.append(text(right_x, top - 26, "OPUS ORDER", 28, ACCENT, "700"))
 
-    left_centre: dict[str, float] = {}
+    left_center: dict[str, float] = {}
     for index, entry in enumerate(working):
         y = top + index * row_h
         ink = line_ink(entry.color)
@@ -356,9 +355,9 @@ def two_orders(lines: tuple[LineEntry, ...]) -> str:
         )
         for row, question in enumerate(questions[entry.id]):
             parts.append(text(left_x + 92, y + 76 + row * 28, question, 26, MUTED))
-        left_centre[entry.id] = y + box_h / 2
+        left_center[entry.id] = y + box_h / 2
 
-    right_centre: dict[str, float] = {}
+    right_center: dict[str, float] = {}
     for index, entry in enumerate(staged):
         y = top + index * row_h
         ink = line_ink(entry.color)
@@ -387,11 +386,11 @@ def two_orders(lines: tuple[LineEntry, ...]) -> str:
                 MUTED,
             )
         )
-        right_centre[entry.id] = y + box_h / 2
+        right_center[entry.id] = y + box_h / 2
 
     for entry in working:
-        start_y = left_centre[entry.id]
-        end_y = right_centre.get(entry.id)
+        start_y = left_center[entry.id]
+        end_y = right_center.get(entry.id)
         ink = line_ink(entry.color)
         if end_y is None:
             continue
@@ -440,9 +439,9 @@ def two_orders(lines: tuple[LineEntry, ...]) -> str:
             )
             parts.append(
                 path(
-                    f"M{left_x + box_w} {left_centre[entry.id]:.1f} C "
+                    f"M{left_x + box_w} {left_center[entry.id]:.1f} C "
                     f"{(left_x + box_w + right_x) / 2:.1f} "
-                    f"{left_centre[entry.id]:.1f}, "
+                    f"{left_center[entry.id]:.1f}, "
                     f"{(left_x + box_w + right_x) / 2:.1f} {cursor + 30}, "
                     f"{right_x} {cursor + 30}",
                     MUTED,

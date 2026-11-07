@@ -176,7 +176,7 @@ def self_application(
     appended — the same reading
     :func:`line_set.invariants.check_self_disjointness` takes. The verdict
     panel is that function's pure half run over this reading, not a second
-    judgement made here.
+    judgment made here.
     """
     verdict = self_disjointness_from_reading(reading, wrapper)
     observation = _wrapper_observation(reading, wrapper)

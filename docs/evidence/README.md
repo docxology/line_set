@@ -105,7 +105,7 @@ Line Set provides no replay runner and never executes a sibling evaluator.
 | Input changes, native output unchanged | Input/context identities change, report identity can remain the same. |
 | Envelope subject/schema/date changes | Strict native envelope validity is rechecked separately from report correspondence. |
 | Sources or envelope are consistently rehashed | Byte consistency alone never establishes external authentication. |
-| Source access unavailable | Exact missing prerequisites are reported; no assertion is labelled false. |
+| Source access unavailable | Exact missing prerequisites are reported; no assertion is labeled false. |
 | Favorable sibling output added | Original native outputs and unresolved decisions remain verbatim; no aggregate. |
 | Empty sources, verification checks or prerequisites | Structural acceptance fails rather than treating no scan as success. |
 

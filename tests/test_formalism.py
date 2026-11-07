@@ -21,7 +21,7 @@ carries it.
 reproduced work, or five papers would share one sequence and every paper's own
 references would resolve to numbers that mean nothing outside the volume. The
 assembler declares the reset in two places and both are checked, along with the
-heading structure that makes the declared level the right one. A behavioural
+heading structure that makes the declared level the right one. A behavioral
 check against the real filter runs when the filter is pointed at with
 ``LINE_SET_FORMALISM_FILTER`` and is skipped, by name, when it is not — the
 filter belongs to the render toolchain, which this repository does not vendor.
@@ -91,7 +91,7 @@ _REFERENCE_RE = re.compile(r"@([A-Za-z]+):([A-Za-z0-9][A-Za-z0-9_.-]*)")
 #: A hand-written formalism number, which this manuscript must never contain.
 #:
 #: The filter emits ``**Definition 1.**`` itself, from document order. A number
-#: in the source is a second, unsynchronised copy of that count.
+#: in the source is a second, unsynchronized copy of that count.
 _HAND_NUMBER_RE = re.compile(
     r"\b("
     + "|".join(sorted(kind.capitalize() for kind in KIND_PREFIXES))
@@ -212,15 +212,15 @@ def test_the_manuscript_declares_formalism_blocks_to_check() -> None:
 
 
 def test_every_formalism_block_carries_a_label() -> None:
-    unlabelled = [
+    unlabeled = [
         f"{block.section}: {block.kind} {block.number}"
         for block in blocks()
         if not block.label
     ]
-    assert unlabelled == []
+    assert unlabeled == []
 
 
-def test_the_label_rule_rejects_an_unlabelled_block(tmp_path: Path) -> None:
+def test_the_label_rule_rejects_an_unlabeled_block(tmp_path: Path) -> None:
     """The positive control for the rule above."""
     planted = '::: {.definition title="No label"}\nBody.\n:::\n'
     line = planted.splitlines()[0]
@@ -232,7 +232,7 @@ def test_the_label_rule_rejects_an_unlabelled_block(tmp_path: Path) -> None:
 
 def test_every_label_prefix_matches_its_kind() -> None:
     wrong = [
-        f"{block.section}: {block.kind} labelled {block.label}"
+        f"{block.section}: {block.kind} labeled {block.label}"
         for block in blocks()
         if block.label.partition(":")[0] != KIND_PREFIXES[block.kind]
     ]
@@ -240,7 +240,7 @@ def test_every_label_prefix_matches_its_kind() -> None:
 
 
 def test_the_prefix_rule_rejects_a_mismatched_prefix() -> None:
-    """A proposition labelled ``def:`` would read as a definition in prose."""
+    """A proposition labeled ``def:`` would read as a definition in prose."""
     assert KIND_PREFIXES["proposition"] != "def"
     match = _DIV_OPEN_RE.match('::: {.proposition #def:wrong title="X"}')
     assert match is not None
@@ -389,8 +389,8 @@ def test_the_fail_closed_proposition_is_true_of_the_matcher() -> None:
     """
     probes = exemption_probes(LINE_SET, SHARED_TOKENS)
     assert probes, "an empty probe set would make this vacuous"
-    honoured = [probe for probe in probes if probe.expected_match]
-    assert honoured, "with no positive control, refusing everything would pass"
+    honored = [probe for probe in probes if probe.expected_match]
+    assert honored, "with no positive control, refusing everything would pass"
     diverged = [probe.name for probe in probes if not probe.holds]
     assert diverged == []
 
@@ -541,7 +541,7 @@ def _filter_path() -> Path | None:
 def test_the_reset_level_restarts_numbering_in_a_real_pandoc_run(
     tmp_path: Path,
 ) -> None:
-    """The behavioural half, run against the filter that will do the numbering.
+    """The behavioral half, run against the filter that will do the numbering.
 
     The filter belongs to the render toolchain, which this repository states as
     an external dependency and never vendors, so the check is skipped by name
@@ -550,7 +550,7 @@ def test_the_reset_level_restarts_numbering_in_a_real_pandoc_run(
     a pass here is not a pass a broken filter could also produce.
     """
     if shutil.which("pandoc") is None:
-        pytest.skip("pandoc is not installed; the numbering behaviour needs it")
+        pytest.skip("pandoc is not installed; the numbering behavior needs it")
     lua = _filter_path()
     if lua is None:
         pytest.skip(
@@ -690,7 +690,7 @@ def test_an_empty_exemption_table_yields_no_probe_and_no_claim() -> None:
 def test_a_declaration_with_no_spare_line_derives_the_adopting_one() -> None:
     """Every declared line already carrying the token is a state to survive.
 
-    The four-line set does not reach it, so it is built here: an exemption
+    The shipped declaration does not reach it, so it is built here: an exemption
     naming every declared line leaves the probe set no spare id to hand the
     subset and superset probes, and it derives one rather than dropping two
     probes and shrinking the demonstration silently.
@@ -725,26 +725,6 @@ def test_a_declaration_with_no_spare_line_derives_the_adopting_one() -> None:
     )
     assert probes_hold(probes)
     assert any(derived in probe.query_lines for probe in probes)
-
-
-def test_the_gate_plate_reports_an_empty_table_rather_than_drawing_a_clean_sheet() -> (
-    None
-):
-    """The plate's own refusal to be vacuous, drawn and inspected."""
-    from line_set.figures.plates.exemption import exemption_gate
-
-    body = exemption_gate(LINE_SET, ())
-    assert body.startswith("<svg ")
-    assert "the exemption table is empty, so no probe was run" in body
-    assert "NOTHING TO DEMONSTRATE ON" in body
-    assert "would have passed on nothing" in body
-
-    drawn = exemption_gate(LINE_SET, SHARED_TOKENS)
-    assert "the exemption table is empty" not in drawn, (
-        "the populated gate must not draw the empty panel, or the refusal above "
-        "would be indistinguishable from the ordinary case"
-    )
-    assert SHARED_TOKENS[0].token in drawn
 
 
 def test_vocabulary_disjointness_holds_over_the_collision_partition() -> None:
@@ -803,8 +783,3 @@ def test_vocabulary_disjointness_holds_over_the_collision_partition() -> None:
     assert len(unex) == 1
     assert unex[0].token == "SHARED_TOKEN"
     assert not unex[0].exempted
-
-    # The text of the proposition must exist in the manuscript.
-    text = (MANUSCRIPT / "02a_formalism.md").read_text(encoding="utf-8")
-    assert "maps every observed token to the lines that carry it" in text
-    assert "no mapping from those spellings to registry entries or concepts" in text

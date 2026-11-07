@@ -113,7 +113,7 @@ def test_an_exact_exemption_matches() -> None:
     assert exemption_for((declared,), "SHARED", ("two_line", "one_line")) is declared
 
 
-def test_the_real_declaration_is_honoured_by_the_live_matcher() -> None:
+def test_the_real_declaration_is_honored_by_the_live_matcher() -> None:
     for token in SHARED_TOKENS:
         assert exemption_for(SHARED_TOKENS, token.token, token.lines) is token
 
@@ -349,7 +349,7 @@ def test_a_resolution_with_no_module_is_refused_rather_than_believed() -> None:
     """The resolver contract is that a resolved package comes with its module.
 
     A resolver that breaks it gets no measurements invented on its behalf, and
-    it does not get its claim of ``RESOLVED`` honoured either. Honouring it
+    it does not get its claim of ``RESOLVED`` honored either. Honoring it
     would put a line with no vocabulary into the read set, where it counts as
     read, contributes nothing to the collision scan, and cannot make the
     reading partial — so a whole set of them would report ``SET_LEGIBLE`` on

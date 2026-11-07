@@ -1,65 +1,32 @@
 # Deferred work
 
-This file tracks only open work. Completed windows are logged at the bottom.
-[`docs/claim_boundaries.md`](docs/claim_boundaries.md) defines what this project
-may claim regardless of anything listed here.
+This file separates current open work from the dated completed log below.
+[`docs/claim_boundaries.md`](docs/claim_boundaries.md) limits every claim.
 
 ## Open — inside the current instrument boundary
 
-- **Admission research remains unexecuted.** The additional-topics synthesis is
-  implemented as a [dossier and protocol](docs/admission/README.md), with a
-  hypothetical case library and an optional evidence/replay convention. Native
-  exporters, replay runners and instrument fixes remain owner work under
-  [sibling requirements](docs/admission/sibling-requirements.md). Obtain their
-  receipts, real native outputs, independent human reviews and consent before
-  running the proposed comparison. Do not admit a colour from the scaffold.
-
-- **The render has now happened once, and once is not a standing gate.** On
-  2026-07-28 the manuscript rendered through the external template engine to a
-  26-page PDF with zero undefined references and no `??`, and the seven
-  formalism blocks numbered correctly from document order. What is still open is
-  that nothing re-runs that render: the suite checks the sources, and a
-  regression that only shows up in LaTeX would not be caught until someone
-  renders again by hand.
-- **The volume's numbering reset is verified through pandoc, and now once
-  through a rendered volume.** `formalism_reset_level` was measured restarting
-  the counters at each work over the real five-work corpus, using the render
-  toolchain's own filter, and the negative control fired. On 2026-07-29 the
-  compiled volume was rendered to a PDF and its text read back: zero undefined
-  references, and "Definition 1" recurs across works while within-work
-  sequences run past 13. That is one dated reading, not a standing gate; the
-  behavioural test still skips wherever `LINE_SET_FORMALISM_FILTER` names no
-  filter, which is every machine that does not also hold the template
-  checkout.
-- **No plate has been read by a person in greyscale print.** The tests establish
-  that no encoding is colour-only — every collision cell carries a shape and a
-  word as well as an ink — and that every text run clears both the canvas floor
-  and the rendered-point floor. What is still unestablished is that a person has
-  looked at a greyscale print and found the distinctions readable. Recheck after
-  the first render.
-
-  This entry used to say that readability at the embedded width could not be
-  checked "because that width is a property of the render that has not
-  happened". That reason was wrong, and it was load-bearing: the width is
-  declared on the embed and the page geometry is declared in
-  `docs/manuscript/config.yaml`, so the rendered point size is derivable from the
-  checkout with nothing built but the figures. While the claim stood, every
-  plate was landing at 4.27pt against the 6.0pt floor the sibling line projects
-  hold their figures to — the canvas floor was passing and measuring a unit the
-  page never sees. `src/line_set/figures/legibility.py` now derives the real
-  number and `tests/test_figure_legibility.py` gates on it.
-- **The measured numbers are checked against a record, not re-measured
-  everywhere.** `docs/manuscript/reading_record.json` lets a machine without the
-  sibling packages catch prose that drifted from the reading; only a machine that
-  can read the siblings catches a record that drifted from them. Both halves run
-  in the suite, and the second reports as skipped where it cannot run. That is
-  the honest arrangement, not a complete one: a stale record on a machine that
-  never had the siblings is undetectable except through the declaration digest.
-- **`--as-of` is an operator input.** `record_reading.py` takes the review date
-  rather than deriving it, so a record can be written under a date that is not
-  the day it was taken. The suite checks the record's date against
-  `docs/manuscript/config.yaml`, which catches disagreement with the paper but not a
-  date that was wrong in both places.
+- **Admission research remains unexecuted.** The
+  [dossier and protocol](docs/admission/README.md) define a hypothetical case
+  library and optional evidence/replay convention. Native exporters and fixes
+  remain owner-governed. A source refinement pass does not replace the real
+  native outputs, independent human reviews and consent needed for the proposed
+  comparison. Do not admit a color from a lexical fixture or unexecuted protocol.
+- **Publication rendering is not a standing gate.** Source tests and figure
+  checks do not establish a successful current PDF, HTML, EPUB or compiled-volume
+  render. Record actual renderer commands and results rather than extrapolating
+  from an earlier edition. The optional formalism-filter integration still
+  requires its explicitly supplied external tool.
+- **Physical grayscale print review is not established by screen inspection.**
+  Shape/name redundancy, geometry checks and derived printed-point measurements
+  are necessary but do not prove human readability on paper.
+- **Pinned measurements are conditional evidence.** Canonical replay and census
+  consistency are checked without siblings; fresh comparison additionally
+  requires the recorded source snapshots. Authored prose is reviewed against
+  the record rather than certified by matching sentences. Neither route
+  authenticates the declared sources or evaluates their conclusions.
+- **`--as-of` is an operator input.** An internally consistent date does not
+  prove when a reading was taken. Preserve historical producer metadata, use an
+  explicit review date and retain genuine source custody for new measurements.
 
 ## Open — intentionally outside the current instrument boundary
 
@@ -76,7 +43,7 @@ These are not represented anywhere as hidden features:
 - **Conceptual overlap stays human work.** The reader compares spellings of
   exported enum member names. Detecting that two lines are about the same thing
   in different words is not something this package attempts, and a heuristic
-  that guessed at it would produce exactly the kind of confident meta-judgement
+  that guessed at it would produce exactly the kind of confident meta-judgment
   the project refuses.
 - **Undeclared-line discovery stays convention-based.** A package is found by a
   naming convention and by what is already imported. An empty

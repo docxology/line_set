@@ -11,7 +11,7 @@ concatenates, it moves anchors into per-paper namespaces so two papers that
 both wrote ``{#sec:abstract}`` do not collide, it shifts headings down one
 level so a part header can carry each paper's title, it retargets figure
 embeds so they resolve from the injected location, and it merges the
-bibliographies. It does not summarise, reconcile, rank, or reword. The
+bibliographies. It does not summarize, reconcile, rank, or reword. The
 round-trip in :func:`invert_section` is the statement of that: every transform
 below is invertible, and the suite inverts them back to the source bytes.
 
@@ -585,10 +585,10 @@ class BibEntry:
     def identity(self) -> tuple[str, ...]:
         """The fields that decide whether two entries are the same work."""
         lookup = dict(self.fields)
-        return tuple(normalise_field(lookup.get(name, "")) for name in IDENTITY_FIELDS)
+        return tuple(normalize_field(lookup.get(name, "")) for name in IDENTITY_FIELDS)
 
 
-def normalise_field(value: str) -> str:
+def normalize_field(value: str) -> str:
     """Collapse formatting so a spelling of one name cannot look like a conflict.
 
     Whitespace, braces, LaTeX accent commands, and Unicode combining marks are
@@ -717,7 +717,7 @@ def merge_bibliographies(
 
     ``databases`` is ``(source label, text)`` in volume order. When a key is
     declared twice with the same bibliographic identity — author, title, year,
-    and doi, compared with whitespace and braces normalised — the first
+    and doi, compared with whitespace and braces normalized — the first
     paper's entry is kept verbatim, which keeps that paper's own ``note``
     gloss and drops the later one's; the drop is recorded in ``duplicates``
     rather than being left to be noticed.
@@ -905,7 +905,7 @@ def volume_order(
     """The reading order of the volume: the wrapper, then the working order.
 
     The working order is read off the declaration's ``working_position`` rather
-    than written down here, so appending a colour to the set changes this
+    than written down here, so appending a color to the set changes this
     function's answer without changing this function.
     """
     return (wrapper, *sorted(lines, key=lambda item: item.working_position))
@@ -1054,7 +1054,7 @@ def front_matter(
         "This is a compiled volume. It adds no substantive instrument. The work "
         "that assembled it declares the set, reads whichever declared packages "
         "are installed, and checks published enum-member-name collisions under "
-        "exact declared exemptions; it does not evaluate, rank, reconcile, or summarise "
+        "exact declared exemptions; it does not evaluate, rank, reconcile, or summarize "
         "the works it reproduces.",
         "",
         f"Each of the {len(present)} works below is reproduced from its own source "
@@ -1073,7 +1073,7 @@ def front_matter(
         f"{reading.counts()[ReadCode.RESOLVED.value]} of {len(reading.observations)} "
         "readable vocabularies. It is not a finding "
         "that the instruments are correct, complete, good, or worth having, and "
-        "it is not a finding about behaviour.",
+        "it is not a finding about behavior.",
         "",
         "## The works in this volume",
         "",

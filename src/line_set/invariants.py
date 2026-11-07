@@ -2,7 +2,7 @@
 
 Offline checks compute over the declaration: they read
 ``LINE_SET`` and ``SHARED_TOKENS`` and import nothing. They establish that the
-declaration is well formed — ids and colours distinct, positions contiguous,
+declaration is well formed — ids and colors distinct, positions contiguous,
 every exemption disambiguated — and nothing at all about whether the lines
 themselves are good instruments.
 
@@ -88,11 +88,11 @@ def check_distinct_line_ids(
     )
 
 
-def check_distinct_colours(
+def check_distinct_colors(
     lines: tuple[LineEntry, ...] = LINE_SET,
 ) -> SoundnessResult:
-    """Colours must be distinct; the colour is how a line is named in prose."""
-    name = "distinct_colours"
+    """Colors must be distinct; the color is how a line is named in prose."""
+    name = "distinct_colors"
     entries = tuple(lines)
     if not entries:
         return SoundnessResult(
@@ -107,12 +107,12 @@ def check_distinct_colours(
     ]
     if malformed:
         return SoundnessResult(
-            name, False, f"entries with a missing or invalid colour: {malformed}"
+            name, False, f"entries with a missing or invalid color: {malformed}"
         )
-    colours = [entry.color for entry in _entries(entries)]
-    duplicates = sorted(value for value, count in Counter(colours).items() if count > 1)
+    colors = [entry.color for entry in _entries(entries)]
+    duplicates = sorted(value for value, count in Counter(colors).items() if count > 1)
     ok = not duplicates
-    return SoundnessResult(name, ok, "ok" if ok else f"duplicate colours: {duplicates}")
+    return SoundnessResult(name, ok, "ok" if ok else f"duplicate colors: {duplicates}")
 
 
 def check_distinct_opus_stages(
@@ -279,7 +279,7 @@ def check_shared_tokens_disambiguated(
     lines: tuple[LineEntry, ...] = LINE_SET,
     shared: tuple[SharedToken, ...] = SHARED_TOKENS,
 ) -> SoundnessResult:
-    """Every declared exemption must be one the live matcher would honour.
+    """Every declared exemption must be one the live matcher would honor.
 
     The check calls :func:`line_set.reader.exemption_for` rather than
     re-deriving its rules, so it binds to the matcher the reader actually uses
@@ -321,9 +321,7 @@ def check_shared_tokens_disambiguated(
             problems.append(f"{label}: lines is not iterable")
             continue
         if exemption_for(tokens, token.token, declared_lines) is not token:
-            problems.append(
-                f"{label}: the live matcher would not honour this exemption"
-            )
+            problems.append(f"{label}: the live matcher would not honor this exemption")
             continue
         unknown = sorted(set(declared_lines) - known)
         if unknown:
@@ -338,7 +336,7 @@ def self_disjointness_from_reading(
 ) -> SoundnessResult:
     """Decide self-disjointness from a reading that already includes the wrapper.
 
-    The judgement is pure: it imports nothing and reads only what the reading
+    The judgment is pure: it imports nothing and reads only what the reading
     holds. It is separated from :func:`check_self_disjointness` so that a plate
     drawing this property draws the same verdict the check reports, rather than
     a second implementation of the same four conditions that could drift away
@@ -497,7 +495,7 @@ def check_pinned_sources(reading: SetReading) -> SoundnessResult:
 _LINE_CHECKS = (
     check_declaration_admission,
     check_distinct_line_ids,
-    check_distinct_colours,
+    check_distinct_colors,
     check_distinct_opus_stages,
     check_contiguous_working_positions,
     check_orders_diverge,

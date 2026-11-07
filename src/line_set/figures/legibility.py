@@ -1,7 +1,7 @@
 """Derive the point size each plate's smallest label reaches on the page.
 
-Every plate in this project repeats its colour encoding in a shape and a word,
-so the distinctions survive a greyscale print. That mitigation is worth nothing
+Every plate in this project repeats its color encoding in a shape and a word,
+so the distinctions survive a grayscale print. That mitigation is worth nothing
 if the repeated word is too small to read once the plate has been scaled down
 into a column of text, and a floor stated in canvas units cannot tell you
 whether it has been: a canvas unit is not a unit the page has.

@@ -21,12 +21,12 @@ identical results whether or not any line package is installed.
 | --- | --- | --- |
 | `declaration_admission` | Empty or ambiguous line/package identities and malformed line fields before import. Shares the public reader's minimal validator. | Empty declaration, duplicate package names, blank identity or a non-text field. |
 | `distinct_line_ids` | A duplicate id, which makes every observation about that id ambiguous. | Two entries sharing one `id`. |
-| `distinct_colours` | A duplicate colour, which is how a line is named in prose and figures. | Two entries sharing one `color`. |
+| `distinct_colors` | A duplicate color, which is how a line is named in prose and figures. | Two entries sharing one `color`. |
 | `distinct_opus_stages` | A stage claimed twice, or a name that is not an opus stage at all. `None` is allowed and ignored, but a declaration where *no* entry carries a stage reports that distinctness is unestablished rather than passing. | An entry re-using `rubedo`; an entry claiming an invented stage. |
 | `contiguous_working_positions` | Positions that are not exactly `1..N` — a gap, a duplicate, or a stale number left behind by a removal. | An entry renumbered off the end of the sequence. |
 | `orders_diverge` | Working order and opus order having become the same order, which would make the set read as a re-enactment of the opus. | Every entry renumbered into opus order. |
 | `must_not_become_declared` | An entry with no stated drift, which means it has no stated boundary — and the set's separation is exactly those boundaries. | An entry whose `must_not_become` is blank. |
-| `shared_tokens_disambiguated` | An exemption the live matcher would not honour, one naming a line that is not declared, or one with no recorded rationale. | An exemption missing a per-line meaning; an exemption naming a third line; an empty exemption table. |
+| `shared_tokens_disambiguated` | An exemption the live matcher would not honor, one naming a line that is not declared, or one with no recorded rationale. | An exemption missing a per-line meaning; an exemption naming a third line; an empty exemption table. |
 
 Two of these deserve a note.
 

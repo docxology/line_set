@@ -1,6 +1,6 @@
 {
   "schema_version": "1.0",
-  "purpose": "Declares the manuscript's formalism-block labels and the vocabulary-census numbers the prose states, so the render engine's evidence registry can resolve those [@def:...]/[@prop:...] cross-references and counts instead of reporting them as unsupported citations. Every row is derived from the manuscript or the recorded reading; tests/test_formalism_claim_ledger.py re-derives the whole set and fails if a block is added, renamed, or removed without this file following.",
+  "purpose": "Declares the manuscript's formalism-block labels and the vocabulary-census numbers the prose states, so the render engine's evidence registry can resolve those [@def:...]/[@prop:...] cross-references and counts instead of reporting them as unsupported citations. Every row is derived from the manuscript or the recorded reading; tests/test_formalism_claim_ledger.py checks formalism reference closure, evidence paths, and claim identities. The canonical reading's census and replay are checked independently.",
   "boundary": "A row here records that a label is declared and that a number is re-derivable. It is not evidence that the proposition it names is true, and it grants no claim any weight.",
   "claims": [
     {
@@ -78,7 +78,7 @@
     {
       "claim_id": "census_canonical_members",
       "kind": "number",
-      "value": 148,
+      "value": 149,
       "source": "docs/manuscript/reading_record.json vocabulary_census.canonical_members",
       "source_field": "vocabulary_census.canonical_members",
       "source_path": "docs/manuscript/reading_record.json",
@@ -88,7 +88,7 @@
     {
       "claim_id": "census_declared_members",
       "kind": "number",
-      "value": 148,
+      "value": 149,
       "source": "docs/manuscript/reading_record.json vocabulary_census.declared_members",
       "source_field": "vocabulary_census.declared_members",
       "source_path": "docs/manuscript/reading_record.json",
@@ -98,7 +98,7 @@
     {
       "claim_id": "census_distinct_names",
       "kind": "number",
-      "value": 115,
+      "value": 116,
       "source": "docs/manuscript/reading_record.json vocabulary_census.distinct_names",
       "source_field": "vocabulary_census.distinct_names",
       "source_path": "docs/manuscript/reading_record.json",
@@ -118,7 +118,7 @@
     {
       "claim_id": "census_line_and_name_pairs",
       "kind": "number",
-      "value": 127,
+      "value": 128,
       "source": "docs/manuscript/reading_record.json vocabulary_census.line_and_name_pairs",
       "source_field": "vocabulary_census.line_and_name_pairs",
       "source_path": "docs/manuscript/reading_record.json",
@@ -328,7 +328,7 @@
     {
       "claim_id": "census_red_line_canonical_members",
       "kind": "number",
-      "value": 41,
+      "value": 42,
       "source": "docs/manuscript/reading_record.json vocabulary_census.per_line.red_line.canonical_members",
       "source_field": "vocabulary_census.per_line.red_line.canonical_members",
       "source_path": "docs/manuscript/reading_record.json",
@@ -338,7 +338,7 @@
     {
       "claim_id": "census_red_line_declared_members",
       "kind": "number",
-      "value": 41,
+      "value": 42,
       "source": "docs/manuscript/reading_record.json vocabulary_census.per_line.red_line.declared_members",
       "source_field": "vocabulary_census.per_line.red_line.declared_members",
       "source_path": "docs/manuscript/reading_record.json",
@@ -348,7 +348,7 @@
     {
       "claim_id": "census_red_line_distinct_names",
       "kind": "number",
-      "value": 40,
+      "value": 41,
       "source": "docs/manuscript/reading_record.json vocabulary_census.per_line.red_line.distinct_names",
       "source_field": "vocabulary_census.per_line.red_line.distinct_names",
       "source_path": "docs/manuscript/reading_record.json",

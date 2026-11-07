@@ -9,7 +9,7 @@ status followed from those four facts.
 What a reading establishes is narrow. ``SET_LEGIBLE`` says the declared
 vocabularies have no unexempted published-name collision. It does not say
 the lines are correct, complete, consistent, or worth having, and it says
-nothing about behaviour: two lines can have entirely disjoint vocabularies and
+nothing about behavior: two lines can have entirely disjoint vocabularies and
 still overlap conceptually. The reader reads declarations.
 """
 

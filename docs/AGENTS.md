@@ -41,8 +41,8 @@ remains authoritative; the rules below add documentation-specific constraints.
 
 - **Derive numbers or point at the command.** Do not type a count, digest,
   version, coverage figure, or status into prose when a command produces it. The
-  measured transcripts in `extensibility.md` and `invariants.md` are labelled
-  with the date and conditions under which they were run; keep that labelling
+  measured transcripts in `extensibility.md` and `invariants.md` are labeled
+  with the date and conditions under which they were run; keep that labeling
   and re-run rather than editing a stale number in place.
 - **Never claim more than the code establishes.** A reading is about spellings
   of exported enum member names. It is not a verdict on the packages read, and

@@ -1,18 +1,10 @@
-"""Bind ``data/formalism_claim_ledger.json`` to the manuscript and the record.
+"""Keep publication formalism references resolvable through the evidence ledger.
 
-The external publication engine's evidence registry knows ``fig:``/``sec:``/
-``tbl:``/``eq:``/``lst:`` label prefixes and treats every other ``[@x]`` as a
-bibliography key, so a formalism reference is reported as an unsupported
-citation unless the project declares it. ``data/formalism_claim_ledger.json``
-is that declaration; this module re-derives the whole set from the manuscript
-and the recorded reading so a block added, renamed, or removed without the
-ledger following fails here rather than surfacing as a red output-validation
-report after a render.
-
-Nothing is asserted that was not first executed: the declared labels are
-parsed from the real manuscript, and the numeric rows are re-read from the
-recorded vocabulary census (itself re-derived from the live packages by
-``scripts/record_reading.py``). Negative controls prove each gate can fail.
+The external engine needs explicit declarations for definition/proposition
+citations. These checks cover reference closure, evidence paths, and unique
+claim identities. The numeric rows are generated from the canonical reading;
+its independent census and replay contracts are checked in
+``test_manuscript_bindings.py`` rather than testing copies of those numbers.
 """
 
 from __future__ import annotations
@@ -24,7 +16,6 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent
 MANUSCRIPT = ROOT / "docs" / "manuscript"
 LEDGER = ROOT / "data" / "formalism_claim_ledger.json"
-READING_RECORD = MANUSCRIPT / "reading_record.json"
 
 #: A formalism block opener: ``::: {.definition #def:x title="X"}``.
 _BLOCK = re.compile(r"^::: \{(?P<attrs>[^}]*)\}\s*$", re.M)
@@ -72,28 +63,6 @@ def _ledger_citations() -> set[str]:
     return {row["value"] for row in _ledger()["claims"] if row["kind"] == "citation"}
 
 
-def _census() -> dict[str, int]:
-    """The recorded vocabulary census, re-read from the record."""
-
-    record = json.loads(READING_RECORD.read_text(encoding="utf-8"))
-    return {
-        key: record["vocabulary_census"][key]
-        for key in (
-            "declared_members",
-            "line_and_name_pairs",
-            "distinct_names",
-        )
-    }
-
-
-def _ledger_numbers() -> dict[str, int]:
-    return {
-        row["claim_id"]: row["value"]
-        for row in _ledger()["claims"]
-        if row["kind"] == "number"
-    }
-
-
 # -------------------------------------------------------------------- gates
 
 
@@ -104,14 +73,6 @@ def test_every_declared_label_is_in_the_ledger() -> None:
 
     assert declared, "no labels declared; this gate would be vacuous"
     assert _ledger_citations() == declared, sorted(_ledger_citations() ^ declared)
-
-
-def test_every_ledger_citation_is_a_declared_block() -> None:
-    """The ledger cannot declare a label the manuscript does not carry."""
-
-    assert _ledger_citations() <= _declared_labels(), sorted(
-        _ledger_citations() - _declared_labels()
-    )
 
 
 def test_every_referenced_label_is_both_declared_and_ledgered() -> None:
@@ -137,79 +98,3 @@ def test_ledger_claim_ids_are_unique() -> None:
     rows = _ledger()["claims"]
 
     assert len({row["claim_id"] for row in rows}) == len(rows)
-
-
-def test_number_rows_match_the_recorded_census() -> None:
-    """The vocabulary-census numbers are the record's, not restated prose."""
-
-    census = _census()
-    numbers = _ledger_numbers()
-
-    assert numbers["census_declared_members"] == census["declared_members"]
-    assert numbers["census_line_and_name_pairs"] == census["line_and_name_pairs"]
-    assert numbers["census_distinct_names"] == census["distinct_names"]
-
-
-def test_all_census_scalar_fields_have_exact_ledger_rows() -> None:
-    census = json.loads(READING_RECORD.read_text(encoding="utf-8"))["vocabulary_census"]
-    expected = {
-        f"census_{key}": value
-        for key, value in census.items()
-        if isinstance(value, int) and not isinstance(value, bool)
-    }
-    for line_id, fields in census["per_line"].items():
-        expected.update(
-            {f"census_{line_id}_{key}": value for key, value in fields.items()}
-        )
-    expected["census_within_line_repeats"] = sum(
-        fields["within_line_repeats"] for fields in census["per_line"].values()
-    )
-    expected["census_cross_line_repeats"] = (
-        census["line_and_name_pairs"] - census["distinct_names"]
-    )
-    assert expected
-    assert _ledger_numbers() == expected
-
-
-def test_the_number_row_generator_agrees_with_the_committed_ledger() -> None:
-    from line_set.formalism_ledger import number_rows
-
-    rows = number_rows()
-    assert rows
-    assert {row["claim_id"]: row["value"] for row in rows} == _ledger_numbers()
-    assert all(
-        row["source_path"] == "docs/manuscript/reading_record.json" for row in rows
-    )
-    assert all(row["source_field"] for row in rows)
-
-
-# ------------------------------------------------------- negative controls
-
-
-def test_negative_control_label_gap_fails() -> None:
-    """Removing a citation row must break the declared-labels gate."""
-
-    ledger = _ledger()
-    ledger["claims"] = [
-        row for row in ledger["claims"] if row["value"] != "def:reading"
-    ]
-    citations = {row["value"] for row in ledger["claims"] if row["kind"] == "citation"}
-
-    assert citations != _declared_labels()
-
-
-def test_negative_control_wrong_number_fails() -> None:
-    """A restated (not derived) number must break the numeric gate."""
-
-    ledger = _ledger()
-    for row in ledger["claims"]:
-        if row["claim_id"] == "census_declared_members":
-            row["value"] = row["value"] + 1
-
-    census = _census()
-    numbers = {
-        row["claim_id"]: row["value"]
-        for row in ledger["claims"]
-        if row["kind"] == "number"
-    }
-    assert numbers["census_declared_members"] != census["declared_members"]

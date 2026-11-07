@@ -10,7 +10,7 @@ to an SVG string. A plate reads; it never decides.
   `wrapper` in. That is what makes the extensibility claim testable: append a
   new entry at runtime, pass it, and the plate must change.
 - **No module here names an individual line.** Layout comes from
-  `len(entries)` and from each entry's `working_position`; colours and shapes
+  `len(entries)` and from each entry's `working_position`; colors and shapes
   come from `palette`. A branch on `entry.id == "red_line"` would break the
   moment the set grows.
 - **Box heights derive from their text.** `_row_height`, `_stage_height`, and
@@ -24,12 +24,12 @@ to an SVG string. A plate reads; it never decides.
   unresolved row, marks each metric with an em dash and the words "not read",
   and prints the code that explains it. Do not substitute a zero, a previous
   value, or a blank.
-- **Shape and label carry every distinction.** Colour is redundant. A new
-  encoding must survive a greyscale conversion.
-- **Marker shapes must stay distinct on one plate.** `set_compass` passes
-  `marker_position=len(entries) + 1` for the wrapper, because the wrapper's
-  declared `working_position` was fixed when `registry.py` was written and
-  would collide with a real line's shape once the set grows.
+- **Shape and label carry every distinction.** Color is redundant. A new
+  encoding must survive a grayscale conversion.
+- **Markers are redundant; written identities are authoritative.** The current
+  declaration and a single-entry extension have distinct shapes. `set_compass`
+  assigns the wrapper `marker_position=len(entries) + 1`. Larger declarations
+  may exhaust the finite cycle; never hide a full line ID or working position.
 
 ## Validation
 

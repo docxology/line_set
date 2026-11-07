@@ -26,7 +26,7 @@ executable to use. Without one the build raises with install guidance and
 writes nothing — it never skips a figure and reports success.
 
 The three plates drawn from the declaration take `lines` as an argument and
-compute every position from it, so appending a colour to `registry.py` changes
+compute every position from it, so appending a color to `registry.py` changes
 them with no edit here. Nothing in a plate is a score, and no plate says a
 line works — only what the declaration says a line is for, and what the reader
 could read.

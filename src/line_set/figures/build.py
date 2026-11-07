@@ -1,8 +1,8 @@
 """Write the Line Set figure artifacts. Fails closed before it writes anything.
 
 The build takes one reading of the set and hands it to every plate that needs
-one, so all five plates describe the same moment rather than five separate
-readings taken at slightly different times.
+one, so all plates describe the same moment rather than separate readings
+taken at slightly different times.
 
 Three properties this module is responsible for:
 
@@ -135,7 +135,7 @@ def _write_figure_registry(
     path.write_text(
         json.dumps(
             {
-                "schema_version": "1.2",
+                "schema_version": "2.0",
                 "package_version": __version__,
                 "set_version": SET_VERSION,
                 "registry_digest": registry_digest(lines, shared),
@@ -198,7 +198,7 @@ def build_figures(
                 "label": plate.label,
                 "filename": png_path.name,
                 "caption": plate.caption,
-                "alt": plate.alt,
+                "alt_text": plate.alt,
                 "source": plate.source,
                 "generated_by": BUILD_PROVENANCE,
                 "format": "PNG rasterized from deterministic SVG",

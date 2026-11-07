@@ -147,9 +147,9 @@ def test_an_exemption_cannot_launder_the_wrappers_own_overlap(tmp_path: Path) ->
         result = check_self_disjointness((ONE,), (laundering,), resolver=resolver)
         reading = read_set((ONE, WRAPPER_LINE), (laundering,), resolver=resolver)
 
-    assert reading.status is SetStatus.SET_LEGIBLE, "the reader honoured the exemption"
+    assert reading.status is SetStatus.SET_LEGIBLE, "the reader honored the exemption"
     assert [collision.token for collision in reading.exempted_collisions] == [stolen]
-    assert not result.passed, "the self-check does not honour it"
+    assert not result.passed, "the self-check does not honor it"
     assert stolen in result.detail
 
 

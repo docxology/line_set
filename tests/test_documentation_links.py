@@ -1,4 +1,4 @@
-"""Every relative link in this repository has to resolve inside this repository.
+"""Maintained relative links resolve within this standalone repository.
 
 A link like ``../../docs/line-set.md`` resolves cheerfully inside a working tree
 that happens to have the right thing two levels up, and resolves to nothing for
@@ -20,6 +20,10 @@ and the list of them is reported by
 silently ignored.
 
 Nothing here reads the network. A URL is checked for its shape, never fetched.
+
+Verbatim manuscript payloads under ``docs/releases/evidence/`` retain links
+from their original tree. Their current README navigation is checked; archived
+payloads are evidence, not maintained pages whose bytes may be rewritten.
 """
 
 from __future__ import annotations
@@ -58,11 +62,16 @@ NON_PATH_PREFIXES: tuple[str, ...] = ("http://", "https://", "mailto:", "#")
 
 
 def markdown_files() -> tuple[Path, ...]:
-    """Every markdown document this repository ships."""
+    """Maintained Markdown, including archive navigation but not raw payloads."""
     found = []
     for path in sorted(PROJECT_ROOT.rglob("*.md")):
         relative = path.relative_to(PROJECT_ROOT)
         if any(part in SKIPPED_DIRS for part in relative.parts):
+            continue
+        if (
+            relative.parts[:3] == ("docs", "releases", "evidence")
+            and path.name != "README.md"
+        ):
             continue
         found.append(path)
     return tuple(found)
@@ -231,15 +240,15 @@ def test_a_target_that_is_not_a_path_is_not_treated_as_one() -> None:
     ids=lambda path: path.name,
 )
 def test_the_ancestor_note_is_cited_rather_than_linked(document: Path) -> None:
-    """The acknowledgement stays; the dead relative path does not.
+    """The acknowledgment stays; the dead relative path does not.
 
     ``docs/line-set.md`` is an unpublished note in a private tree. Deleting the
-    acknowledgement to fix the link would have been the dishonest repair, so
+    acknowledgment to fix the link would have been the dishonest repair, so
     the name is still here and the link is gone.
     """
     text = document.read_text(encoding="utf-8")
     assert "docs/line-set.md" in text, (
-        "the acknowledgement was deleted, not re-addressed"
+        "the acknowledgment was deleted, not re-addressed"
     )
     assert "](../../docs/line-set.md)" not in text
     assert "](../../../docs/line-set.md)" not in text

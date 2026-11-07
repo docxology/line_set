@@ -1,21 +1,23 @@
 # Line Set
 
 The [admission materials](docs/admission/README.md) record the current decision
-to add no colour, a human dossier, hypothetical contrast cases and an unexecuted
+to add no color, a human dossier, hypothetical contrast cases and an unexecuted
 comparison protocol. The optional [evidence/replay profile](docs/evidence/README.md)
 is a documented companion convention; this package executes no native replay.
 
+The [family refinement note](docs/refinement-20261106.md) records the current
+eight-color boundaries, breaking interface changes, evidence custody, and
+additional-color hypotheses. No additional color is admitted.
+
 Line Set is the bookkeeping work in the line set, and it is not an instrument. It
-has no opinion about refusal, method, aspiration, or absence — those questions
-belong to Red, Black, Golden, and White Line, and this work does not answer, merge,
-rank, or second-guess any of them. Its job is bookkeeping: hold the declaration
-of what the set is, read the sibling packages that are actually installed, and
-check that the set's non-overlap contract still holds.
+does not answer, merge, rank, or second-guess any substantive line's question.
+Its job is bookkeeping: hold the declaration, read the sibling packages that
+are actually accessible, and report the published-name separation contract.
 
 The declaration is a tuple of `LineEntry` records in
 [`src/line_set/registry.py`](src/line_set/registry.py), one per line, each
 carrying the question that line answers, the job it does, the thing it must not
-become, its position in the working order, and the opus stage its colour echoes.
+become, its position in the working order, and the opus stage its color echoes.
 `read_set()` resolves each declared package, reads a version, counts a registry,
 asks the package for its own digest, collects the enum member names it exports,
 and reports `SET_LEGIBLE`, `SET_PARTIAL`, `SET_COLLIDING`, or `SET_UNDECLARED`
@@ -79,67 +81,67 @@ into a layout.
 uv run python scripts/check_registry.py   # offline structural battery over the declaration
 uv run python scripts/check_set.py        # live reading of the installed lines
 uv run python scripts/build_figures.py    # deterministic SVG/PNG pairs into output/figures/
-uv run python scripts/record_reading.py   # write the dated reading the manuscript quotes
+uv run python scripts/record_reading.py --withhold-source violet_line  # write the public namespace view
 ```
 
 The first needs no sibling and reaches nothing outside this tree. The second
 needs them: without a full reading the non-overlap contract was not checked, so
 it exits non-zero rather than reporting a pass. The third runs either way — it
-needs `rsvg-convert`, not the siblings — and the two plates drawn from a live
-reading render an absent sibling visibly rather than omitting its row. The
-fourth needs them too, and refuses to record a reading it could not take;
-`--check` compares the record on disk against a live reading instead of
-rewriting it. The test suite is
+needs `rsvg-convert`, not the siblings — and live plates render an unread
+sibling visibly rather than omitting its row. The fourth additionally requires
+pinned source snapshots, complete metadata and completed discovery; a readable
+but unpinned development installation is not canonical evidence. `--check`
+compares the held record without rewriting it. The test suite is
 `uv run pytest tests/ --cov=src --cov-branch --cov-report=term-missing`, and it
 must pass with the siblings absent as well as present.
 
-The manuscript quotes numbers it measured against the installed siblings, and
-those numbers cannot be re-derived on a machine without them. So they are
-written to `docs/manuscript/reading_record.json` and the suite binds the prose to
-that record on every machine, while binding the record itself to a live reading
-wherever one can be taken. A prose number that drifts fails anywhere; a stale
-record fails on the machine that can tell. Full command surface and
-render path: [`docs/development.md`](docs/development.md).
+The manuscript's measured numbers come from `docs/manuscript/reading_record.json`,
+an explicit `2.0-public` view. It withholds Violet's private producer revision
+and module path; the full pinned measurement stays in private custody. The suite
+replays the public reading, checks its identity and census, and compares the
+same view with a newly admitted complete pinned reading where those sources are
+accessible. Public replay is not complete public source-pin proof, and revision-only
+changes in a withheld source are not detectable from this view. Authored prose is
+reviewed against that dated measurement, not certified by matching sentences.
+Previously public historical records remain under `docs/releases/evidence/`.
+Full commands and render path:
+[`docs/development.md`](docs/development.md).
 
 ## Figures
 
-Seven, all deterministic, all hand-written SVG rasterized through
-`rsvg-convert`, none using colour as the only encoding, and all measured through
-to the point size their smallest label reaches on the page rather than only to a
-floor in canvas units:
+Figures are deterministic hand-written SVG rasterized through `rsvg-convert`.
+Names and outlines accompany color; legibility is measured at the declared
+manuscript embed size, not only in canvas units.
 
 | Figure | What it shows |
 | --- | --- |
-| `set_compass` | Each declared line with its question, its job, and what it must not become. Derived from the declaration, so it re-renders correctly when a colour is appended. |
+| `line_set_cover` | Named color bands in a presentation layout, not a second working order or an additional instrument. |
+| `set_compass` | Each declared line with its question, its job, and what it must not become. Derived from the declaration, so it re-renders correctly when a color is appended. |
 | `two_orders` | Working order against opus order as two columns with crossing connectors — the divergence is deliberate, and citrinitas is deliberately not collapsed into rubedo. |
-| `vocabulary_matrix` | Tokens against lines, from a live reading. Collisions marked, with the exempted cell distinguished from an unexempted one by shape *and* label, never by colour alone. |
+| `vocabulary_matrix` | Tokens against lines, from a live reading. Collisions marked, with the exempted cell distinguished from an unexempted one by shape *and* label, never by color alone. |
 | `set_reading_pipeline` | The five reader stages, with the status precedence rule drawn as the exit ladder. |
 | `installation_surface` | Per line: resolved or not, version, registry size, digest prefix. Genuinely live, and it must render an absent sibling visibly rather than tidily omitting the row. |
 | `exemption_gate` | The declared exemption and six weakenings of it, each put through `exemption_for()` at build time; the outcome column is a return value. The first row is the positive control, without which six refusals would prove nothing. |
 | `self_application` | This package's own exported enum member names against each line's, with the live verdict of the self-check printed from the check itself. |
 
-## Adding a colour
+## Adding a color
 
-Append one `LineEntry` to `LINE_SET`. That is the whole edit to the source: no
-module outside `registry.py` names an individual line, so the reader, the checks,
-the serialization, and the figure builders all take the new entry without being
-touched. The prose that names the set is what actually drifts. The recipe, an
-executed example, and the exact lists of files an addition does and does not
-touch are in [`docs/extensibility.md`](docs/extensibility.md).
+Appending a distinct `LineEntry` is technical registration, not conceptual
+admission. Behavioral extension fixtures exercise the existing reader, checks,
+serialization and figure builders without adding instrument-specific branches;
+they do not prove a useful new question or unbounded figure capacity. The recipe
+and admission boundary are in [`docs/extensibility.md`](docs/extensibility.md).
 
 ## Standalone rule
 
 Line Set is standalone. It has its own package, tests, documentation, manuscript,
 references, and figures, and a separated copy must still explain its own purpose
 and limits without the siblings present — see [`STANDALONE.md`](STANDALONE.md).
-Its relationship to Red, Black, Golden, and White Line is declared as data in
-[`src/line_set/registry.py`](src/line_set/registry.py) and described at length in
-the manuscript. Each of the eight is its own repository —
-[Red Line](https://github.com/docxology/red_line),
-[Black Line](https://github.com/docxology/black_line),
-[Golden Line](https://github.com/docxology/golden_line), and
-[White Line](https://github.com/docxology/white_line) — and those are the durable
-references. This project's ancestor, the short internal note `docs/line-set.md`,
+Current membership is declared in
+[`src/line_set/registry.py`](src/line_set/registry.py); the family roster below
+links each independent repository. A declared member need not be installed or
+publicly accessible in a particular environment. This project's ancestor,
+the short internal note `docs/line-set.md`,
 is unpublished, lives in the author's private projects tree, and does not travel
 with this repository; it is cited by name rather than linked, because a relative
 path out of this repository's root resolves to nothing for anyone holding only
@@ -151,7 +153,7 @@ registries, figure designs, or evaluator logic, and it never modifies them.
 - [`docs/claim_boundaries.md`](docs/claim_boundaries.md) — the non-claim register.
 - [`docs/architecture.md`](docs/architecture.md) — modules, stages, precedence, digests.
 - [`docs/invariants.md`](docs/invariants.md) — the checks and their proof of detection.
-- [`docs/extensibility.md`](docs/extensibility.md) — adding a colour.
+- [`docs/extensibility.md`](docs/extensibility.md) — adding a color.
 - [`docs/development.md`](docs/development.md) — commands and render path.
 - [`docs/envelope.md`](docs/envelope.md) — the set-wide report envelope convention.
 - [`docs/correspondence.md`](docs/correspondence.md) — design reviews received and answered.

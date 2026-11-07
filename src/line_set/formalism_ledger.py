@@ -120,9 +120,9 @@ def build_ledger() -> str:
             "[@def:...]/[@prop:...] cross-references and counts instead of "
             "reporting them as unsupported citations. Every row is derived "
             "from the manuscript or the recorded reading; "
-            "tests/test_formalism_claim_ledger.py re-derives the whole set "
-            "and fails if a block is added, renamed, or removed without this "
-            "file following."
+            "tests/test_formalism_claim_ledger.py checks formalism reference "
+            "closure, evidence paths, and claim identities. The canonical "
+            "reading's census and replay are checked independently."
         ),
         "boundary": (
             "A row here records that a label is declared and that a number "

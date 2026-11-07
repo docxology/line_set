@@ -21,6 +21,10 @@ from becoming one.
 - **Keep the declaration in `src/line_set/registry.py` and the logic around it.**
   `scripts/` are thin CLIs that import the package and delegate. No business
   logic in `scripts/`, no declaration content anywhere else.
+- **Use American English in maintained prose, owned identifiers and output.**
+  Migrate live callers without spelling aliases. Preserve quoted source,
+  bibliographic identity and archived evidence byte-for-byte; label historical
+  spellings as historical rather than silently changing their identities.
 - **`binding.py` is the only module that imports a sibling package.** If a second
   module ever needs to reach one, route it through `binding` rather than
   importing directly. Keep that seam narrow: read a version, count a registry,
@@ -53,7 +57,7 @@ from becoming one.
 - **`all_invariants()` stays offline; `check_self_disjointness()` stays live.**
   Do not move the self-check into the offline battery to make a sibling-free run
   go green. It would delete the only check that had anything to say.
-- **Adding a colour is a `registry.py` edit.** If a change to the set requires
+- **Adding a color is a `registry.py` edit.** If a change to the set requires
   touching `reader.py`, `invariants.py`, `binding.py`, or a figure builder, the
   design has failed and the fix is the design. See `docs/extensibility.md`.
 - **Nothing sorted by accident.** Token collection, collision partitioning,

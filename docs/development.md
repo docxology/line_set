@@ -12,11 +12,15 @@ uv run python scripts/check_registry.py
 uv run python scripts/check_set.py
 uv run python scripts/gen_formalism_ledger.py
 uv run python scripts/build_figures.py
-uv run python scripts/record_reading.py --as-of <recorded-review-date> --check
+uv run python scripts/record_reading.py --as-of <recorded-review-date> --withhold-source violet_line --check
 ```
 
 The coverage floor is configured in `pyproject.toml`; read it there rather than
 from a number restated in prose.
+
+Ruff is configured locally at the package's Python floor, using its standalone
+default syntax/logic checks. A surrounding collection's lint policy is not an
+implicit dependency of this repository. Formatting remains a separate check.
 
 For a release preserving an earlier reading, take the date from
 `docs/manuscript/reading_record.json` (`reading.read_as_of`), not the new
@@ -32,17 +36,18 @@ For an offline lane, point `LINE_SET_SIBLINGS` at an empty directory before the
 suite and registry check. `check_set.py` must fail there with `SET_PARTIAL`;
 absence is an outcome, not a successful integration result.
 
-For the separate release integration lane, place each sibling at its released
-tag in a read-only source snapshot, with a `.line-set-source.json` custody
-receipt recording its full `revision`, and set `LINE_SET_SIBLINGS` to their
-common parent. Never point this lane at an actively edited sibling checkout.
-Use real Git clones when these snapshots also supply rendered artifacts to the
-compiled volume, so the rendering engine's file inventory stays within each
-repository boundary.
+For the integration lane, collect each source in a read-only Git snapshot with
+a `.line-set-source.json` receipt recording its actual full `revision`, and set
+`LINE_SET_SIBLINGS` to their common parent. This also supports source checkouts
+whose original locations or access classes differ. Never point canonical
+recording at actively edited worktrees or label changed bytes with an earlier
+commit. Development snapshots must be identified as such, not as released tags.
+When snapshots supply compiled artifacts, retain their source custody and Git
+repository boundaries for the external renderer.
 
 ```bash
 uv run python scripts/check_set.py --require-pinned --as-of YYYY-MM-DD
-uv run python scripts/record_reading.py --as-of YYYY-MM-DD --check
+uv run python scripts/record_reading.py --as-of YYYY-MM-DD --withhold-source violet_line --check
 ```
 
 Use the retained record's `reading.read_as_of` for both date arguments when
@@ -53,15 +58,37 @@ sources or incomplete discovery. It is a reproducible namespace lane, not an
 evaluation or certification of sibling behavior. The release packet records the
 exact tags, commits and gate results. See [binding_contract.md](binding_contract.md).
 
+The maintained record is an explicit `2.0-public` namespace view. The repeatable
+`--withhold-source LINE_ID` option removes that line's revision and module path
+only after the complete underlying reading passes the unchanged admission gates.
+Its `withheld_sources` list names the omissions, and its digest is recomputed
+from the projected reading. The public view does not pass `check_pinned_sources`;
+it is not a fully publicly reproducible source-pin proof or general deidentification.
+Review other metadata and diagnostic text separately before publication.
+
+Omitting the option retains the full `2.0` canonical format. Store that record
+in an authorized private location when any producer's source identity is private:
+
+```bash
+uv run python scripts/record_reading.py --as-of YYYY-MM-DD --out "$PRIVATE_READING_RECORD"
+uv run python scripts/record_reading.py --as-of YYYY-MM-DD --out "$PRIVATE_READING_RECORD" --check
+```
+
+Set `PRIVATE_READING_RECORD` to the operator's private evidence path. Public
+`--check` re-admits every source and compares the disclosed measurement with
+the same explicitly requested view. It cannot detect revision-only changes in
+withheld source identities; exact continuity belongs to the privately retained
+full record. Forgetting the option does not silently infer a public view.
+
 ## What each command needs
 
 | Command | Needs the siblings? | What it establishes |
 | --- | --- | --- |
-| `pytest` | No | The package's own behaviour, including all four reading statuses driven through injected resolvers. |
+| `pytest` | No | The package's own behavior, including all four reading statuses driven through injected resolvers. |
 | `check_registry.py` | No | The offline structural battery over the declaration. |
 | `check_set.py` | Yes, for a full reading | A live reading plus `live_invariants()`. Without them it reports `SET_PARTIAL` and an unestablished self-disjointness — an honest result, not a pass. |
 | `build_figures.py` | No — it needs `rsvg-convert` instead | Deterministic SVG/PNG pairs and the figure registry under `output/figures/`. Live plates are drawn from a reading; with the siblings absent they render that absence visibly and the run still succeeds. |
-| `record_reading.py` | Yes | Writes `docs/manuscript/reading_record.json`, the dated reading the manuscript's measured numbers are bound to. Refuses to write anything but a `SET_LEGIBLE` reading of every declared line — an incomplete measurement in the place a complete one is expected is worse than no record. `--check` compares without rewriting. |
+| `record_reading.py` | Yes | Requires a complete `SET_LEGIBLE` pinned reading before writing. By default writes a full `2.0` record; explicit `--withhold-source` writes a distinct `2.0-public` view with selected source identities omitted. `--check` compares the requested view without rewriting; withholding never permits incomplete source admission. |
 
 ## Why the manuscript's measured numbers have a record
 
@@ -70,20 +97,20 @@ digests, and the token arithmetic that carries its one empirical claim. None of
 those can be re-derived where the sibling packages are absent, which is most
 places the manuscript will be read.
 
-So the check is split. `scripts/record_reading.py` writes what the reading said
-into `docs/manuscript/reading_record.json`; `tests/test_manuscript_bindings.py` binds
-the prose to that record on every machine, and binds the record to a live
-reading only where one can be taken. Prose drift therefore fails in a bare
-checkout, and a stale record fails on a machine that can re-measure. The
-record's own `set_digest` is checked everywhere, so a declaration change
-invalidates it with no sibling installed and no network.
+`scripts/record_reading.py` refuses incomplete, colliding, unpinned or
+metadata-incomplete readings, including incomplete discovery. The maintained
+public view is tested through reading replay, projected reading/declaration
+hashes, disclosed source correspondence and census arithmetic. Where the full
+underlying pinned sources are accessible, the same view is compared with a
+fresh admitted reading without changing its original producer metadata.
 
-After changing the declaration, or after a sibling release, rerun
-`record_reading.py` and update any prose whose numbers moved. The suite will
-name which ones. Regenerate `data/formalism_claim_ledger.json` with
-`scripts/gen_formalism_ledger.py` after refreshing the record: it exposes every
-scalar census field and the derived repeat totals to the external renderer's
-evidence registry, with the record as its source.
+After a declaration or vocabulary change, preserve the previous record as
+historical evidence, take a new pinned reading with an explicit date, and
+review all measured manuscript passages against that record. Tests do not
+certify authored wording. Regenerate `data/formalism_claim_ledger.json` with
+`scripts/gen_formalism_ledger.py` after the record refresh; its scalar census
+fields and repeat totals remain references to recorded measurements, not
+independent findings.
 
 **The test suite must not depend on the siblings being importable.** Coverage of
 `src/` is measured with them absent as well as present; a suite that only passes
@@ -119,7 +146,7 @@ project's parent directory by default, because that is where the checkouts sit
 in the tree this project is developed in. That default is positional, and this
 project is its own repository: a clone will usually have something unrelated in
 its parent directory. `LINE_SET_SIBLINGS` names the directory explicitly, is
-read at call time, and is honoured by the resolver, by `check_set.py`, by
+read at call time, and is honored by the resolver, by `check_set.py`, by
 `record_reading.py`, and by the omnibus assembler:
 
 ```bash
