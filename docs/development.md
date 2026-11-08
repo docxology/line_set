@@ -252,6 +252,30 @@ Record those metadata relocations and mirrored-file hashes in the projection
 receipt. The assembler writes `omnibus_claim_ledger.json` from the formalism
 anchors actually declared in the assembled sections, so the engine can resolve
 their namespaced cross-references. Its rows record label presence only.
+
+Native authored sources can contain producer-owned variables. Preserve the raw
+assembled tree, then consume a genuine native-resolved manuscript projection
+before rendering the derivative. Blue's existing `gen_formalism_ledger.py` and
+`render_manuscript.py` produce its variables and resolved manuscript; do not
+substitute a value by hand or execute an evaluator from this wrapper. Retain the
+actual producer command, source revision, variable-file hash, authored and
+resolved section hashes, and any effective date policy. Blue's default-window
+variable derives from its native configuration, not a new review date.
+
+Apply the existing `collect_anchors`, `transform_section`, and `invert_section`
+operations to those native-produced section bytes. Keep the same declared
+anchors and documented figure-prefix normalization, record every changed
+projected filename, and commit that source projection only in the private
+render clone. This is an explicitly recorded native-resolved derivative, not
+a claim that rendered prose is byte-identical to the authored template.
+
+Run the renderer's existing
+`infrastructure.validation.publication.audit.check_placeholder_tokens` against
+the real rendered-project audit context, and inspect the actual PDF, HTML, and
+EPUB. Stage04 and current provenance alone do not establish resolved variables
+or working section-page fragments. Intentional code examples remain distinct
+from unresolved variables in manuscript prose.
+
 Carry each included work's published numeric claim ledgers as byte-exact
 producer artifacts outside the engine's automatic ledger scan roots. A generated
 ledger under `data/` may quote their numeric rows, retaining producer identity,

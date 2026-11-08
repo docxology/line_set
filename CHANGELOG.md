@@ -2,7 +2,7 @@
 
 ## 0.6.0 (2026-11-06)
 
-Release candidate; see the [publication hold and release scope](docs/releases/v0.6.0.md).
+Release scope, verification, and publication boundary: [release packet](docs/releases/v0.6.0.md).
 
 - Use American English in maintained prose and owned interfaces:
   `check_distinct_colors`, `normalize_field`, and the colorless wrapper identity.
@@ -41,6 +41,11 @@ Release candidate; see the [publication hold and release scope](docs/releases/v0
   establish disclosed measurement agreement, not withheld-revision continuity.
 - Emit figure registry 2.0 with canonical `alt_text` for the external renderer;
   retain native declaration/reading schemas and historical figure registries.
+- Document genuine native-resolved variable projections for compiled volumes:
+  preserve the raw authored assembly, retain native producer custody, use the
+  existing section transforms, and separately check unresolved rendered prose
+  and actual section-page links rather than treating Stage04 as complete
+  publication acceptance.
 
 ## 0.5.0 (2026-10-22)
 
