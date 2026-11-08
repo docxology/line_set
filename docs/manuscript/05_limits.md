@@ -26,7 +26,7 @@ That silence is deliberate rather than an omission awaiting a future release. Th
 
 ## The reader cannot see a missing color
 
-Nothing in this package can tell whether the set is conceptually complete. Blue already addresses continuing maintenance, and Violet already addresses affected parties and recorded consent. A proposed repair or resource-allocation record might fit an existing instrument, a native extension, or Witness relations instead of requiring another color. Namespace checks cannot decide among those alternatives or discover an unasked question.
+Nothing in this package can tell whether the set is conceptually complete. Blue addresses continuing care; Silver, custody and succession; Violet, affected parties and recorded consent. Typed Blue/Black resource extensions and typed Silver/Blue recovery attachments remain credible alternatives to Copper/Iron packaging. The architectural admission decision does not assert that they lose material distinctions or that the historical empirical protocol passed. Namespace checks cannot decide package placement, observed demand, usefulness, or the existence of an unasked question.
 
 Discovery is also weaker than it may appear from a passing run. It finds importable top-level packages whose names end in `_line`, plus what is already imported in the process. A line package named otherwise is invisible to it. An empty `undeclared_lines` is a report of what that convention turned up on that machine, and never a proof that nothing else exists.
 
@@ -50,8 +50,8 @@ into conceptual approval. Their hypothetical cases establish no empirical result
 A historical reading check compares its canonical measurement fields at the
 recorded date while retaining the original producer version separately from
 the current checker. It does not rewrite the record or authenticate its producer.
-The public record is an explicitly labeled view: Violet's private source revision
-and module path are withheld after complete pinned-source admission. Its projected
+The current public cutover requires withholding all three PRIVATE producers'
+source revisions and module paths — Violet, Copper, and Iron — after complete pinned-source admission. Its projected
 digest checks the disclosed reading, not the identity of the privately retained
 full record. Public `--check` cannot detect a change limited to a withheld
 revision; it compares the disclosed measurement against a newly admitted reading.

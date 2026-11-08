@@ -2,7 +2,7 @@ cff-version: 1.2.0
 message: "Cite this software by repository and version. The archived reference below identifies the earlier deposited version."
 type: software
 title: "The Line Set: The Collected Volume"
-version: "0.6.1"
+version: "0.7.0"
 date-released: "2026-11-08"
 authors:
   - family-names: "Friedman"
@@ -88,3 +88,45 @@ references:
     repository-code: "https://github.com/docxology/witness_register"
     notes: "companion beside the set — co-registration without aggregation"
     doi: "10.5281/zenodo.22833511"
+  - type: software
+    title: "silver_line"
+    authors:
+      - family-names: "Friedman"
+        given-names: "Daniel Ari"
+    repository-code: "https://github.com/docxology/silver_line"
+    notes: "Memory and succession; repository access is independent of membership."
+  - type: software
+    title: "violet_line"
+    authors:
+      - family-names: "Friedman"
+        given-names: "Daniel Ari"
+    repository-code: "https://github.com/docxology/violet_line"
+    notes: "Private instrument: consent records; source access requires authorization."
+  - type: software
+    title: "blue_line"
+    authors:
+      - family-names: "Friedman"
+        given-names: "Daniel Ari"
+    repository-code: "https://github.com/docxology/blue_line"
+    notes: "Stewardship of maintained commitments."
+  - type: software
+    title: "green_line"
+    authors:
+      - family-names: "Friedman"
+        given-names: "Daniel Ari"
+    repository-code: "https://github.com/docxology/green_line"
+    notes: "Capacity under development, not competence certification."
+  - type: software
+    title: "copper_line"
+    authors:
+      - family-names: "Friedman"
+        given-names: "Daniel Ari"
+    repository-code: "https://github.com/docxology/copper_line"
+    notes: "Private instrument: dimensioned finite-resource arithmetic and burden attribution; authorized access only."
+  - type: software
+    title: "iron_line"
+    authors:
+      - family-names: "Friedman"
+        given-names: "Daniel Ari"
+    repository-code: "https://github.com/docxology/iron_line"
+    notes: "Private instrument: scenario-bound recorded recovery-target comparisons; authorized access only."

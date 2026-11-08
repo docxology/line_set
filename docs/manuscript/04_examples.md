@@ -1,6 +1,8 @@
 # Worked readings {#sec:examples}
 
-## The pinned measurement and public view
+## Historical eight-line 0.6.1 measurement and public view
+
+The following retained transcript and census describe the eight-line 0.6.1 source refresh, not the expanded declaration. They are preserved rather than relabeled as a ten-line run. A new current reading requires final actual native snapshots and parent-generated records. For that cutover, use all three withholding options (`violet_line`, `copper_line`, `iron_line`) after complete pinned admission; keep the full record private. New binding policies, counts, and identities must come from the actual new record, never from these historical values.
 
 This measurement uses an explicit review date of 2026-11-08 against eight immutable current producer commits, including Golden 0.6.1. Each captured source's regular-file bytes match its actual Git revision and tree, not merely a caller-supplied SHA label. All eight used convention-heuristic binding with `pinned-source-snapshot` provenance. The public `2.0-public` view withholds Violet's private producer revision and module path after complete pinned admission; the full current and initial working-source records remain in private custody. This is a namespace reading, not verification of sibling conclusions or native report correspondence. Previously public historical records remain under `docs/releases/evidence/`.
 

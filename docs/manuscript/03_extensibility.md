@@ -2,20 +2,22 @@
 
 The set has grown before and may grow again, so the cost of adding a line is a design property rather than a convenience. The target is that a new color costs one appended record in `registry.py` ([@def:line-entry]) and nothing else: no branch in the reader, no case in a check, no new figure code.
 
-Cheap registration is not conceptual admission. At this revision I do not add a
-color. Contestation and repair remains a hypothesis for a bounded comparison
-with existing instruments, their native extensions and Witness relations and
-returns. The repository's admission dossier and hypothetical case library are
-human review materials outside the reader; no study has run. A documented
-decision to add nothing is an allowed outcome. Resource and burden allocation
-remains a lower-priority hypothesis. A renamed instrument can avoid every token
-collision and still duplicate another instrument's question.
+Cheap registration is not conceptual admission. The 2026-11-08 decision adds
+Copper and Iron by explicit architectural choice; typed existing-native
+extensions remain credible alternatives, and no empirical admission study is
+claimed. Contestation/repair and Titanium remain unadmitted. A renamed instrument
+can avoid every token collision and still duplicate another instrument's question.
 
 Parnas treats extension and contraction as one problem and locates their cost in the *uses* relation [@parnas1979extension]. His program families and documented uses relations set a stronger standard than this small wrapper. Here I exercise a bounded observable property: the existing reader, checks and figures accept a distinct appended declaration without an instrument-specific implementation branch. This does not measure every possible caller or establish a useful new question.
 
 The evidence is behavioral rather than a word-count scan of source files. Temporary packages expose distinct vocabularies; the extended reading retains all known entries and reports the missing appended package explicitly. Display maps may choose an ink or outline, but they do not interpret an instrument's result.
 
 ## The executable isolated example
+
+The following recorded output and nine-entry discussion retain the executed
+2026-11-06 eight-to-nine teal example. The code uses the current declaration when
+run again, so its new output must be measured rather than hand-repinned. The old
+transcript is not a ten-to-eleven run or current collision proof.
 
 The hypothetical teal entry is bookkeeping test material, not an admission
 proposal or a new member of the set. Its identifier and color are fixed

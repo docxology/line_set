@@ -66,9 +66,12 @@ acknowledgment stays and the ancestor's prose is never pasted into the
 manuscript in its place. The durable references for the set are the
 instruments' own repositories — `docxology/red_line`, `docxology/black_line`,
 `docxology/golden_line`, `docxology/white_line`, `docxology/silver_line`,
-`docxology/violet_line`, `docxology/blue_line`, and `docxology/green_line`
+`docxology/violet_line`, `docxology/blue_line`, `docxology/green_line`,
+`docxology/copper_line`, and `docxology/iron_line`
 (the set's own membership, as declared in `src/line_set/registry.py`, is
-authoritative if this list and it ever disagree).
+authoritative if this list and it ever disagree). Violet, Copper, and Iron are
+PRIVATE repositories: their names do not grant source access. Main remains
+colorless; Witness is a separate companion rather than an instrument entry.
 
 ## Admission, provenance and replay
 

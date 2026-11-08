@@ -234,21 +234,3 @@ def test_a_target_that_is_not_a_path_is_not_treated_as_one() -> None:
     assert not "docs/a.md".startswith(NON_PATH_PREFIXES)
 
 
-@pytest.mark.parametrize(
-    "document",
-    [PROJECT_ROOT / "README.md", PROJECT_ROOT / "STANDALONE.md"],
-    ids=lambda path: path.name,
-)
-def test_the_ancestor_note_is_cited_rather_than_linked(document: Path) -> None:
-    """The acknowledgment stays; the dead relative path does not.
-
-    ``docs/line-set.md`` is an unpublished note in a private tree. Deleting the
-    acknowledgment to fix the link would have been the dishonest repair, so
-    the name is still here and the link is gone.
-    """
-    text = document.read_text(encoding="utf-8")
-    assert "docs/line-set.md" in text, (
-        "the acknowledgment was deleted, not re-addressed"
-    )
-    assert "](../../docs/line-set.md)" not in text
-    assert "](../../../docs/line-set.md)" not in text

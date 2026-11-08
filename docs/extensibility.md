@@ -11,6 +11,9 @@ Before adding a color, a person records its distinct question, explicit
 must-not-become boundary, package identity, published vocabulary and dated
 binding evidence, and reviews any proposed exemption meanings. These are
 substantive admission decisions; a namespace reading cannot make them.
+The [2026-11-08 architectural admission](admission/decision-20261108.md)
+records Copper/Iron and explicitly retains the typed-extension alternative;
+the historical empirical protocol is not claimed as passed.
 
 **1. Append one `LineEntry` to `LINE_SET` in `src/line_set/registry.py`.**
 
@@ -39,7 +42,7 @@ has one member per classical stage and the existing lines already use each of
 them, so **another color added today must carry `opus_stage=None`.** That is
 the correct outcome rather than an obstacle: the opus supplies four stage names
 and the set never claimed the naming resonance would extend to arbitrary
-growth. Inventing a ninth stage name is rejected — `opus_stage="viriditas"`
+growth. Inventing another stage name is rejected — `opus_stage="viriditas"`
 fails `distinct_opus_stages` with `stages that are not opus stages:
 ['viriditas']` — and reusing an existing one fails the same check with
 `duplicate opus stages: ['rubedo']`. An additional distinct color with no opus

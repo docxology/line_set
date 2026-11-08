@@ -1,5 +1,28 @@
 # Changelog
 
+## 0.7.0 (2026-11-08)
+
+Source integration and remaining owner evidence actions:
+[release packet](docs/releases/v0.7.0.md).
+
+- Admit Copper at position 9 and Iron at position 10, both stageless, with
+  bounded arithmetic/comparison jobs and noncompensatory nonclaims.
+- Record architectural package placement without claiming the strongest typed
+  extensions were defeated or the historical empirical admission protocol passed.
+- Keep binding, admission, reading, collision, and recording algorithms generic;
+  add no predicted shared-token exemptions.
+- Extend generic finite marker geometry through the current set, wrapper, and
+  isolated extension; add intentional Copper/Iron inks and non-color/contrast
+  regressions. Generate synthetic complete figure inputs from the declaration.
+- Update current family/navigation/privacy and local version metadata to 0.7.0;
+  advance the separate declaration revision to 2026.11.08. Preserve dated
+  eight-line/no-addition evidence and archived bibliographic identities.
+- Document all three PRIVATE source omissions after complete pinned admission,
+  and the eleven-work private omnibus with Witness outside it.
+- Remove encountered prose assertions rather than repinning them. Native gates,
+  new measured records/census, generated ledgers/plates, custody, rendering, and
+  publication remain parent-owned; no execution result is claimed here.
+
 ## 0.6.1 (2026-11-08)
 
 Patch scope and evidence boundary: [release packet](docs/releases/v0.6.1.md).

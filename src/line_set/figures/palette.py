@@ -55,6 +55,8 @@ LINE_FILL: dict[str, str] = {
     "violet": "#dfcdf7",
     "blue": "#c6d9ef",
     "green": "#c8dfc9",
+    "copper": "#ead0b8",
+    "iron": "#d1d6dc",
     "colorless": "#ece8e0",
 }
 LINE_INK: dict[str, str] = {
@@ -66,6 +68,8 @@ LINE_INK: dict[str, str] = {
     "violet": "#6d28a6",
     "blue": "#245b9f",
     "green": "#246b37",
+    "copper": "#743e20",
+    "iron": "#343e4b",
     "colorless": "#6c655c",
 }
 
@@ -81,6 +85,8 @@ COVER_STROKE: dict[str, str] = {
     "violet": "#7c3aed",
     "blue": "#3465a4",
     "green": "#1a7a3a",
+    "copper": "#99562e",
+    "iron": "#505b69",
 }
 
 #: Cover layout order, deliberately separate from the declaration's working order.
@@ -94,6 +100,8 @@ COVER_ORDER: tuple[str, ...] = (
     "violet",
     "blue",
     "green",
+    "copper",
+    "iron",
 )
 
 #: Fill/ink pairs handed to a color this module has never seen.
@@ -122,6 +130,8 @@ SHAPE_CYCLE: tuple[str, ...] = (
     "cross",
     "bar",
     "chevron",
+    "shield",
+    "hourglass",
 )
 
 #: Stroke dash patterns, cycled by working position for the order connectors.

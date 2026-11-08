@@ -141,21 +141,22 @@ def test_public_view_withholds_identity_without_erasing_private_record(
         assert exc.value.code == 1
 
 
+@pytest.mark.parametrize("hidden", ["violet_line", "copper_line", "iron_line"])
 @pytest.mark.parametrize("defect", ["absent", "unpinned", "collision"])
 def test_public_view_does_not_bypass_withheld_source_admission(
-    tmp_path: Path, defect: str
+    tmp_path: Path, defect: str, hidden: str
 ) -> None:
     for index, entry in enumerate(LINE_SET):
-        if entry.id == "violet_line" and defect == "absent":
+        if entry.id == hidden and defect == "absent":
             continue
         token = (
             "NAME_0"
-            if entry.id == "violet_line" and defect == "collision"
+            if entry.id == hidden and defect == "collision"
             else f"NAME_{index}"
         )
         revision = (
             None
-            if entry.id == "violet_line" and defect == "unpinned"
+            if entry.id == hidden and defect == "unpinned"
             else f"{index + 1:040x}"
         )
         write_line_package(
@@ -175,7 +176,7 @@ def test_public_view_does_not_bypass_withheld_source_admission(
                     "--out",
                     str(target),
                     "--withhold-source",
-                    "violet_line",
+                    hidden,
                 ]
             )
         assert exc.value.code == 1
@@ -270,3 +271,64 @@ def test_only_private_record_detects_withheld_revision_only_change(
         assert exc.value.code == 1
     assert public.read_bytes() == public_before
     assert private.read_bytes() == private_before
+
+
+def test_public_view_withholds_multiple_sources_only_after_complete_admission(
+    tmp_path: Path,
+) -> None:
+    hidden = ("violet_line", "copper_line", "iron_line")
+    for index, entry in enumerate(LINE_SET):
+        write_line_package(
+            tmp_path / entry.package_name / "src",
+            entry.package_name,
+            (f"NAME_{index}",),
+            registry_sizes={"PRIMARY": index + 1},
+            source_revision=f"{index + 1:040x}",
+        )
+    private_path = tmp_path / "private.json"
+    public_path = tmp_path / "public.json"
+    args = ["--as-of", "2026-11-08"]
+    public_args = [
+        *args,
+        "--out",
+        str(public_path),
+        *(argument for line_id in hidden for argument in ("--withhold-source", line_id)),
+    ]
+    with import_sandbox(), environment("LINE_SET_SIBLINGS", str(tmp_path)):
+        main([*args, "--out", str(private_path)])
+        private_bytes = private_path.read_bytes()
+        private = json.loads(private_bytes)
+        full = reading_from_canonical(json.dumps(private["reading"]))
+        assert check_pinned_sources(full).passed
+        main(public_args)
+        public_bytes = public_path.read_bytes()
+        public = json.loads(public_bytes)
+        projected = reading_from_canonical(json.dumps(public["reading"]))
+        assert set(public["withheld_sources"]) == set(hidden)
+        assert projected.status is SetStatus.SET_LEGIBLE
+        assert projected.set_digest == full.set_digest
+        assert projected.observations
+        full_by_id = {item.line_id: item for item in full.observations}
+        for item in projected.observations:
+            source = full_by_id[item.line_id]
+            assert item.tokens == source.tokens
+            if item.line_id in hidden:
+                assert item.provenance.source_revision is None
+                assert item.provenance.module_origin is None
+                assert public["source_revisions"][item.line_id] is None
+                assert source.provenance.source_revision.encode() not in public_bytes
+                assert source.provenance.module_origin.encode() not in public_bytes
+            else:
+                assert item.provenance == source.provenance
+        assert public["vocabulary_census"] == private["vocabulary_census"]
+        assert not check_pinned_sources(projected).passed
+        main([*public_args, "--check"])
+        for wrong_view in (
+            [*args, "--out", str(public_path), "--check"],
+            [*public_args, "--out", str(private_path), "--check"],
+        ):
+            with pytest.raises(SystemExit) as exc:
+                main(wrong_view)
+            assert exc.value.code == 1
+        assert public_path.read_bytes() == public_bytes
+        assert private_path.read_bytes() == private_bytes

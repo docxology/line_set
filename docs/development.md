@@ -12,7 +12,7 @@ uv run python scripts/check_registry.py
 uv run python scripts/check_set.py
 uv run python scripts/gen_formalism_ledger.py
 uv run python scripts/build_figures.py
-uv run python scripts/record_reading.py --as-of <recorded-review-date> --withhold-source violet_line --check
+uv run python scripts/record_reading.py --as-of <recorded-review-date> --withhold-source violet_line --withhold-source copper_line --withhold-source iron_line --check
 ```
 
 The coverage floor is configured in `pyproject.toml`; read it there rather than
@@ -47,7 +47,7 @@ repository boundaries for the external renderer.
 
 ```bash
 uv run python scripts/check_set.py --require-pinned --as-of YYYY-MM-DD
-uv run python scripts/record_reading.py --as-of YYYY-MM-DD --withhold-source violet_line --check
+uv run python scripts/record_reading.py --as-of YYYY-MM-DD --withhold-source violet_line --withhold-source copper_line --withhold-source iron_line --check
 ```
 
 Use the retained record's `reading.read_as_of` for both date arguments when
@@ -65,6 +65,11 @@ Its `withheld_sources` list names the omissions, and its digest is recomputed
 from the projected reading. The public view does not pass `check_pinned_sources`;
 it is not a fully publicly reproducible source-pin proof or general deidentification.
 Review other metadata and diagnostic text separately before publication.
+The current public cutover must request all three PRIVATE producers explicitly:
+`violet_line`, `copper_line`, and `iron_line`. This is operator disclosure policy,
+not a reader whitelist or a relaxation of admission. A historical eight-line view
+uses its own retained withheld-source list and date when checked against its
+matching historical captures.
 
 Omitting the option retains the full `2.0` canonical format. Store that record
 in an authorized private location when any producer's source identity is private:
@@ -237,8 +242,15 @@ tracked engine implementation files. A source archive can render, but cannot
 supply that index. The `--skip-manuscript-hydration` option retains this
 repository's authored `docs/manuscript` layout.
 
-For the compiled volume, first run this repository's omnibus builder in a
-separate render clone. Preserve its authored `docs/manuscript` outside that
+The current complete volume contains Main plus ten instruments, eleven works;
+Witness remains outside it. Violet, Copper, and Iron require authorized PRIVATE
+source access. Assemble and render that complete volume only in independent
+private custody, never in a public repository/worktree sharing its object store.
+Public Main figures and ledgers must contain only reviewed public namespace
+metadata, not private module paths, source revisions, native receipts, or content.
+
+First run this repository's omnibus builder in a separate render clone.
+Preserve its authored `docs/manuscript` outside that
 clone, then copy the assembled `output/manuscript` to `docs/manuscript` in the
 render clone. Record the release revision and hashes of both manuscript trees,
 and commit this generated source projection locally in that clone. Render and

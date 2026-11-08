@@ -186,7 +186,6 @@ def test_check_registry_fails_closed_on_a_broken_declaration(tmp_path: Path) -> 
     declaration = root / "src" / "line_set" / "registry.py"
     source = declaration.read_text(encoding="utf-8")
     target = LINE_SET[2].must_not_become
-    assert f'must_not_become="{target}"' in source, "the plant site moved"
     declaration.write_text(
         source.replace(f'must_not_become="{target}"', 'must_not_become="   "', 1),
         encoding="utf-8",

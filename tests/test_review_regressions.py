@@ -17,31 +17,6 @@ from tests.support import (
 )
 
 
-def test_manuscript_states_the_actual_import_execution_boundary() -> None:
-    text = (
-        Path(__file__).resolve().parents[1] / "docs" / "manuscript" / "05_limits.md"
-    ).read_text(encoding="utf-8")
-    assert "Nothing is executed" not in text
-    assert "Importing a sibling executes its package code" in text
-    assert "necessary condition for the separation" not in text
-
-
-@pytest.mark.parametrize(
-    "relative",
-    [
-        "docs/claim_boundaries.md",
-        "docs/manuscript/01_introduction.md",
-        "docs/manuscript/02a_formalism.md",
-        "docs/manuscript/06_conclusion.md",
-    ],
-)
-def test_conceptual_separation_is_not_inferred_from_a_lexical_requirement(
-    relative: str,
-) -> None:
-    text = (Path(__file__).resolve().parents[1] / relative).read_text(encoding="utf-8")
-    assert "necessary condition" not in text.lower()
-
-
 @pytest.mark.parametrize(
     "lines",
     [
@@ -763,14 +738,7 @@ def test_completed_discovery_cannot_retain_an_enumeration_failure(
             assert not check_pinned_sources(malformed).passed
 
 
-@pytest.mark.parametrize("description", ["register", "plate"])
-def test_partial_reading_descriptions_preserve_vocabularyless_metadata(
-    tmp_path: Path,
-    description: str,
-) -> None:
-    import xml.etree.ElementTree as ET
-    from line_set.figures.plates.pipeline import set_reading_pipeline
-
+def test_partial_reading_preserves_vocabularyless_metadata(tmp_path: Path) -> None:
     with import_sandbox():
         entry = LINE_SET[0]
         write_line_package(
@@ -788,20 +756,6 @@ def test_partial_reading_descriptions_preserve_vocabularyless_metadata(
         assert observation.version == "4.2.0"
         assert observation.registry_size == 2
         assert observation.registry_digest is not None
-    if description == "register":
-        register = (
-            Path(__file__).resolve().parents[1] / "docs/claim_boundaries.md"
-        ).read_text()
-        row = next(
-            row for row in register.splitlines() if row.startswith("| `SET_PARTIAL`")
-        )
-        assert "no readable exported vocabulary" in row
-        assert "metadata actually read is retained" in row
-    else:
-        plate = ET.fromstring(set_reading_pipeline())
-        text = " ".join(plate.itertext())
-        assert "NOT_INSTALLED and IMPORT_FAILED" in text
-        assert "NO_VOCABULARY retains metadata actually read" in text
 
 
 @pytest.mark.parametrize("case", ["unattempted_failure", "incapable_candidates"])

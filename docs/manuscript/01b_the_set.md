@@ -1,4 +1,4 @@
-# The set: eight questions, eight jobs, and eight shared words {#sec:the-set}
+# The set: distinct questions, jobs, and declared shared words {#sec:the-set}
 
 The declaration is small enough to print. Each line answers one question, does one job, and names the thing it must not become; the last field is the one that does the work, because a boundary is easier to hold when the drift it guards against has been written down in advance.
 
@@ -12,8 +12,12 @@ The declaration is small enough to print. Each line answers one question, does o
 | Violet Line | Who else is affected, and have they agreed? | Consent ledger of affected parties per project; absence of consent recorded, never inferred | A proxy for anyone's consent or a permission-scraping mechanism |
 | Blue Line | What must I keep working? | Stewardship of maintained commitments: systems, obligations, and relationships to past work | A warranty, SLA, availability guarantee, or proof of maintenance |
 | Green Line | What is still growing? | Capacity under development: apprenticeships, skills deliberately not yet mastered, with marker/counter-signal staging | A resume, a competence certification, or a virtue signal |
+| Copper Line | What finite resources are used or committed, who bears those quantities, and where do declared limits or attribution remain open? | Dimensioned finite-pool exposure arithmetic with separate burden attribution | A fairness score, consent substitute, spending authority, or permission to cross a refusal |
+| Iron Line | What recovery is documented for this named disruption, and which declared targets are supported or missed by its recorded exercise? | Scenario-bound comparisons of recorded recovery exercises with declared targets | A readiness score, uptime warranty, recovery guarantee, or clearance of refusal or missing consent |
 
 The order is the order I use them in. Red stops a prohibited direction before any work begins. Black gives the work that survives that stop a method. Golden keeps the method pointed at something worth serving. White keeps every claim honest about what was never observed. Silver keeps the method's products entrusted and reviewable. Violet keeps the people the work touches actually recorded. Blue keeps what already exists maintained. Green keeps the gaps in my own capacity visible instead of hidden. Each line has its own package, registry, evaluator, figures, tests, and manuscript, and a cross-reference between them is an orientation link rather than a dependency. A separated copy of any one of them still has to explain itself.
+
+Copper and Iron continue the working order at positions 9 and 10 without an opus stage. Copper keeps use, remaining commitments, proposals, uncertainty, and burden attribution distinct. Iron keeps disruption identity, supplied targets, and every recorded episode distinct without choosing the best run. Violet, Copper, and Iron are private instruments; their inclusion does not promise public source access. The [2026-11-08 decision](../admission/decision-20261108.md) records that typed native extensions could preserve these distinctions; independent packaging is an architectural choice, not a demonstrated empirical necessity.
 
 ## The shared words
 
@@ -35,4 +39,4 @@ Three caveats keep the resonance from being read as more than it is, and the fir
 
 ![Two orders: the working sequence (refuse, method, aspire, absence) drawn against the opus sequence (nigredo, albedo, citrinitas, rubedo), with connectors showing where they cross. The divergence is deliberate, and citrinitas is deliberately not collapsed into rubedo. Position in either column encodes sequence only, never rank.](../../output/figures/two_orders.png){#fig:two-orders width=100%}
 
-The set's short internal orientation note, `docs/line-set.md`, lives in the author's private projects tree; it is unpublished and does not travel with this repository, so it is cited here by name rather than linked. Each instrument it maps is its own repository — [Red Line](https://github.com/docxology/red_line), [Black Line](https://github.com/docxology/black_line), [Golden Line](https://github.com/docxology/golden_line), and [White Line](https://github.com/docxology/white_line) — and those are the durable references. This paper is the version with a package under it.
+The short internal orientation note, `docs/line-set.md`, remains unpublished in the author's private projects tree and does not travel here. The current independent repository roster and access qualifications are maintained in the root README; `registry.py` is authoritative for instrument membership. Main and Witness are colorless companions, and Witness is neither a declaration entry nor an omnibus work.

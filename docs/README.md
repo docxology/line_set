@@ -8,8 +8,10 @@ Start with [claim_boundaries.md](claim_boundaries.md) if you are evaluating what
 this project asserts, and with [architecture.md](architecture.md) if you are
 about to change it.
 
-- [admission/README.md](admission/README.md) — no-addition decision, dossier,
-  hypothetical contrast cases, bounded unexecuted protocol and owner requirements.
+- [admission/decision-20261108.md](admission/decision-20261108.md) — current
+  architectural admission of Copper and Iron, including the extension alternative.
+- [admission/README.md](admission/README.md) — historical no-addition decision,
+  dossier, hypothetical contrast cases, unexecuted protocol and owner requirements.
 - [evidence/README.md](evidence/README.md) — optional versioned evidence/replay
   companion convention; no native exporter or evaluator in this package.
 
@@ -33,7 +35,7 @@ about to change it.
   and what this repository did about each.
 - [publication.md](publication.md) — how to cite, the DOI discipline, and the
   reserve-first workflow.
-- [releases/v0.6.1.md](releases/v0.6.1.md) — current patch scope and evidence boundary.
+- [releases/v0.7.0.md](releases/v0.7.0.md) — current integration scope and parent evidence actions.
 - [releases/README.md](releases/README.md) — current and historical release packets.
 
 The declaration lives in [`../src/line_set/registry.py`](../src/line_set/registry.py),
@@ -48,12 +50,16 @@ This project's ancestor is `docs/line-set.md`, a short internal note in the
 author's private projects tree that first recorded the set, its colors, and its
 non-overlap contract. It is unpublished and does not travel with this
 repository, so it is named rather than linked. It stays as the short map; this
-project is the paper. The durable references for the eight instruments are their
+project is the paper. The durable references for the declared instruments are their
 own repositories: [red_line](https://github.com/docxology/red_line),
 [black_line](https://github.com/docxology/black_line),
 [golden_line](https://github.com/docxology/golden_line),
 [white_line](https://github.com/docxology/white_line),
 [silver_line](https://github.com/docxology/silver_line),
-[violet_line](https://github.com/docxology/violet_line),
-[blue_line](https://github.com/docxology/blue_line), and
-[green_line](https://github.com/docxology/green_line).
+[violet_line](https://github.com/docxology/violet_line) (PRIVATE),
+[blue_line](https://github.com/docxology/blue_line),
+[green_line](https://github.com/docxology/green_line),
+[copper_line](https://github.com/docxology/copper_line) (PRIVATE), and
+[iron_line](https://github.com/docxology/iron_line) (PRIVATE). Private repository
+references require authorized source access. Current questions and nonclaims are
+declared in the registry, not inferred from repository accessibility.

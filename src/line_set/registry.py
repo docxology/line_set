@@ -1,6 +1,6 @@
 """The declaration of the line set.
 
-``LINE_SET`` is the whole declaration: eight lines in working order, each with
+``LINE_SET`` is the whole declaration: the instruments in working order, each with
 the question it answers, the job it does, and the thing it must not become.
 ``SHARED_TOKENS`` is the exemption table — the tokens two lines are allowed to
 share, with a distinct meaning recorded per line.
@@ -136,6 +136,42 @@ LINE_SET: tuple[LineEntry, ...] = (
         registry_noun="growth records",
         verdict_noun="growth status",
     ),
+    LineEntry(
+        id="copper_line",
+        color="copper",
+        question=(
+            "What finite resources are used or committed, who bears those quantities, "
+            "and where do declared limits or attribution remain open?"
+        ),
+        job="Dimensioned finite-pool exposure arithmetic with separate burden attribution",
+        must_not_become=(
+            "A fairness score, consent substitute, spending authority, or permission "
+            "to cross a refusal"
+        ),
+        opus_stage=None,
+        working_position=9,
+        package_name="copper_line",
+        registry_noun="allocation requirements",
+        verdict_noun="pool exposure status",
+    ),
+    LineEntry(
+        id="iron_line",
+        color="iron",
+        question=(
+            "What recovery is documented for this named disruption, and which declared "
+            "targets are supported or missed by its recorded exercise?"
+        ),
+        job="Scenario-bound comparisons of recorded recovery exercises with declared targets",
+        must_not_become=(
+            "A readiness score, uptime warranty, recovery guarantee, or clearance "
+            "of refusal or missing consent"
+        ),
+        opus_stage=None,
+        working_position=10,
+        package_name="iron_line",
+        registry_noun="recovery requirements",
+        verdict_noun="scenario and episode target status",
+    ),
 )
 
 #: The wrapper's own entry, for self-application only.
@@ -151,7 +187,7 @@ WRAPPER_LINE: LineEntry = LineEntry(
     job="Declare the set, read it, check non-overlap, admit new colors",
     must_not_become=(
         "A meta-evaluator, a substantive instrument of its own, a merge of the "
-        "eight, or a ranking of them"
+        "instruments, or a ranking of them"
     ),
     opus_stage=None,
     working_position=len(LINE_SET) + 1,
