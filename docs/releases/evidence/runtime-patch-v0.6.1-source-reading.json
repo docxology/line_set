@@ -1,0 +1,112 @@
+{
+  "admission": "All eight full pinned sources were admitted before public source provenance withholding. Full private reading and identity traces are retained outside this public project.",
+  "exempted_collisions": 8,
+  "golden_source": {
+    "commit": "5a10c8799c1097b7b7e2876932307bcce676df66",
+    "source_file_count": 143,
+    "source_manifest_sha256": "47167398f2e65136b388de7ac29174091518685f93abffc56d4138905942c332",
+    "tree": "991ae65d48a926b07bfe337efff2146190d6f5b0",
+    "version": "0.6.1"
+  },
+  "package_version": "0.6.1",
+  "prior_public_archive": "docs/releases/evidence/reading-record-v0.6.0-final-public.json",
+  "prior_public_file_sha256": "02feebe500bd8b0d5e0fad2d2e11b4100010441c07e4a6b63a2a806e81a63f08",
+  "prior_public_reading_digest": "614706819326ddbd438dfc980cd33adebf4c480e49366c1c76298f274dfe8f64",
+  "public_reading_digest": "ad3c65376f807815cf49781c7f0881a505e4cd8e0a69e5bb4d30c50083a87e55",
+  "public_record": "docs/manuscript/reading_record.json",
+  "public_record_sha256": "b5762e0e99115d40a3db1149b99b251e89a09415885a0f215e5b0b76415f9316",
+  "recorded_on": "2026-11-08",
+  "schema": "line-set-runtime-patch-source-reading/1",
+  "set_digest": "018f930a14597e85403beb1397987b2b07865f3327e37a37ab7135817136dd1e",
+  "source_pin_limit": "Public replay cannot establish continuity of a withheld private source identity.",
+  "source_revisions": {
+    "black_line": "97961f6621e86359bf3bb6436ce6049f2644642d",
+    "blue_line": "03b71534f9024f098fbf0afe05dbd80e1d75587a",
+    "golden_line": "5a10c8799c1097b7b7e2876932307bcce676df66",
+    "green_line": "3edf49f5426a2c9dfa8c925846d318476206988d",
+    "red_line": "3fa8d9a68a435384f53abc4afeb7ad462b133adb",
+    "silver_line": "51f54d8cc5f44938f3b537ebbcb42536fe36f5c1",
+    "violet_line": null,
+    "white_line": "5ab6c8e0c3c5f8d7fc3dd57a4cd3f519afd36dce"
+  },
+  "unexempted_collisions": 0,
+  "vocabulary_census": {
+    "canonical_members": 149,
+    "declared_members": 149,
+    "distinct_names": 116,
+    "enum_classes": 34,
+    "line_and_name_pairs": 128,
+    "method": "Every enum exported at each declared package's root was counted, together with all __members__ names including aliases, deduplicating class objects. canonical_members counts values reached by ordinary enum iteration; declared_members counts names with repeats; distinct_names is what survives deduplication within one line, which is what the collision scan compares.",
+    "names_carried_by_more_than_one_line": [
+      "COMMUNICATION",
+      "KEPT",
+      "METHOD",
+      "NEEDS_REWORK",
+      "OUTSIDE_SCOPE",
+      "STALE",
+      "STEWARDSHIP",
+      "VERIFICATION"
+    ],
+    "per_line": {
+      "black_line": {
+        "canonical_members": 13,
+        "declared_members": 13,
+        "distinct_names": 10,
+        "enum_classes": 3,
+        "within_line_repeats": 3
+      },
+      "blue_line": {
+        "canonical_members": 11,
+        "declared_members": 11,
+        "distinct_names": 8,
+        "enum_classes": 3,
+        "within_line_repeats": 3
+      },
+      "golden_line": {
+        "canonical_members": 7,
+        "declared_members": 7,
+        "distinct_names": 7,
+        "enum_classes": 2,
+        "within_line_repeats": 0
+      },
+      "green_line": {
+        "canonical_members": 13,
+        "declared_members": 13,
+        "distinct_names": 10,
+        "enum_classes": 3,
+        "within_line_repeats": 3
+      },
+      "red_line": {
+        "canonical_members": 42,
+        "declared_members": 42,
+        "distinct_names": 41,
+        "enum_classes": 7,
+        "within_line_repeats": 1
+      },
+      "silver_line": {
+        "canonical_members": 16,
+        "declared_members": 16,
+        "distinct_names": 12,
+        "enum_classes": 4,
+        "within_line_repeats": 4
+      },
+      "violet_line": {
+        "canonical_members": 19,
+        "declared_members": 19,
+        "distinct_names": 16,
+        "enum_classes": 5,
+        "within_line_repeats": 3
+      },
+      "white_line": {
+        "canonical_members": 28,
+        "declared_members": 28,
+        "distinct_names": 24,
+        "enum_classes": 7,
+        "within_line_repeats": 4
+      }
+    }
+  },
+  "withheld_sources": [
+    "violet_line"
+  ]
+}

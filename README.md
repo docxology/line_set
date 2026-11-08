@@ -9,6 +9,10 @@ The [family refinement note](docs/refinement-20261106.md) records the current
 eight-color boundaries, breaking interface changes, evidence custody, and
 additional-color hypotheses. No additional color is admitted.
 
+The [0.6.1 patch packet](docs/releases/v0.6.1.md) records the current
+source refresh for Golden's Python 3.10 compatibility patch. Earlier packets
+and public readings retain their original bytes and identities.
+
 Line Set is the bookkeeping work in the line set, and it is not an instrument. It
 does not answer, merge, rank, or second-guess any substantive line's question.
 Its job is bookkeeping: hold the declaration, read the sibling packages that

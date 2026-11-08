@@ -2,8 +2,8 @@ cff-version: 1.2.0
 message: "Cite this software by repository and version. The archived reference below identifies the earlier deposited version."
 type: software
 title: "The Line Set: The Collected Volume"
-version: "0.6.0"
-date-released: "2026-11-06"
+version: "0.6.1"
+date-released: "2026-11-08"
 authors:
   - family-names: "Friedman"
     given-names: "Daniel Ari"

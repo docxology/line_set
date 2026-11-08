@@ -1,5 +1,22 @@
 # Changelog
 
+## 0.6.1 (2026-11-08)
+
+Patch scope and evidence boundary: [release packet](docs/releases/v0.6.1.md).
+
+- Remeasure all eight actual current producer captures, including Golden 0.6.1,
+  rather than relabeling the 0.6.0 reading. Admit the full pinned corpus before
+  withholding Violet's private source identity in the public view.
+- Preserve the final 0.6.0 public record byte-for-byte at
+  `docs/releases/evidence/reading-record-v0.6.0-final-public.json`; all earlier
+  packets and captures remain unchanged.
+- Refresh package, citation, manuscript, and current navigation metadata.
+  Keep the set declaration revision, eight exact exemptions, native algorithms,
+  and the compiled-volume empty-reference-stub correction unchanged.
+- Remove encountered authored-sentence and source-wiring assertions instead of
+  treating prose matching as behavioral verification. Native behavioral coverage
+  policy remains unchanged.
+
 ## 0.6.0 (2026-11-06)
 
 Release scope, verification, and publication boundary: [release packet](docs/releases/v0.6.0.md).

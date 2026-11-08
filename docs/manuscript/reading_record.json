@@ -1,5 +1,5 @@
 {
-  "package_version": "0.6.0",
+  "package_version": "0.6.1",
   "reading": {
     "collisions": [],
     "counts": {
@@ -28,7 +28,7 @@
         "items": [
           "black_line: 10 tokens, version=0.6.0, registry_size=11",
           "blue_line: 8 tokens, version=0.3.0, registry_size=12",
-          "golden_line: 7 tokens, version=0.6.0, registry_size=9",
+          "golden_line: 7 tokens, version=0.6.1, registry_size=9",
           "green_line: 10 tokens, version=0.3.0, registry_size=11",
           "red_line: 41 tokens, version=0.5.0, registry_size=7",
           "silver_line: 12 tokens, version=0.3.0, registry_size=11",
@@ -553,7 +553,7 @@
           "requested_package": "golden_line",
           "resolved_package": "golden_line",
           "resolver_policy": "pinned-source-snapshot",
-          "source_revision": "af9bf48ed34e6508f773cce0a5eae9ea2115c166"
+          "source_revision": "5a10c8799c1097b7b7e2876932307bcce676df66"
         },
         "registry_digest": "3e0a7e38ececb156336d57ed7cc60b6bf08a3d8f2edfc678270c307820df57e3",
         "registry_size": 9,
@@ -566,7 +566,7 @@
           "TOWARD",
           "UNKNOWN_ID"
         ],
-        "version": "0.6.0"
+        "version": "0.6.1"
       },
       {
         "code": "resolved",
@@ -782,14 +782,14 @@
         "version": "0.9.0"
       }
     ],
-    "read_as_of": "2026-11-06",
+    "read_as_of": "2026-11-08",
     "schema_version": "line-set-reading/2",
     "set_digest": "018f930a14597e85403beb1397987b2b07865f3327e37a37ab7135817136dd1e",
     "status": "set_legible",
     "undeclared_lines": []
   },
-  "reading_digest": "614706819326ddbd438dfc980cd33adebf4c480e49366c1c76298f274dfe8f64",
-  "recorded_on": "2026-11-06",
+  "reading_digest": "ad3c65376f807815cf49781c7f0881a505e4cd8e0a69e5bb4d30c50083a87e55",
+  "recorded_on": "2026-11-08",
   "resolver_mode": "sibling_path_resolver",
   "schema_version": "2.0-public",
   "set_digest": "018f930a14597e85403beb1397987b2b07865f3327e37a37ab7135817136dd1e",
@@ -797,7 +797,7 @@
   "source_revisions": {
     "black_line": "97961f6621e86359bf3bb6436ce6049f2644642d",
     "blue_line": "03b71534f9024f098fbf0afe05dbd80e1d75587a",
-    "golden_line": "af9bf48ed34e6508f773cce0a5eae9ea2115c166",
+    "golden_line": "5a10c8799c1097b7b7e2876932307bcce676df66",
     "green_line": "3edf49f5426a2c9dfa8c925846d318476206988d",
     "red_line": "3fa8d9a68a435384f53abc4afeb7ad462b133adb",
     "silver_line": "51f54d8cc5f44938f3b537ebbcb42536fe36f5c1",

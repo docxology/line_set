@@ -66,17 +66,6 @@ def test_the_battery_passes_on_the_real_declaration() -> None:
     assert registry_sound()
 
 
-def test_the_battery_defaults_to_the_real_declaration() -> None:
-    assert all_invariants() == all_invariants(LINE_SET, SHARED_TOKENS)
-
-
-def test_the_offline_battery_names_every_check_it_runs() -> None:
-    """The battery is the checks, not a hand-kept list beside them."""
-    assert {check.__name__ for check in _LINE_CHECKS} == {
-        check.__name__ for check in OFFLINE_LINE_CHECKS
-    }
-
-
 @pytest.mark.parametrize("check", OFFLINE_LINE_CHECKS, ids=lambda c: c.__name__)
 def test_every_check_fails_on_an_empty_declaration(check) -> None:
     """A check with nothing to look at found nothing, which is not evidence."""

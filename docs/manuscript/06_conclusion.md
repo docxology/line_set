@@ -1,6 +1,6 @@
 # Conclusion {#sec:conclusion}
 
-As of 2026-11-06, immutable producer snapshots prepared for the minor releases put 128 line-and-name pairs in front of the reader, spanning 116 distinct names. There were 8 declared exemptions and 0 unexempted published-name collisions. The public view records that namespace measurement; it explicitly withholds Violet's private source identity and does not establish a complete public source-pin proof.
+As of 2026-11-08, immutable current producer snapshots, including Golden 0.6.1, put 128 line-and-name pairs in front of the reader, spanning 116 distinct names. There were 8 declared exemptions and 0 unexempted published-name collisions. The public view records that namespace measurement; it explicitly withholds Violet's private source identity and does not establish a complete public source-pin proof.
 
 That is a small result and I have tried not to dress it up. The declared namespace requirement held. Whether the instruments overlap is the question I actually care about, no reader of names can answer it, and it is still a matter of reading the declared manuscripts and deciding (see [the scholarship section](#sec:scholarship)).
 

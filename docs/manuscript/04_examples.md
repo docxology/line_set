@@ -2,26 +2,26 @@
 
 ## The pinned measurement and public view
 
-This measurement uses an explicit review date of 2026-11-06 against immutable producer commits prepared for the coordinated minor releases. Each source snapshot is checked out at its actual revision, not merely labeled with a caller-supplied SHA. All eight used convention-heuristic binding with `pinned-source-snapshot` provenance. The public `2.0-public` view withholds Violet's private producer revision and module path after complete pinned admission; the full current and initial working-source records remain in private custody. This is a namespace reading, not verification of sibling conclusions or native report correspondence. Previously public historical records remain under `docs/releases/evidence/`.
+This measurement uses an explicit review date of 2026-11-08 against eight immutable current producer commits, including Golden 0.6.1. Each captured source's regular-file bytes match its actual Git revision and tree, not merely a caller-supplied SHA label. All eight used convention-heuristic binding with `pinned-source-snapshot` provenance. The public `2.0-public` view withholds Violet's private producer revision and module path after complete pinned admission; the full current and initial working-source records remain in private custody. This is a namespace reading, not verification of sibling conclusions or native report correspondence. Previously public historical records remain under `docs/releases/evidence/`.
 
-The final source closure remeasures all eight actual immutable captures, including the corrected Red, Black, White, and final Silver sources. The preceding public reading remains unchanged at `docs/releases/evidence/reading-record-20261106-pre-final-source-closure-public.json`; the earlier preparation remains at `docs/releases/evidence/reading-record-20261106-pre-source-refresh-public.json`. A matching vocabulary census does not make different source snapshots interchangeable.
+The patch source refresh remeasures all eight actual immutable captures instead of swapping source labels in an old record. The preceding final 0.6.0 public record remains byte-identical at `docs/releases/evidence/reading-record-v0.6.0-final-public.json`. Earlier source-closure and preparation records remain unchanged at `docs/releases/evidence/reading-record-20261106-pre-final-source-closure-public.json` and `docs/releases/evidence/reading-record-20261106-pre-source-refresh-public.json`. A matching vocabulary census does not make different source snapshots interchangeable.
 
 The following display summarizes the public JSON view. Select the authorized snapshot parent through `LINE_SET_SIBLINGS`; an ordinary, unpinned checkout cannot produce the underlying canonical record. Replaying this public view verifies its disclosed measurement and digest, not a complete public source-pin proof or continuity of a withheld revision.
 
 ```python
 from line_set.recording import build_record
 
-record, refusals = build_record("2026-11-06", withheld_sources=("violet_line",))
+record, refusals = build_record("2026-11-08", withheld_sources=("violet_line",))
 ```
 
 ```text
 status        : set_legible
 set_digest    : 018f930a14597e85403beb1397987b2b07865f3327e37a37ab7135817136dd1e
-reading_digest: 614706819326ddbd
+reading_digest: ad3c65376f807815
 counts        : {'resolved': 8, 'not_installed': 0, 'import_failed': 0, 'no_vocabulary': 0}
   black_line   resolved v0.6.0 registry=11 digest=a02bff47a767 tokens=10
   blue_line    resolved v0.3.0 registry=12 digest=9ae7cae1f0f7 tokens=8
-  golden_line  resolved v0.6.0 registry=9 digest=3e0a7e38ecec tokens=7
+  golden_line  resolved v0.6.1 registry=9 digest=3e0a7e38ecec tokens=7
   green_line   resolved v0.3.0 registry=11 digest=7be6d699bb36 tokens=10
   red_line     resolved v0.5.0 registry=7 digest=72835fd81d1f tokens=41
   silver_line  resolved v0.3.0 registry=11 digest=ce808709c7db tokens=12
@@ -40,7 +40,7 @@ counts        : {'resolved': 8, 'not_installed': 0, 'import_failed': 0, 'no_voca
 | --- | --- | --- | --- |
 | black_line | 0.6.0 | `97961f6621e86359bf3bb6436ce6049f2644642d` | convention-heuristic |
 | blue_line | 0.3.0 | `03b71534f9024f098fbf0afe05dbd80e1d75587a` | convention-heuristic |
-| golden_line | 0.6.0 | `af9bf48ed34e6508f773cce0a5eae9ea2115c166` | convention-heuristic |
+| golden_line | 0.6.1 | `5a10c8799c1097b7b7e2876932307bcce676df66` | convention-heuristic |
 | green_line | 0.3.0 | `3edf49f5426a2c9dfa8c925846d318476206988d` | convention-heuristic |
 | red_line | 0.5.0 | `3fa8d9a68a435384f53abc4afeb7ad462b133adb` | convention-heuristic |
 | silver_line | 0.3.0 | `51f54d8cc5f44938f3b537ebbcb42536fe36f5c1` | convention-heuristic |

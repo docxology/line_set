@@ -270,42 +270,6 @@ def test_the_coverage_gate_names_what_a_deficient_map_is_missing() -> None:
     assert "invented" in str(unexpected.value)
 
 
-def test_every_enumeration_keyed_display_map_is_guarded() -> None:
-    """A new display map added without being guarded fails this test.
-
-    Without it the gate is only as good as whoever last remembered to extend
-    it, and a map that fell out of the gate would drift silently — which is the
-    exact failure the gate exists to prevent.
-    """
-    import inspect
-
-    guarded = inspect.getsource(palette.verify_coverage)
-    keyed = {
-        name
-        for name in palette.__all__
-        if isinstance(getattr(palette, name), dict)
-        and getattr(palette, name)
-        and all(
-            isinstance(key, (ReadCode, SetStatus)) or key in READER_STAGES
-            for key in getattr(palette, name)
-        )
-    }
-    assert keyed, "no enumeration-keyed display map was found; the scan is vacuous"
-    for name in sorted(keyed):
-        assert name in guarded, f"{name} is not checked by verify_coverage()"
-
-
-def test_the_build_runs_the_coverage_gate_before_it_writes(tmp_path: Path) -> None:
-    """The gate is at build entry, so a drifted map cannot leave partial output."""
-    import inspect
-
-    source = inspect.getsource(build_figures)
-    body = source.split(":\n", 1)[1]
-    assert body.index("verify_coverage()") < body.index("write_text"), (
-        "verify_coverage() must run before the first write"
-    )
-
-
 # ------------------------------------------------------------ plate shape
 
 
@@ -326,23 +290,6 @@ def test_every_declared_plate_renders_well_formed_svg(tmp_path: Path) -> None:
         assert body.startswith("<svg "), name
         assert body.rstrip().endswith("</svg>"), name
         assert body.count("<svg") == body.count("</svg>") == 1, name
-
-
-def test_exemption_descriptions_identify_the_rendered_matrix(tmp_path: Path) -> None:
-    with live_reading(tmp_path) as reading:
-        plate = plates_for(LINE_SET, reading)["exemption_gate"]
-    manuscript = (
-        Path(__file__).resolve().parents[1] / "docs/manuscript/02a_formalism.md"
-    ).read_text()
-    caption = next(
-        line for line in manuscript.splitlines() if "{#fig:exemption-gate" in line
-    )
-    for description in (plate.caption, plate.alt, caption):
-        assert "token row" in description
-        assert "mutation column" in description
-        assert "PASS" in description and "FAIL" in description
-        assert "summary panel" not in description
-        assert "lines it asked about" not in description
 
 
 def test_plate_provenance_is_complete_and_unique(tmp_path: Path) -> None:

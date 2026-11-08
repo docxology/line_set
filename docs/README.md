@@ -33,8 +33,8 @@ about to change it.
   and what this repository did about each.
 - [publication.md](publication.md) — how to cite, the DOI discipline, and the
   reserve-first workflow.
-- [releases/v0.1.0.md](releases/v0.1.0.md) — the release packet with gate
-  results, artifacts, and tag name.
+- [releases/v0.6.1.md](releases/v0.6.1.md) — current patch scope and evidence boundary.
+- [releases/README.md](releases/README.md) — current and historical release packets.
 
 The declaration lives in [`../src/line_set/registry.py`](../src/line_set/registry.py),
 the staged reader in [`../src/line_set/reader.py`](../src/line_set/reader.py),

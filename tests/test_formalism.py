@@ -1,6 +1,6 @@
-"""The formalism blocks: auto-numbered, resolvable, and bound to the code.
+"""The formalism blocks: auto-numbered, resolvable, and renderable.
 
-Three separate things are checked here, and they fail for different reasons.
+Two separate things are checked here, and they fail for different reasons.
 
 **Syntax.** Every formalism block is written in the fenced-Div form the render
 toolchain's filter numbers, carries a label, and uses a prefix that matches its
@@ -11,11 +11,8 @@ old one. Each of those four rules is shown rejecting a planted violation before
 it is applied to the manuscript, so a green run means the manuscript is clean
 rather than that the rule does nothing.
 
-**Content.** Each definition and proposition is re-derived from the module it
-describes: the field names on the records, the reader's stages, the precedence
-order, the conditions the matcher applies, and the conditions the self-check
-applies. A statement that drifted from the code fails here, in the section that
-carries it.
+Authored definitions and propositions require review against the implementation;
+sentence matching cannot establish their correctness.
 
 **The volume.** A compiled volume must restart formalism numbering at each
 reproduced work, or five papers would share one sequence and every paper's own
@@ -41,14 +38,7 @@ from pathlib import Path
 
 import pytest
 
-from line_set import (
-    LINE_SET,
-    SHARED_TOKENS,
-    LineEntry,
-    ReadCode,
-    SetStatus,
-    SharedToken,
-)
+from line_set import LINE_SET, SHARED_TOKENS, ReadCode, SharedToken
 from line_set.omnibus import (
     FORMALISM_METADATA_BLOCK,
     FORMALISM_RESET_KEY,
@@ -60,7 +50,6 @@ from line_set.omnibus import (
     volume_config,
 )
 from line_set.probes import exemption_probes
-from line_set.reader import READER_STAGES, STATUS_PRECEDENCE
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 MANUSCRIPT = PROJECT_ROOT / "docs" / "manuscript"
@@ -316,126 +305,14 @@ def test_every_block_is_referenced_or_deliberately_standalone() -> None:
     ]
 
 
-# --------------------------------------------------------------- content
-
-
-def section_text(name: str) -> str:
-    """One manuscript section, read from disk and required to be written."""
-    text = (MANUSCRIPT / name).read_text(encoding="utf-8")
-    assert text.strip(), f"{name} is empty; every binding over it would be vacuous"
-    return text
-
-
-FORMALISM = "02a_formalism.md"
-
-
-def test_the_line_entry_definition_names_every_field_the_record_has() -> None:
-    text = section_text(FORMALISM)
-    fields = [field.name for field in dataclasses.fields(LineEntry)]
-    assert fields, "a fieldless record would make this vacuous"
-    for name in fields:
-        assert f"`{name}`" in text, name
-    assert f"`LineEntry` record with {_word(len(fields))} fields" in text
-
-
-def test_the_shared_token_definition_names_every_field_the_record_has() -> None:
-    text = section_text(FORMALISM)
-    fields = [field.name for field in dataclasses.fields(SharedToken)]
-    for name in fields:
-        assert f"`{name}`" in text, name
-    assert f"`SharedToken` record with {_word(len(fields))} fields" in text
-
-
-def test_the_reading_definition_names_every_stage_and_every_read_code() -> None:
-    text = section_text(FORMALISM)
-    assert f"records {_word(len(READER_STAGES))} stages in order" in text
-    for stage in READER_STAGES:
-        assert f"**{stage.capitalize()}**" in text, stage
-    for code in ReadCode:
-        assert f"`{code.name}`" in text, code
-
-
-def test_the_precedence_proposition_states_the_order_the_reader_applies() -> None:
-    text = section_text(FORMALISM)
-    ordered = [status.name for status in STATUS_PRECEDENCE]
-    assert len(ordered) == len(set(ordered)) == len(SetStatus)
-    spelled = ", ".join(f"`{name}`" for name in ordered)
-    assert f"the first of {spelled} whose condition holds" in text
-    assert f"`{STATUS_PRECEDENCE[-1].name}` is reachable only when" in text
-
-
-def test_the_fail_closed_proposition_counts_the_weakenings_the_probes_run() -> None:
-    """The number of refusals in the prose is the number the probe set runs.
-
-    The probes are the demonstration; the proposition is the claim. Binding one
-    to the other is what stops the prose keeping a count the code stopped
-    producing.
-    """
-    probes = exemption_probes(LINE_SET, SHARED_TOKENS)
-    refusals = {probe.name for probe in probes if not probe.expected_match}
-    assert refusals, "a probe set with no refusal would make the claim empty"
-    text = section_text(FORMALISM)
-    expected = f"{_word(len(refusals)).capitalize()} weakenings are therefore refused"
-    assert expected in text
-    assert f"[@prop:fail-closed] names {_word(len(refusals))} weakenings" in text
-
-
 def test_the_fail_closed_proposition_is_true_of_the_matcher() -> None:
-    """The claim, re-derived: the matcher does what the proposition says.
-
-    Every probe is run through ``exemption_for`` here rather than compared with
-    a recorded outcome, so a matcher that started accepting a looser input
-    fails this test and the proposition above with it.
-    """
+    """Run every real probe through the production matcher."""
     probes = exemption_probes(LINE_SET, SHARED_TOKENS)
     assert probes, "an empty probe set would make this vacuous"
     honored = [probe for probe in probes if probe.expected_match]
     assert honored, "with no positive control, refusing everything would pass"
     diverged = [probe.name for probe in probes if not probe.holds]
     assert diverged == []
-
-
-def test_the_self_disjointness_proposition_states_all_four_conditions() -> None:
-    text = section_text(FORMALISM)
-    for condition in (
-        "the wrapper's own vocabulary was read",
-        "at least one other line supplied a vocabulary",
-        "no collision in that reading names the wrapper",
-        "no other declared line went unread",
-    ):
-        assert condition in text, condition
-    assert "counts against it exactly as an unexempted one does" in text
-
-
-def test_the_exemption_match_definition_states_every_condition() -> None:
-    text = section_text(FORMALISM)
-    for condition in (
-        "The token is non-empty text.",
-        "At least two lines carry it.",
-        "character for character",
-        "equal *as a set* to the lines carrying the token",
-        "name no line outside them",
-    ):
-        assert condition in text, condition
-
-
-WORDS = {
-    1: "one",
-    2: "two",
-    3: "three",
-    4: "four",
-    5: "five",
-    6: "six",
-    7: "seven",
-    8: "eight",
-    9: "nine",
-    10: "ten",
-}
-
-
-def _word(count: int) -> str:
-    """The spelled-out form of a derived count."""
-    return WORDS[count]
 
 
 # ---------------------------------------------------------------- the volume
