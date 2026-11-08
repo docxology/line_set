@@ -4,6 +4,9 @@
 
 Release scope, verification, and publication boundary: [release packet](docs/releases/v0.6.0.md).
 
+- Keep the compiled volume's merged bibliography in its final References
+  section instead of capturing it in a source work's empty citeproc placeholder.
+  Preserve reference pages containing source prose or examples.
 - Use native numbered section citations without duplicated prefixes or nested
   hand-written links in the manuscript roadmap.
 - Use American English in maintained prose and owned interfaces:

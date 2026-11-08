@@ -61,7 +61,7 @@ from line_set.omnibus import (
     volume_config,
     volume_order,
 )
-from tests.support import absent, canned_resolver, environment, import_sandbox
+from tests.support import absent, canned_resolver, import_sandbox
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 
@@ -392,23 +392,42 @@ def test_manuscript_control_files_are_not_reproduced_as_sections(
     assert tuple(path.name for path in paper.sections) == ("00_abstract.md",)
 
 
-def test_the_corpus_gate_honors_the_explicit_snapshot_directory(
+def test_empty_citeproc_stub_does_not_capture_the_merged_bibliography(
     tmp_path: Path,
 ) -> None:
-    code = (
-        "import runpy, sys; from pathlib import Path; "
-        "scope = runpy.run_path(sys.argv[1]); "
-        "assert scope['CORPUS_BASE'] == Path(sys.argv[2]), scope['CORPUS_BASE']"
+    base = tmp_path / "works"
+    root = write_paper(
+        base,
+        "one",
+        sections={
+            "00_abstract.md": "# Paper\n\nAuthored body.\n",
+            "99_references.md": "# References\n\n::: {#refs}\n:::\n",
+        },
     )
-    with environment("LINE_SET_SIBLINGS", str(tmp_path)):
-        result = subprocess.run(
-            [sys.executable, "-c", code, str(Path(__file__)), str(tmp_path)],
-            cwd=PROJECT_ROOT,
-            capture_output=True,
-            text=True,
-            timeout=30,
-        )
-    assert result.returncode == 0, result.stdout + result.stderr
+    paper = discover_paper(declaration("one")[0], base)
+    assert tuple(path.name for path in paper.sections) == ("00_abstract.md",)
+    assert paper.references_only == (root / "manuscript" / "99_references.md",)
+
+
+@pytest.mark.parametrize(
+    "content",
+    (
+        "# References\n\n::: {#refs}\nA source-owned caveat.\n:::\n",
+        "# References\n\n```markdown\n::: {#refs}\n:::\n```\n",
+    ),
+)
+def test_reference_prose_and_placeholder_examples_remain_source_sections(
+    tmp_path: Path, content: str
+) -> None:
+    base = tmp_path / "works"
+    root = write_paper(
+        base,
+        "one",
+        sections={"00_abstract.md": "# Paper\n", "99_references.md": content},
+    )
+    paper = discover_paper(declaration("one")[0], base)
+    assert root / "manuscript" / "99_references.md" in paper.sections
+    assert paper.references_only == ()
 
 
 def test_a_detached_repo_finds_its_own_manuscript_at_the_repository_root(

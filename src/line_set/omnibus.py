@@ -793,12 +793,25 @@ class SourcePaper:
         return namespace_prefix(self.entry.id)
 
 
-def _is_bare_heading_file(path: Path) -> bool:
-    """Whether a file holds one heading and nothing else."""
+def _is_references_stub_file(path: Path) -> bool:
+    """Recognize a heading with at most an empty citeproc placeholder."""
     lines = [
-        line for line in path.read_text(encoding="utf-8").splitlines() if line.strip()
+        line.strip()
+        for line in path.read_text(encoding="utf-8").splitlines()
+        if line.strip()
     ]
-    return len(lines) == 1 and lines[0].lstrip().startswith("#")
+    if not lines or _HEADING_RE.match(lines[0]) is None:
+        return False
+    if len(lines) == 1:
+        return True
+    if len(lines) != 3:
+        return False
+    opening = re.fullmatch(r"(:{3,})\s*\{\s*#refs\s*\}", lines[1])
+    return (
+        opening is not None
+        and len(lines[2]) >= len(opening.group(1))
+        and not lines[2].strip(":")
+    )
 
 
 def discover_paper(entry: LineEntry, base: Path) -> SourcePaper:
@@ -808,11 +821,11 @@ def discover_paper(entry: LineEntry, base: Path) -> SourcePaper:
     not skipped quietly: it comes back with an ``absence`` string, which the
     front matter prints.
 
-    Each work's bare ``References`` heading file is separated out rather than
-    carried into the body. The volume has one merged bibliography, so five
-    empty heading stubs would be five headings over nothing. The separation is
-    conditional on the file really being nothing but a heading; a references
-    file carrying prose stays in the body where its prose belongs.
+    Each work's empty ``References`` page is separated out rather than carried
+    into the body. A heading and an empty ``#refs`` Div are structural stubs:
+    retaining that placeholder would put the entire merged bibliography inside
+    one reproduced work. A references file carrying prose or examples stays in
+    the body where its content belongs.
     """
     root = base / entry.id
     manuscript = _manuscript_dir(root)
@@ -851,7 +864,7 @@ def discover_paper(entry: LineEntry, base: Path) -> SourcePaper:
     references = tuple(
         path
         for path in named
-        if path.stem.startswith("99_") and _is_bare_heading_file(path)
+        if path.stem.startswith("99_") and _is_references_stub_file(path)
     )
     sections = tuple(path for path in named if path not in references)
     config_path = manuscript / "config.yaml"
@@ -1545,7 +1558,9 @@ def assemble(
             front_matter(placements, reading, merged, dropped),
         ),
     )
-    plan.append((f"{sequence:03d}_volume_references.md", "# References\n"))
+    plan.append(
+        (f"{sequence:03d}_volume_references.md", "# References\n\n::: {#refs}\n:::\n")
+    )
 
     namespaced = {
         f"{kind}:{paper.prefix}-{name}"

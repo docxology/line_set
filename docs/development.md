@@ -253,6 +253,12 @@ receipt. The assembler writes `omnibus_claim_ledger.json` from the formalism
 anchors actually declared in the assembled sections, so the engine can resolve
 their namespaced cross-references. Its rows record label presence only.
 
+The volume owns one final merged bibliography. Source reference pages containing
+only a heading, optionally followed by an empty Pandoc `#refs` Div, are structural
+stubs and are not reproduced inside a work. Reference pages containing prose or
+examples remain source sections. The final volume reference page owns the
+citeproc placeholder instead of a work's otherwise empty reference page.
+
 Native authored sources can contain producer-owned variables. Preserve the raw
 assembled tree, then consume a genuine native-resolved manuscript projection
 before rendering the derivative. Blue's existing `gen_formalism_ledger.py` and
