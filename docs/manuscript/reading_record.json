@@ -523,7 +523,7 @@
           "requested_package": "blue_line",
           "resolved_package": "blue_line",
           "resolver_policy": "pinned-source-snapshot",
-          "source_revision": "3d7243d4bb184a54c0e01f3738acc01261448ceb"
+          "source_revision": "03b71534f9024f098fbf0afe05dbd80e1d75587a"
         },
         "registry_digest": "9ae7cae1f0f7389f2f58bd7f75a2038a4c48d791166bf79c100d78f2f379e8fd",
         "registry_size": 12,
@@ -614,7 +614,7 @@
           "requested_package": "red_line",
           "resolved_package": "red_line",
           "resolver_policy": "pinned-source-snapshot",
-          "source_revision": "86674860f3b2d68f58ab1cc3f11f867f64133983"
+          "source_revision": "6495e898826de3caf78b5bd4068b8f54b333e496"
         },
         "registry_digest": "72835fd81d1f7ecf70f47b1e0061cd56c385273dd846879ab639225913f5aad7",
         "registry_size": 7,
@@ -677,7 +677,7 @@
           "requested_package": "silver_line",
           "resolved_package": "silver_line",
           "resolver_policy": "pinned-source-snapshot",
-          "source_revision": "96a7996fb6b50833bf4d50f7e5eddf45d74d5467"
+          "source_revision": "8f00a1f47a5f80916c8c73fd4944bd04d302ec90"
         },
         "registry_digest": "ce808709c7db5a60a7e6b06dac30d1a1326dff3c1973b44b5d36dd28a1e15c31",
         "registry_size": 11,
@@ -788,7 +788,7 @@
     "status": "set_legible",
     "undeclared_lines": []
   },
-  "reading_digest": "43b486f9677313c9f3d33f0f086a59528daa9e735a31c7c3c80375b43a9850f5",
+  "reading_digest": "71a812c50b4f2b1e3f70a368bc8bf488e4874fa3517ba5ae4d02892c1ad4124a",
   "recorded_on": "2026-11-06",
   "resolver_mode": "sibling_path_resolver",
   "schema_version": "2.0-public",
@@ -796,11 +796,11 @@
   "set_version": "2026.11.06",
   "source_revisions": {
     "black_line": "4b203050adc812e86e77eee1297ddb1894c7ab4b",
-    "blue_line": "3d7243d4bb184a54c0e01f3738acc01261448ceb",
+    "blue_line": "03b71534f9024f098fbf0afe05dbd80e1d75587a",
     "golden_line": "af9bf48ed34e6508f773cce0a5eae9ea2115c166",
     "green_line": "3edf49f5426a2c9dfa8c925846d318476206988d",
-    "red_line": "86674860f3b2d68f58ab1cc3f11f867f64133983",
-    "silver_line": "96a7996fb6b50833bf4d50f7e5eddf45d74d5467",
+    "red_line": "6495e898826de3caf78b5bd4068b8f54b333e496",
+    "silver_line": "8f00a1f47a5f80916c8c73fd4944bd04d302ec90",
     "violet_line": null,
     "white_line": "cc99cbf8588df1be8a3831f344f153acd9881fdb"
   },

@@ -46,6 +46,12 @@ Release scope, verification, and publication boundary: [release packet](docs/rel
   existing section transforms, and separately check unresolved rendered prose
   and actual section-page links rather than treating Stage04 as complete
   publication acceptance.
+- Refresh the canonical public reading from the final Red, Blue, and Silver
+  source corrections; retain the preceding public preparation byte-for-byte.
+  The namespace census and declaration identity remain unchanged.
+- Document Blue's dark-reader-safe native canvases, Red's acyclic content and
+  attestation custody, the shared renderer correction, and the genuinely
+  recomputed Witness source-refresh cohort without extending native clearance.
 
 ## 0.5.0 (2026-10-22)
 
@@ -81,7 +87,7 @@ compiled bibliography at its native manifest path in the release bundle.
 
 Implement the additional-topics synthesis as human admission materials, a
 hypothetical contrastive library, an optional evidence/replay convention and an
-unexecuted comparison protocol. Add no colour. Keep native exporters, replay and
+unexecuted comparison protocol. Add no color. Keep native exporters, replay and
 instrument fixes with their owners; preserve the declaration and dated reading.
 Historicize the extension demonstration and synchronize software-version metadata.
 Historical measurement checks retain producer identity without losing canonical
@@ -113,7 +119,7 @@ matrix (now coerced). `mypy src` is clean for the first time since the
 admission commit; the full suite, both registry/set scripts,
 `record_reading.py --check`, and the figure build all pass unchanged.
 
-## 2026-09-01 — four colours admitted: the set grows to eight
+## 2026-09-01 — four colors admitted: the set grows to eight
 
 Silver, Violet, Blue, and Green Line joined the declaration (working
 positions 5–8, each `opus_stage=None`), each with its own completed
@@ -177,12 +183,12 @@ and the wrapper has no envelope to export.
 - **Co-registration stays outside the set, in writing.** The register the
   review proposes is a separate work; a companion named witness_register is
   being scaffolded beside the set this window and is referenced as a
-  companion, not a member — not in `LINE_SET`, not a colour, contents not
+  companion, not a member — not in `LINE_SET`, not a color, contents not
   asserted. The reader will not collect, store, or compute anything across
   envelopes.
 - **`docs/correspondence.md` opens the decision record.** Same form as the
   sibling repositories': what the review said about this work — already the
-  set's modular witness, already admitting that a missing colour leaves no
+  set's modular witness, already admitting that a missing color leaves no
   trace — then adopted, deferred, and declined, each with its reason. The
   manuscript statement of the convention is the deferral: the manuscript
   contract confines sibling facts to the dated reading block, and which
@@ -332,7 +338,7 @@ reintroduced.
 - **Where the siblings are is now addressable rather than positional.**
   `sibling_base()` still defaults to this project's parent directory, which is
   where they sit in the development tree, but `LINE_SET_SIBLINGS` names the
-  directory explicitly for a copy whose set is elsewhere. It is honoured by the
+  directory explicitly for a copy whose set is elsewhere. It is honored by the
   resolver, the live check, the reading record, and the omnibus assembler. An
   empty value reads as unset rather than as the working directory.
 - Self-description corrected in `AGENTS.md`, `STANDALONE.md`, `TODO.md`, and
@@ -350,12 +356,12 @@ answers none of them.
 - `src/line_set/registry.py` holds `LINE_SET`, one `LineEntry` per line in
   working order, each carrying the question it answers, the job it does, the
   thing it must not become, its working position, its package name, and the
-  opus stage its colour echoes. Content follows the sidecar line-set map in
+  opus stage its color echoes. Content follows the sidecar line-set map in
   substance; the manuscript is new writing rather than a copy of it.
 - `SHARED_TOKENS` is the exemption table: the tokens two lines are allowed to
   share, each with a distinct meaning recorded per line and a rationale.
 - `WRAPPER_LINE` is this package's own entry, kept deliberately out of
-  `LINE_SET`. It is colourless and carries no opus stage, because it names no
+  `LINE_SET`. It is colorless and carries no opus stage, because it names no
   refusal, method, aspiration, or absence and is not a stage of anything. It
   exists so this package can be put through this package's own check.
 
@@ -395,9 +401,9 @@ answers none of them.
 ### Checks
 
 - `all_invariants()` is the offline battery over the declaration: distinct ids,
-  distinct colours, distinct and real opus stages, contiguous working positions,
+  distinct colors, distinct and real opus stages, contiguous working positions,
   working order diverging from opus order, a stated must-not-become for every
-  entry, and every exemption being one the live matcher would honour. It imports
+  entry, and every exemption being one the live matcher would honor. It imports
   no sibling and returns identical results with none installed.
 - `check_self_disjointness()` is the live self-application: this package's own
   status tokens are checked against the line vocabularies using the production
@@ -422,7 +428,7 @@ answers none of them.
 - `README.md`, `AGENTS.md`, `STANDALONE.md`, `TODO.md`, and the `docs/` set.
   `docs/claim_boundaries.md` is the non-claim register and the document a hostile
   reader should find first; `docs/extensibility.md` carries the executed example
-  showing that appending a colour is a `registry.py` edit, with the explicit list
+  showing that appending a color is a `registry.py` edit, with the explicit list
   of files an addition does not touch.
 
 ### The dated reading is recorded, not only quoted
