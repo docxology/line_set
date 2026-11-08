@@ -4,6 +4,8 @@
 
 Release scope, verification, and publication boundary: [release packet](docs/releases/v0.6.0.md).
 
+- Use native numbered section citations without duplicated prefixes or nested
+  hand-written links in the manuscript roadmap.
 - Use American English in maintained prose and owned interfaces:
   `check_distinct_colors`, `normalize_field`, and the colorless wrapper identity.
   No spelling aliases are retained; historical records keep their original bytes.
