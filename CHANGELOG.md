@@ -54,6 +54,12 @@ Release scope, verification, and publication boundary: [release packet](docs/rel
 - Document Blue's dark-reader-safe native canvases, Red's acyclic content and
   attestation custody, the shared renderer correction, and the genuinely
   recomputed Witness source-refresh cohort without extending native clearance.
+- Remeasure all eight final immutable source captures after the Red, Black,
+  White, and Silver source corrections. Preserve the preceding `71a812` public
+  reading byte-for-byte in a new historical evidence file; the current public
+  reading is `614706819326ddbd438dfc980cd33adebf4c480e49366c1c76298f274dfe8f64`.
+  Full admission precedes Violet identity withholding; both wrong-view checks
+  refuse without replacing their records. The vocabulary census is unchanged.
 
 ## 0.5.0 (2026-10-22)
 
