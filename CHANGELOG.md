@@ -2,7 +2,7 @@
 
 ## 0.7.0 (2026-11-08)
 
-Source integration and remaining owner evidence actions:
+Actual native integration and qualification:
 [release packet](docs/releases/v0.7.0.md).
 
 - Admit Copper at position 9 and Iron at position 10, both stageless, with
@@ -18,15 +18,17 @@ Source integration and remaining owner evidence actions:
   columns, and reserve vocabulary carrier space per name. Preserve label
   sizes, written data, artifact identities, and the printed-point floor; add
   a page-scale regression for the declaration and an isolated extension.
-  These source changes do not claim regenerated or visually accepted artifacts.
+  Native regeneration and unchanged-input byte reproduction passed with real librsvg.
 - Update current family/navigation/privacy and local version metadata to 0.7.0;
   advance the separate declaration revision to 2026.11.08. Preserve dated
   eight-line/no-addition evidence and archived bibliographic identities.
 - Document all three PRIVATE source omissions after complete pinned admission,
   and the eleven-work private omnibus with Witness outside it.
-- Remove encountered prose assertions rather than repinning them. Native gates,
-  new measured records/census, generated ledgers/plates, custody, rendering, and
-  publication remain parent-owned; no execution result is claimed here.
+- Remove encountered prose assertions rather than repinning them. Exercise the
+  actual ten-source census, full/public matching and wrong-view refusals, native
+  ledgers/plates, absent-producer behavior, 609 passing tests, Ruff and mypy.
+- Use canonical repository URLs for manuscript links to admission and historical
+  evidence, so native HTML/EPUB exports do not depend on unbundled repository paths.
 
 ## 0.6.1 (2026-11-08)
 
