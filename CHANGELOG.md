@@ -34,6 +34,10 @@
   unchanged. Geometry measurements are bounded model checks, not PDF/HTML/EPUB,
   font-substitution, accessibility, or human-readability certification; historical
   artifacts and bibliographic edition identities remain historical.
+- Record the 2026-11-09 namespace from ten real reviewed commit archives.
+  Match complete/private and explicitly withheld/public views to their own
+  checks and refuse both wrong-view substitutions. Preserve the original 0.7.0
+  public reading and worked manuscript bytes without relabeling their producers.
 
 ## 0.7.0 (2026-11-08)
 

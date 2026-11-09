@@ -1,0 +1,10 @@
+{
+  "schema": "line-set-preserved-historical-manuscript/1",
+  "repository": "docxology/line_set",
+  "source_commit": "c374db3f8aa42c3878c5153080741e06d65972e6",
+  "software_version": "0.7.0",
+  "original_file": "docs/manuscript/04_examples.md",
+  "sha256": "ae6faa79115b4e14417bf7afb4f32e595819f8668631e284631debef8513ec87",
+  "preserved_bytes": 6298,
+  "scope": "exact original ten-line worked reading; not the new 0.8.0 producer capture"
+}

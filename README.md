@@ -103,7 +103,7 @@ must pass with the siblings absent as well as present.
 The manuscript's measured numbers come from `docs/manuscript/reading_record.json`.
 A new current `2.0-public` view must withhold all three private producers'
 revisions and module paths: Violet, Copper, and Iron. The full pinned measurement
-stays in private custody. Preserved eight-line evidence is not a ten-line census.
+stays in private custody. Earlier eight-line and ten-line evidence retains its original producers and dates.
 The suite replays the public reading, checks its identity and census, and compares
 the same view with a newly admitted complete pinned reading where those sources are
 accessible. Public replay is not complete public source-pin proof, and revision-only
