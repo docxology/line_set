@@ -35,7 +35,7 @@ about to change it.
   and what this repository did about each.
 - [publication.md](publication.md) — how to cite, the DOI discipline, and the
   reserve-first workflow.
-- [releases/v0.7.0.md](releases/v0.7.0.md) — current integration scope and parent evidence actions.
+- [releases/v0.7.0.md](releases/v0.7.0.md) — completed Copper/Iron integration packet; current 0.8.0 source changes are in [the changelog](../CHANGELOG.md).
 - [releases/README.md](releases/README.md) — current and historical release packets.
 
 The declaration lives in [`../src/line_set/registry.py`](../src/line_set/registry.py),

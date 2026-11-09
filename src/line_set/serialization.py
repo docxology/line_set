@@ -15,14 +15,10 @@ from __future__ import annotations
 import hashlib
 import json
 import re
-from dataclasses import fields, is_dataclass
 from datetime import date
-from functools import cache
-from types import UnionType
-from typing import get_args, get_origin, get_type_hints
 
 from .models import LineEntry, SetReading, SharedToken
-from .admission import DeclarationError, admit_declaration
+from .admission import DeclarationError, admit_declaration, admit_record_field
 from .binding import valid_source_revision
 
 
@@ -139,54 +135,11 @@ def reading_digest(reading: SetReading) -> str:
     return hashlib.sha256(canonical_reading(reading).encode("utf-8")).hexdigest()
 
 
-@cache
-def _record_field_types(model: type) -> dict[str, object]:
-    return get_type_hints(model)
-
-
-def _admit_record_field(value: object, kind: object, path: str) -> None:
-    origin = get_origin(kind)
-    arguments = get_args(kind)
-    if origin is UnionType:
-        for option in arguments:
-            try:
-                _admit_record_field(value, option, path)
-            except ValueError:
-                continue
-            return
-    elif origin is tuple and isinstance(value, tuple):
-        if len(arguments) == 2 and arguments[1] is Ellipsis:
-            for index, item in enumerate(value):
-                _admit_record_field(item, arguments[0], f"{path}[{index}]")
-            return
-        if len(value) == len(arguments):
-            for index, (item, expected) in enumerate(zip(value, arguments)):
-                _admit_record_field(item, expected, f"{path}[{index}]")
-            return
-    elif isinstance(kind, type):
-        if is_dataclass(kind) and isinstance(value, kind):
-            expected_fields = _record_field_types(kind)
-            for field in fields(kind):
-                _admit_record_field(
-                    getattr(value, field.name),
-                    expected_fields[field.name],
-                    f"{path}.{field.name}",
-                )
-            return
-        if kind in (bool, int):
-            if type(value) is kind:
-                return
-        elif isinstance(value, kind):
-            return
-    requirement = "booleans" if kind is bool else str(kind)
-    raise ValueError(f"reading metadata field {path} requires {requirement}")
-
-
 def validate_reading(reading: SetReading) -> None:
     from .reader import _collide
     from .models import ReadCode, SetStatus
 
-    _admit_record_field(reading, SetReading, "reading")
+    admit_record_field(reading, SetReading, "reading")
     date.fromisoformat(reading.read_as_of)
     if re.fullmatch(r"[0-9a-f]{64}", reading.set_digest) is None:
         raise ValueError("declaration digest must be a lowercase SHA-256 string")

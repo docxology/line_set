@@ -37,6 +37,7 @@ from pathlib import Path
 from types import ModuleType
 from typing import Protocol
 
+from .admission import admit_record_field
 from .models import BindingProvenance, Diagnostic, Discovery, ReadCode
 
 #: Attributes consulted, in order, for a package's version string.
@@ -390,15 +391,17 @@ def resolve_package(resolver: PackageResolver, name: str) -> Resolution:
         result = resolver(name)
         if not isinstance(result, Resolution) or not isinstance(result.code, ReadCode):
             raise TypeError("resolver did not return a well-formed Resolution")
-        if (
-            not isinstance(result.detail, str)
-            or not isinstance(result.provenance, BindingProvenance)
-            or not isinstance(result.diagnostics, tuple)
-            or any(not isinstance(item, Diagnostic) for item in result.diagnostics)
-        ):
-            raise TypeError(
-                "resolver returned malformed diagnostic or provenance fields"
-            )
+        if not isinstance(result.detail, str):
+            raise TypeError("resolver returned malformed detail")
+        admit_record_field(
+            result.provenance, BindingProvenance, "resolution.provenance"
+        )
+        admit_record_field(
+            result.diagnostics, tuple[Diagnostic, ...], "resolution.diagnostics"
+        )
+        revision = result.provenance.source_revision
+        if revision is not None and not valid_source_revision(revision):
+            raise ValueError("resolver provenance has an invalid source revision")
         if result.package_name != name:
             raise ValueError(
                 f"requested {name}, resolver returned {result.package_name}"

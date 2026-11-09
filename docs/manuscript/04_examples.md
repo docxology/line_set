@@ -49,7 +49,7 @@ Real temporary packages and plain resolver callables produce `set_partial` for a
 
 The eight offline checks pass with no sibling installed because they inspect the declaration. The live self-disjointness check fails when no vocabulary is available to compare. An empty scan cannot establish separation. The release's absent-sibling test lane exercises this outcome separately from its pinned integration lane.
 
-![Installation surface: one row per declared line, reporting the observed version, registry size and digest. Missing metadata remains visibly absent.](../../output/figures/installation_surface.png){#fig:installation-surface width=100%}
+![Installation surface: one card per declared line in two columns. Each card pairs its line and read code with version, registry size, token count, and digest-prefix fields. Missing metadata remains visibly absent.](../../output/figures/installation_surface.png){#fig:installation-surface width=100%}
 
 ## A weakened exemption
 

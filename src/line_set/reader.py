@@ -16,7 +16,7 @@ still overlap conceptually. The reader reads declarations.
 from __future__ import annotations
 
 from collections.abc import Iterable
-from datetime import date
+from datetime import date, datetime
 from dataclasses import replace
 
 from . import binding
@@ -65,11 +65,13 @@ STATUS_PRECEDENCE: tuple[SetStatus, ...] = (
 
 
 def _review_date(as_of: str | date | None) -> date:
-    """Resolve the review date; a string must be a valid ISO date."""
+    """Resolve a calendar-only date, rejecting datetimes rather than truncating."""
     if as_of is None:
         return date.today()
     if isinstance(as_of, str):
         return date.fromisoformat(as_of)
+    if isinstance(as_of, datetime):
+        raise TypeError("as_of must be an ISO date string, a date, or None")
     if isinstance(as_of, date):
         return as_of
     raise TypeError("as_of must be an ISO date string, a date, or None")
@@ -305,6 +307,9 @@ def read_set(
     stage look for line packages nobody declared. Passing a plain callable is
     how a test exercises an absent, failing, or extra package without any
     mocking framework.
+
+    ``as_of`` accepts a calendar date, an ISO date string, or ``None`` for
+    today. A ``datetime`` raises ``TypeError``; no time or time zone is truncated.
 
     The collision scan covers the declared lines. A package discovered but
     not declared is reported in ``undeclared_lines``; its vocabulary is not

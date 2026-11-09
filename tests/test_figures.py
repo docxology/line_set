@@ -550,16 +550,20 @@ def test_set_plate_labels_survive_the_declared_page_with_an_isolated_extension(
             plate = plates[name]
             source = tmp_path / f"{name}.svg"
             source.write_text(plate.render(), encoding="utf-8")
-            label, fraction = embeds[f"{name}.png"]
-            measured = measure_plate(
-                source,
-                label,
-                f"{name}.png",
-                fraction,
-                parse_page_geometry(config),
-                parse_height_fraction(config),
+            placements = tuple(
+                item for item in embeds if item.filename == f"{name}.png"
             )
-            assert measured.legible, (name, extended, measured.rendered_min_pt)
+            assert placements, f"no authored placement for {name}"
+            for occurrence in placements:
+                measured = measure_plate(
+                    source,
+                    occurrence.label,
+                    occurrence.filename,
+                    occurrence.width_fraction,
+                    parse_page_geometry(config),
+                    parse_height_fraction(config),
+                )
+                assert measured.legible, (name, extended, measured.rendered_min_pt)
 
 
 def test_an_undeclared_color_still_gets_ink_a_fill_and_a_marker() -> None:

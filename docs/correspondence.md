@@ -25,7 +25,7 @@ current set roster.
 ## 2026-10-21 — additional-topics synthesis
 
 The [disposition record](admission/README.md) records the decision to admit no
-colour and resolves each deliverable as documentation, study scaffolding or
+color and resolves each deliverable as documentation, study scaffolding or
 sibling-owner requirements. The [evidence profile](evidence/README.md) stays a
 convention beside the envelope; exporters and native replay stay with owners.
 No study was executed and no sibling was modified by this synthesis work.
@@ -36,7 +36,7 @@ A two-voiced review of the collected line set (dated source: *The Line Set:
 The Collected Volume*, 2026-07-27). Its reading of this work: the wrapper is
 already the set's modular witness — it declares without evaluating, reads
 without reinterpreting, and admits in its own limits section that a missing
-colour leaves no trace ("a question nobody has asked yet leaves no trace" —
+color leaves no trace ("a question nobody has asked yet leaves no trace" —
 `docs/manuscript/05_limits.md`). The review's pressure lands elsewhere: each
 line's selected status is a safe projection that must not become the whole
 state, and the missing layer is a *shared witness register* that co-registers

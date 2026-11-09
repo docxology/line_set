@@ -17,6 +17,24 @@ its statuses, and confer no authority. The optional [evidence profile](../eviden
 is a transport convention beside the existing envelope convention. This
 package exports neither native envelopes nor sibling evaluators.
 
+## Current architectural scope
+
+The dispositions below retain their October 21 scope. The
+[November 8 decision](decision-20261108.md) separately admits Copper and Iron
+as architectural package placements, not empirical victories over native
+extensions. That precedent does not establish a need for Amber: the current
+static comparison identifies no lost representation or distinct native
+evaluation requiring another instrument.
+
+Amber remains a proposal, not an admission or completed study. If a concrete
+consumer needs typed party-specific repair queries, compare a passive Blue
+attachment and a generic Witness return extension on the same cases; neither
+placement is presumed superior. Keep receipt, claimed completion, disputed
+adequacy, protected references, and exact remaining obligations distinct.
+Any future packaging choice needs an explicit decision stating whether its
+basis is architectural placement or an actually exercised comparison.
+
+
 ## Disposition of the synthesis
 
 | Synthesis item | Disposition at this revision | Artifact or owner |

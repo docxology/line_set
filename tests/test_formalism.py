@@ -39,11 +39,11 @@ from pathlib import Path
 import pytest
 
 from line_set import LINE_SET, SHARED_TOKENS, ReadCode, SharedToken
+from line_set._markdown_spans import fence_mask
 from line_set.omnibus import (
     FORMALISM_METADATA_BLOCK,
     FORMALISM_RESET_LEVEL,
     demote_headings,
-    fence_mask,
     part_heading,
 )
 from line_set.probes import exemption_probes

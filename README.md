@@ -10,9 +10,9 @@ no-addition decisions and eight-line evidence. The optional
 [evidence/replay profile](docs/evidence/README.md) remains a companion convention;
 this package executes no native replay.
 
-The [0.7.0 release packet](docs/releases/v0.7.0.md) separates source integration
-from parent-generated measurement, verification, and publication evidence.
-Earlier packets and public readings retain their original bytes and identities.
+The completed [0.7.0 release packet](docs/releases/v0.7.0.md) retains its source,
+measurement, verification, and publication evidence. New qualification is
+separate; earlier packets and public readings keep their original identities.
 
 Line Set is the bookkeeping work in the line set, and it is not an instrument. It
 does not answer, merge, rank, or second-guess any substantive line's question.
@@ -171,7 +171,7 @@ The current family has ten substantive instruments, their colorless cross-line
 reader, and the separate Witness Register: twelve projects. The authorized
 private omnibus includes eleven works and excludes Witness:
 
-- [Black Line](https://github.com/docxology/black_line) — the practice registry of realized craft
+- [Black Line](https://github.com/docxology/black_line) — declared practice and evidence-label coverage
 - [Golden Line](https://github.com/docxology/golden_line) — the aspiration and horizon registry
 - [Red Line](https://github.com/docxology/red_line) — the cognitive-security registry of self-assessments
 - [White Line](https://github.com/docxology/white_line) — the absence and omission ledger

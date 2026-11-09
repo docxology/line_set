@@ -33,6 +33,14 @@ bounded diagnostic text and exception type. Cancellation and process-control
 exceptions propagate. `Discovery` separately records capability, attempt,
 completion, retained candidate names and resolution outcomes. Partial enumeration
 preserves yielded names and never becomes a completed empty scan.
+Injected resolvers use the same nested model field admission as replay:
+`BindingProvenance` fields, the diagnostics tuple and each `Diagnostic` field
+must have their declared types, and a supplied source revision must use the full
+lowercase hexadecimal commit grammar. Malformed resolver metadata becomes
+`IMPORT_FAILED` with a bounded resolve diagnostic, not a successful observation
+that fails later during serialization. This admits structure, not the truth of
+injected provenance. Imports still execute package code and are not a sandbox;
+the wrapper does not invoke native evaluators.
 The real import resolver retains names yielded by a finder before it raises,
 then resolves those candidates while recording incomplete enumeration.
 A collision
@@ -43,6 +51,10 @@ Publication is all root bindings, independently of `__all__`. `__members__` name
 include aliases; re-exported class objects are counted once. The census separates
 declared names, canonical members and distinct spellings. Submodule-only names
 remain outside this contract. In-process imports execute code and are not a sandbox.
+
+`read_set(as_of=...)` accepts a calendar `date`, an ISO date string, or `None`
+for the current date. A `datetime`, whether naive or time-zone-aware, raises
+`TypeError` at the reader boundary. It is never silently truncated to a day.
 
 Canonical declaration and reading schemas are `line-set-declaration/2` and
 `line-set-reading/2`. The reading-record envelope is `2.0`. Declaration and

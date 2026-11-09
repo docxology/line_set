@@ -18,9 +18,11 @@ from .build import (
 )
 from .legibility import (
     MIN_LEGIBLE_PT,
+    EmbedOccurrence,
     FigureLegibility,
     illegible,
     measure_project,
+    measure_surface,
 )
 from .plates import FigurePlate, figure_plates
 
@@ -29,6 +31,7 @@ __all__ = [
     "MIN_LEGIBLE_PT",
     "RSVG_CONVERT",
     "RSVG_ENV_VAR",
+    "EmbedOccurrence",
     "FigureLegibility",
     "FigurePlate",
     "build_figures",
@@ -36,4 +39,5 @@ __all__ = [
     "figure_summary",
     "illegible",
     "measure_project",
+    "measure_surface",
 ]

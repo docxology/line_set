@@ -11,9 +11,12 @@ concatenates, it moves anchors into per-paper namespaces so two papers that
 both wrote ``{#sec:abstract}`` do not collide, it shifts headings down one
 level so a part header can carry each paper's title, it retargets figure
 embeds so they resolve from the injected location, and it merges the
-bibliographies. It does not summarize, reconcile, rank, or reword. The
-round-trip in :func:`invert_section` is the statement of that: every transform
-below is invertible, and the suite inverts them back to the source bytes.
+bibliographies. It also omits actual reference stubs and removes empty live
+bibliography placeholders, which belong to the volume's final reference page.
+It does not summarize, reconcile, rank, or reword substantive prose. The
+section round trip in :func:`invert_section` preserves source bytes except
+that multi-hop image destinations restore to the canonical one-hop prefix;
+literal examples and prose paths are not canonicalized.
 
 The compilation asserts nothing the individual papers do not assert. The one
 claim it adds is the lexical reading this package computed over the declared
@@ -40,6 +43,7 @@ from collections.abc import Callable, Iterable, Sequence
 from dataclasses import dataclass, replace
 from pathlib import Path
 
+from ._markdown_spans import prose_spans
 from .binding import PROJECT_ROOT, PackageResolver, sibling_base, sibling_path_resolver
 from .models import LineEntry, ReadCode, SetReading, SharedToken
 from .reader import read_set
@@ -163,7 +167,6 @@ MAX_HEADING_LEVEL: int = 5
 #: Anchor kinds pandoc-crossref resolves, and therefore the kinds worth moving.
 REFERENCE_KINDS: tuple[str, ...] = ("eq", "fig", "lst", "sec", "tbl")
 
-_FENCE_RE = re.compile(r"^\s*(?:```|~~~)")
 _HEADING_RE = re.compile(r"^(#{1,6})(?=\s)")
 _ANCHOR_DEF_RE = re.compile(r"\{#([A-Za-z][A-Za-z0-9]*):([A-Za-z0-9][A-Za-z0-9_.-]*)")
 
@@ -205,36 +208,54 @@ class OmnibusError(RuntimeError):
 # ------------------------------------------------------------- reading text
 
 
-def fence_mask(text: str) -> tuple[bool, ...]:
-    """Mark each line of ``text`` that is inside a fenced block.
-
-    A fence delimiter is marked along with its contents, so no transform below
-    can touch one. This matters even while no paper has a ``#`` or a ``{#`` in
-    a code block: a transform that is only correct because of what the corpus
-    happens to contain today is a transform that will be wrong later, quietly.
-    """
-    inside = False
-    marks: list[bool] = []
-    for line in text.splitlines():
-        if _FENCE_RE.match(line):
-            marks.append(True)
-            inside = not inside
-            continue
-        marks.append(inside)
-    return tuple(marks)
-
-
 def map_prose_lines(text: str, transform: Callable[[str], str]) -> str:
-    """Apply ``transform`` to every line outside a fenced block.
+    """Transform lines with literal spans hidden, then restore their bytes.
 
-    The trailing newline of the input is preserved so a transformed file is
-    byte-comparable with its source.
+    Opaque tokens preserve line starts for heading/Div recognition. Callbacks
+    must not treat a token-bearing image destination as an active embed.
     """
-    marks = fence_mask(text)
-    lines = text.splitlines()
-    rebuilt = [line if marks[i] else transform(line) for i, line in enumerate(lines)]
-    joined = "\n".join(rebuilt)
-    return joined + "\n" if text.endswith("\n") else joined
+    marker = "\x00"
+    while marker in text:
+        marker += "\x00"
+    spans: list[tuple[int, int]] = []
+    previous = 0
+    for left, right in prose_spans(text):
+        if previous < left:
+            spans.append((previous, left))
+        previous = right
+    if previous < len(text):
+        spans.append((previous, len(text)))
+    rebuilt: list[str] = []
+    offset = 0
+    span_index = 0
+    for line in text.splitlines(keepends=True):
+        ending = (
+            "\r\n" if line.endswith("\r\n") else "\n" if line.endswith("\n") else ""
+        )
+        body = line[: -len(ending)] if ending else line
+        stop = offset + len(body)
+        replacements: list[tuple[str, str]] = []
+        pieces: list[str] = []
+        cursor = offset
+        while span_index < len(spans) and spans[span_index][1] <= offset:
+            span_index += 1
+        index = span_index
+        while index < len(spans) and spans[index][0] < stop:
+            left, right = spans[index]
+            left, right = max(left, offset), min(right, stop)
+            token = f"{marker}literal-{len(replacements)}{marker}"
+            pieces.extend((text[cursor:left], token))
+            replacements.append((token, text[left:right]))
+            cursor = right
+            index += 1
+        pieces.append(text[cursor:stop])
+        masked = "".join(pieces)
+        changed = transform(masked)
+        for token, literal in replacements:
+            changed = changed.replace(token, literal)
+        rebuilt.append(changed + ending)
+        offset += len(line)
+    return "".join(rebuilt)
 
 
 def anchor_pattern(line: str) -> re.Pattern[str]:
@@ -249,7 +270,7 @@ def anchor_pattern(line: str) -> re.Pattern[str]:
 
 
 def collect_anchors(text: str) -> tuple[str, ...]:
-    """Return every ``kind:name`` anchor defined outside a fenced block."""
+    """Return every supported ``kind:name`` definition outside literal spans."""
     found: set[str] = set()
 
     def record(line: str) -> str:
@@ -262,11 +283,13 @@ def collect_anchors(text: str) -> tuple[str, ...]:
 
 
 def collect_embeds(text: str) -> tuple[str, ...]:
-    """Return every image target embedded outside a fenced block."""
+    """Return every active image target, excluding literal examples."""
     found: list[str] = []
 
     def record(line: str) -> str:
-        found.extend(_EMBED_RE.findall(line))
+        found.extend(
+            target for target in _EMBED_RE.findall(line) if "\x00" not in target
+        )
         return line
 
     map_prose_lines(text, record)
@@ -319,6 +342,24 @@ def promote_headings(text: str, *, by: int = 1) -> str:
     return map_prose_lines(text, shift)
 
 
+def _crossref_parts(
+    match: re.Match[str], anchors: frozenset[str]
+) -> tuple[str, str, str]:
+    """Separate a bare reference's kind, name, and sentence punctuation.
+
+    Periods inside identifiers are exact. For terminal periods, prefer the
+    longest declared target (including a declared trailing-dot name); any
+    remaining periods stay in the source as punctuation. With no declared
+    target, terminal periods are punctuation for unresolved-reference reports.
+    Markdown link destinations do not use this contextual rule.
+    """
+    kind, raw_name = match.group(1), match.group(2)
+    name = raw_name
+    while name.endswith(".") and f"{kind}:{name}" not in anchors:
+        name = name[:-1]
+    return kind, name, raw_name[len(name) :]
+
+
 def namespace_anchors(
     text: str, prefix: str, anchors: Iterable[str]
 ) -> tuple[str, int, int]:
@@ -343,11 +384,11 @@ def namespace_anchors(
             return f"{match.group(0)[: -len(name)]}{prefix}-{name}"
 
         def move_ref(match: re.Match[str]) -> str:
-            target = f"{match.group(1)}:{match.group(2)}"
-            if target not in known:
+            kind, name, punctuation = _crossref_parts(match, known)
+            if f"{kind}:{name}" not in known:
                 return match.group(0)
             counts[1] += 1
-            return f"@{match.group(1)}:{prefix}-{match.group(2)}"
+            return f"@{kind}:{prefix}-{name}{punctuation}"
 
         def move_link(match: re.Match[str]) -> str:
             if match.group(1) not in known:
@@ -365,7 +406,9 @@ def namespace_anchors(
 
 def denamespace_anchors(text: str, prefix: str, anchors: Iterable[str]) -> str:
     """The inverse of :func:`namespace_anchors`, over the moved names."""
-    moved = {f"{kind}:{prefix}-{name}" for kind, _, name in _split_anchors(anchors)}
+    moved = frozenset(
+        f"{kind}:{prefix}-{name}" for kind, _, name in _split_anchors(anchors)
+    )
 
     def rewrite(line: str) -> str:
         def restore(match: re.Match[str]) -> str:
@@ -374,8 +417,14 @@ def denamespace_anchors(text: str, prefix: str, anchors: Iterable[str]) -> str:
                 return match.group(0)
             return f"{match.group(0)[: -len(name)]}{name[len(prefix) + 1 :]}"
 
+        def restore_ref(match: re.Match[str]) -> str:
+            kind, name, punctuation = _crossref_parts(match, moved)
+            if f"{kind}:{name}" not in moved:
+                return match.group(0)
+            return f"@{kind}:{name[len(prefix) + 1 :]}{punctuation}"
+
         line = anchor_pattern(line).sub(restore, line)
-        line = _CROSSREF_RE.sub(restore, line)
+        line = _CROSSREF_RE.sub(restore_ref, line)
 
         def restore_link(match: re.Match[str]) -> str:
             if match.group(1) not in moved:
@@ -397,6 +446,13 @@ def _split_anchors(anchors: Iterable[str]) -> tuple[tuple[str, str, str], ...]:
     return tuple(parts)
 
 
+def _embed_destination(match: re.Match[str], target: str) -> str:
+    """Replace only the destination, even when its text repeats in the caption."""
+    left = match.start(1) - match.start()
+    right = match.end(1) - match.start()
+    return match.group()[:left] + target + match.group()[right:]
+
+
 def retarget_figures(text: str) -> tuple[str, int]:
     """Point figure embeds at the volume's plate directory.
 
@@ -407,19 +463,25 @@ def retarget_figures(text: str) -> tuple[str, int]:
     design, so the inverse is :func:`restore_figures` with the same
     canonical one-hop restore documented there.
     """
-    if VOLUME_FIGURE_PREFIX in text:
-        raise OmnibusError(
-            f"the source already writes {VOLUME_FIGURE_PREFIX!r}, so retargeting "
-            "it would not be invertible"
-        )
     count = [0]
 
     def rewrite(line: str) -> str:
-        found = _SOURCE_FIGURE_RE.search(line)
-        if found is None:
-            return line
-        count[0] += len(_SOURCE_FIGURE_RE.findall(line))
-        return _SOURCE_FIGURE_RE.sub(VOLUME_FIGURE_PREFIX, line)
+        def retarget(match: re.Match[str]) -> str:
+            target = match.group(1)
+            if "\x00" in target:
+                return match.group()
+            if target.startswith(VOLUME_FIGURE_PREFIX):
+                raise OmnibusError(
+                    f"the source already writes {VOLUME_FIGURE_PREFIX!r}, so "
+                    "retargeting it would not be invertible"
+                )
+            basename = _source_figure_basename(target)
+            if basename is None:
+                return match.group()
+            count[0] += 1
+            return _embed_destination(match, VOLUME_FIGURE_PREFIX + basename)
+
+        return _EMBED_RE.sub(retarget, line)
 
     return map_prose_lines(text, rewrite), count[0]
 
@@ -433,9 +495,19 @@ def restore_figures(text: str) -> str:
     depth, so assembly round-trips exactly there; a multi-hop source section
     in some checkout is restored to the canonical one-hop spelling instead.
     """
-    return map_prose_lines(
-        text, lambda line: line.replace(VOLUME_FIGURE_PREFIX, SOURCE_FIGURE_PREFIX)
-    )
+
+    def restore(line: str) -> str:
+        def destination(match: re.Match[str]) -> str:
+            target = match.group(1)
+            if "\x00" in target or not target.startswith(VOLUME_FIGURE_PREFIX):
+                return match.group()
+            return _embed_destination(
+                match, SOURCE_FIGURE_PREFIX + target[len(VOLUME_FIGURE_PREFIX) :]
+            )
+
+        return _EMBED_RE.sub(destination, line)
+
+    return map_prose_lines(text, restore)
 
 
 @dataclass(frozen=True)
@@ -488,7 +560,8 @@ def unresolved_references(text: str, anchors: Iterable[str]) -> tuple[str, ...]:
     dangling: set[str] = set()
 
     def scan(line: str) -> str:
-        for kind, name in _CROSSREF_RE.findall(line):
+        for match in _CROSSREF_RE.finditer(line):
+            kind, name, _ = _crossref_parts(match, known)
             if kind in checked and f"{kind}:{name}" not in known:
                 dangling.add(f"@{kind}:{name}")
         for target in _LINK_RE.findall(line):
@@ -542,6 +615,88 @@ class PaperConfig:
     date: str | None
 
 
+def _yaml_scalar(raw: str) -> str:
+    """Decode one single-line YAML string scalar; refuse other node forms."""
+    value = raw.strip()
+    if not value or value.startswith("#"):
+        return ""
+    if value[0] not in ("'", '"'):
+        value = re.split(r"[ \t]+#", value, maxsplit=1)[0].rstrip()
+        if value[0] in "|>!&*[{`,%@":
+            raise OmnibusError("unsupported paper scalar; use a single-line string")
+        return value
+    quote = value[0]
+    decoded: list[str] = []
+    cursor = 1
+    escapes = {
+        "0": "\0",
+        "a": "\a",
+        "b": "\b",
+        "t": "\t",
+        "n": "\n",
+        "v": "\v",
+        "f": "\f",
+        "r": "\r",
+        "e": "\x1b",
+        " ": " ",
+        '"': '"',
+        "/": "/",
+        "\\": "\\",
+        "N": "\x85",
+        "_": "\xa0",
+        "L": "\u2028",
+        "P": "\u2029",
+    }
+    while cursor < len(value):
+        char = value[cursor]
+        if char == quote:
+            if quote == "'" and value[cursor : cursor + 2] == "''":
+                decoded.append("'")
+                cursor += 2
+                continue
+            rest = value[cursor + 1 :]
+            if rest and not re.fullmatch(r"[ \t]+(?:#.*)?", rest):
+                raise OmnibusError("unsupported text after quoted paper scalar")
+            return "".join(decoded)
+        if char == "\\" and quote == '"':
+            cursor += 1
+            if cursor >= len(value):
+                break
+            escape = value[cursor]
+            if escape in escapes:
+                decoded.append(escapes[escape])
+            elif escape in ("x", "u", "U"):
+                length = {"x": 2, "u": 4, "U": 8}[escape]
+                digits = value[cursor + 1 : cursor + 1 + length]
+                if (
+                    len(digits) != length
+                    or re.fullmatch(r"[0-9a-fA-F]+", digits) is None
+                ):
+                    raise OmnibusError("invalid YAML scalar escape")
+                number = int(digits, 16)
+                if number > 0x10FFFF or 0xD800 <= number <= 0xDFFF:
+                    raise OmnibusError("invalid YAML scalar code point")
+                decoded.append(chr(number))
+                cursor += length
+            else:
+                raise OmnibusError(f"unsupported YAML scalar escape: \\{escape}")
+        else:
+            decoded.append(char)
+        cursor += 1
+    raise OmnibusError("unsupported multiline or unterminated paper scalar")
+
+
+def _yaml_quote(value: str) -> str:
+    """Emit a double-quoted YAML scalar without raw YAML line/control breaks."""
+    encoded = json.dumps(value, ensure_ascii=False)
+    return "".join(
+        f"\\u{ord(char):04x}"
+        if 0x7F <= ord(char) <= 0x9F or char in "\u2028\u2029"
+        else char
+        for char in encoded
+    )
+
+
 def read_paper_config(path: Path) -> PaperConfig:
     """Read the ``paper:`` block of a manuscript configuration.
 
@@ -554,10 +709,25 @@ def read_paper_config(path: Path) -> PaperConfig:
     if block is None:
         raise OmnibusError(f"{path} declares no paper block")
     fields: dict[str, str] = {}
+    scalar_continuation = False
     for line in block.splitlines():
         match = _SCALAR_RE.match(line)
         if match is not None:
-            fields[match.group(1)] = match.group(2).strip().strip('"').strip("'")
+            scalar_continuation = match.group(1) in (
+                "title",
+                "subtitle",
+                "version",
+                "date",
+            )
+            if scalar_continuation:
+                fields[match.group(1)] = _yaml_scalar(match.group(2))
+        elif (
+            scalar_continuation
+            and len(line) - len(line.lstrip(" ")) > 2
+            and line.strip()
+            and not line.lstrip().startswith("#")
+        ):
+            raise OmnibusError(f"{path}: unsupported multiline paper scalar")
     missing = [name for name in ("title", "version") if not fields.get(name)]
     if missing:
         raise OmnibusError(f"{path} declares no paper {' or '.join(missing)}")
@@ -618,67 +788,188 @@ def normalize_field(value: str) -> str:
 
 
 def matching_brace(text: str, start: int) -> int | None:
-    """Index of the brace closing the first one at or after ``start``.
-
-    ``None`` when no brace closes it, which is the case a database edited by
-    hand really does produce and the case a reader must not paper over.
-    """
+    """Find the first balanced brace group, ignoring escaped characters."""
     depth = 0
-    for index in range(start, len(text)):
-        if text[index] == "{":
+    cursor = start
+    while cursor < len(text):
+        char = text[cursor]
+        if char == "\\":
+            cursor += 2
+            continue
+        if char == "{":
             depth += 1
-        elif text[index] == "}":
+        elif char == "}" and depth:
             depth -= 1
             if depth == 0:
-                return index
+                return cursor
+        cursor += 1
+    return None
+
+
+def _bib_space(text: str, cursor: int) -> int:
+    """Skip whitespace and percent comments outside values."""
+    while cursor < len(text):
+        if text[cursor].isspace():
+            cursor += 1
+        elif text[cursor] == "%":
+            end = text.find("\n", cursor)
+            cursor = len(text) if end < 0 else end + 1
+        else:
+            break
+    return cursor
+
+
+def _bib_quote_end(text: str, start: int) -> int | None:
+    depth = 0
+    cursor = start + 1
+    while cursor < len(text):
+        char = text[cursor]
+        if char == "\\":
+            cursor += 2
+            continue
+        if char == "{":
+            depth += 1
+        elif char == "}":
+            if depth == 0:
+                return None
+            depth -= 1
+        elif char == '"' and depth == 0:
+            return cursor
+        cursor += 1
+    return None
+
+
+def _bib_entry_end(text: str, start: int) -> int | None:
+    """Find an entry closer without mistaking a field's contents for it."""
+    cursor = start + 1
+    while cursor < len(text):
+        cursor = _bib_space(text, cursor)
+        if cursor >= len(text):
+            break
+        char = text[cursor]
+        if char in ('"', "{"):
+            end = (
+                _bib_quote_end(text, cursor)
+                if char == '"'
+                else matching_brace(text, cursor)
+            )
+            if end is None:
+                return None
+            cursor = end + 1
+        elif char == "\\":
+            cursor += 2
+        elif char == "}":
+            return cursor
+        else:
+            cursor += 1
     return None
 
 
 def parse_bib(text: str, source: str) -> tuple[BibEntry, ...]:
-    """Parse a BibTeX database by brace matching, keeping each entry verbatim."""
+    """Read literal braced records, or explicitly refuse unsupported BibTeX.
+
+    Percent comments and balanced @comment blocks are not entries. Standard
+    bare month names are retained. Macro declarations, other macro-valued fields,
+    preambles, parenthesized records and concatenation are refused, never dropped.
+    """
     entries: list[BibEntry] = []
-    for match in re.finditer(r"@([A-Za-z]+)\s*\{\s*([^,\s]+)\s*,", text):
-        end = matching_brace(text, match.start())
-        if end is None:
-            raise OmnibusError(f"{source}: unbalanced braces at entry {match.group(2)}")
-        raw = text[match.start() : end + 1]
-        entries.append(
-            BibEntry(
-                key=match.group(2),
-                entry_type=match.group(1).lower(),
-                # The body runs from after the key to just inside the closing
-                # brace, which is what keeps that brace out of a trailing
-                # field's value.
-                fields=_parse_bib_fields(raw[match.end() - match.start() : -1]),
-                raw=raw,
-                source=source,
-            )
+    cursor = 0
+    while cursor < len(text):
+        cursor = _bib_space(text, cursor)
+        if cursor >= len(text):
+            break
+        if text[cursor] != "@":
+            cursor += 2 if text[cursor] == "\\" else 1
+            continue
+        match = re.match(r"@([A-Za-z]+)\s*([({])", text[cursor:])
+        if match is None:
+            raise OmnibusError(f"{source}: unsupported BibTeX directive at {cursor}")
+        kind = match.group(1).lower()
+        if kind in ("string", "preamble") or match.group(2) != "{":
+            raise OmnibusError(f"{source}: unsupported BibTeX construct @{kind}")
+        opening = cursor + match.end() - 1
+        end = (
+            matching_brace(text, opening)
+            if kind == "comment"
+            else _bib_entry_end(text, opening)
         )
+        if end is None:
+            raise OmnibusError(f"{source}: unbalanced BibTeX entry at {cursor}")
+        if kind != "comment":
+            key_match = re.match(r"\s*([^,\s{}()]+)\s*,", text[opening + 1 : end])
+            if key_match is None:
+                raise OmnibusError(f"{source}: unsupported or missing BibTeX key")
+            body = text[opening + 1 + key_match.end() : end]
+            try:
+                fields = _parse_bib_fields(body)
+            except OmnibusError as error:
+                raise OmnibusError(
+                    f"{source}: {key_match.group(1)}: {error}"
+                ) from error
+            entries.append(
+                BibEntry(
+                    key=key_match.group(1),
+                    entry_type=kind,
+                    fields=fields,
+                    raw=text[cursor : end + 1],
+                    source=source,
+                )
+            )
+        cursor = end + 1
     return tuple(entries)
 
 
 def _parse_bib_fields(body: str) -> tuple[tuple[str, str], ...]:
-    """Read ``name = value`` pairs from an entry body, braces or quotes."""
+    """Read only top-level fields, advancing over each complete value."""
     fields: list[tuple[str, str]] = []
-    for match in _BIB_FIELD_RE.finditer(body):
-        cursor = match.end()
+    cursor = _bib_space(body, 0)
+    while cursor < len(body):
+        match = _BIB_FIELD_RE.match(body, cursor)
+        if match is None:
+            raise OmnibusError("unsupported BibTeX field syntax")
+        cursor = _bib_space(body, match.end())
         if cursor >= len(body):
-            break
+            raise OmnibusError("missing BibTeX field value")
         opener = body[cursor]
-        if opener == "{":
-            end = matching_brace(body, cursor)
+        if opener in ("{", '"'):
+            end = (
+                matching_brace(body, cursor)
+                if opener == "{"
+                else _bib_quote_end(body, cursor)
+            )
             if end is None:
-                break
-            fields.append((match.group(1).lower(), body[cursor + 1 : end]))
-        elif opener == '"':
-            end = body.find('"', cursor + 1)
-            if end < 0:
-                break
-            fields.append((match.group(1).lower(), body[cursor + 1 : end]))
+                raise OmnibusError("unbalanced BibTeX field value")
+            value = body[cursor + 1 : end]
+            cursor = end + 1
         else:
-            end = body.find(",", cursor)
-            stop = len(body) if end < 0 else end
-            fields.append((match.group(1).lower(), body[cursor:stop].strip()))
+            token = re.match(r"[0-9]+|[A-Za-z][A-Za-z0-9_-]*", body[cursor:])
+            if token is None:
+                raise OmnibusError("unsupported BibTeX field value")
+            value = token.group()
+            if not value.isdecimal() and value.lower() not in (
+                "jan",
+                "feb",
+                "mar",
+                "apr",
+                "may",
+                "jun",
+                "jul",
+                "aug",
+                "sep",
+                "oct",
+                "nov",
+                "dec",
+            ):
+                raise OmnibusError("unsupported BibTeX macro-valued field")
+            cursor += token.end()
+        fields.append((match.group(1).lower(), value))
+        cursor = _bib_space(body, cursor)
+        if cursor < len(body):
+            if body[cursor] != ",":
+                raise OmnibusError(
+                    "unsupported BibTeX concatenation or field separator"
+                )
+            cursor = _bib_space(body, cursor + 1)
     return tuple(fields)
 
 
@@ -798,7 +1089,15 @@ def _remove_empty_reference_placeholders(text: str) -> str:
     if "#refs" not in text:
         return text
     lines = text.splitlines(keepends=True)
-    marks = fence_mask(text)
+    active = prose_spans(text)
+    marks: list[bool] = []
+    offset = 0
+    for line in lines:
+        stop = offset + len(line.rstrip("\r\n"))
+        marks.append(
+            not any(left <= offset and stop <= right for left, right in active)
+        )
+        offset += len(line)
     kept: list[str] = []
     index = 0
     while index < len(lines):
@@ -829,23 +1128,32 @@ def _remove_empty_reference_placeholders(text: str) -> str:
 
 
 def _is_references_stub_file(path: Path) -> bool:
-    """Recognize a heading with at most an empty citeproc placeholder."""
+    """Recognize an actual References heading, never an indented code example."""
     lines = [
-        line.strip()
+        line.rstrip()
         for line in path.read_text(encoding="utf-8").splitlines()
         if line.strip()
     ]
-    if not lines or _HEADING_RE.match(lines[0]) is None:
+    if (
+        not lines
+        or re.fullmatch(
+            r" {0,3}#{1,6}\s+References(?:\s+\{[^{}\r\n]*\})?(?:\s+#+)?",
+            lines[0],
+            flags=re.IGNORECASE,
+        )
+        is None
+    ):
         return False
     if len(lines) == 1:
         return True
     if len(lines) != 3:
         return False
-    opening = re.fullmatch(r"(:{3,})\s*\{\s*#refs\s*\}", lines[1])
+    opening = re.fullmatch(r" {0,3}(:{3,})\s*\{\s*#refs\s*\}", lines[1])
+    closing = re.fullmatch(r" {0,3}(:{3,})", lines[2])
     return (
         opening is not None
-        and len(lines[2]) >= len(opening.group(1))
-        and not lines[2].strip(":")
+        and closing is not None
+        and len(closing.group(1)) >= len(opening.group(1))
     )
 
 
@@ -913,9 +1221,9 @@ def discover_paper(entry: LineEntry, base: Path) -> SourcePaper:
     if config_path.is_file():
         cover_text = paper_cover_block(config_path.read_text(encoding="utf-8"))
         if cover_text is not None:
-            m = re.search(r'image:\s*"([^"]+)"', cover_text)
+            m = re.search(r"^    image:\s*(.*)$", cover_text, flags=re.MULTILINE)
             if m:
-                raw_img = m.group(1)
+                raw_img = _yaml_scalar(m.group(1))
                 for candidate in (
                     manuscript / raw_img,
                     root / raw_img,
@@ -1136,17 +1444,21 @@ def front_matter(
         "",
         "## What the compilation changed, and what it did not",
         "",
-        "Four mechanical transforms were applied and nothing else. Anchors were "
-        "moved into a namespace per source work, so two works that both wrote "
+        "The mechanical section transforms moved anchors into "
+        "a namespace per source work, so two works that both wrote "
         "`{#sec:abstract}` no longer collide, and every reference to a moved "
         "anchor was moved with it. Headings were shifted down one level so each "
         "work could be given a part heading carrying its own title. Figure "
         "embeds were retargeted at this volume's plate directory. The "
-        "bibliographies were merged.",
+        "bibliographies were merged. Actual reference stubs were omitted and "
+        "empty live reference placeholders were removed so the volume owns one "
+        "final bibliography; meaningful reference sections remain in place.",
         "",
-        "No claim, caveat, limit, or abstract was altered, and none was omitted. "
-        "The transforms are invertible and the assembling project's test suite "
-        "inverts them back to the source bytes for every section reproduced here.",
+        "Substantive prose, caveats, limits, and literal examples are not reworded. "
+        "The section round-trip contract preserves source bytes except that "
+        "source image-prefix depth is normalized to the canonical one-hop "
+        "spelling. Stub omission and placeholder removal are separate assembly "
+        "operations, not claims of whole-volume byte inversion.",
         "",
         f"The merged bibliography holds {merged.merged} distinct keys. "
         f"{len(merged.duplicates)} key(s) were declared by more than one work; for "
@@ -1307,12 +1619,12 @@ def volume_config(
         f"{FORMALISM_RESET_KEY}: {FORMALISM_RESET_LEVEL}",
         "",
         "paper:",
-        f'  title: "{title}"',
-        f'  subtitle: "{subtitle}"',
-        f'  version: "{version}"',
+        f"  title: {_yaml_quote(title)}",
+        f"  subtitle: {_yaml_quote(subtitle)}",
+        f"  version: {_yaml_quote(version)}",
     ]
     if date:
-        blocks.append(f'  date: "{date}"')
+        blocks.append(f"  date: {_yaml_quote(date)}")
     blocks.append("")
     cover_block = paper_cover_block(source_config)
     if cover_block is not None:
@@ -1336,7 +1648,12 @@ def volume_config(
 
 @dataclass(frozen=True)
 class AssemblyReport:
-    """What one assembly did, in numbers that were counted rather than assumed."""
+    """One assembly's counts, Markdown inventory, and original image sources.
+
+    ``files`` inventories section Markdown only, not every generated artifact.
+    ``image_sources`` binds exact compiled targets to native files, not to a
+    renderer or a presumed SVG sibling. Neither is a complete custody manifest.
+    """
 
     written: Path
     papers_included: int
@@ -1351,6 +1668,7 @@ class AssemblyReport:
     bib_entries_merged: int
     bib_duplicates: tuple[BibDuplicate, ...]
     dropped_preamble: tuple[tuple[str, str], ...]
+    image_sources: tuple[tuple[str, Path], ...]
 
     def as_json(self) -> str:
         """A machine-readable account, sorted so two runs compare cleanly."""
@@ -1375,6 +1693,9 @@ class AssemblyReport:
                 for item in sorted(self.bib_duplicates, key=lambda item: item.key)
             ],
             "dropped_preamble": [list(item) for item in self.dropped_preamble],
+            "image_sources": {
+                target: str(source) for target, source in self.image_sources
+            },
         }
         return json.dumps(payload, ensure_ascii=False, sort_keys=True, indent=2) + "\n"
 
@@ -1460,16 +1781,109 @@ def dropped_preamble_directives(
     return tuple(dropped)
 
 
-def _clear_previous(target: Path) -> None:
-    """Remove what a previous assembly wrote, and nothing else."""
-    for path in sorted(target.glob("*.md")):
-        path.unlink()
-    for path in sorted(target.glob("*.bib")):
-        path.unlink()
-    for name in ("config.yaml", REPORT_NAME):
-        candidate = target / name
-        if candidate.is_file():
-            candidate.unlink()
+def _managed_path(root: Path, path: Path, *, directory: bool = False) -> None:
+    """Refuse symlinks, escapes, and wrong node kinds before output mutation."""
+    try:
+        relative = path.relative_to(root)
+    except ValueError as error:
+        raise OmnibusError(f"managed output escapes project root: {path}") from error
+    current = root
+    for part in ("", *relative.parts):
+        if part:
+            current = current / part
+        if current.is_symlink():
+            raise OmnibusError(f"managed output must not be a symlink: {current}")
+        is_directory = current != path or directory
+        if current.exists() and not (
+            current.is_dir() if is_directory else current.is_file()
+        ):
+            raise OmnibusError(f"managed output has the wrong node kind: {current}")
+    try:
+        path.resolve().relative_to(root.resolve())
+    except (ValueError, OSError, RuntimeError) as error:
+        raise OmnibusError(f"managed output escapes project root: {path}") from error
+
+
+def _previous_files(target: Path) -> tuple[str, ...]:
+    """Read the existing section inventory; never infer ownership by extension."""
+    path = target / REPORT_NAME
+    if not path.exists():
+        return ()
+    try:
+        payload = json.loads(path.read_text(encoding="utf-8"))
+    except (ValueError, OSError) as error:
+        raise OmnibusError(
+            f"cannot read previous assembly inventory: {path}"
+        ) from error
+    files = payload.get("files") if isinstance(payload, dict) else None
+    if not isinstance(files, list) or any(
+        not isinstance(name, str)
+        or Path(name).name != name
+        or not name.endswith(".md")
+        or name in NON_SECTION_NAMES
+        for name in files
+    ):
+        raise OmnibusError(f"invalid previous assembly section inventory: {path}")
+    return tuple(files)
+
+
+def _clear_previous(target: Path, obsolete: Iterable[str]) -> None:
+    """Remove only obsolete sections named in the previous assembly inventory."""
+    for name in sorted(obsolete):
+        path = target / name
+        if path.exists():
+            path.unlink()
+
+
+def _figure_placements(text: str) -> tuple[tuple[str | None, str], ...]:
+    """Read active image targets and their adjacent supported figure labels."""
+    placements: list[tuple[str | None, str]] = []
+
+    def record(line: str) -> str:
+        for match in _EMBED_RE.finditer(line):
+            if "\x00" in match.group(1):
+                continue
+            label = _ANCHOR_DEF_RE.match(line[match.end() :].lstrip(" \t"))
+            placements.append(
+                (
+                    f"fig:{label.group(2)}"
+                    if label is not None and label.group(1) == "fig"
+                    else None,
+                    match.group(1),
+                )
+            )
+        return line
+
+    map_prose_lines(text, record)
+    return tuple(placements)
+
+
+def _check_figure_coverage(
+    plan: Sequence[tuple[str, str]], records: Sequence[dict[str, object]]
+) -> None:
+    """Bind every actual compiled image to one genuine accessible record."""
+    for name, text in plan:
+        for label, target in _figure_placements(text):
+            filename = target[len(VOLUME_FIGURE_PREFIX) :]
+            matching = [
+                record
+                for record in records
+                if (
+                    record.get("label") == label
+                    if label is not None
+                    else record.get("filename") == filename
+                )
+            ]
+            if len(matching) != 1 or matching[0].get("filename") != filename:
+                raise OmnibusError(
+                    f"{name}: figure {label or target!r} needs exactly one registry "
+                    f"record for {filename!r}"
+                )
+            alt = matching[0].get("alt_text")
+            if not isinstance(alt, str) or not alt.strip():
+                raise OmnibusError(
+                    f"{name}: figure {label or target!r} has no alt text"
+                )
 
 
 def assemble(
@@ -1611,8 +2025,19 @@ def assemble(
             }
         )
     }
-    namespaced.update(f"sec:{paper.prefix}-part" for paper in papers if paper.present)
-    namespaced.add("sec:omnibus-front-matter")
+    generated = ["sec:omnibus-front-matter"]
+    for paper in papers:
+        if paper.present:
+            generated.append(f"sec:{paper.prefix}-part")
+            if paper.cover_image is not None and paper.cover_image.is_file():
+                generated.append(f"fig:{paper.prefix}-cover")
+    collision = namespaced.intersection(generated)
+    if collision or len(set(generated)) != len(generated):
+        raise OmnibusError(
+            f"assembler-generated identifiers collide with authored/generated IDs: "
+            f"{sorted(collision) or generated}"
+        )
+    namespaced.update(generated)
     dangling = sorted(
         {ref for _, text in plan for ref in unresolved_references(text, namespaced)}
     )
@@ -1630,11 +2055,14 @@ def assemble(
             and paper.cover_image is not None
             and paper.cover_image.is_file()
         ):
-            cover_map[cover_embed_name(paper)] = paper.cover_image
-    # The part headings embed each cover under a prefix-unique basename
-    # (``cover_embed_name``) and label it ``fig:{paper.prefix}-cover``, so the
-    # registry mirror carries that exact label/filename pair. Every cover gets
-    # a record: the unique copy never collides with a work's own plate.
+            name = cover_embed_name(paper)
+            if name in figures or name in cover_map:
+                raise OmnibusError(
+                    f"plate basename {name!r} is claimed by both a generated cover "
+                    "and another volume image"
+                )
+            cover_map[name] = paper.cover_image
+    # Cover copies share the same ownership check as all native plates.
     for paper in papers:
         if (
             paper.present
@@ -1661,32 +2089,40 @@ def assemble(
                     f"gathered; every embed must point at {VOLUME_FIGURE_PREFIX}"
                 )
 
-    target = root
-    for part_name in INJECTED_MANUSCRIPT_DIR:
-        target = target / part_name
-    copied = 0
-    if write:
-        target.mkdir(parents=True, exist_ok=True)
-        _clear_previous(target)
-        for name, text in plan:
-            (target / name).write_text(text, encoding="utf-8")
-        reference_rows = [
-            {
-                "claim_id": label.replace(":", "_"),
-                "kind": "citation",
-                "value": label,
-                "source": f"output/manuscript/{name}: declared formalism label",
-                "source_path": f"output/manuscript/{name}",
-                "source_tier": "manuscript_formalism_block",
-                "freshness": "active",
-            }
-            for name, text in plan
-            for label in collect_anchors(text)
-            if label.partition(":")[0]
-            in {"def", "prop", "thm", "lem", "cor", "rem", "ax", "clm", "ex"}
-        ]
-        (target / "omnibus_claim_ledger.json").write_text(
-            json.dumps(
+    # Complete every deterministic input/config/registry gate before writes.
+    registry_text = namespaced_figure_registry(root, papers, cover_registry_records)
+    registry_records = json.loads(registry_text)["figures"]
+    _check_figure_coverage(
+        plan,
+        [record for record in registry_records if record["origin"] != "standalone"],
+    )
+    config_text = volume_config(
+        (_manuscript_dir(carrier.root) / "config.yaml").read_text(encoding="utf-8"),
+        title=volume_title(carrier),
+        subtitle=volume_subtitle(placements),
+        version=carrier.config.version,
+        date=carrier.config.date,
+    )
+    reference_rows = [
+        {
+            "claim_id": label.replace(":", "_"),
+            "kind": "citation",
+            "value": label,
+            "source": f"output/manuscript/{name}: declared formalism label",
+            "source_path": f"output/manuscript/{name}",
+            "source_tier": "manuscript_formalism_block",
+            "freshness": "active",
+        }
+        for name, text in plan
+        for label in collect_anchors(text)
+        if label.partition(":")[0]
+        in {"def", "prop", "thm", "lem", "cor", "rem", "ax", "clm", "ex"}
+    ]
+    carrier_keys = _keys_of(carrier)
+    prepared = dict(plan)
+    prepared.update(
+        {
+            "omnibus_claim_ledger.json": json.dumps(
                 {
                     "schema": "line-set-volume-reference-ledger/1",
                     "boundary": "Label declarations only; no proposition is verified and no sibling metric is computed.",
@@ -1696,44 +2132,36 @@ def assemble(
                 sort_keys=True,
             )
             + "\n",
-            encoding="utf-8",
-        )
-        (target / SOURCE_BIB_NAME).write_text(
-            merged.render(_keys_of(carrier)), encoding="utf-8"
-        )
-        (target / VOLUME_BIB_NAME).write_text(
-            merged.render(
-                key
-                for key in (entry.key for entry in merged.entries)
-                if key not in _keys_of(carrier)
+            SOURCE_BIB_NAME: merged.render(carrier_keys),
+            VOLUME_BIB_NAME: merged.render(
+                entry.key for entry in merged.entries if entry.key not in carrier_keys
             ),
-            encoding="utf-8",
-        )
-        plates = root
-        for part_name in VOLUME_FIGURES_DIR:
-            plates = plates / part_name
-        plates.mkdir(parents=True, exist_ok=True)
-        for name, source in sorted(figures.items()):
-            destination = plates / name
-            if destination.resolve() != source.resolve():
-                shutil.copy2(source, destination)
-                copied += 1
-        # Copy cover images from sibling works so they render in the volume.
-        for name, source in sorted(cover_map.items()):
-            dest = plates / name
-            if not dest.exists() or dest.resolve() != source.resolve():
-                shutil.copy2(source, dest)
-
-        # Merged figure registry: the assembling work's own records stay
-        # registered under the labels its source manuscript references, and
-        # the namespaced mirror carries every work's figures under the labels
-        # the volume renders. Both classes live beside the gathered plates so
-        # the render toolchain and the validation stage agree; the works' own
-        # registries are never touched.
-        (plates / "figure_registry.json").write_text(
-            namespaced_figure_registry(root, papers, cover_registry_records),
-            encoding="utf-8",
-        )
+            "config.yaml": config_text,
+        }
+    )
+    target = root.joinpath(*INJECTED_MANUSCRIPT_DIR)
+    plates = root.joinpath(*VOLUME_FIGURES_DIR)
+    for directory in (target, plates):
+        _managed_path(root, directory, directory=True)
+    _managed_path(root, target / REPORT_NAME)
+    previous = _previous_files(target)
+    obsolete = set(previous) - prepared.keys()
+    for name in (*prepared, REPORT_NAME, *previous):
+        if Path(name).name != name or name in ("", ".", ".."):
+            raise OmnibusError(
+                f"managed manuscript filename is not a basename: {name!r}"
+            )
+        _managed_path(root, target / name)
+    for name in (*all_embeds, "figure_registry.json"):
+        if Path(name).name != name or name in ("", ".", ".."):
+            raise OmnibusError(f"managed image filename is not a basename: {name!r}")
+        _managed_path(root, plates / name)
+    to_copy = [
+        (name, source)
+        for name, source in sorted(all_embeds.items())
+        if (plates / name).resolve() != source.resolve()
+    ]
+    copied = sum(name in figures for name, _ in to_copy) if write else 0
 
     report = AssemblyReport(
         written=target,
@@ -1749,22 +2177,33 @@ def assemble(
         bib_entries_merged=merged.merged,
         bib_duplicates=merged.duplicates,
         dropped_preamble=dropped,
+        image_sources=tuple(
+            (VOLUME_FIGURE_PREFIX + name, source)
+            for name, source in sorted(all_embeds.items())
+        ),
     )
+    prepared[REPORT_NAME] = report.as_json()
+    prepared_bytes = {name: text.encode("utf-8") for name, text in prepared.items()}
+    registry_bytes = registry_text.encode("utf-8")
     if write:
-        (target / "config.yaml").write_text(
-            volume_config(
-                _manuscript_dir(carrier.root)
-                .joinpath("config.yaml")
-                .read_text(encoding="utf-8"),
-                title=volume_title(carrier),
-                subtitle=volume_subtitle(placements),
-                version=carrier.config.version,
-                date=carrier.config.date,
-            ),
-            encoding="utf-8",
-        )
-        (target / REPORT_NAME).write_text(report.as_json(), encoding="utf-8")
+        # No deterministic preparation occurs after the first mutation.
+        target.mkdir(parents=True, exist_ok=True)
+        plates.mkdir(parents=True, exist_ok=True)
+        _clear_previous(target, obsolete)
+        for name, content in prepared_bytes.items():
+            (target / name).write_bytes(content)
+        for name, source in to_copy:
+            shutil.copy2(source, plates / name)
+        (plates / "figure_registry.json").write_bytes(registry_bytes)
     return report
+
+
+def _registry_label(record: dict[str, object]) -> str:
+    """Read a label in the same validated domain as source registry records."""
+    label = record.get("label")
+    if not isinstance(label, str) or not label.strip():
+        raise OmnibusError("figure registry contains a missing or invalid label")
+    return label
 
 
 def _source_records(records: object) -> list[dict[str, object]]:
@@ -1778,14 +2217,16 @@ def _source_records(records: object) -> list[dict[str, object]]:
     assembling twice in a row lands on the same bytes.
     """
     if not isinstance(records, list):
-        return []
-    return [
-        record
-        for record in records
-        if isinstance(record, dict)
-        and "label" in record
-        and record.get("origin") not in ("omnibus-mirror", "cover")
-    ]
+        raise OmnibusError("figure registry figures must be a list")
+    source: list[dict[str, object]] = []
+    for record in records:
+        if not isinstance(record, dict):
+            raise OmnibusError("figure registry contains a non-record")
+        if record.get("origin") in ("omnibus-mirror", "cover"):
+            continue
+        _registry_label(record)
+        source.append(record)
+    return source
 
 
 def _namespaced_record(
@@ -1793,7 +2234,7 @@ def _namespaced_record(
 ) -> dict[str, object]:
     """One registry record restamped under a work's anchor namespace."""
     renamed = dict(record)
-    label = str(record["label"])
+    label = _registry_label(record)
     kind, _, name = label.partition(":")
     renamed["label"] = f"{kind}:{prefix}-{name}"
     renamed["origin"] = origin
@@ -1817,12 +2258,12 @@ def namespaced_figure_registry(
     * **omnibus-mirror** — every present work's build records renamed the way
       ``namespace_anchors`` renames the volume's manuscript anchors, so the
       rendered volume's labels agree with the registry the render toolchain
-      reads. Labels that collide after namespacing cannot happen — the prefix
-      is unique per work.
+      reads. Collisions between generated record classes are refused rather
+      than letting a later record silently replace another.
 
     Cover records the assembly generates are stamped ``cover``. Every record
-    written here carries an ``origin`` stamp; on the next assembly only
-    unstamped build records are read back (see :func:`_source_records`), so
+    written here carries an ``origin`` stamp; on the next assembly only native
+    or retained standalone records are read back (see :func:`_source_records`), so
     the merge never compounds. A missing registry for a present work is
     refused rather than silently dropped, because a figure the volume shows
     must stay accessibility-covered.
@@ -1847,7 +2288,10 @@ def namespaced_figure_registry(
                     "accessibility-covered"
                 )
             continue
-        payload = json.loads(registry_path.read_text(encoding="utf-8"))
+        try:
+            payload = json.loads(registry_path.read_text(encoding="utf-8"))
+        except ValueError as error:
+            raise OmnibusError(f"invalid figure registry at {registry_path}") from error
         records = (
             payload["figures"]
             if isinstance(payload, dict) and "figures" in payload
@@ -1861,6 +2305,15 @@ def namespaced_figure_registry(
             for record in source
         )
     covers = [dict(record, origin="cover") for record in cover_registry_records]
+    classes = [standalone, mirror, covers]
+    for index, records in enumerate(classes):
+        labels = {_registry_label(record) for record in records}
+        for other in classes[index + 1 :]:
+            collision = labels.intersection(_registry_label(record) for record in other)
+            if collision:
+                raise OmnibusError(
+                    f"assembly introduces figure registry label collisions: {sorted(collision)}"
+                )
     return (
         json.dumps(
             {
