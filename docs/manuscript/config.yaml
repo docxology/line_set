@@ -4,7 +4,7 @@
 paper:
   title: "The Line Set: Holding Instruments Apart"
   subtitle: "A Declaration, a Reader, and a Non-Overlap Contract for a Growing Set of Small Instruments"
-  version: "0.6.1"
+  version: "0.7.0"
   date: "2026-11-08"
   description: "A thin wrapper that declares the line set, reads available sibling vocabularies, and reports unexempted collisions in published enum member names."
   cover:
@@ -19,7 +19,7 @@ authors:
     corresponding: true
 
 publication:
-  doi_status: "No new DOI; cite this software by repository and version"
+  doi_status: "Current-version DOI not yet verified; cite this software by repository and version"
   archived_version: "0.2.0"
   archived_version_doi: "10.5281/zenodo.22833507"
   github_repository: "docxology/line_set"

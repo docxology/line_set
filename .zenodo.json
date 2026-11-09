@@ -12,7 +12,7 @@
   ],
   "license": "cc-by-4.0",
   "access_right": "open",
-  "version": "0.6.1",
+  "version": "0.7.0",
   "keywords": [
     "modularity",
     "information hiding",
@@ -55,6 +55,36 @@
       "scheme": "url"
     },
     {
+      "identifier": "https://github.com/docxology/silver_line",
+      "relation": "references",
+      "scheme": "url"
+    },
+    {
+      "identifier": "https://github.com/docxology/violet_line",
+      "relation": "references",
+      "scheme": "url"
+    },
+    {
+      "identifier": "https://github.com/docxology/blue_line",
+      "relation": "references",
+      "scheme": "url"
+    },
+    {
+      "identifier": "https://github.com/docxology/green_line",
+      "relation": "references",
+      "scheme": "url"
+    },
+    {
+      "identifier": "https://github.com/docxology/copper_line",
+      "relation": "references",
+      "scheme": "url"
+    },
+    {
+      "identifier": "https://github.com/docxology/iron_line",
+      "relation": "references",
+      "scheme": "url"
+    },
+    {
       "identifier": "10.5281/zenodo.21754236",
       "relation": "cites",
       "scheme": "doi"
@@ -80,5 +110,5 @@
       "scheme": "doi"
     }
   ],
-  "notes": "Membership is declared by the package registry. Sibling DOI references are retained in related_identifiers. The last verified archive DOI is retained as an explicitly versioned historical reference in CITATION.cff and the manuscript configuration; no DOI has been assigned to this software release."
+  "notes": "Membership is declared by the package registry. Violet, Copper, and Iron are private instruments; repository references do not grant source access. Sibling DOI references are retained in related_identifiers. The last verified archive DOI is retained as an explicitly versioned historical reference in CITATION.cff and the manuscript configuration; no DOI has been assigned to this software release. This local metadata is not deposit authorization."
 }

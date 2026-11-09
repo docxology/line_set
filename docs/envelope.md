@@ -1,6 +1,6 @@
 # The report envelope convention
 
-The eight line instruments export a common report envelope for co-registration:
+The declared line instruments use a common report-envelope convention for co-registration:
 one record per native report, saying "this instrument, about this subject, at
 this review moment, said this — and here is the pointer to its complete native
 report." The convention came out of a design review of the collected set
@@ -23,7 +23,7 @@ and a frozen dataclass with exactly these fields:
 | Field | What it carries |
 | --- | --- |
 | `schema_version` | The schema string above, copied from that work's own constant. |
-| `line_id` | The exporting instrument's package name (`red_line`, `black_line`, `golden_line`, `white_line`). |
+| `line_id` | The exporting instrument's coherent native identity; current membership is in `src/line_set/registry.py`, not a four-name whitelist. |
 | `subject_id` | What was assessed, in the caller's own reference scheme; stored, not verified. |
 | `review_date` | The native report's review date. |
 | `registry_version` | The version marker of the registry the report was evaluated against — a package version where the registry has no separate marker (red_line, black_line), or a registry/ledger revision date where it does (golden_line uses YYYY.MM.DD format, white_line uses YYYY.MM format). |
@@ -38,6 +38,19 @@ not: each line publishes whatever its own native projection is — a single
 status word where the instrument emits one overall status, a per-record state
 list where it emits a ledger. That variation is the point of the field, not a
 defect in the convention.
+
+Copper's native status carries its read-state/completeness and per-pool vector,
+so rejected, empty, incomplete, and complete declarations remain distinct.
+Iron retains scenario and every episode's comparison/flags, not a favorable
+scenario aggregate. Main never interprets either projection. The complete report
+pointer and nonclaims remain necessary; a status projection is not the report.
+
+Violet, Copper, and Iron are PRIVATE producers. Public companion exports require
+separate disclosure review and empty `source_snapshot_refs`, not private source
+identifiers disguised as provenance. Full native replay evidence stays private.
+Empty source references do not authenticate an export or prove that an exercise
+occurred. Main's source-withholding option acts on namespace readings, not on
+native envelopes.
 
 ## Alignment by convention, never by import
 
@@ -54,7 +67,7 @@ which is exactly the coupling the set wants.
 
 `native_status` is one instrument's word in that instrument's vocabulary.
 Envelopes from different lines **must not be compared, ranked, averaged,
-merged, or scored on it** — the eight instruments answer eight different
+merged, or scored on it** — the instruments answer different
 questions, so a cross-line operation on their status words would be a number
 with no referent, the same aggregate this package already refuses in
 [claim_boundaries.md](claim_boundaries.md). An envelope is a witness record,

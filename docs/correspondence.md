@@ -13,6 +13,15 @@ repository did about them. It is a decision record, not an endorsement chain:
 each item names what was adopted, what was deferred with a reason, and what
 was declined with a reason.
 
+## 2026-11-08 — Copper and Iron packaging
+
+The [architectural admission record](admission/decision-20261108.md) distinguishes
+the user's delegated separate-packaging decision from the earlier empirical
+admission protocol. It preserves the strongest extension alternatives and does
+not claim that a field study established a need for either new instrument.
+The dated no-additional-instrument decision below remains historical, not the
+current set roster.
+
 ## 2026-10-21 — additional-topics synthesis
 
 The [disposition record](admission/README.md) records the decision to admit no

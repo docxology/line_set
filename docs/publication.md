@@ -58,7 +58,7 @@ the citation metadata unless that exact DOI is listed as verified inside the tes
 itself. A placeholder DOI that renders like a real one is worse than no DOI: it
 survives copy-and-paste into someone else's bibliography and points nowhere.
 
-## Reserving and Minting DOIs (reserve-first order)
+## Manual reserve-first DOI publication
 
 1. Create the Zenodo deposition **without publishing it**, and reserve its DOI.
 2. Record the reserved DOI in this repository: add it under `identifiers:` in
@@ -73,9 +73,10 @@ survives copy-and-paste into someone else's bibliography and points nowhere.
 ## The other works
 
 This work is one of the collected set. The works reference each other by name,
-repository URL, and — where minted — DOI. No work imports another, and the
-shared report-envelope schema string is aligned by published convention rather
-than by dependency. The membership of the set itself is declared data in
+repository URL, and — where minted — DOI. Native instruments do not import
+siblings; Main reads their published bindings, and Witness accepts reports by
+value. The shared envelope schema is aligned by published convention rather
+than a runtime dependency between instruments. The membership is declared in
 `src/line_set/registry.py`; this table is a citation convenience and does not
 define it.
 
@@ -86,13 +87,35 @@ define it.
 | `golden_line` | line — what is worth reaching toward (directional readings) | <https://github.com/docxology/golden_line> | `https://doi.org/10.5281/zenodo.21754238` |
 | `white_line` | line — what is absent, withheld, or unknowable (absence ledger) | <https://github.com/docxology/white_line> | `https://doi.org/10.5281/zenodo.21754242` |
 | `witness_register` | companion beside the set — co-registration without aggregation | <https://github.com/docxology/witness_register> | `https://doi.org/10.5281/zenodo.21754246` |
+| `silver_line` | memory and succession | <https://github.com/docxology/silver_line> | Not asserted here |
+| `violet_line` | PRIVATE consent records; authorized access only | <https://github.com/docxology/violet_line> | Not asserted here |
+| `blue_line` | continuing stewardship | <https://github.com/docxology/blue_line> | Not asserted here |
+| `green_line` | capacity under development | <https://github.com/docxology/green_line> | Not asserted here |
+| `copper_line` | PRIVATE finite-resource arithmetic and burden attribution | <https://github.com/docxology/copper_line> | No DOI claimed |
+| `iron_line` | PRIVATE scenario-bound recorded recovery comparisons | <https://github.com/docxology/iron_line> | No DOI claimed |
+
+The current declaration has ten instruments. Main is their colorless reader;
+Witness is separate. Repository names for private works are access-aware
+references, not public source or provenance disclosure. The complete eleven-work
+omnibus is PRIVATE. Preserve earlier bibliographic cohort identities above.
+
+For the November 8, 2026 release campaign, the owner explicitly authorized
+versioned GitHub Releases with the existing public repositories' Zenodo hooks
+left active. Automatic archive publication is authorized for those integrations;
+the manual reserve-first procedure above is an alternative, not a veto on this
+campaign. Inspect the actual hooks immediately before publication and verify
+each resulting Zenodo record against its repository, tag, version, and contents.
+Never guess a DOI, assign an old version's DOI to this release, or amend an
+immutable tag to insert a later identifier. PyPI publication and disclosure or
+new deposit automation for private Violet, Copper, and Iron remain unauthorized.
 
 ## Before a public release
 
 - [ ] Every gate in `AGENTS.md` green on a clean checkout.
 - [ ] `LICENSE` present and accurate.
-- [ ] No absolute local paths, secrets, or private-project names in any tracked
-      file (`tests/test_publication_metadata.py` checks the first of these).
-- [ ] Git history contains nothing that should not be public — the published
-      history is a fresh initial-release commit, not a monorepo extract.
+- [ ] No absolute local paths, secrets, or PRIVATE producer provenance in tracked
+      source or assets. Review Violet, Copper, and Iron separately; allowed public
+      package names do not authorize their commits, paths, receipts, or contents.
+- [ ] Git history and staged files reviewed for unauthorized private content;
+      preserve existing history and immutable tags rather than rewriting them.
 - [ ] The rendered PDF regenerated at the release tree.

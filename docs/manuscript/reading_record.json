@@ -1,21 +1,23 @@
 {
-  "package_version": "0.6.1",
+  "package_version": "0.7.0",
   "reading": {
     "collisions": [],
     "counts": {
       "import_failed": 0,
       "no_vocabulary": 0,
       "not_installed": 0,
-      "resolved": 8
+      "resolved": 10
     },
     "derivation": [
       {
-        "detail": "asked the resolver for 8 declared packages",
+        "detail": "asked the resolver for 10 declared packages",
         "items": [
           "black_line=resolved",
           "blue_line=resolved",
+          "copper_line=resolved",
           "golden_line=resolved",
           "green_line=resolved",
+          "iron_line=resolved",
           "red_line=resolved",
           "silver_line=resolved",
           "violet_line=resolved",
@@ -26,14 +28,16 @@
       {
         "detail": "read version, registry size, digest, and enum member names from each package that resolved",
         "items": [
-          "black_line: 10 tokens, version=0.6.0, registry_size=11",
-          "blue_line: 8 tokens, version=0.3.0, registry_size=12",
-          "golden_line: 7 tokens, version=0.6.1, registry_size=9",
-          "green_line: 10 tokens, version=0.3.0, registry_size=11",
-          "red_line: 41 tokens, version=0.5.0, registry_size=7",
-          "silver_line: 12 tokens, version=0.3.0, registry_size=11",
-          "violet_line: 16 tokens, version=0.3.0, registry_size=8",
-          "white_line: 24 tokens, version=0.9.0, registry_size=11"
+          "black_line: 10 tokens, version=0.6.1, registry_size=11",
+          "blue_line: 8 tokens, version=0.3.1, registry_size=12",
+          "copper_line: 21 tokens, version=0.1.0, registry_size=7",
+          "golden_line: 7 tokens, version=0.6.2, registry_size=9",
+          "green_line: 10 tokens, version=0.4.0, registry_size=11",
+          "iron_line: 15 tokens, version=0.1.0, registry_size=7",
+          "red_line: 41 tokens, version=0.5.1, registry_size=7",
+          "silver_line: 12 tokens, version=0.4.0, registry_size=11",
+          "violet_line: 16 tokens, version=0.3.1, registry_size=8",
+          "white_line: 24 tokens, version=0.9.1, registry_size=11"
         ],
         "name": "bind"
       },
@@ -52,12 +56,12 @@
         "name": "collide"
       },
       {
-        "detail": "scanned 8 candidate packages and found 0 that resolved but were not declared",
+        "detail": "scanned 10 candidate packages and found 0 that resolved but were not declared",
         "items": [],
         "name": "declare"
       },
       {
-        "detail": "set_legible: no unexempted published-name collisions among all 8 declared readable vocabularies; 8 declared exemption(s)",
+        "detail": "set_legible: no unexempted published-name collisions among all 10 declared readable vocabularies; 8 declared exemption(s)",
         "items": [
           "set_colliding",
           "set_undeclared",
@@ -72,8 +76,10 @@
       "candidates": [
         "black_line",
         "blue_line",
+        "copper_line",
         "golden_line",
         "green_line",
+        "iron_line",
         "red_line",
         "silver_line",
         "violet_line",
@@ -491,7 +497,7 @@
           "requested_package": "black_line",
           "resolved_package": "black_line",
           "resolver_policy": "pinned-source-snapshot",
-          "source_revision": "97961f6621e86359bf3bb6436ce6049f2644642d"
+          "source_revision": "0993656739cea409f20ca1fdca39fa844b3013da"
         },
         "registry_digest": "a02bff47a767b545bdeca7677bd1a2e1b24f1147d0847ec361fa9ee8b9ea1846",
         "registry_size": 11,
@@ -507,7 +513,7 @@
           "TRACEABILITY",
           "VERIFICATION"
         ],
-        "version": "0.6.0"
+        "version": "0.6.1"
       },
       {
         "code": "resolved",
@@ -523,7 +529,7 @@
           "requested_package": "blue_line",
           "resolved_package": "blue_line",
           "resolver_policy": "pinned-source-snapshot",
-          "source_revision": "03b71534f9024f098fbf0afe05dbd80e1d75587a"
+          "source_revision": "8ef0cc7630919bfd13f6364232b34ab385c49c7a"
         },
         "registry_digest": "9ae7cae1f0f7389f2f58bd7f75a2038a4c48d791166bf79c100d78f2f379e8fd",
         "registry_size": 12,
@@ -537,7 +543,50 @@
           "STALE",
           "SYSTEM"
         ],
-        "version": "0.3.0"
+        "version": "0.3.1"
+      },
+      {
+        "code": "resolved",
+        "detail": "digest read from registry_digest()",
+        "diagnostics": [],
+        "line_id": "copper_line",
+        "provenance": {
+          "binding_schema": "line-set-binding/1",
+          "distribution": null,
+          "distribution_version": null,
+          "module_origin": null,
+          "registry_identity": "COPPER_RULES",
+          "requested_package": "copper_line",
+          "resolved_package": "copper_line",
+          "resolver_policy": "pinned-source-snapshot",
+          "source_revision": null
+        },
+        "registry_digest": "8ba6812ad4915f67f829d7b432c4d6e4a916ca7d6139e365966d926044aa3dd2",
+        "registry_size": 7,
+        "tokens": [
+          "COPPER_ATTRIBUTED",
+          "COPPER_ATTRIBUTION_WITHHELD",
+          "COPPER_DIMENSION_MISMATCH",
+          "COPPER_DUPLICATE_ENTRY",
+          "COPPER_DUPLICATE_POOL",
+          "COPPER_ESTIMATED",
+          "COPPER_EXPOSURE_INCOMPLETE",
+          "COPPER_INPUT_REJECTED",
+          "COPPER_LIMIT_EXCEEDED",
+          "COPPER_LIMIT_UNCERTAIN",
+          "COPPER_MEASURED",
+          "COPPER_NO_ALLOCATION",
+          "COPPER_NO_ENTRIES",
+          "COPPER_OUTSTANDING_COMMITMENT",
+          "COPPER_PROPOSAL",
+          "COPPER_READ",
+          "COPPER_RECORDED_USE",
+          "COPPER_UNATTRIBUTED",
+          "COPPER_UNKNOWN_POOL",
+          "COPPER_UNQUANTIFIED",
+          "COPPER_WITHIN_DECLARED_LIMIT"
+        ],
+        "version": "0.1.0"
       },
       {
         "code": "resolved",
@@ -553,7 +602,7 @@
           "requested_package": "golden_line",
           "resolved_package": "golden_line",
           "resolver_policy": "pinned-source-snapshot",
-          "source_revision": "5a10c8799c1097b7b7e2876932307bcce676df66"
+          "source_revision": "67e0bdc5346034b276e4cfc0ff2a447f0124a6c0"
         },
         "registry_digest": "3e0a7e38ececb156336d57ed7cc60b6bf08a3d8f2edfc678270c307820df57e3",
         "registry_size": 9,
@@ -566,7 +615,7 @@
           "TOWARD",
           "UNKNOWN_ID"
         ],
-        "version": "0.6.1"
+        "version": "0.6.2"
       },
       {
         "code": "resolved",
@@ -582,7 +631,7 @@
           "requested_package": "green_line",
           "resolved_package": "green_line",
           "resolver_policy": "pinned-source-snapshot",
-          "source_revision": "3edf49f5426a2c9dfa8c925846d318476206988d"
+          "source_revision": "dc506111690ceac2043fbf6a594648dc800ff213"
         },
         "registry_digest": "7be6d699bb36fe854ebca8525d53cca85b2fe57c063f95f3d9387b0e3c08d718",
         "registry_size": 11,
@@ -598,7 +647,44 @@
           "STEWARDSHIP",
           "VERIFICATION"
         ],
-        "version": "0.3.0"
+        "version": "0.4.0"
+      },
+      {
+        "code": "resolved",
+        "detail": "digest read from registry_digest()",
+        "diagnostics": [],
+        "line_id": "iron_line",
+        "provenance": {
+          "binding_schema": "line-set-binding/1",
+          "distribution": null,
+          "distribution_version": null,
+          "module_origin": null,
+          "registry_identity": "IRON_REQUIREMENTS",
+          "requested_package": "iron_line",
+          "resolved_package": "iron_line",
+          "resolver_policy": "pinned-source-snapshot",
+          "source_revision": null
+        },
+        "registry_digest": "sha256:b5f8cc85c6bd64946d5fe293a6403e2611e955db09243cb700beb4fe6d7f380e",
+        "registry_size": 7,
+        "tokens": [
+          "IRON_ACCEPTED",
+          "IRON_DECLARATION_RECORDED",
+          "IRON_EPISODES_RECORDED",
+          "IRON_EXERCISE_AGED",
+          "IRON_EXERCISE_NOT_APPLICABLE",
+          "IRON_FAILED",
+          "IRON_MATERIAL_MISSING",
+          "IRON_MET",
+          "IRON_NO_SCENARIOS",
+          "IRON_RETAINED_UNAVAILABLE",
+          "IRON_TARGET_MISSED",
+          "IRON_UNAVAILABLE",
+          "IRON_UNEXERCISED",
+          "IRON_UNRECORDED",
+          "IRON_WITHIN_DECLARED_TARGETS"
+        ],
+        "version": "0.1.0"
       },
       {
         "code": "resolved",
@@ -614,7 +700,7 @@
           "requested_package": "red_line",
           "resolved_package": "red_line",
           "resolver_policy": "pinned-source-snapshot",
-          "source_revision": "3fa8d9a68a435384f53abc4afeb7ad462b133adb"
+          "source_revision": "643b5f76a43eb3ff8a991e20e2c9562d61eadcf9"
         },
         "registry_digest": "72835fd81d1f7ecf70f47b1e0061cd56c385273dd846879ab639225913f5aad7",
         "registry_size": 7,
@@ -661,7 +747,7 @@
           "VERIFIED",
           "VERIFIED_EXEMPTION"
         ],
-        "version": "0.5.0"
+        "version": "0.5.1"
       },
       {
         "code": "resolved",
@@ -677,7 +763,7 @@
           "requested_package": "silver_line",
           "resolved_package": "silver_line",
           "resolver_policy": "pinned-source-snapshot",
-          "source_revision": "51f54d8cc5f44938f3b537ebbcb42536fe36f5c1"
+          "source_revision": "cbf1c3bae2161babaf77cc8b4b9809af54e42f92"
         },
         "registry_digest": "ce808709c7db5a60a7e6b06dac30d1a1326dff3c1973b44b5d36dd28a1e15c31",
         "registry_size": 11,
@@ -695,7 +781,7 @@
           "SET_ASIDE",
           "TRANSMISSION"
         ],
-        "version": "0.3.0"
+        "version": "0.4.0"
       },
       {
         "code": "resolved",
@@ -733,7 +819,7 @@
           "UNRECORDED",
           "WITHDRAWN"
         ],
-        "version": "0.3.0"
+        "version": "0.3.1"
       },
       {
         "code": "resolved",
@@ -749,7 +835,7 @@
           "requested_package": "white_line",
           "resolved_package": "white_line",
           "resolver_policy": "pinned-source-snapshot",
-          "source_revision": "5ab6c8e0c3c5f8d7fc3dd57a4cd3f519afd36dce"
+          "source_revision": "b73bf0466eaaa6579d9b1a57cc937fb6eef83941"
         },
         "registry_digest": "11047a641a8e80c985f2bbd8a45b67a0e67048b235020aa52aa46da1cc02682a",
         "registry_size": 11,
@@ -779,37 +865,39 @@
           "UNTYPED_STATE",
           "WITHHELD"
         ],
-        "version": "0.9.0"
+        "version": "0.9.1"
       }
     ],
     "read_as_of": "2026-11-08",
     "schema_version": "line-set-reading/2",
-    "set_digest": "018f930a14597e85403beb1397987b2b07865f3327e37a37ab7135817136dd1e",
+    "set_digest": "73b407e1fe8a84c03412453cd1bab6e89f78530e55011728f628dca4d90446f9",
     "status": "set_legible",
     "undeclared_lines": []
   },
-  "reading_digest": "ad3c65376f807815cf49781c7f0881a505e4cd8e0a69e5bb4d30c50083a87e55",
+  "reading_digest": "98afd4512ca168a9f2803f561b5e1b801f55cf323e3feca0458ca3e3f6a0b593",
   "recorded_on": "2026-11-08",
   "resolver_mode": "sibling_path_resolver",
   "schema_version": "2.0-public",
-  "set_digest": "018f930a14597e85403beb1397987b2b07865f3327e37a37ab7135817136dd1e",
-  "set_version": "2026.11.06",
+  "set_digest": "73b407e1fe8a84c03412453cd1bab6e89f78530e55011728f628dca4d90446f9",
+  "set_version": "2026.11.08",
   "source_revisions": {
-    "black_line": "97961f6621e86359bf3bb6436ce6049f2644642d",
-    "blue_line": "03b71534f9024f098fbf0afe05dbd80e1d75587a",
-    "golden_line": "5a10c8799c1097b7b7e2876932307bcce676df66",
-    "green_line": "3edf49f5426a2c9dfa8c925846d318476206988d",
-    "red_line": "3fa8d9a68a435384f53abc4afeb7ad462b133adb",
-    "silver_line": "51f54d8cc5f44938f3b537ebbcb42536fe36f5c1",
+    "black_line": "0993656739cea409f20ca1fdca39fa844b3013da",
+    "blue_line": "8ef0cc7630919bfd13f6364232b34ab385c49c7a",
+    "copper_line": null,
+    "golden_line": "67e0bdc5346034b276e4cfc0ff2a447f0124a6c0",
+    "green_line": "dc506111690ceac2043fbf6a594648dc800ff213",
+    "iron_line": null,
+    "red_line": "643b5f76a43eb3ff8a991e20e2c9562d61eadcf9",
+    "silver_line": "cbf1c3bae2161babaf77cc8b4b9809af54e42f92",
     "violet_line": null,
-    "white_line": "5ab6c8e0c3c5f8d7fc3dd57a4cd3f519afd36dce"
+    "white_line": "b73bf0466eaaa6579d9b1a57cc937fb6eef83941"
   },
   "vocabulary_census": {
-    "canonical_members": 149,
-    "declared_members": 149,
-    "distinct_names": 116,
-    "enum_classes": 34,
-    "line_and_name_pairs": 128,
+    "canonical_members": 185,
+    "declared_members": 185,
+    "distinct_names": 152,
+    "enum_classes": 43,
+    "line_and_name_pairs": 164,
     "method": "Every enum exported at each declared package's root was counted, together with all __members__ names including aliases, deduplicating class objects. canonical_members counts values reached by ordinary enum iteration; declared_members counts names with repeats; distinct_names is what survives deduplication within one line, which is what the collision scan compares.",
     "names_carried_by_more_than_one_line": [
       "COMMUNICATION",
@@ -836,6 +924,13 @@
         "enum_classes": 3,
         "within_line_repeats": 3
       },
+      "copper_line": {
+        "canonical_members": 21,
+        "declared_members": 21,
+        "distinct_names": 21,
+        "enum_classes": 6,
+        "within_line_repeats": 0
+      },
       "golden_line": {
         "canonical_members": 7,
         "declared_members": 7,
@@ -849,6 +944,13 @@
         "distinct_names": 10,
         "enum_classes": 3,
         "within_line_repeats": 3
+      },
+      "iron_line": {
+        "canonical_members": 15,
+        "declared_members": 15,
+        "distinct_names": 15,
+        "enum_classes": 3,
+        "within_line_repeats": 0
       },
       "red_line": {
         "canonical_members": 42,
@@ -881,6 +983,8 @@
     }
   },
   "withheld_sources": [
+    "copper_line",
+    "iron_line",
     "violet_line"
   ]
 }

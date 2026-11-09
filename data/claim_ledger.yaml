@@ -8,7 +8,7 @@
 claims:
   - id: line_entry_count
     kind: number
-    value: 8
+    value: 10
     source: src/line_set/registry.py LINE_SET
     source_tier: claim_ledger
   - id: shared_token_count

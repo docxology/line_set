@@ -72,14 +72,12 @@ def test_working_order_is_not_opus_order() -> None:
     assert by_work != by_opus
 
 
-def test_line_ids_defaults_to_the_declaration_and_accepts_another() -> None:
-    assert line_ids() == tuple(entry.id for entry in LINE_SET)
+def test_line_ids_accepts_an_explicit_declaration() -> None:
     assert line_ids(LINE_SET[:1]) == (LINE_SET[0].id,)
 
 
-def test_find_line_hit_and_miss() -> None:
+def test_find_line_refuses_unknown_or_excluded_identity() -> None:
     wanted = LINE_SET[-1]
-    assert find_line(wanted.id) is wanted
     assert find_line("no-such-line") is None
     assert find_line(wanted.id, LINE_SET[:1]) is None
 

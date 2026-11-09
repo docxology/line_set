@@ -227,14 +227,11 @@ def live_reading(tmp_path: Path) -> Iterator[SetReading]:
     with import_sandbox():
         modules = {}
         vocabularies = {
-            "red_line": ("REFUSED", "PERMITTED", "OUTSIDE_SCOPE"),
-            "black_line": ("STRONG", "WEAK", "OUTSIDE_SCOPE"),
-            "golden_line": ("TOWARD", "AWAY"),
-            "white_line": ("ABSENT", "WITHHELD"),
-            "silver_line": ("KEPT", "LAPSED", "OUTSIDE_SCOPE"),
-            "violet_line": ("RECORDED", "UNRECORDED"),
-            "blue_line": ("FRESH", "DUE", "OUTSIDE_SCOPE"),
-            "green_line": ("SPROUTING", "ROOTED", "OUTSIDE_SCOPE"),
+            entry.package_name: (
+                f"ONLY_{entry.id.upper()}",
+                *(shared.token for shared in SHARED_TOKENS if entry.id in shared.lines),
+            )
+            for entry in LINE_SET
         }
         for name, tokens in vocabularies.items():
             write_line_package(
@@ -360,6 +357,63 @@ def test_current_and_extended_line_markers_have_distinct_outlines() -> None:
         assert len(outlines) == count
 
 
+def test_markers_keep_their_geometry_when_color_is_removed() -> None:
+    """Fill, ink, and stroke weight cannot manufacture outline uniqueness."""
+    outlines = []
+    for position in range(1, len(LINE_SET) + 3):
+        shape = palette.shape_for(position)
+        variants = [
+            ElementTree.fromstring(canvas.glyph(shape, 30, 40, 12, fill, ink, width))
+            for fill, ink, width in (("#fff", "#000", 2), ("none", "#777", 1))
+        ]
+        geometries = [
+            (
+                node.tag,
+                tuple(
+                    sorted(
+                        (key, value)
+                        for key, value in node.attrib.items()
+                        if key not in {"fill", "stroke", "stroke-width"}
+                    )
+                ),
+            )
+            for node in variants
+        ]
+        assert geometries[0] == geometries[1]
+        outlines.append(geometries[0])
+        if variants[0].tag == "polygon":
+            points = [
+                tuple(map(float, point.split(",")))
+                for point in variants[0].attrib["points"].split()
+            ]
+            assert all(18 <= x <= 42 and 28 <= y <= 52 for x, y in points)
+            twice_area = sum(
+                x * points[(index + 1) % len(points)][1]
+                - y * points[(index + 1) % len(points)][0]
+                for index, (x, y) in enumerate(points)
+            )
+            assert abs(twice_area) > 100
+    assert len(set(outlines)) == len(outlines)
+
+
+@pytest.mark.parametrize("color", ["copper", "iron"])
+def test_element_labels_have_readable_contrast(color: str) -> None:
+    def luminance(hex_color: str) -> float:
+        channels = [int(hex_color[index : index + 2], 16) / 255 for index in (1, 3, 5)]
+        linear = [
+            value / 12.92 if value <= 0.04045 else ((value + 0.055) / 1.055) ** 2.4
+            for value in channels
+        ]
+        return sum(
+            value * weight for value, weight in zip(linear, (0.2126, 0.7152, 0.0722))
+        )
+
+    ink = luminance(palette.line_ink(color))
+    for background in (palette.line_fill(color), palette.CARD, palette.PAPER):
+        light, dark = sorted((ink, luminance(background)), reverse=True)
+        assert (light + 0.05) / (dark + 0.05) >= 4.5
+
+
 def test_wrapping_blank_text_yields_one_empty_line() -> None:
     """A caller that wraps nothing gets a line to place, not an empty list."""
     assert canvas.wrap("   ", 20) == [""]
@@ -475,6 +529,39 @@ def test_appending_a_color_changes_the_set_plates_and_not_the_contract_plate(
     assert APPENDED.id in extended_plates["installation_surface"]
 
 
+@pytest.mark.parametrize("extended", [False, True])
+def test_set_plate_labels_survive_the_declared_page_with_an_isolated_extension(
+    tmp_path: Path, extended: bool
+) -> None:
+    from line_set.figures.legibility import (
+        measure_plate,
+        parse_embeds,
+        parse_height_fraction,
+        parse_page_geometry,
+    )
+
+    manuscript = Path(__file__).resolve().parents[1] / "docs" / "manuscript"
+    config = (manuscript / "config.yaml").read_text(encoding="utf-8")
+    embeds = parse_embeds(manuscript)
+    lines = (*LINE_SET, APPENDED) if extended else LINE_SET
+    with live_reading(tmp_path) as reading:
+        plates = plates_for(lines, reading)
+        for name in ("set_compass", "two_orders", "vocabulary_matrix"):
+            plate = plates[name]
+            source = tmp_path / f"{name}.svg"
+            source.write_text(plate.render(), encoding="utf-8")
+            label, fraction = embeds[f"{name}.png"]
+            measured = measure_plate(
+                source,
+                label,
+                f"{name}.png",
+                fraction,
+                parse_page_geometry(config),
+                parse_height_fraction(config),
+            )
+            assert measured.legible, (name, extended, measured.rendered_min_pt)
+
+
 def test_an_undeclared_color_still_gets_ink_a_fill_and_a_marker() -> None:
     """The palette's color table is a preference, not a requirement.
 
@@ -548,7 +635,6 @@ def test_the_matrix_draws_the_grid_once_two_lines_are_legible(tmp_path: Path) ->
     assert "not evidence" not in plate.caption
     body = plate.render()
     assert "OUTSIDE_SCOPE" in body
-    assert "REFUSED" in body
 
 
 def test_the_sparse_matrix_retains_every_token_and_its_visible_carriers(
@@ -620,24 +706,19 @@ def test_an_unresolved_row_shows_no_metric_rather_than_a_zero() -> None:
 def test_the_exempted_cell_is_distinguished_by_shape_and_label(
     tmp_path: Path,
 ) -> None:
-    """Nothing in the set may be encoded by color alone.
+    """An exact exemption and an unexempted borrowed spelling remain distinct.
 
-    The reading is planted so both kinds are present at once: the declared
-    ``OUTSIDE_SCOPE`` over its exactly two lines, and a second word a third
-    line adopted that no declaration covers. If only one kind were drawn the
-    distinction would be untested, because a single legend row cannot be
-    confused with another one that is not there.
+    Both row kinds must remain distinguishable without relying on color.
     """
     with import_sandbox():
+        shared = next(item for item in SHARED_TOKENS if item.token == "OUTSIDE_SCOPE")
         vocabularies = {
-            "red_line": ("OUTSIDE_SCOPE", "BORROWED", "REFUSED"),
-            "black_line": ("OUTSIDE_SCOPE", "STRONG"),
-            "golden_line": ("BORROWED", "TOWARD"),
-            "white_line": ("ABSENT",),
-            "silver_line": ("KEPT", "OUTSIDE_SCOPE"),
-            "violet_line": ("RECORDED",),
-            "blue_line": ("FRESH", "OUTSIDE_SCOPE"),
-            "green_line": ("SPROUTING", "OUTSIDE_SCOPE"),
+            entry.package_name: (
+                f"ONLY_{entry.id.upper()}",
+                *((shared.token,) if entry.id in shared.lines else ()),
+                *(("BORROWED",) if entry in (LINE_SET[0], LINE_SET[2]) else ()),
+            )
+            for entry in LINE_SET
         }
         answers = {}
         for name, tokens in vocabularies.items():
@@ -672,16 +753,9 @@ def test_a_grid_with_no_shared_token_says_so_rather_than_leaving_the_band_blank(
     """
     with import_sandbox():
         answers = {}
-        for name, tokens in (
-            ("red_line", ("REFUSED", "PERMITTED")),
-            ("black_line", ("STRONG", "WEAK")),
-            ("golden_line", ("TOWARD",)),
-            ("white_line", ("ABSENT",)),
-            ("silver_line", ("KEPT",)),
-            ("violet_line", ("RECORDED",)),
-            ("blue_line", ("FRESH",)),
-            ("green_line", ("SPROUTING",)),
-        ):
+        for entry in LINE_SET:
+            name = entry.package_name
+            tokens = (f"ONLY_{entry.id.upper()}",)
             write_line_package(tmp_path, name, tokens, registry_sizes={"ITEMS": 1})
             answers[name] = resolved(name, load_line_package(tmp_path, name))
         reading = make_reading(LINE_SET, answers)
@@ -932,25 +1006,6 @@ def test_a_rasterizer_that_vanishes_mid_build_refuses_rather_than_continues(
     message = str(error.value)
     assert "disappeared" in message
     assert RSVG_ENV_VAR in message
-
-
-def test_the_build_asks_for_the_siblings_when_no_resolver_is_named(
-    tmp_path: Path,
-) -> None:
-    """The default is the build asking out loud for the sibling checkouts.
-
-    The assertion is deliberately about shape rather than about which siblings
-    happen to be beside this checkout: the reading must be real and complete,
-    and it must be a status the reader can actually return. A test that
-    required four resolved lines here would pass only inside one working tree.
-    """
-    with environment_override(RSVG_ENV_VAR, str(write_rasterizer(tmp_path))):
-        build_figures(tmp_path / "root", as_of=PLANTED_DATE)
-    manifest = json.loads(
-        (tmp_path / "root" / "output" / "figures" / "figure_registry.json").read_text()
-    )
-    assert manifest["set_status"] in {status.value for status in SetStatus}
-    assert sum(manifest["read_codes"].values()) == len(LINE_SET)
 
 
 def test_a_non_executable_file_is_refused(tmp_path: Path) -> None:

@@ -78,7 +78,7 @@
     {
       "claim_id": "census_canonical_members",
       "kind": "number",
-      "value": 149,
+      "value": 185,
       "source": "docs/manuscript/reading_record.json vocabulary_census.canonical_members",
       "source_field": "vocabulary_census.canonical_members",
       "source_path": "docs/manuscript/reading_record.json",
@@ -88,7 +88,7 @@
     {
       "claim_id": "census_declared_members",
       "kind": "number",
-      "value": 149,
+      "value": 185,
       "source": "docs/manuscript/reading_record.json vocabulary_census.declared_members",
       "source_field": "vocabulary_census.declared_members",
       "source_path": "docs/manuscript/reading_record.json",
@@ -98,7 +98,7 @@
     {
       "claim_id": "census_distinct_names",
       "kind": "number",
-      "value": 116,
+      "value": 152,
       "source": "docs/manuscript/reading_record.json vocabulary_census.distinct_names",
       "source_field": "vocabulary_census.distinct_names",
       "source_path": "docs/manuscript/reading_record.json",
@@ -108,7 +108,7 @@
     {
       "claim_id": "census_enum_classes",
       "kind": "number",
-      "value": 34,
+      "value": 43,
       "source": "docs/manuscript/reading_record.json vocabulary_census.enum_classes",
       "source_field": "vocabulary_census.enum_classes",
       "source_path": "docs/manuscript/reading_record.json",
@@ -118,7 +118,7 @@
     {
       "claim_id": "census_line_and_name_pairs",
       "kind": "number",
-      "value": 128,
+      "value": 164,
       "source": "docs/manuscript/reading_record.json vocabulary_census.line_and_name_pairs",
       "source_field": "vocabulary_census.line_and_name_pairs",
       "source_path": "docs/manuscript/reading_record.json",
@@ -226,6 +226,56 @@
       "freshness": "active"
     },
     {
+      "claim_id": "census_copper_line_canonical_members",
+      "kind": "number",
+      "value": 21,
+      "source": "docs/manuscript/reading_record.json vocabulary_census.per_line.copper_line.canonical_members",
+      "source_field": "vocabulary_census.per_line.copper_line.canonical_members",
+      "source_path": "docs/manuscript/reading_record.json",
+      "source_tier": "recorded_reading_census",
+      "freshness": "active"
+    },
+    {
+      "claim_id": "census_copper_line_declared_members",
+      "kind": "number",
+      "value": 21,
+      "source": "docs/manuscript/reading_record.json vocabulary_census.per_line.copper_line.declared_members",
+      "source_field": "vocabulary_census.per_line.copper_line.declared_members",
+      "source_path": "docs/manuscript/reading_record.json",
+      "source_tier": "recorded_reading_census",
+      "freshness": "active"
+    },
+    {
+      "claim_id": "census_copper_line_distinct_names",
+      "kind": "number",
+      "value": 21,
+      "source": "docs/manuscript/reading_record.json vocabulary_census.per_line.copper_line.distinct_names",
+      "source_field": "vocabulary_census.per_line.copper_line.distinct_names",
+      "source_path": "docs/manuscript/reading_record.json",
+      "source_tier": "recorded_reading_census",
+      "freshness": "active"
+    },
+    {
+      "claim_id": "census_copper_line_enum_classes",
+      "kind": "number",
+      "value": 6,
+      "source": "docs/manuscript/reading_record.json vocabulary_census.per_line.copper_line.enum_classes",
+      "source_field": "vocabulary_census.per_line.copper_line.enum_classes",
+      "source_path": "docs/manuscript/reading_record.json",
+      "source_tier": "recorded_reading_census",
+      "freshness": "active"
+    },
+    {
+      "claim_id": "census_copper_line_within_line_repeats",
+      "kind": "number",
+      "value": 0,
+      "source": "docs/manuscript/reading_record.json vocabulary_census.per_line.copper_line.within_line_repeats",
+      "source_field": "vocabulary_census.per_line.copper_line.within_line_repeats",
+      "source_path": "docs/manuscript/reading_record.json",
+      "source_tier": "recorded_reading_census",
+      "freshness": "active"
+    },
+    {
       "claim_id": "census_golden_line_canonical_members",
       "kind": "number",
       "value": 7,
@@ -321,6 +371,56 @@
       "value": 3,
       "source": "docs/manuscript/reading_record.json vocabulary_census.per_line.green_line.within_line_repeats",
       "source_field": "vocabulary_census.per_line.green_line.within_line_repeats",
+      "source_path": "docs/manuscript/reading_record.json",
+      "source_tier": "recorded_reading_census",
+      "freshness": "active"
+    },
+    {
+      "claim_id": "census_iron_line_canonical_members",
+      "kind": "number",
+      "value": 15,
+      "source": "docs/manuscript/reading_record.json vocabulary_census.per_line.iron_line.canonical_members",
+      "source_field": "vocabulary_census.per_line.iron_line.canonical_members",
+      "source_path": "docs/manuscript/reading_record.json",
+      "source_tier": "recorded_reading_census",
+      "freshness": "active"
+    },
+    {
+      "claim_id": "census_iron_line_declared_members",
+      "kind": "number",
+      "value": 15,
+      "source": "docs/manuscript/reading_record.json vocabulary_census.per_line.iron_line.declared_members",
+      "source_field": "vocabulary_census.per_line.iron_line.declared_members",
+      "source_path": "docs/manuscript/reading_record.json",
+      "source_tier": "recorded_reading_census",
+      "freshness": "active"
+    },
+    {
+      "claim_id": "census_iron_line_distinct_names",
+      "kind": "number",
+      "value": 15,
+      "source": "docs/manuscript/reading_record.json vocabulary_census.per_line.iron_line.distinct_names",
+      "source_field": "vocabulary_census.per_line.iron_line.distinct_names",
+      "source_path": "docs/manuscript/reading_record.json",
+      "source_tier": "recorded_reading_census",
+      "freshness": "active"
+    },
+    {
+      "claim_id": "census_iron_line_enum_classes",
+      "kind": "number",
+      "value": 3,
+      "source": "docs/manuscript/reading_record.json vocabulary_census.per_line.iron_line.enum_classes",
+      "source_field": "vocabulary_census.per_line.iron_line.enum_classes",
+      "source_path": "docs/manuscript/reading_record.json",
+      "source_tier": "recorded_reading_census",
+      "freshness": "active"
+    },
+    {
+      "claim_id": "census_iron_line_within_line_repeats",
+      "kind": "number",
+      "value": 0,
+      "source": "docs/manuscript/reading_record.json vocabulary_census.per_line.iron_line.within_line_repeats",
+      "source_field": "vocabulary_census.per_line.iron_line.within_line_repeats",
       "source_path": "docs/manuscript/reading_record.json",
       "source_tier": "recorded_reading_census",
       "freshness": "active"

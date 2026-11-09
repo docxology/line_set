@@ -1,5 +1,42 @@
 # Changelog
 
+## 0.7.0 (2026-11-08)
+
+Actual native integration and qualification:
+[release packet](docs/releases/v0.7.0.md).
+
+- Admit Copper at position 9 and Iron at position 10, both stageless, with
+  bounded arithmetic/comparison jobs and noncompensatory nonclaims.
+- Record architectural package placement without claiming the strongest typed
+  extensions were defeated or the historical empirical admission protocol passed.
+- Keep binding, admission, reading, collision, and recording algorithms generic;
+  add no predicted shared-token exemptions.
+- Extend generic finite marker geometry through the current set, wrapper, and
+  isolated extension; add intentional Copper/Iron inks and non-color/contrast
+  regressions. Generate synthetic complete figure inputs from the declaration.
+- Compact the compass card spacing, independently pack the working/opus
+  columns, and reserve vocabulary carrier space per name. Preserve label
+  sizes, written data, artifact identities, and the printed-point floor; add
+  a page-scale regression for the declaration and an isolated extension.
+  Native regeneration and unchanged-input byte reproduction passed with real librsvg.
+- Update current family/navigation/privacy and local version metadata to 0.7.0;
+  advance the separate declaration revision to 2026.11.08. Preserve dated
+  eight-line/no-addition evidence and archived bibliographic identities.
+- Document all three PRIVATE source omissions after complete pinned admission,
+  and the eleven-work private omnibus with Witness outside it.
+- Remove encountered prose assertions rather than repinning them. Exercise the
+  actual ten-source census, full/public matching and wrong-view refusals, native
+  ledgers/plates, absent-producer behavior, 613 passing tests, Ruff and mypy.
+- Use canonical repository URLs for manuscript links to admission and historical
+  evidence, so native HTML/EPUB exports do not depend on unbundled repository paths.
+- Remove empty live bibliography placeholders from every retained native section,
+  preserving source prose, citations and literal examples. The compiled volume
+  owns one final bibliography, so split HTML references have an unambiguous owner.
+  Enable citation links through genuine leading Markdown metadata for EPUB.
+- Replace encountered metadata-shape, source-wiring and current-record pins with
+  a behavioral multiple-reference-section regression and literal-boundary
+  controls. Verify record freshness separately against explicit genuine pins.
+
 ## 0.6.1 (2026-11-08)
 
 Patch scope and evidence boundary: [release packet](docs/releases/v0.6.1.md).

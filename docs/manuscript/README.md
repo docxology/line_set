@@ -13,12 +13,12 @@ Section order:
 | --- | --- |
 | [`00_abstract.md`](00_abstract.md) | The claim and its boundary; the measured collision result |
 | [`01_introduction.md`](01_introduction.md) | Why a set of small instruments needs a checkable separation |
-| [`01b_the_set.md`](01b_the_set.md) | The eight lines, the shared tokens, and the alchemical naming with its caveats |
+| [`01b_the_set.md`](01b_the_set.md) | The declared instruments, shared tokens, architectural admission, and symbolic naming caveats |
 | [`02_method.md`](02_method.md) | Declaration, five reader stages, fail-closed exemption matcher, eight checks, digests |
 | [`02a_formalism.md`](02a_formalism.md) | The records, the matcher, the reading, the precedence rule, and the self-application, stated as definitions and propositions |
 | [`02b_scholarship.md`](02b_scholarship.md) | Modularity, boundary objects, and the hazard of the index |
-| [`03_extensibility.md`](03_extensibility.md) | Executed example: appending a further color |
-| [`04_examples.md`](04_examples.md) | Executed readings, including every status and every read code |
+| [`03_extensibility.md`](03_extensibility.md) | Historical executed extension example and current admission boundary |
+| [`04_examples.md`](04_examples.md) | Retained eight-line measurement, explicitly distinguished from the new current cutover |
 | [`05_limits.md`](05_limits.md) | What the reader cannot see |
 | [`06_conclusion.md`](06_conclusion.md) | What the project earns |
 | [`99_references.md`](99_references.md) | Bibliography anchor |

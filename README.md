@@ -1,17 +1,18 @@
 # Line Set
 
-The [admission materials](docs/admission/README.md) record the current decision
-to add no color, a human dossier, hypothetical contrast cases and an unexecuted
-comparison protocol. The optional [evidence/replay profile](docs/evidence/README.md)
-is a documented companion convention; this package executes no native replay.
+The [2026-11-08 admission decision](docs/admission/decision-20261108.md)
+adds Copper's dimensioned resource arithmetic and Iron's scenario-bound recovery
+target comparisons. Separate packaging is an explicit architectural choice,
+not an empirically established defeat of the strongest native extensions.
+The older [admission materials](docs/admission/README.md) and
+[family refinement note](docs/refinement-20261106.md) retain their dated
+no-addition decisions and eight-line evidence. The optional
+[evidence/replay profile](docs/evidence/README.md) remains a companion convention;
+this package executes no native replay.
 
-The [family refinement note](docs/refinement-20261106.md) records the current
-eight-color boundaries, breaking interface changes, evidence custody, and
-additional-color hypotheses. No additional color is admitted.
-
-The [0.6.1 patch packet](docs/releases/v0.6.1.md) records the current
-source refresh for Golden's Python 3.10 compatibility patch. Earlier packets
-and public readings retain their original bytes and identities.
+The [0.7.0 release packet](docs/releases/v0.7.0.md) separates source integration
+from parent-generated measurement, verification, and publication evidence.
+Earlier packets and public readings retain their original bytes and identities.
 
 Line Set is the bookkeeping work in the line set, and it is not an instrument. It
 does not answer, merge, rank, or second-guess any substantive line's question.
@@ -85,7 +86,7 @@ into a layout.
 uv run python scripts/check_registry.py   # offline structural battery over the declaration
 uv run python scripts/check_set.py        # live reading of the installed lines
 uv run python scripts/build_figures.py    # deterministic SVG/PNG pairs into output/figures/
-uv run python scripts/record_reading.py --withhold-source violet_line  # write the public namespace view
+uv run python scripts/record_reading.py --withhold-source violet_line --withhold-source copper_line --withhold-source iron_line  # public view after complete pinned admission
 ```
 
 The first needs no sibling and reaches nothing outside this tree. The second
@@ -99,11 +100,12 @@ compares the held record without rewriting it. The test suite is
 `uv run pytest tests/ --cov=src --cov-branch --cov-report=term-missing`, and it
 must pass with the siblings absent as well as present.
 
-The manuscript's measured numbers come from `docs/manuscript/reading_record.json`,
-an explicit `2.0-public` view. It withholds Violet's private producer revision
-and module path; the full pinned measurement stays in private custody. The suite
-replays the public reading, checks its identity and census, and compares the
-same view with a newly admitted complete pinned reading where those sources are
+The manuscript's measured numbers come from `docs/manuscript/reading_record.json`.
+A new current `2.0-public` view must withhold all three private producers'
+revisions and module paths: Violet, Copper, and Iron. The full pinned measurement
+stays in private custody. Preserved eight-line evidence is not a ten-line census.
+The suite replays the public reading, checks its identity and census, and compares
+the same view with a newly admitted complete pinned reading where those sources are
 accessible. Public replay is not complete public source-pin proof, and revision-only
 changes in a withheld source are not detectable from this view. Authored prose is
 reviewed against that dated measurement, not certified by matching sentences.
@@ -165,16 +167,18 @@ registries, figure designs, or evaluator logic, and it never modifies them.
 
 ## The Line Set
 
-This work is one of ten in the Line Set family — eight instruments, their
-cross-line reader, and the witness register that co-registers their report
-envelopes without aggregation:
+The current family has ten substantive instruments, their colorless cross-line
+reader, and the separate Witness Register: twelve projects. The authorized
+private omnibus includes eleven works and excludes Witness:
 
 - [Black Line](https://github.com/docxology/black_line) — the practice registry of realized craft
 - [Golden Line](https://github.com/docxology/golden_line) — the aspiration and horizon registry
 - [Red Line](https://github.com/docxology/red_line) — the cognitive-security registry of self-assessments
 - [White Line](https://github.com/docxology/white_line) — the absence and omission ledger
 - [Silver Line](https://github.com/docxology/silver_line) — the memory-and-succession instrument
-- [Violet Line](https://github.com/docxology/violet_line) — the consent ledger of affected parties
+- [Violet Line](https://github.com/docxology/violet_line) — PRIVATE consent ledger; authorized source access only
 - [Blue Line](https://github.com/docxology/blue_line) — the stewardship instrument for maintained commitments
 - [Green Line](https://github.com/docxology/green_line) — the capacity-under-development instrument
+- [Copper Line](https://github.com/docxology/copper_line) — PRIVATE finite-resource exposure arithmetic and burden attribution
+- [Iron Line](https://github.com/docxology/iron_line) — PRIVATE scenario-bound recorded recovery-target comparisons
 - [The Witness Register](https://github.com/docxology/witness_register) — co-registration without aggregation

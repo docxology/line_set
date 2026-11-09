@@ -136,10 +136,10 @@ FORMALISM_RESET_LEVEL: int = 1
 #: its pandoc command; a key it does not read is a key the filter never sees. A
 #: YAML metadata block at the head of the first section is carried into the
 #: combined markdown verbatim and *is* read, so the value is written in both
-#: places and a test requires them to agree. Stating it only in the config
-#: would be a setting that looks applied and is inert.
+#: places. Citation links are enabled here too, so formats that consume source
+#: metadata receive the setting rather than an inert root-config key.
 FORMALISM_METADATA_BLOCK: str = (
-    f"---\n{FORMALISM_RESET_KEY}: {FORMALISM_RESET_LEVEL}\n---\n"
+    f"---\n{FORMALISM_RESET_KEY}: {FORMALISM_RESET_LEVEL}\nlink-citations: true\n---\n"
 )
 
 #: The filename the source bibliography is force-copied to by the renderer.
@@ -791,6 +791,41 @@ class SourcePaper:
     def prefix(self) -> str:
         """The anchor namespace this work's anchors are moved into."""
         return namespace_prefix(self.entry.id)
+
+
+def _remove_empty_reference_placeholders(text: str) -> str:
+    """Keep native reference prose and literals; the volume owns the bibliography."""
+    if "#refs" not in text:
+        return text
+    lines = text.splitlines(keepends=True)
+    marks = fence_mask(text)
+    kept: list[str] = []
+    index = 0
+    while index < len(lines):
+        opening = (
+            None
+            if marks[index]
+            else re.fullmatch(
+                r" {0,3}(:{3,})[ \t]*\{[ \t]*#refs[ \t]*\}[ \t]*",
+                lines[index].rstrip("\r\n"),
+            )
+        )
+        if opening is not None:
+            closing = index + 1
+            while closing < len(lines) and not lines[closing].strip():
+                closing += 1
+            if closing < len(lines) and not marks[closing]:
+                delimiter = re.fullmatch(
+                    r" {0,3}(:{3,})[ \t]*", lines[closing].rstrip("\r\n")
+                )
+                if delimiter is not None and len(delimiter.group(1)) >= len(
+                    opening.group(1)
+                ):
+                    index = closing + 1
+                    continue
+        kept.append(lines[index])
+        index += 1
+    return "".join(kept)
 
 
 def _is_references_stub_file(path: Path) -> bool:
@@ -1517,7 +1552,9 @@ def assemble(
                     "so moving it there would not be invertible"
                 )
         for path in paper.sections:
-            source_text = path.read_text(encoding="utf-8")
+            source_text = _remove_empty_reference_placeholders(
+                path.read_text(encoding="utf-8")
+            )
             result = transform_section(source_text, paper.prefix, anchors)
             counts["anchors"] += result.anchors_moved
             counts["references"] += result.references_moved

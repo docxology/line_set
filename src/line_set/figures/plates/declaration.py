@@ -61,7 +61,7 @@ def _row_lines(entry: LineEntry) -> tuple[list[str], list[str], list[str]]:
 def _row_height(entry: LineEntry) -> int:
     """Card height derived from how much text the entry actually carries."""
     asks, does, avoids = _row_lines(entry)
-    return 130 + 36 * len(asks) + 30 * len(does) + 30 * len(avoids)
+    return 74 + 32 * len(asks) + 30 * len(does) + 30 * len(avoids)
 
 
 def _draw_card(
@@ -98,12 +98,12 @@ def _draw_card(
             dash="10 8" if dashed else "",
         ),
         rect(_CARD_LEFT, top, 12, height, ink, ink, 0, rx=0),
-        glyph(marker, _CARD_LEFT + 62, top + 50, 28, fill, ink, 3),
-        text(_CARD_LEFT + 62, top + 96, corner_note, 28, MUTED, "700", "middle"),
-        text(_TEXT_LEFT, top + 52, entry.color, 29, ink, "700"),
+        glyph(marker, _CARD_LEFT + 62, top + 30, 28, fill, ink, 3),
+        text(_CARD_LEFT + 62, top + 76, corner_note, 28, MUTED, "700", "middle"),
+        text(_TEXT_LEFT, top + 26, entry.color, 29, ink, "700"),
         text(
             _TEXT_LEFT,
-            top + 80,
+            top + 52,
             f"package {entry.package_name} · keeps {entry.registry_noun} "
             f"· emits {entry.verdict_noun}",
             28,
@@ -111,7 +111,7 @@ def _draw_card(
         ),
         text(
             CONTENT_RIGHT - 24,
-            top + 52,
+            top + 26,
             f"opus stage · {entry.opus_stage}" if entry.opus_stage else "no opus stage",
             28,
             ink if entry.opus_stage else MUTED,
@@ -120,10 +120,10 @@ def _draw_card(
         ),
     ]
     asks, does, avoids = _row_lines(entry)
-    cursor = top + 118
+    cursor = top + 82
     for row in asks:
         parts.append(text(_TEXT_LEFT, cursor, row, 29, INK, "700"))
-        cursor += 36
+        cursor += 32
     for row in does:
         parts.append(text(_TEXT_LEFT, cursor, row, 28, MUTED))
         cursor += 30
@@ -198,8 +198,9 @@ def set_compass(lines: tuple[LineEntry, ...], wrapper: LineEntry) -> str:
     entries = tuple(sorted(lines, key=lambda entry: entry.working_position))
     heights = [_row_height(entry) for entry in entries]
     wrapper_height = _row_height(wrapper)
-    body = sum(height + 22 for height in heights)
-    height = _CONTENT_TOP + body + 96 + wrapper_height + 132
+    body = sum(height + 8 for height in heights)
+    # Footer baseline is 156 units below the cards; retain 30 units below it.
+    height = _CONTENT_TOP + body + wrapper_height + 186
     parts = open_canvas(1600, height)
     parts += header(
         "THE SET COMPASS",
@@ -221,7 +222,7 @@ def set_compass(lines: tuple[LineEntry, ...], wrapper: LineEntry) -> str:
             dashed=False,
             corner_note=f"#{entry.working_position}",
         )
-        cursor += card_height + 22
+        cursor += card_height + 8
 
     cursor += 24
     parts.append(line(MARGIN, cursor, CONTENT_RIGHT, cursor, RULE, 2))
@@ -303,15 +304,14 @@ def two_orders(lines: tuple[LineEntry, ...]) -> str:
     questions = {
         entry.id: wrap_to_width(entry.question, box_w - 112, 26) for entry in working
     }
-    box_h = 100 + 28 * (
-        max((len(value) for value in questions.values()), default=1) - 1
-    )
-    row_h = box_h + 26
+    box_heights = {
+        entry.id: 100 + 28 * (len(questions[entry.id]) - 1) for entry in working
+    }
+    gap = 12
     left_x = MARGIN
     right_x = CONTENT_RIGHT - box_w
     top = 342
-    rows = max(len(working), len(staged), 1)
-    unstaged_block = 0 if not unstaged else 84 + 30 * len(unstaged)
+    left_bottom = top + sum(box_heights[entry.id] + gap for entry in working)
     parts: list[str] = []
     parts += header(
         "TWO ORDERS",
@@ -325,8 +325,9 @@ def two_orders(lines: tuple[LineEntry, ...]) -> str:
     parts.append(text(right_x, top - 26, "OPUS ORDER", 28, ACCENT, "700"))
 
     left_center: dict[str, float] = {}
-    for index, entry in enumerate(working):
-        y = top + index * row_h
+    y = top
+    for entry in working:
+        box_h = box_heights[entry.id]
         ink = line_ink(entry.color)
         parts.append(rect(left_x, y, box_w, box_h, CARD, ink, 2, rx=8))
         parts.append(rect(left_x, y, 10, box_h, ink, ink, 0))
@@ -356,10 +357,12 @@ def two_orders(lines: tuple[LineEntry, ...]) -> str:
         for row, question in enumerate(questions[entry.id]):
             parts.append(text(left_x + 92, y + 76 + row * 28, question, 26, MUTED))
         left_center[entry.id] = y + box_h / 2
+        y += box_h + gap
 
     right_center: dict[str, float] = {}
-    for index, entry in enumerate(staged):
-        y = top + index * row_h
+    y = top
+    for entry in staged:
+        box_h = 100
         ink = line_ink(entry.color)
         stage = entry.opus_stage
         assert stage is not None  # staged filters to entries with an opus stage
@@ -387,6 +390,7 @@ def two_orders(lines: tuple[LineEntry, ...]) -> str:
             )
         )
         right_center[entry.id] = y + box_h / 2
+        y += box_h + gap
 
     for entry in working:
         start_y = left_center[entry.id]
@@ -409,7 +413,7 @@ def two_orders(lines: tuple[LineEntry, ...]) -> str:
         parts.append(glyph("circle", start_x + 8, start_y, 6, ink, ink, 1.5))
         parts.append(glyph("circle", end_x - 8, end_y, 6, PAPER, ink, 2.5))
 
-    cursor = top + rows * row_h + 24
+    cursor = y + 24
     if unstaged:
         parts.append(
             rect(
@@ -449,8 +453,9 @@ def two_orders(lines: tuple[LineEntry, ...]) -> str:
                     dash="4 7",
                 )
             )
-        cursor += unstaged_block
+        cursor += 84 + 30 * len(unstaged)
 
+    cursor = max(cursor, left_bottom) + 24
     parts.append(line(MARGIN, cursor + 10, CONTENT_RIGHT, cursor + 10, RULE, 2))
     parts.append(
         text(
