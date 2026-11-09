@@ -131,7 +131,7 @@ input passing is compatible with a check that returns `True` unconditionally.
 ```text
 declaration_admission        passed=False  declaration is empty; there is nothing to check
 distinct_line_ids             passed=False  the declaration is empty; there is nothing to check
-distinct_colours              passed=False  the declaration is empty; there is nothing to check
+distinct_colors               passed=False  the declaration is empty; there is nothing to check
 distinct_opus_stages          passed=False  the declaration is empty; there is nothing to check
 contiguous_working_positions  passed=False  the declaration is empty; there is nothing to check
 orders_diverge                passed=False  the declaration is empty; there is nothing to check
