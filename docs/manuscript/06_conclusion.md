@@ -1,6 +1,6 @@
 # Conclusion {#sec:conclusion}
 
-The historical eight-line 0.6.1 measurement remains evidence about its original captures, not the ten-instrument declaration. Current namespace findings require the newly generated complete pinned record. Public disclosure must withhold Violet, Copper, and Iron source identities after full admission and must not claim complete public source-pin proof.
+The complete ten-producer pinned namespace measurement is `SET_LEGIBLE`: every declared vocabulary is readable and no unexempted name collision is found. Matching full/private and public checks pass, while substituting either view for the other is refused. Public disclosure withholds Violet, Copper, and Iron source identities after full admission and is not complete public source-pin proof. The original eight-line 0.6.1 measurement remains unchanged evidence about its own captures.
 
 Whether the instruments overlap is still human work. Copper's finite-unit arithmetic and Iron's scenario-target comparisons differ from current label-coverage evaluators, but complete typed extensions could preserve those distinctions. Their separate packaging is an architectural decision, not a completed empirical admission result or proof of consumer need (see [the scholarship section](#sec:scholarship)).
 

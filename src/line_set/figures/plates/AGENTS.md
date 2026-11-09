@@ -30,6 +30,13 @@ to an SVG string. A plate reads; it never decides.
   declaration and a single-entry extension have distinct shapes. `set_compass`
   assigns the wrapper `marker_position=len(entries) + 1`. Larger declarations
   may exhaust the finite cycle; never hide a full line ID or working position.
+- **Compactness must come from layout, not smaller labels.** The compass keeps
+  its full-width cards but removes excess vertical padding. Two orders sizes
+  each working card from its own wrapped question and packs the staged and
+  unstaged panels independently in the right column; the footer starts below
+  both columns. The vocabulary matrix reserves carrier width per name, then
+  balances contiguous alphabetic panels by their actual wrapped row heights.
+  Keep artifact identities, all written data, and both legibility floors.
 
 ## Validation
 

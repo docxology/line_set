@@ -31,8 +31,6 @@ from __future__ import annotations
 import re
 from pathlib import Path
 
-import pytest
-
 from line_set.omnibus import fence_mask
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
@@ -232,5 +230,3 @@ def test_a_target_that_is_not_a_path_is_not_treated_as_one() -> None:
     for target in ("#sec:x", "https://example.org/a", "mailto:someone@example.org"):
         assert target.startswith(NON_PATH_PREFIXES), target
     assert not "docs/a.md".startswith(NON_PATH_PREFIXES)
-
-

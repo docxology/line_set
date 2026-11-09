@@ -367,10 +367,16 @@ def test_markers_keep_their_geometry_when_color_is_removed() -> None:
             for fill, ink, width in (("#fff", "#000", 2), ("none", "#777", 1))
         ]
         geometries = [
-            (node.tag, tuple(sorted(
-                (key, value) for key, value in node.attrib.items()
-                if key not in {"fill", "stroke", "stroke-width"}
-            )))
+            (
+                node.tag,
+                tuple(
+                    sorted(
+                        (key, value)
+                        for key, value in node.attrib.items()
+                        if key not in {"fill", "stroke", "stroke-width"}
+                    )
+                ),
+            )
             for node in variants
         ]
         assert geometries[0] == geometries[1]
@@ -393,12 +399,14 @@ def test_markers_keep_their_geometry_when_color_is_removed() -> None:
 @pytest.mark.parametrize("color", ["copper", "iron"])
 def test_element_labels_have_readable_contrast(color: str) -> None:
     def luminance(hex_color: str) -> float:
-        channels = [int(hex_color[index:index + 2], 16) / 255 for index in (1, 3, 5)]
+        channels = [int(hex_color[index : index + 2], 16) / 255 for index in (1, 3, 5)]
         linear = [
             value / 12.92 if value <= 0.04045 else ((value + 0.055) / 1.055) ** 2.4
             for value in channels
         ]
-        return sum(value * weight for value, weight in zip(linear, (0.2126, 0.7152, 0.0722)))
+        return sum(
+            value * weight for value, weight in zip(linear, (0.2126, 0.7152, 0.0722))
+        )
 
     ink = luminance(palette.line_ink(color))
     for background in (palette.line_fill(color), palette.CARD, palette.PAPER):
@@ -519,6 +527,39 @@ def test_appending_a_color_changes_the_set_plates_and_not_the_contract_plate(
     ), "the reader's own contract plate must not move when the set grows"
     assert APPENDED.id in extended_plates["set_compass"]
     assert APPENDED.id in extended_plates["installation_surface"]
+
+
+@pytest.mark.parametrize("extended", [False, True])
+def test_set_plate_labels_survive_the_declared_page_with_an_isolated_extension(
+    tmp_path: Path, extended: bool
+) -> None:
+    from line_set.figures.legibility import (
+        measure_plate,
+        parse_embeds,
+        parse_height_fraction,
+        parse_page_geometry,
+    )
+
+    manuscript = Path(__file__).resolve().parents[1] / "docs" / "manuscript"
+    config = (manuscript / "config.yaml").read_text(encoding="utf-8")
+    embeds = parse_embeds(manuscript)
+    lines = (*LINE_SET, APPENDED) if extended else LINE_SET
+    with live_reading(tmp_path) as reading:
+        plates = plates_for(lines, reading)
+        for name in ("set_compass", "two_orders", "vocabulary_matrix"):
+            plate = plates[name]
+            source = tmp_path / f"{name}.svg"
+            source.write_text(plate.render(), encoding="utf-8")
+            label, fraction = embeds[f"{name}.png"]
+            measured = measure_plate(
+                source,
+                label,
+                f"{name}.png",
+                fraction,
+                parse_page_geometry(config),
+                parse_height_fraction(config),
+            )
+            assert measured.legible, (name, extended, measured.rendered_min_pt)
 
 
 def test_an_undeclared_color_still_gets_ink_a_fill_and_a_marker() -> None:

@@ -14,6 +14,11 @@ Source integration and remaining owner evidence actions:
 - Extend generic finite marker geometry through the current set, wrapper, and
   isolated extension; add intentional Copper/Iron inks and non-color/contrast
   regressions. Generate synthetic complete figure inputs from the declaration.
+- Compact the compass card spacing, independently pack the working/opus
+  columns, and reserve vocabulary carrier space per name. Preserve label
+  sizes, written data, artifact identities, and the printed-point floor; add
+  a page-scale regression for the declaration and an isolated extension.
+  These source changes do not claim regenerated or visually accepted artifacts.
 - Update current family/navigation/privacy and local version metadata to 0.7.0;
   advance the separate declaration revision to 2026.11.08. Preserve dated
   eight-line/no-addition evidence and archived bibliographic identities.

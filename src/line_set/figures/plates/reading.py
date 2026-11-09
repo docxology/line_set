@@ -240,7 +240,7 @@ class _TokenRow:
 
     @property
     def height(self) -> int:
-        return 25 * len(self.fragments) + 6
+        return 25 * len(self.fragments) + 3
 
 
 def _token_fragments(token: str, budget: int) -> tuple[str, ...]:
@@ -305,15 +305,22 @@ def vocabulary_matrix(
     columns = min(3, len(tokens))
     gap = 24
     column_width = (_CONTENT_WIDTH - gap * (columns - 1)) / columns
-    carrier_width = max(
-        144, max(len(value) for value in positions.values()) * 24 * 0.6 + 14
-    )
-    token_width = column_width - carrier_width - 50
-    budget = max(1, int(token_width / (_TOKEN_LABEL_SIZE * 0.72)))
+    # Reserve only this name's actual carrier list, not the longest list in
+    # the entire reading. Shared names must not force every unique name to wrap.
+    budgets = {
+        token: max(
+            1,
+            int(
+                (column_width - max(24, len(value) * 24 * 0.6) - 64)
+                / (_TOKEN_LABEL_SIZE * 0.72)
+            ),
+        )
+        for token, value in positions.items()
+    }
     rows = tuple(
         _TokenRow(
             token,
-            _token_fragments(token, budget),
+            _token_fragments(token, budgets[token]),
             positions[token],
             "exempted"
             if flags.get(token) is True

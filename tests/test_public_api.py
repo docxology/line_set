@@ -33,5 +33,3 @@ def test_the_set_version_is_a_real_review_date() -> None:
     parsed = datetime.strptime(line_set.SET_VERSION, "%Y.%m.%d").date()
     assert parsed.isoformat()
     assert line_set.SET_VERSION != line_set.__version__
-
-

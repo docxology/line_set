@@ -155,9 +155,7 @@ def test_public_view_does_not_bypass_withheld_source_admission(
             else f"NAME_{index}"
         )
         revision = (
-            None
-            if entry.id == hidden and defect == "unpinned"
-            else f"{index + 1:040x}"
+            None if entry.id == hidden and defect == "unpinned" else f"{index + 1:040x}"
         )
         write_line_package(
             tmp_path / entry.package_name / "src",
@@ -292,7 +290,11 @@ def test_public_view_withholds_multiple_sources_only_after_complete_admission(
         *args,
         "--out",
         str(public_path),
-        *(argument for line_id in hidden for argument in ("--withhold-source", line_id)),
+        *(
+            argument
+            for line_id in hidden
+            for argument in ("--withhold-source", line_id)
+        ),
     ]
     with import_sandbox(), environment("LINE_SET_SIBLINGS", str(tmp_path)):
         main([*args, "--out", str(private_path)])
