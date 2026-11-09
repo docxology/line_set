@@ -83,7 +83,8 @@ _HEIGHT_FRACTION_RE = re.compile(
 _EMBED_RE = re.compile(r"!\[[^\]]*\]\(([^)]+)\)(?:[ \t]*\{([^}]*)\})?", re.DOTALL)
 _LABEL_ATTR_RE = re.compile(r"#(fig:[A-Za-z0-9][A-Za-z0-9_.-]*)")
 _WIDTH_ATTR_RE = re.compile(r"width=([0-9.]+)%")
-_FONT_SIZE_RE = re.compile(r'font-size="([0-9.]+)px"')
+_FONT_SIZE_RE = re.compile(r"""font-size\s*=\s*["']([0-9.]+)(?:px)?["']""")
+_CSS_FONT_SIZE_RE = re.compile(r"""font-size\s*:\s*([0-9.]+)px(?=$|[;}\s"'])""")
 _SVG_SIZE_RE = re.compile(r'<svg[^>]*?width="([0-9.]+)"[^>]*?height="([0-9.]+)"')
 
 
@@ -242,18 +243,27 @@ def measure_plate(
     source_line: int = 0,
     surface: str = "standalone",
 ) -> FigureLegibility:
-    """Derive one plate's rendered minimum point size from its SVG."""
+    """Project the smallest explicit numeric font declaration onto the page.
+
+    SVG attributes may use unitless user units or px; literal CSS sizes use px.
+    This is a conservative declaration inventory, not computed-style or native
+    font measurement. Actual SVG/raster ownership and visual review stay separate.
+    """
     body = svg_path.read_text(encoding="utf-8")
     size_match = _SVG_SIZE_RE.search(body)
     if size_match is None:
         raise ValueError(f"{svg_path} declares no canvas width and height")
     canvas_width = float(size_match.group(1))
     canvas_height = float(size_match.group(2))
-    sizes = [float(value) for value in _FONT_SIZE_RE.findall(body)]
+    sizes = [
+        float(value)
+        for pattern in (_FONT_SIZE_RE, _CSS_FONT_SIZE_RE)
+        for value in pattern.findall(body)
+    ]
     if not sizes:
         raise ValueError(
-            f"{svg_path} carries no text, so its legibility cannot be measured; "
-            "a plate with no label is not a plate that passed this check"
+            f"{svg_path} declares no supported explicit font size, so its "
+            "legibility cannot be measured; a missing measurement is not a pass"
         )
     by_width = width_fraction * geometry.text_width_pt
     by_height = (

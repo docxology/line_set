@@ -7,12 +7,10 @@ its declared color name. Nothing here names an individual line, so a color
 appended to the declaration appears on the cover without an edit in this
 module.
 
-The canvas matches the sibling covers' title-page proportions. Because the
-cover prints at a declared fraction of the text width rather than as a
-full-width embed, its smallest label is authored well above
-:data:`line_set.figures.canvas.MIN_TEXT_UNITS`, so a label still clears the
-six-point print floor through the ``width=70%`` embed the volume's part
-headings use.
+The canvas matches the sibling covers' title-page proportions, with labels
+authored above :data:`line_set.figures.canvas.MIN_TEXT_UNITS`. The rendered
+print floor is qualified separately at each source or compiled placement's
+actual geometry; a source label size alone does not certify a cover placement.
 """
 
 from __future__ import annotations
@@ -135,11 +133,20 @@ def _display_order(entries: tuple[LineEntry, ...]) -> tuple[LineEntry, ...]:
 def cover_svg(entries: tuple[LineEntry, ...]) -> str:
     """Render registry-sized slots in rows, with gaps and full written labels.
 
-    The canvas grows vertically, never by shrinking a label. Physical page
-    legibility must be measured separately at the intended cover placement.
+    Ordinary declared names get a full-size slot instead of artificial word
+    fragments. Oversized names wrap losslessly; the canvas grows vertically,
+    never by shrinking a label. Physical page legibility is measured separately.
     """
     ordered = _display_order(entries)
-    columns = max(1, min(_MAX_COLUMNS, len(ordered)))
+    label_width = max((len(entry.color) for entry in ordered), default=1) * _LABEL_SIZE
+    columns = max(
+        1,
+        min(
+            _MAX_COLUMNS,
+            len(ordered),
+            int(_REGISTER_SPAN / (label_width + _SLOT_GAP)),
+        ),
+    )
     step = _REGISTER_SPAN / columns
     parts: list[str] = []
     cursor = _REGISTER_TOP

@@ -1532,7 +1532,8 @@ def part_heading(paper: SourcePaper, part: int) -> str:
     """The part heading that carries one work's own title into the volume.
 
     When a cover image is configured and present, it is embedded right after
-    the title so each work's chapter opens with its own cover art.
+    the title at full text width so compilation does not unnecessarily reduce
+    the native labels. The configured figure-height cap still applies.
     """
     config = paper.config
     title = config.title if config else paper.entry.id
@@ -1543,7 +1544,7 @@ def part_heading(paper: SourcePaper, part: int) -> str:
         lines.extend(
             [
                 f"![Cover art for {title}]({VOLUME_FIGURE_PREFIX}{cover_embed_name(paper)})"
-                f"{{#fig:{paper.prefix}-cover width=70%}}",
+                f"{{#fig:{paper.prefix}-cover width=100%}}",
                 "",
             ]
         )
