@@ -20,7 +20,6 @@ written to and no patching library is involved.
 
 from __future__ import annotations
 
-import json
 import os
 import shutil
 import subprocess
@@ -308,65 +307,6 @@ def test_record_reading_check_fails_when_there_is_no_record(tmp_path: Path) -> N
         live_siblings=True,
     )
     assert result.returncode != 0
-
-
-def test_record_reading_check_fails_on_a_record_that_disagrees(tmp_path: Path) -> None:
-    if not siblings_are_readable():
-        pytest.skip("--check needs a readable set before it can compare anything")
-    stale = tmp_path / "stale.json"
-    held = json.loads(
-        (PROJECT_ROOT / "docs" / "manuscript" / "reading_record.json").read_text(
-            encoding="utf-8"
-        )
-    )
-    held["vocabulary_census"]["distinct_names"] += 1
-    stale.write_text(
-        json.dumps(held, indent=2, ensure_ascii=False, sort_keys=True) + "\n",
-        encoding="utf-8",
-    )
-    result = run(
-        SCRIPTS / "record_reading.py",
-        "--as-of",
-        held["recorded_on"],
-        "--check",
-        *[
-            arg
-            for source in held.get("withheld_sources", ())
-            for arg in ("--withhold-source", source)
-        ],
-        "--out",
-        str(stale),
-        cwd=PROJECT_ROOT,
-        source=PROJECT_ROOT / "src",
-        live_siblings=True,
-    )
-    assert result.returncode != 0
-
-
-def test_record_reading_check_agrees_with_the_record_that_ships() -> None:
-    """The freshness gate, run the way a release check would run it."""
-    if not siblings_are_readable():
-        pytest.skip("this check re-measures the installed line packages")
-    held = json.loads(
-        (PROJECT_ROOT / "docs" / "manuscript" / "reading_record.json").read_text(
-            encoding="utf-8"
-        )
-    )
-    result = run(
-        SCRIPTS / "record_reading.py",
-        "--as-of",
-        held["recorded_on"],
-        *[
-            arg
-            for source in held.get("withheld_sources", ())
-            for arg in ("--withhold-source", source)
-        ],
-        "--check",
-        cwd=PROJECT_ROOT,
-        source=PROJECT_ROOT / "src",
-        live_siblings=True,
-    )
-    assert result.returncode == 0, result.stdout + result.stderr
 
 
 def test_an_ambient_sibling_override_cannot_defeat_the_isolated_runs(

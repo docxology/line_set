@@ -268,8 +268,13 @@ their namespaced cross-references. Its rows record label presence only.
 The volume owns one final merged bibliography. Source reference pages containing
 only a heading, optionally followed by an empty Pandoc `#refs` Div, are structural
 stubs and are not reproduced inside a work. Reference pages containing prose or
-examples remain source sections. The final volume reference page owns the
-citeproc placeholder instead of a work's otherwise empty reference page.
+examples remain source sections; their empty live `#refs` Divs are removed before
+the normal section transforms. Prose, citations, nonempty Divs and fenced,
+inline or indented literal examples remain intact. The final volume reference
+page owns the single citeproc placeholder, keeping combined IDs unique and
+split HTML citation destinations unambiguous. The generated front matter sets
+`link-citations: true` in leading Markdown YAML so EPUB receives the same
+source-owned citation-link policy.
 
 Native authored sources can contain producer-owned variables. Preserve the raw
 assembled tree, then consume a genuine native-resolved manuscript projection

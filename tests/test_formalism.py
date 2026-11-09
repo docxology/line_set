@@ -41,13 +41,10 @@ import pytest
 from line_set import LINE_SET, SHARED_TOKENS, ReadCode, SharedToken
 from line_set.omnibus import (
     FORMALISM_METADATA_BLOCK,
-    FORMALISM_RESET_KEY,
     FORMALISM_RESET_LEVEL,
     demote_headings,
     fence_mask,
-    front_matter,
     part_heading,
-    volume_config,
 )
 from line_set.probes import exemption_probes
 
@@ -318,50 +315,6 @@ def test_the_fail_closed_proposition_is_true_of_the_matcher() -> None:
 # ---------------------------------------------------------------- the volume
 
 
-def test_the_volume_declares_the_reset_level_in_both_places_it_is_needed() -> None:
-    """The config states the contract; the metadata block is what pandoc reads.
-
-    Writing it only in the generated config would be a setting that looks
-    applied and is inert, because the render toolchain builds its pandoc command
-    from a fixed set of config keys and this is not one of them.
-    """
-    generated = volume_config(
-        'paper:\n  title: "T"\n', "Volume", "Sub", "1.0", "2026-01-01"
-    )
-    assert f"{FORMALISM_RESET_KEY}: {FORMALISM_RESET_LEVEL}" in generated
-    # The block carries that one key and nothing else. A second key, or a level
-    # written as a literal beside the derived one, would be a second copy of the
-    # contract free to drift away from the constant the config is built from.
-    assert FORMALISM_METADATA_BLOCK.strip().splitlines()[1:-1] == [
-        f"{FORMALISM_RESET_KEY}: {FORMALISM_RESET_LEVEL}"
-    ]
-    assert f"{FORMALISM_RESET_KEY}: {FORMALISM_RESET_LEVEL}" in (
-        FORMALISM_METADATA_BLOCK
-    )
-    assert FORMALISM_METADATA_BLOCK.startswith("---\n")
-    assert FORMALISM_METADATA_BLOCK.endswith("---\n")
-
-
-def test_a_standalone_manuscript_does_not_declare_the_reset_level() -> None:
-    """A level-1 header is a section here, so a reset would fire mid-paper."""
-    config = (MANUSCRIPT / "config.yaml").read_text(encoding="utf-8")
-    assert FORMALISM_RESET_KEY not in config
-    for path in sections():
-        assert FORMALISM_RESET_KEY not in path.read_text(encoding="utf-8"), path.name
-
-
-def test_the_front_matter_opens_with_the_metadata_block() -> None:
-    """Pandoc reads a YAML metadata block at the head of the combined markdown.
-
-    The front matter is the first file in every plan, so its first bytes are
-    the document's first bytes.
-    """
-    from line_set.omnibus import MergedBibliography
-
-    text = front_matter((), _reading_stub(), MergedBibliography((), ()), ())
-    assert text.startswith(FORMALISM_METADATA_BLOCK.rstrip("\n"))
-
-
 def test_the_reset_level_matches_the_heading_level_the_volume_gives_a_work() -> None:
     """The declared level is only right if a work starts at exactly that level.
 
@@ -393,17 +346,6 @@ def test_the_reset_level_matches_the_heading_level_the_volume_gives_a_work() -> 
     for line in demoted.splitlines():
         depth = len(line) - len(line.lstrip("#"))
         assert depth > FORMALISM_RESET_LEVEL, line
-
-
-def _reading_stub():
-    """A reading over an empty declaration, for front-matter shape checks."""
-    from line_set import read_set
-    from line_set.binding import Resolution
-
-    def resolver(name: str) -> Resolution:
-        return Resolution(name, ReadCode.NOT_INSTALLED, None, "absent")
-
-    return read_set(LINE_SET[:1], (), resolver=resolver, as_of="2026-01-01")
 
 
 def _filter_path() -> Path | None:

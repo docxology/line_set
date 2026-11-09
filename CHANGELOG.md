@@ -26,9 +26,16 @@ Actual native integration and qualification:
   and the eleven-work private omnibus with Witness outside it.
 - Remove encountered prose assertions rather than repinning them. Exercise the
   actual ten-source census, full/public matching and wrong-view refusals, native
-  ledgers/plates, absent-producer behavior, 609 passing tests, Ruff and mypy.
+  ledgers/plates, absent-producer behavior, 613 passing tests, Ruff and mypy.
 - Use canonical repository URLs for manuscript links to admission and historical
   evidence, so native HTML/EPUB exports do not depend on unbundled repository paths.
+- Remove empty live bibliography placeholders from every retained native section,
+  preserving source prose, citations and literal examples. The compiled volume
+  owns one final bibliography, so split HTML references have an unambiguous owner.
+  Enable citation links through genuine leading Markdown metadata for EPUB.
+- Replace encountered metadata-shape, source-wiring and current-record pins with
+  a behavioral multiple-reference-section regression and literal-boundary
+  controls. Verify record freshness separately against explicit genuine pins.
 
 ## 0.6.1 (2026-11-08)
 
