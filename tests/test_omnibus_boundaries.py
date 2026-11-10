@@ -660,6 +660,6 @@ def test_yaml_spacing_and_comments_do_not_erase_a_configured_png_cover(
         assert (
             report.written / "../figures/carrier-cover-cover.png"
         ).read_bytes() == PNG_BYTES
-        assert "Original cover" in (
-            report.written / "config.yaml"
-        ).read_text(encoding="utf-8")
+        assert "Original cover" in (report.written / "config.yaml").read_text(
+            encoding="utf-8"
+        )

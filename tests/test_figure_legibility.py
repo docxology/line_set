@@ -480,8 +480,8 @@ def test_commented_geometry_is_not_a_declared_margin() -> None:
     [
         '<!-- font-size="1px" -->',
         '<text data-font-size="1px">font-size: 1px example</text>',
-        '<style>/* font-size: 1px; */ text { font-size: 18px; }</style>',
-        '<text style=\'content: ";font-size: 1px;";font-size: 18px;\'>Text</text>',
+        "<style>/* font-size: 1px; */ text { font-size: 18px; }</style>",
+        "<text style='content: \";font-size: 1px;\";font-size: 18px;'>Text</text>",
     ],
 )
 def test_only_actual_svg_font_declarations_enter_the_inventory(

@@ -216,9 +216,7 @@ def parse_embed_text(markdown: str, *, source: str) -> tuple[EmbedOccurrence, ..
         # Caption code is blanked before delimiter recognition; returned paths
         # and attributes still come from the exact authored source offsets.
         image_path = markdown[slice(*match.span(1))]
-        attributes = (
-            "" if match.group(2) is None else markdown[slice(*match.span(2))]
-        )
+        attributes = "" if match.group(2) is None else markdown[slice(*match.span(2))]
         label_match = _LABEL_ATTR_RE.search(attributes)
         label = "" if label_match is None else label_match.group(1)
         width = _WIDTH_ATTR_RE.search(attributes)

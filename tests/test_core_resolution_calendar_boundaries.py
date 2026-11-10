@@ -229,9 +229,7 @@ def test_module_origin_enrichment_is_admitted_before_observation(
     supplied = replace(
         original, provenance=replace(original.provenance, module_origin=None)
     )
-    reading = read_set(
-        (entry,), (), resolver=lambda name: supplied, as_of="2026-11-10"
-    )
+    reading = read_set((entry,), (), resolver=lambda name: supplied, as_of="2026-11-10")
     observation = reading.observations[0]
     assert observation.code is ReadCode.IMPORT_FAILED
     assert observation.provenance.module_origin is None
@@ -247,9 +245,7 @@ def test_unprintable_resolver_failure_retains_original_exception_identity() -> N
     def resolver(name):
         raise BrokenMessage()
 
-    reading = read_set(
-        LINE_SET[:1], (), resolver=resolver, as_of="2026-11-10"
-    )
+    reading = read_set(LINE_SET[:1], (), resolver=resolver, as_of="2026-11-10")
     observation = reading.observations[0]
     assert observation.code is ReadCode.IMPORT_FAILED
     assert observation.diagnostics[0].exception_type == "BrokenMessage"
