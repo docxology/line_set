@@ -497,7 +497,7 @@
           "requested_package": "black_line",
           "resolved_package": "black_line",
           "resolver_policy": "pinned-source-snapshot",
-          "source_revision": "b644bff4bd0c2def2340417d94a9fa607e9dcac3"
+          "source_revision": "b43e4e799cd959ea43503bb2cab4ec9422cf582d"
         },
         "registry_digest": "a02bff47a767b545bdeca7677bd1a2e1b24f1147d0847ec361fa9ee8b9ea1846",
         "registry_size": 11,
@@ -700,7 +700,7 @@
           "requested_package": "red_line",
           "resolved_package": "red_line",
           "resolver_policy": "pinned-source-snapshot",
-          "source_revision": "3815ebef2f100d8ec51f0297fe400e3659d38930"
+          "source_revision": "415c0fb377dfd2c3513080786be8119d86be9f10"
         },
         "registry_digest": "72835fd81d1f7ecf70f47b1e0061cd56c385273dd846879ab639225913f5aad7",
         "registry_size": 7,
@@ -763,7 +763,7 @@
           "requested_package": "silver_line",
           "resolved_package": "silver_line",
           "resolver_policy": "pinned-source-snapshot",
-          "source_revision": "b2947db59017feb7537c678f5ce931bb18c848cb"
+          "source_revision": "d8b51d70ed44855399563063c40ab06095f8f8bb"
         },
         "registry_digest": "ce808709c7db5a60a7e6b06dac30d1a1326dff3c1973b44b5d36dd28a1e15c31",
         "registry_size": 11,
@@ -835,7 +835,7 @@
           "requested_package": "white_line",
           "resolved_package": "white_line",
           "resolver_policy": "pinned-source-snapshot",
-          "source_revision": "b25650d187ee25a8836bcc79d5dc6fc921491319"
+          "source_revision": "3e803f182d6e42631891f52c064e06cdbedb20b5"
         },
         "registry_digest": "11047a641a8e80c985f2bbd8a45b67a0e67048b235020aa52aa46da1cc02682a",
         "registry_size": 11,
@@ -874,23 +874,23 @@
     "status": "set_legible",
     "undeclared_lines": []
   },
-  "reading_digest": "5f12333b6ac015f232d039971f4d5d3ce6954173647039a627549f9246752e06",
+  "reading_digest": "230205f0861b74aea9eab959aa5719359d909120f20bdf63d021aa658548c51a",
   "recorded_on": "2026-11-10",
   "resolver_mode": "sibling_path_resolver",
   "schema_version": "2.0-public",
   "set_digest": "73b407e1fe8a84c03412453cd1bab6e89f78530e55011728f628dca4d90446f9",
   "set_version": "2026.11.08",
   "source_revisions": {
-    "black_line": "b644bff4bd0c2def2340417d94a9fa607e9dcac3",
+    "black_line": "b43e4e799cd959ea43503bb2cab4ec9422cf582d",
     "blue_line": "0b4b51bfaf32edc68eeb69e754383e29eb442479",
     "copper_line": null,
     "golden_line": "09235bb2f2e8c92ca65ae975d9cb9a6ca5139dde",
     "green_line": "70c7a41d7d98e2fb68c07230ddc79dd6ca5832f0",
     "iron_line": null,
-    "red_line": "3815ebef2f100d8ec51f0297fe400e3659d38930",
-    "silver_line": "b2947db59017feb7537c678f5ce931bb18c848cb",
+    "red_line": "415c0fb377dfd2c3513080786be8119d86be9f10",
+    "silver_line": "d8b51d70ed44855399563063c40ab06095f8f8bb",
     "violet_line": null,
-    "white_line": "b25650d187ee25a8836bcc79d5dc6fc921491319"
+    "white_line": "3e803f182d6e42631891f52c064e06cdbedb20b5"
   },
   "vocabulary_census": {
     "canonical_members": 185,
