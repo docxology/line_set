@@ -2,9 +2,9 @@
 
 ## Ten-line 0.8.0 pinned measurement and public view
 
-The 2026-11-09 measurement reads all ten actual native-qualified producer commits from immutable Git-archive captures whose regular-file bytes match their recorded commits and trees. These are real reviewed source commits, not predicted release tags. Eight producers use `convention-heuristic` binding; Copper and Iron use their explicit `line-set-binding/1` descriptors. All ten use `pinned-source-snapshot` provenance. This measures the exported namespace, not native report correctness, practical usefulness, or conceptual independence.
+The 2026-11-10 measurement reads all ten actual native-qualified producer commits from immutable Git-archive captures whose regular-file bytes match their recorded commits and trees. These are real reviewed source commits, not predicted release tags. Eight producers use `convention-heuristic` binding; Copper and Iron use their explicit `line-set-binding/1` descriptors. All ten use `pinned-source-snapshot` provenance. This measures the exported namespace, not native report correctness, practical usefulness, or conceptual independence.
 
-The public `2.0-public` record withholds Violet, Copper, and Iron producer revisions and module paths only after complete pinned admission. The complete `2.0` record remains private. The current public reading digest is `493a9c62ca31c1d752004c3d20d552aadfc3c0df4ad503deddd911c4639428e3`; the declaration digest is `73b407e1fe8a84c03412453cd1bab6e89f78530e55011728f628dca4d90446f9`. The seven disclosed source revisions, full vocabulary, exact exemption carrier sets, and per-line meanings are retained in `reading_record.json`.
+The public `2.0-public` record withholds Violet, Copper, and Iron producer revisions and module paths only after complete pinned admission. The complete `2.0` record remains private. The current public reading digest is `9b5f9970152790ce97b58701b314e47cea2ba7d5d6c20b62b7e5fbb00ba0b17a`; the declaration digest is `73b407e1fe8a84c03412453cd1bab6e89f78530e55011728f628dca4d90446f9`. The seven disclosed source revisions, full vocabulary, exact exemption carrier sets, and per-line meanings are retained in `reading_record.json`.
 
 Select the authorized source-capture parent through `LINE_SET_SIBLINGS` before reproducing the reading. Missing sources refuse canonical recording; they never become empty vocabularies or zero metadata. The executed full/private and public checks match their own artifacts, and both wrong-view substitutions are refused. A successful public-view check is not complete public source-pin proof or continuity proof for a withheld source.
 
@@ -14,7 +14,7 @@ The current captures use publishable producer commits with privacy-safe attribut
 from line_set.recording import build_record
 
 record, refusals = build_record(
-    "2026-11-09",
+    "2026-11-10",
     withheld_sources=("violet_line", "copper_line", "iron_line"),
 )
 ```

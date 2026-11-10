@@ -497,7 +497,7 @@
           "requested_package": "black_line",
           "resolved_package": "black_line",
           "resolver_policy": "pinned-source-snapshot",
-          "source_revision": "854ab16448437e51dc67f567160eca900f0dd8b8"
+          "source_revision": "b644bff4bd0c2def2340417d94a9fa607e9dcac3"
         },
         "registry_digest": "a02bff47a767b545bdeca7677bd1a2e1b24f1147d0847ec361fa9ee8b9ea1846",
         "registry_size": 11,
@@ -529,7 +529,7 @@
           "requested_package": "blue_line",
           "resolved_package": "blue_line",
           "resolver_policy": "pinned-source-snapshot",
-          "source_revision": "0ca11abd67b6a3c78b77ce1b22fa6a39caee2981"
+          "source_revision": "0b4b51bfaf32edc68eeb69e754383e29eb442479"
         },
         "registry_digest": "9ae7cae1f0f7389f2f58bd7f75a2038a4c48d791166bf79c100d78f2f379e8fd",
         "registry_size": 12,
@@ -602,7 +602,7 @@
           "requested_package": "golden_line",
           "resolved_package": "golden_line",
           "resolver_policy": "pinned-source-snapshot",
-          "source_revision": "9232d33337eb00dbc975e03b89038cc2b2e751d0"
+          "source_revision": "09235bb2f2e8c92ca65ae975d9cb9a6ca5139dde"
         },
         "registry_digest": "3e0a7e38ececb156336d57ed7cc60b6bf08a3d8f2edfc678270c307820df57e3",
         "registry_size": 9,
@@ -700,7 +700,7 @@
           "requested_package": "red_line",
           "resolved_package": "red_line",
           "resolver_policy": "pinned-source-snapshot",
-          "source_revision": "d86ca57237bec27804849f57d95c17d253e97da3"
+          "source_revision": "c35fef2b2c420160a8f687ce2d2a1a18ac701ba0"
         },
         "registry_digest": "72835fd81d1f7ecf70f47b1e0061cd56c385273dd846879ab639225913f5aad7",
         "registry_size": 7,
@@ -763,7 +763,7 @@
           "requested_package": "silver_line",
           "resolved_package": "silver_line",
           "resolver_policy": "pinned-source-snapshot",
-          "source_revision": "ab481cf0a14db2ed9663a5db181483e82dd083cb"
+          "source_revision": "b2947db59017feb7537c678f5ce931bb18c848cb"
         },
         "registry_digest": "ce808709c7db5a60a7e6b06dac30d1a1326dff3c1973b44b5d36dd28a1e15c31",
         "registry_size": 11,
@@ -835,7 +835,7 @@
           "requested_package": "white_line",
           "resolved_package": "white_line",
           "resolver_policy": "pinned-source-snapshot",
-          "source_revision": "656c7508300c3ed682bac9051daaca1609daa719"
+          "source_revision": "b25650d187ee25a8836bcc79d5dc6fc921491319"
         },
         "registry_digest": "11047a641a8e80c985f2bbd8a45b67a0e67048b235020aa52aa46da1cc02682a",
         "registry_size": 11,
@@ -868,29 +868,29 @@
         "version": "0.9.2"
       }
     ],
-    "read_as_of": "2026-11-09",
+    "read_as_of": "2026-11-10",
     "schema_version": "line-set-reading/2",
     "set_digest": "73b407e1fe8a84c03412453cd1bab6e89f78530e55011728f628dca4d90446f9",
     "status": "set_legible",
     "undeclared_lines": []
   },
-  "reading_digest": "493a9c62ca31c1d752004c3d20d552aadfc3c0df4ad503deddd911c4639428e3",
-  "recorded_on": "2026-11-09",
+  "reading_digest": "9b5f9970152790ce97b58701b314e47cea2ba7d5d6c20b62b7e5fbb00ba0b17a",
+  "recorded_on": "2026-11-10",
   "resolver_mode": "sibling_path_resolver",
   "schema_version": "2.0-public",
   "set_digest": "73b407e1fe8a84c03412453cd1bab6e89f78530e55011728f628dca4d90446f9",
   "set_version": "2026.11.08",
   "source_revisions": {
-    "black_line": "854ab16448437e51dc67f567160eca900f0dd8b8",
-    "blue_line": "0ca11abd67b6a3c78b77ce1b22fa6a39caee2981",
+    "black_line": "b644bff4bd0c2def2340417d94a9fa607e9dcac3",
+    "blue_line": "0b4b51bfaf32edc68eeb69e754383e29eb442479",
     "copper_line": null,
-    "golden_line": "9232d33337eb00dbc975e03b89038cc2b2e751d0",
+    "golden_line": "09235bb2f2e8c92ca65ae975d9cb9a6ca5139dde",
     "green_line": "70c7a41d7d98e2fb68c07230ddc79dd6ca5832f0",
     "iron_line": null,
-    "red_line": "d86ca57237bec27804849f57d95c17d253e97da3",
-    "silver_line": "ab481cf0a14db2ed9663a5db181483e82dd083cb",
+    "red_line": "c35fef2b2c420160a8f687ce2d2a1a18ac701ba0",
+    "silver_line": "b2947db59017feb7537c678f5ce931bb18c848cb",
     "violet_line": null,
-    "white_line": "656c7508300c3ed682bac9051daaca1609daa719"
+    "white_line": "b25650d187ee25a8836bcc79d5dc6fc921491319"
   },
   "vocabulary_census": {
     "canonical_members": 185,
