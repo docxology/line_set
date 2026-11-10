@@ -316,6 +316,19 @@ or a claim that a source SVG sibling exists. A physical compiled-surface check
 must independently bind those exact targets to genuine SVG sources and the
 compiled config.
 
+Generated part covers use the full text width, subject to the existing figure
+height cap; their native text must satisfy the same physical floor as other
+placements. The set cover derives its column budget from complete declared
+names, while longer labels still wrap without losing characters.
+
+When an external SDK consumes a compiled canonical manuscript tree, retain
+required non-Markdown evidence resources at their declared paths. For example,
+copy the genuine current `reading_record.json` from the preserved authored tree
+to `docs/manuscript/reading_record.json` and record byte correspondence. Do not
+replace compiled sections with authored sections or substitute an older reading
+to satisfy a source-path check. This resource retention is the rendering
+caller's responsibility, not additional namespace or evaluator authority.
+
 The physical-layout API is in `line_set.figures.legibility`:
 
 - `parse_embeds(manuscript_dir)` returns a tuple of `EmbedOccurrence` records,
@@ -329,6 +342,12 @@ The physical-layout API is in `line_set.figures.legibility`:
   image-destination-to-source-SVG map. A compiled caller includes every generated
   placement, including covers, and the actual compiled configuration. Missing
   source SVGs or an empty measurement surface are refused.
+
+The font inventory accepts explicit numeric `font-size` attributes in single or
+double quotes, with optional `px`, and numeric pixel declarations in CSS. It
+takes the smallest declaration conservatively; it does not evaluate the CSS
+cascade, inherited or relative sizes, font substitution, glyph bounds, or
+computed browser styles. A missing supported declaration remains a refusal.
 
 Bind each SVG to its actual native raster generation before measuring it;
 filename resemblance alone does not establish correspondence. The result is

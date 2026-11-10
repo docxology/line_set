@@ -26,6 +26,12 @@
   retaining source, line, exact destination, and width, including repeated and
   unlabeled placements. Keep standalone measurement separate from optional
   explicit-surface measurement with exact source-SVG mappings and carrier geometry.
+- Measure explicit numeric SVG font sizes with or without `px`, including
+  single-quoted attributes and pixel declarations in CSS. Take the smallest
+  declaration without claiming to implement the CSS cascade or measure PDF text.
+- Give every compiled native cover the full text width within the existing
+  figure height cap. Pack the set cover by complete declared names, retaining
+  lossless wrapping for longer labels instead of breaking ordinary color names.
 - Reflow complete dynamic labels and tokens, derive finite cover stroke spacing
   from available slots, and pack layouts without shrinking fonts or truncating
   identities. Figure output preflight rejects owned symlink destinations; exclusive
