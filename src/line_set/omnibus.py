@@ -1570,7 +1570,11 @@ def paper_cover_block(source_config: str) -> str | None:
             if line.rstrip() == "paper:":
                 in_paper = True
             continue
-        if not line or line[0] not in (" ", "\t"):
+        if not line.strip() or line.lstrip().startswith("#"):
+            if in_cover:
+                cover_lines.append(line)
+            continue
+        if line[0] not in (" ", "\t"):
             break
         if not in_cover:
             stripped = line.strip()

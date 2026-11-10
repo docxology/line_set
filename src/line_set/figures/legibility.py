@@ -45,11 +45,12 @@ informative. Those stay in ``TODO.md``.
 from __future__ import annotations
 
 import re
+import xml.etree.ElementTree as ET
 from collections.abc import Mapping
 from dataclasses import dataclass
 from pathlib import Path
 
-from .._markdown_spans import prose_spans
+from .._markdown_spans import mask_literals
 
 #: TeX points per inch. The ``geometry`` package and LaTeX font sizes agree on
 #: this unit, so no conversion is needed anywhere downstream.
@@ -75,17 +76,23 @@ MIN_LEGIBLE_PT = 6.0
 #: editing it.
 DEFAULT_FIGURE_HEIGHT_FRACTION = 0.50
 
-_GEOMETRY_RE = re.compile(r'geometry:\s*"([^"]+)"')
+_GEOMETRY_RE = re.compile(r'^[ \t]*geometry:\s*"([^"]+)"', re.MULTILINE)
 _GEOMETRY_KEY_RE = re.compile(r"(left|right|top|bottom)\s*=\s*([0-9.]+)in")
 _HEIGHT_FRACTION_RE = re.compile(
-    r"^\s{2,}figure_height_fraction:\s*([0-9.]+)\s*$", re.MULTILINE
+    r"^[ \t]{2,}figure_height_fraction:[ \t]*([0-9.]+)(?:[ \t]+#[^\r\n]*)?[ \t]*\r?$",
+    re.MULTILINE,
 )
 _EMBED_RE = re.compile(r"!\[[^\]]*\]\(([^)]+)\)(?:[ \t]*\{([^}]*)\})?", re.DOTALL)
 _LABEL_ATTR_RE = re.compile(r"#(fig:[A-Za-z0-9][A-Za-z0-9_.-]*)")
 _WIDTH_ATTR_RE = re.compile(r"width=([0-9.]+)%")
-_FONT_SIZE_RE = re.compile(r"""font-size\s*=\s*["']([0-9.]+)(?:px)?["']""")
-_CSS_FONT_SIZE_RE = re.compile(r"""font-size\s*:\s*([0-9.]+)px(?=$|[;}\s"'])""")
-_SVG_SIZE_RE = re.compile(r'<svg[^>]*?width="([0-9.]+)"[^>]*?height="([0-9.]+)"')
+_FONT_SIZE_RE = re.compile(r"([0-9.]+)(?:px)?")
+_CSS_FONT_SIZE_RE = re.compile(
+    r"(?:^|[;{])\s*font-size\s*:\s*([0-9.]+)px(?=\s*(?:[;}]|$))"
+)
+_CSS_LITERALS_RE = re.compile(
+    r"""/\*.*?\*/|"(?:\\.|[^"\\])*"|'(?:\\.|[^'\\])*'""", re.DOTALL
+)
+_SVG_NUMBER_RE = re.compile(r"[0-9.]+")
 
 
 @dataclass(frozen=True)
@@ -204,18 +211,14 @@ def parse_embeds(manuscript_dir: Path) -> tuple[EmbedOccurrence, ...]:
 def parse_embed_text(markdown: str, *, source: str) -> tuple[EmbedOccurrence, ...]:
     """Parse active image placements with original source line diagnostics."""
     embeds = []
-    spans = prose_spans(markdown)
-    for match in _EMBED_RE.finditer(markdown):
-        # Inline code in an image's alt text is legitimate. Its opening image
-        # syntax and destination/attributes must be active, not the whole alt.
-        destination = markdown.index("](", match.start(), match.end())
-        if not all(
-            any(start <= offset < end for start, end in spans)
-            for offset in (match.start(), destination, match.end() - 1)
-        ):
-            continue
-        image_path, attributes = match.groups()
-        attributes = attributes or ""
+    masked = mask_literals(markdown)
+    for match in _EMBED_RE.finditer(masked):
+        # Caption code is blanked before delimiter recognition; returned paths
+        # and attributes still come from the exact authored source offsets.
+        image_path = markdown[slice(*match.span(1))]
+        attributes = (
+            "" if match.group(2) is None else markdown[slice(*match.span(2))]
+        )
         label_match = _LABEL_ATTR_RE.search(attributes)
         label = "" if label_match is None else label_match.group(1)
         width = _WIDTH_ATTR_RE.search(attributes)
@@ -229,6 +232,26 @@ def parse_embed_text(markdown: str, *, source: str) -> tuple[EmbedOccurrence, ..
             )
         )
     return tuple(embeds)
+
+
+def _declared_font_sizes(root: ET.Element) -> list[float]:
+    """Inventory real XML attributes and literal CSS declarations only."""
+    sizes: list[float] = []
+    for element in root.iter():
+        attribute = element.get("font-size")
+        if attribute is not None:
+            match = _FONT_SIZE_RE.fullmatch(attribute.strip())
+            if match is not None:
+                sizes.append(float(match.group(1)))
+        css_sources = []
+        if element.get("style"):
+            css_sources.append(element.get("style", ""))
+        if element.tag.rsplit("}", 1)[-1] == "style":
+            css_sources.append("".join(element.itertext()))
+        for css in css_sources:
+            active = _CSS_LITERALS_RE.sub(lambda match: " " * len(match.group()), css)
+            sizes.extend(float(value) for value in _CSS_FONT_SIZE_RE.findall(active))
+    return sizes
 
 
 def measure_plate(
@@ -250,16 +273,17 @@ def measure_plate(
     font measurement. Actual SVG/raster ownership and visual review stay separate.
     """
     body = svg_path.read_text(encoding="utf-8")
-    size_match = _SVG_SIZE_RE.search(body)
-    if size_match is None:
-        raise ValueError(f"{svg_path} declares no canvas width and height")
-    canvas_width = float(size_match.group(1))
-    canvas_height = float(size_match.group(2))
-    sizes = [
-        float(value)
-        for pattern in (_FONT_SIZE_RE, _CSS_FONT_SIZE_RE)
-        for value in pattern.findall(body)
-    ]
+    try:
+        root = ET.fromstring(body)
+    except ET.ParseError as error:
+        raise ValueError(f"{svg_path} is not a well-formed SVG document") from error
+    dimensions = (root.get("width", ""), root.get("height", ""))
+    if root.tag.rsplit("}", 1)[-1] != "svg" or not all(
+        _SVG_NUMBER_RE.fullmatch(value) for value in dimensions
+    ):
+        raise ValueError(f"{svg_path} declares no numeric canvas width and height")
+    canvas_width, canvas_height = (float(value) for value in dimensions)
+    sizes = _declared_font_sizes(root)
     if not sizes:
         raise ValueError(
             f"{svg_path} declares no supported explicit font size, so its "

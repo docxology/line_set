@@ -140,3 +140,15 @@ def prose_spans(markdown: str) -> tuple[tuple[int, int], ...]:
     if cursor < len(markdown):
         active.append((cursor, len(markdown)))
     return tuple(active)
+
+
+def mask_literals(markdown: str) -> str:
+    """Blank literal contents while retaining every source offset and newline."""
+    pieces: list[str] = []
+    cursor = 0
+    for start, end in prose_spans(markdown):
+        pieces.append(re.sub(r"[^\n]", " ", markdown[cursor:start]))
+        pieces.append(markdown[start:end])
+        cursor = end
+    pieces.append(re.sub(r"[^\n]", " ", markdown[cursor:]))
+    return "".join(pieces)

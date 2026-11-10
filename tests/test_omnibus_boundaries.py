@@ -634,3 +634,32 @@ def test_multiline_literal_reference_placeholder_is_not_removed(tmp_path: Path) 
     assert (report.written / section).read_text(
         encoding="utf-8"
     ) == "## A\n\n" + literal
+
+
+@pytest.mark.parametrize(
+    "separator", ["\n", "# Cover metadata\n", "  # Cover metadata\n"]
+)
+@pytest.mark.parametrize("write", [False, True])
+def test_yaml_spacing_and_comments_do_not_erase_a_configured_png_cover(
+    tmp_path: Path, separator: str, write: bool
+) -> None:
+    base = tmp_path / "works"
+    carrier = _cover_paper(base)
+    config = carrier / "manuscript" / "config.yaml"
+    config.write_text(
+        "paper:\n  title: 'Carrier'\n  version: '1.0'\n"
+        + separator
+        + "  cover:\n\n    image: 'cover.png'\n\n    alt: 'Original cover'\n",
+        encoding="utf-8",
+    )
+    report = _assemble(tmp_path / "out", base, write=write)
+    assert dict(report.image_sources) == {
+        "../figures/carrier-cover-cover.png": carrier / "manuscript" / "cover.png"
+    }
+    if write:
+        assert (
+            report.written / "../figures/carrier-cover-cover.png"
+        ).read_bytes() == PNG_BYTES
+        assert "Original cover" in (
+            report.written / "config.yaml"
+        ).read_text(encoding="utf-8")

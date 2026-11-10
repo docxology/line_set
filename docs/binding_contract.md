@@ -33,13 +33,18 @@ bounded diagnostic text and exception type. Cancellation and process-control
 exceptions propagate. `Discovery` separately records capability, attempt,
 completion, retained candidate names and resolution outcomes. Partial enumeration
 preserves yielded names and never becomes a completed empty scan.
+Formatting a failure message is also an ordinary failure boundary: if an
+exception's text conversion fails, the diagnostic retains its original type
+with a bounded unavailable-message marker. Process-control failures during
+formatting still propagate.
 Injected resolvers use the same nested model field admission as replay:
 `BindingProvenance` fields, the diagnostics tuple and each `Diagnostic` field
 must have their declared types, and a supplied source revision must use the full
-lowercase hexadecimal commit grammar. Malformed resolver metadata becomes
-`IMPORT_FAILED` with a bounded resolve diagnostic, not a successful observation
-that fails later during serialization. This admits structure, not the truth of
-injected provenance. Imports still execute package code and are not a sandbox;
+lowercase hexadecimal commit grammar. Module-origin enrichment is admitted
+again before it can enter a successful observation. Malformed resolver metadata
+becomes `IMPORT_FAILED` with a bounded resolve diagnostic, not a successful
+observation that fails later during serialization. This admits structure, not
+the truth of injected provenance. Imports still execute package code and are not a sandbox;
 the wrapper does not invoke native evaluators.
 The real import resolver retains names yielded by a finder before it raises,
 then resolves those candidates while recording incomplete enumeration.

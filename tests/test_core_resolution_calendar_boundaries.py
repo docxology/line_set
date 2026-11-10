@@ -219,3 +219,51 @@ def test_malformed_discovered_resolution_records_failure_without_undeclared_clai
     assert outcome.diagnostics[0].exception_type == "ValueError"
     assert reading_from_canonical(canonical_reading(reading)) == reading
     reading_digest(reading)
+
+
+def test_module_origin_enrichment_is_admitted_before_observation(
+    imported_resolution,
+) -> None:
+    entry, original = imported_resolution
+    original.module.__file__ = 7
+    supplied = replace(
+        original, provenance=replace(original.provenance, module_origin=None)
+    )
+    reading = read_set(
+        (entry,), (), resolver=lambda name: supplied, as_of="2026-11-10"
+    )
+    observation = reading.observations[0]
+    assert observation.code is ReadCode.IMPORT_FAILED
+    assert observation.provenance.module_origin is None
+    assert observation.diagnostics[0].phase == "resolve"
+    assert reading_from_canonical(canonical_reading(reading)) == reading
+
+
+def test_unprintable_resolver_failure_retains_original_exception_identity() -> None:
+    class BrokenMessage(Exception):
+        def __str__(self):
+            raise RuntimeError("formatting failed")
+
+    def resolver(name):
+        raise BrokenMessage()
+
+    reading = read_set(
+        LINE_SET[:1], (), resolver=resolver, as_of="2026-11-10"
+    )
+    observation = reading.observations[0]
+    assert observation.code is ReadCode.IMPORT_FAILED
+    assert observation.diagnostics[0].exception_type == "BrokenMessage"
+    assert len(observation.diagnostics[0].detail) <= 500
+    assert reading_from_canonical(canonical_reading(reading)) == reading
+
+
+def test_process_control_during_failure_formatting_still_propagates() -> None:
+    class InterruptedMessage(Exception):
+        def __str__(self):
+            raise KeyboardInterrupt()
+
+    def resolver(name):
+        raise InterruptedMessage()
+
+    with pytest.raises(KeyboardInterrupt):
+        read_set(LINE_SET[:1], (), resolver=resolver, as_of="2026-11-10")

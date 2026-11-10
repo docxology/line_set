@@ -10,6 +10,9 @@
   resolution. Contain malformed injected provenance, revisions, and diagnostics
   as serializable `IMPORT_FAILED` readings while retaining valid import custody.
   Reject `datetime` at the calendar-only reader boundary rather than truncating it.
+- Admit module-origin enrichment before returning an observation, and retain the
+  original failure type when exception-message formatting itself fails.
+  Preserve well-typed caller-supplied diagnostics exactly.
 - Make assembly collection, rewrites, reference checks, and placeholder handling
   literal-aware across inline code, fences, indented blocks, and list contexts.
   Retarget image destinations without rewriting identical caption text.
@@ -33,6 +36,11 @@
 - Measure explicit numeric SVG font sizes with or without `px`, including
   single-quoted attributes and pixel declarations in CSS. Take the smallest
   declaration without claiming to implement the CSS cascade or measure PDF text.
+- Measure caption-code bracket placements instead of silently omitting them.
+  Read actual SVG/CSS font declarations rather than comments or text, and honor
+  supported configuration comments without substituting a different height cap.
+- Preserve configured PNG covers across blank lines and comments in paper
+  metadata, including their source mapping and alternative text.
 - Give every compiled native cover the full text width within the existing
   figure height cap. Pack the set cover by complete declared names, retaining
   lossless wrapping for longer labels instead of breaking ordinary color names.

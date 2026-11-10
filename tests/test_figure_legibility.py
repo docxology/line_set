@@ -428,3 +428,97 @@ def test_actual_alt_text_code_and_distinct_paths_with_one_basename_are_measured(
     assert first.label == "fig:First_label"
     assert other.label == ""
     assert other.min_font_units == 2 * first.min_font_units
+
+
+def test_literal_bracket_caption_cannot_hide_an_illegible_repeated_placement(
+    tmp_path: Path,
+) -> None:
+    _plant(tmp_path, small=18, width=1600, height=1000, fraction=0.92, embed_width="")
+    (tmp_path / "manuscript" / "01_body.md").write_text(
+        "![Wide](../output/figures/planted.png){#fig:wide width=100%}\n"
+        "![Use `a[b]`](../output/figures/planted.png){#fig:narrow width=10%}\n",
+        encoding="utf-8",
+    )
+    measured = measure_project(tmp_path)
+    assert [(item.label, item.source_line) for item in measured] == [
+        ("fig:wide", 1),
+        ("fig:narrow", 2),
+    ]
+    assert [item.label for item in illegible(measured)] == ["fig:narrow"]
+
+
+def test_commented_height_cap_cannot_turn_a_floor_failure_into_a_pass(
+    tmp_path: Path,
+) -> None:
+    _plant(tmp_path, small=18, width=1600, height=1000, fraction=0.25, embed_width="")
+    config = tmp_path / "manuscript" / "config.yaml"
+    config.write_text(
+        _CONFIG.format(fraction=0.25).replace(
+            "figure_height_fraction: 0.25",
+            "figure_height_fraction: 0.25 # deliberate cap",
+        ),
+        encoding="utf-8",
+    )
+    (measured,) = measure_project(tmp_path)
+    assert measured.height_bound
+    assert measured.rendered_min_pt < MIN_LEGIBLE_PT
+    assert not measured.legible
+
+
+def test_commented_geometry_is_not_a_declared_margin() -> None:
+    config = (
+        '# geometry: "left=0in,right=0in,top=0in,bottom=0in"\n'
+        'metadata:\n  geometry: "left=1in,right=1in,top=1in,bottom=1in"\n'
+    )
+    geometry = parse_page_geometry(config)
+    assert geometry.text_width_pt == pytest.approx(6.5 * 72.27)
+    assert geometry.text_height_pt == pytest.approx(9.0 * 72.27)
+
+
+@pytest.mark.parametrize(
+    "extra",
+    [
+        '<!-- font-size="1px" -->',
+        '<text data-font-size="1px">font-size: 1px example</text>',
+        '<style>/* font-size: 1px; */ text { font-size: 18px; }</style>',
+        '<text style=\'content: ";font-size: 1px;";font-size: 18px;\'>Text</text>',
+    ],
+)
+def test_only_actual_svg_font_declarations_enter_the_inventory(
+    tmp_path: Path, extra: str
+) -> None:
+    path = tmp_path / "plate.svg"
+    path.write_text(
+        '<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="1000">'
+        + extra
+        + '<text font-size="18px">Readable</text></svg>',
+        encoding="utf-8",
+    )
+    measured = measure_plate(
+        path, "fig:p", "p.png", 1.0, PageGeometry(560.0, 720.0), 0.92
+    )
+    assert measured.min_font_units == 18
+    assert measured.legible
+
+
+def test_comment_only_font_mentions_are_missing_measurement_not_a_pass(
+    tmp_path: Path,
+) -> None:
+    path = tmp_path / "plate.svg"
+    path.write_text(
+        '<svg width="1600" height="1000"><!-- font-size="18px" -->'
+        "<text>No declared size</text></svg>",
+        encoding="utf-8",
+    )
+    with pytest.raises(ValueError):
+        measure_plate(path, "fig:p", "p.png", 1.0, PageGeometry(560.0, 720.0), 0.92)
+
+
+def test_malformed_svg_is_not_a_supported_measurement(tmp_path: Path) -> None:
+    path = tmp_path / "plate.svg"
+    path.write_text(
+        '<svg width="1600" height="1000"><text font-size="18px"></svg>',
+        encoding="utf-8",
+    )
+    with pytest.raises(ValueError):
+        measure_plate(path, "fig:p", "p.png", 1.0, PageGeometry(560.0, 720.0), 0.92)

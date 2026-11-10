@@ -375,7 +375,11 @@ def read_vocabulary(module: ModuleType) -> Vocabulary:
 
 
 def diagnostic(phase: str, error: Exception) -> Diagnostic:
-    return Diagnostic(phase, type(error).__name__, str(error)[:500])
+    try:
+        detail = str(error)
+    except Exception:
+        detail = "exception message unavailable"
+    return Diagnostic(phase, type(error).__name__, detail[:500])
 
 
 def valid_source_revision(value: object) -> bool:
@@ -426,6 +430,7 @@ def resolve_package(resolver: PackageResolver, name: str) -> Resolution:
                 module_origin=provenance.module_origin
                 or vars(result.module).get("__file__"),
             )
+        admit_record_field(provenance, BindingProvenance, "resolution.provenance")
         diagnostics = result.diagnostics
         if result.code is ReadCode.IMPORT_FAILED and not diagnostics:
             diagnostics = (Diagnostic("resolve", "ImportFailure", result.detail[:500]),)

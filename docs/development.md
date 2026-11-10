@@ -315,6 +315,9 @@ in the compiled embeds. This is source-file ownership, not renderer provenance
 or a claim that a source SVG sibling exists. A physical compiled-surface check
 must independently bind those exact targets to genuine SVG sources and the
 compiled config.
+Blank lines and standalone comments inside supported `paper` metadata do not
+erase a configured cover; its image and alternative text remain in the copied
+cover block and source inventory.
 
 Generated part covers use the full text width, subject to the existing figure
 height cap; their native text must satisfy the same physical floor as other
@@ -335,6 +338,8 @@ The physical-layout API is in `line_set.figures.legibility`:
   not a dictionary keyed by basename. Every repeated active placement retains
   its exact destination, label, width, source file, and original line number.
   `parse_embed_text(markdown, source=...)` accepts an explicit text surface.
+  Inline code in a caption, including bracket text, does not hide an actual
+  placement or change its original destination or line.
 - `measure_project(project_root)` measures only standalone authored placements;
   it never treats an `output/manuscript` tree as a qualified compiled volume.
 - `measure_surface(occurrences, config_text=..., svg_sources=..., surface=...)`
@@ -348,6 +353,10 @@ double quotes, with optional `px`, and numeric pixel declarations in CSS. It
 takes the smallest declaration conservatively; it does not evaluate the CSS
 cascade, inherited or relative sizes, font substitution, glyph bounds, or
 computed browser styles. A missing supported declaration remains a refusal.
+Only real XML attributes and CSS-bearing style attributes/elements contribute
+declarations. XML/CSS comments, quoted CSS strings, ordinary text and similarly
+named data attributes do not. Supported geometry and height scalars honor
+ordinary YAML trailing comments; commented-out keys are not declarations.
 
 Bind each SVG to its actual native raster generation before measuring it;
 filename resemblance alone does not establish correspondence. The result is
