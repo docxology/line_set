@@ -700,7 +700,7 @@
           "requested_package": "red_line",
           "resolved_package": "red_line",
           "resolver_policy": "pinned-source-snapshot",
-          "source_revision": "c35fef2b2c420160a8f687ce2d2a1a18ac701ba0"
+          "source_revision": "3815ebef2f100d8ec51f0297fe400e3659d38930"
         },
         "registry_digest": "72835fd81d1f7ecf70f47b1e0061cd56c385273dd846879ab639225913f5aad7",
         "registry_size": 7,
@@ -874,7 +874,7 @@
     "status": "set_legible",
     "undeclared_lines": []
   },
-  "reading_digest": "9b5f9970152790ce97b58701b314e47cea2ba7d5d6c20b62b7e5fbb00ba0b17a",
+  "reading_digest": "5f12333b6ac015f232d039971f4d5d3ce6954173647039a627549f9246752e06",
   "recorded_on": "2026-11-10",
   "resolver_mode": "sibling_path_resolver",
   "schema_version": "2.0-public",
@@ -887,7 +887,7 @@
     "golden_line": "09235bb2f2e8c92ca65ae975d9cb9a6ca5139dde",
     "green_line": "70c7a41d7d98e2fb68c07230ddc79dd6ca5832f0",
     "iron_line": null,
-    "red_line": "c35fef2b2c420160a8f687ce2d2a1a18ac701ba0",
+    "red_line": "3815ebef2f100d8ec51f0297fe400e3659d38930",
     "silver_line": "b2947db59017feb7537c678f5ce931bb18c848cb",
     "violet_line": null,
     "white_line": "b25650d187ee25a8836bcc79d5dc6fc921491319"
