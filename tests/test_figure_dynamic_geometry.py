@@ -11,7 +11,12 @@ import pytest
 from line_set import LINE_SET, ReadCode, SetStatus, read_set
 from line_set.figures import build_figures
 from line_set.binding import Resolution
-from line_set.figures.canvas import MIN_TEXT_UNITS, exact_lines, wrap_to_width
+from line_set.figures.canvas import (
+    MIN_TEXT_UNITS,
+    exact_lines,
+    text_block,
+    wrap_to_width,
+)
 from line_set.figures.plates.application import self_application
 from line_set.figures.plates.cover import cover_svg
 from line_set.figures.plates.declaration import set_compass, two_orders
@@ -32,6 +37,26 @@ def test_exact_fragments_preserve_long_identity_without_smaller_fonts() -> None:
     authored = value + "_identity  tail"
     assert "".join(exact_lines(authored, 240, 24)) == authored
     assert exact_lines("golden_line", 240, 24) == ["golden_line"]
+
+
+@pytest.mark.parametrize("value", ["&" * 16, "?&&&&&&~&&&&&&!&&&&"])
+def test_wide_punctuation_labels_fit_native_rendered_card(
+    tmp_path: Path, value: str
+) -> None:
+    parts, _ = text_block(20, 40, value, 240, 24, weight="700")
+    source = tmp_path / "wide-punctuation.svg"
+    source.write_text(
+        '<svg xmlns="http://www.w3.org/2000/svg" '
+        'viewBox="0 0 280 180" width="280" height="180">'
+        '<rect x="20" y="0" width="240" height="180" fill="none"/>'
+        + "".join(parts)
+        + "</svg>"
+    )
+    root = ET.parse(source).getroot()
+    assert "".join(node.text or "" for node in root.iter(SVG + "text")) == value
+    scratch = tmp_path / "measured"
+    scratch.mkdir()
+    assert not _layout_problems(source, scratch)
 
 
 @pytest.mark.parametrize("count", [12, 13, 37])

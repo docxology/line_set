@@ -324,7 +324,7 @@ def _estimated_em(value: str) -> float:
         1.2
         if not char.isascii()
         else 1.0
-        if char in "WMwm@%"
+        if char in "WMwm@%&"
         else 0.8
         if char.isupper()
         else 0.65

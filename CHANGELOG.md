@@ -5,6 +5,9 @@
 - Use the existing conservative glyph-width budget for lossless SVG text
   fragments, preserving authored spacing and keeping complete identifiers
   and words together when they fit without shrinking the fixed font size.
+- Budget wide ampersands conservatively so complete scalar labels stay within
+  fixed-width cards at the authored font size; measure native rendered ink in
+  the repeated and mixed-punctuation regression cases.
 - Refresh current namespace pins against actual publishable producer commits with
   privacy-safe attribution. Produce a distinct native reading when provenance
   changes, preserve the unchanged census, and retain earlier candidate and
