@@ -362,17 +362,24 @@ def wrap_to_width(value: str, width: float, size: int) -> list[str]:
 
 
 def exact_lines(value: str, width: float, size: int) -> list[str]:
-    """Lossless fragments, preferring whitespace at a one-em width budget.
+    """Lossless fragments using the prose's conservative glyph-width budget.
 
     Concatenation recovers the exact value, including authored whitespace.
     An overlong unspaced value still splits without shrinking or abbreviation.
     Native font/layout qualification is still required.
     """
-    budget = max(1, int(width / size))
+    budget = max(1.0, width / size)
     rows: list[str] = []
     start = 0
     while start < len(value):
-        end = min(start + budget, len(value))
+        end = start
+        used = 0.0
+        while end < len(value):
+            advance = _estimated_em(value[end])
+            if end > start and used + advance > budget:
+                break
+            used += advance
+            end += 1
         if end < len(value) and not value[end].isspace():
             boundary = next(
                 (

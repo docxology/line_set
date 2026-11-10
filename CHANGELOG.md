@@ -2,6 +2,9 @@
 
 ## 0.8.0 (2026-11-09)
 
+- Use the existing conservative glyph-width budget for lossless SVG text
+  fragments, preserving authored spacing and keeping complete identifiers
+  and words together when they fit without shrinking the fixed font size.
 - Refresh current namespace pins against actual publishable producer commits with
   privacy-safe attribution. Produce a distinct native reading when provenance
   changes, preserve the unchanged census, and retain earlier candidate and

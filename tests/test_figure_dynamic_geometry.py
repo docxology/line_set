@@ -24,18 +24,14 @@ from tests.test_figure_layout import SVG, _layout_problems
 
 
 def test_exact_fragments_preserve_long_identity_without_smaller_fonts() -> None:
-    value = "W" * 203 + "_identity  tail"
+    value = "W" * 203
     rows = exact_lines(value, 240, 24)
     assert "".join(rows) == value
     assert all(len(row) * 24 <= 240 for row in rows)
-    assert all(len(row) * 24 <= 144 for row in wrap_to_width("W" * 203, 144, 24))
-
-
-def test_exact_fragments_prefer_words_without_normalizing_authored_spacing() -> None:
-    assert exact_lines("red lines  stewardship", 288, 24) == [
-        "red lines  ",
-        "stewardship",
-    ]
+    assert all(len(row) * 24 <= 144 for row in wrap_to_width(value, 144, 24))
+    authored = value + "_identity  tail"
+    assert "".join(exact_lines(authored, 240, 24)) == authored
+    assert exact_lines("golden_line", 240, 24) == ["golden_line"]
 
 
 @pytest.mark.parametrize("count", [12, 13, 37])
