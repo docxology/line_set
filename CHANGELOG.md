@@ -2,6 +2,10 @@
 
 ## 0.8.0 (2026-11-09)
 
+- Refresh current namespace pins against actual publishable producer commits with
+  privacy-safe attribution. Produce a distinct native reading when provenance
+  changes, preserve the unchanged census, and retain earlier candidate and
+  historical records rather than relabeling their identities.
 - Share recursive nested-field admission between serialization and package
   resolution. Contain malformed injected provenance, revisions, and diagnostics
   as serializable `IMPORT_FAILED` readings while retaining valid import custody.
