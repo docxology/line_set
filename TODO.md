@@ -172,3 +172,7 @@ These are not represented anywhere as hidden features:
   `src/line_set/` (`__init__`, `version`, `models`, `registry`, `binding`,
   `reader`, `invariants`, `serialization`) with the package contract in
   `src/line_set/AGENTS.md` and `src/line_set/README.md`.
+
+## Workflowz review — 2026-11-10
+
+Coverage note: this read-only review found no concrete, evidence-backed improvement in the bounded packet. It covered project guidance, README, the existing TODO, packaging/runtime declarations, and the supplied excerpts from reader/binding/admission/invariants/models/recording/serialization/omnibus/version and figure code. It did not establish full-repository coverage: the packet reports 4 project files read, excerpts from 15 source files (11 marker excerpts), 62 source candidates, and 159 total files; tests, CI, uv.lock, complete modules, and generated outputs were not supplied for inspection. Re-review on a concrete failure or source change.
