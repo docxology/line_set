@@ -763,7 +763,7 @@
           "requested_package": "silver_line",
           "resolved_package": "silver_line",
           "resolver_policy": "pinned-source-snapshot",
-          "source_revision": "d8b51d70ed44855399563063c40ab06095f8f8bb"
+          "source_revision": "cf55baf6fa0866966189f54dffe6c0d224a98970"
         },
         "registry_digest": "ce808709c7db5a60a7e6b06dac30d1a1326dff3c1973b44b5d36dd28a1e15c31",
         "registry_size": 11,
@@ -874,7 +874,7 @@
     "status": "set_legible",
     "undeclared_lines": []
   },
-  "reading_digest": "230205f0861b74aea9eab959aa5719359d909120f20bdf63d021aa658548c51a",
+  "reading_digest": "c5b88c6b8aff271bff4f6b4d9c57f6eb1e0a8a97ab7a9e0e68817c8c52cc05f9",
   "recorded_on": "2026-11-10",
   "resolver_mode": "sibling_path_resolver",
   "schema_version": "2.0-public",
@@ -888,7 +888,7 @@
     "green_line": "70c7a41d7d98e2fb68c07230ddc79dd6ca5832f0",
     "iron_line": null,
     "red_line": "415c0fb377dfd2c3513080786be8119d86be9f10",
-    "silver_line": "d8b51d70ed44855399563063c40ab06095f8f8bb",
+    "silver_line": "cf55baf6fa0866966189f54dffe6c0d224a98970",
     "violet_line": null,
     "white_line": "3e803f182d6e42631891f52c064e06cdbedb20b5"
   },
