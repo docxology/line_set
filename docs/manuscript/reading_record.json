@@ -763,7 +763,7 @@
           "requested_package": "silver_line",
           "resolved_package": "silver_line",
           "resolver_policy": "pinned-source-snapshot",
-          "source_revision": "cf55baf6fa0866966189f54dffe6c0d224a98970"
+          "source_revision": "a23a0e8d2a6ffbaf67489006d228cb9a0c0750bf"
         },
         "registry_digest": "ce808709c7db5a60a7e6b06dac30d1a1326dff3c1973b44b5d36dd28a1e15c31",
         "registry_size": 11,
@@ -835,7 +835,7 @@
           "requested_package": "white_line",
           "resolved_package": "white_line",
           "resolver_policy": "pinned-source-snapshot",
-          "source_revision": "3e803f182d6e42631891f52c064e06cdbedb20b5"
+          "source_revision": "13057c5a3727fced525252a43753e77d2dbcdb74"
         },
         "registry_digest": "11047a641a8e80c985f2bbd8a45b67a0e67048b235020aa52aa46da1cc02682a",
         "registry_size": 11,
@@ -868,14 +868,14 @@
         "version": "0.9.2"
       }
     ],
-    "read_as_of": "2026-11-10",
+    "read_as_of": "2026-11-11",
     "schema_version": "line-set-reading/2",
     "set_digest": "73b407e1fe8a84c03412453cd1bab6e89f78530e55011728f628dca4d90446f9",
     "status": "set_legible",
     "undeclared_lines": []
   },
-  "reading_digest": "c5b88c6b8aff271bff4f6b4d9c57f6eb1e0a8a97ab7a9e0e68817c8c52cc05f9",
-  "recorded_on": "2026-11-10",
+  "reading_digest": "b42f737034549ee6fdf326ca9ca124e44a02878aad806b6dad994d8ffc06727d",
+  "recorded_on": "2026-11-11",
   "resolver_mode": "sibling_path_resolver",
   "schema_version": "2.0-public",
   "set_digest": "73b407e1fe8a84c03412453cd1bab6e89f78530e55011728f628dca4d90446f9",
@@ -888,9 +888,9 @@
     "green_line": "70c7a41d7d98e2fb68c07230ddc79dd6ca5832f0",
     "iron_line": null,
     "red_line": "415c0fb377dfd2c3513080786be8119d86be9f10",
-    "silver_line": "cf55baf6fa0866966189f54dffe6c0d224a98970",
+    "silver_line": "a23a0e8d2a6ffbaf67489006d228cb9a0c0750bf",
     "violet_line": null,
-    "white_line": "3e803f182d6e42631891f52c064e06cdbedb20b5"
+    "white_line": "13057c5a3727fced525252a43753e77d2dbcdb74"
   },
   "vocabulary_census": {
     "canonical_members": 185,
