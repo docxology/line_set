@@ -28,7 +28,8 @@ from ..canvas import (
     plural,
     rect,
     text,
-    wrap,
+    exact_lines,
+    text_block,
     wrap_to_width,
     escape_text,
 )
@@ -69,7 +70,6 @@ EXEMPT_LABEL = "EXEMPT — declared meanings"
 COLLISION_LABEL = "COLLISION — no matching exemption"
 
 _TOKEN_LABEL_SIZE = 24
-_GLOSS_WRAP = 30
 
 _CONTENT_WIDTH = CONTENT_RIGHT - MARGIN
 _TOP = 300
@@ -100,40 +100,58 @@ def _legend(
     carried: dict[str, frozenset[str]],
     codes: dict[str, ReadCode],
     top: int,
+    width: int,
 ) -> tuple[list[str], int]:
-    columns = max(1, min(len(entries), int(_CONTENT_WIDTH / 300)))
+    columns = max(1, min(len(entries), int(width / 300)))
     gap = 12
-    chip_w = (_CONTENT_WIDTH - gap * (columns - 1)) / columns
+    chip_w = (width - gap * (columns - 1)) / columns
     parts: list[str] = []
-    for index, entry in enumerate(entries):
-        x = MARGIN + (index % columns) * (chip_w + gap)
-        y = top + (index // columns) * 68
-        ink = line_ink(entry.color)
-        code = codes.get(entry.id)
-        tokens = carried.get(entry.id, frozenset())
-        parts.append(rect(x, y, chip_w, 60, CARD, ink, 2, rx=6))
-        parts.append(
-            glyph(
-                shape_for(entry.working_position),
-                x + 24,
-                y + 21,
-                12,
-                line_fill(entry.color),
-                ink,
-                2,
+    cursor = top
+    for start in range(0, len(entries), columns):
+        group = entries[start : start + columns]
+        chips = []
+        for entry in group:
+            code = codes.get(entry.id)
+            tokens = carried.get(entry.id, frozenset())
+            title = f"{entry.working_position} {entry.id}"
+            detail = (
+                f"{plural(len(tokens), 'token')} · {code.value if code else 'observed'}"
+                if tokens
+                else f"not read · {code.value if code else 'not observed'}"
             )
+            chips.append((entry, title, detail))
+        row_height = max(
+            20
+            + 28
+            * (
+                len(exact_lines(title, chip_w - 60, 24))
+                + len(exact_lines(detail, chip_w - 60, 24))
+            )
+            for _, title, detail in chips
         )
-        parts.append(
-            text(x + 46, y + 28, f"{entry.working_position} {entry.id}", 24, ink, "700")
-        )
-        detail = (
-            f"{plural(len(tokens), 'token')} · {code.value if code else 'observed'}"
-            if tokens
-            else f"not read · {code.value if code else 'not observed'}"
-        )
-        parts.append(text(x + 14, y + 52, detail, 24, MUTED))
-    rows = (len(entries) + columns - 1) // columns
-    return parts, top + rows * 68
+        for index, (entry, title, detail) in enumerate(chips):
+            x = MARGIN + index * (chip_w + gap)
+            ink = line_ink(entry.color)
+            parts.append(rect(x, cursor, chip_w, row_height, CARD, ink, 2, rx=6))
+            parts.append(
+                glyph(
+                    shape_for(entry.working_position),
+                    x + 24,
+                    cursor + 21,
+                    12,
+                    line_fill(entry.color),
+                    ink,
+                    2,
+                )
+            )
+            drawn, next_y = text_block(
+                x + 46, cursor + 28, title, chip_w - 60, 24, ink, "700"
+            )
+            parts.extend(drawn)
+            drawn, _ = text_block(x + 46, next_y, detail, chip_w - 60, 24, MUTED)
+            parts.extend(drawn)
+        cursor += row_height + gap
+    return parts, cursor
 
 
 def _empty_matrix(
@@ -147,8 +165,7 @@ def _empty_matrix(
     that had fewer than two vocabularies to compare established nothing, and
     this plate says that in the place where the grid would have been.
     """
-    height = _TOP + 132 + 46 * len(entries) + 110
-    parts = open_canvas(1600, height)
+    parts: list[str] = []
     parts += header(
         "THE VOCABULARY MATRIX",
         "Nothing could be compared",
@@ -183,7 +200,11 @@ def _empty_matrix(
     for entry in entries:
         code = codes.get(entry.id)
         ink = READ_CODE_INK[code] if code is not None else MUTED
-        parts.append(rect(MARGIN, cursor, _CONTENT_WIDTH, 38, CARD, RULE, 1.5, rx=6))
+        name_rows = exact_lines(entry.color, 124, 24)
+        row_height = max(38, 10 + 28 * len(name_rows))
+        parts.append(
+            rect(MARGIN, cursor, _CONTENT_WIDTH, row_height, CARD, RULE, 1.5, rx=6)
+        )
         parts.append(
             glyph(
                 shape_for(entry.working_position),
@@ -195,7 +216,10 @@ def _empty_matrix(
                 2,
             )
         )
-        parts.append(text(MARGIN + 52, cursor + 25, entry.color, 24, INK, "700"))
+        drawn, _ = text_block(
+            MARGIN + 52, cursor + 25, entry.color, 124, 24, INK, "700"
+        )
+        parts.extend(drawn)
         parts.append(
             text(
                 MARGIN + 200,
@@ -215,7 +239,7 @@ def _empty_matrix(
                 MUTED,
             )
         )
-        cursor += 46
+        cursor += row_height + 8
     parts.append(line(MARGIN, cursor + 20, CONTENT_RIGHT, cursor + 20, RULE, 2))
     parts.append(
         text(
@@ -227,8 +251,7 @@ def _empty_matrix(
             INK,
         )
     )
-    parts.append(close_canvas())
-    return "".join(parts)
+    return "".join([*open_canvas(1600, cursor + 100), *parts, close_canvas()])
 
 
 @dataclass(frozen=True)
@@ -237,10 +260,12 @@ class _TokenRow:
     fragments: tuple[str, ...]
     positions: str
     kind: str
+    carrier_fragments: tuple[str, ...]
+    carrier_width: float
 
     @property
     def height(self) -> int:
-        return 25 * len(self.fragments) + 3
+        return 25 * max(len(self.fragments), len(self.carrier_fragments)) + 3
 
 
 def _token_fragments(token: str, budget: int) -> tuple[str, ...]:
@@ -280,6 +305,8 @@ def vocabulary_matrix(
 
     Carrier numbers are declaration working positions. Unread entries remain
     unknown in the key; an omitted carrier is never evidence about an unread line.
+    The key and up to four height-balanced facets share one available-width budget;
+    every token fragment and carrier contributes its full drawn row height.
     """
     verify_coverage()
     entries = _ordered(lines)
@@ -302,20 +329,26 @@ def vocabulary_matrix(
         )
         for token in tokens
     }
-    columns = min(3, len(tokens))
+    # Four facets retain the original token width while shortening the full
+    # live corpus; the wider canvas still keeps authored 24-unit labels above
+    # the page's six-point floor when width-bound.
+    canvas_width = 2100
+    content_right = canvas_width - MARGIN
+    content_width = content_right - MARGIN
+    columns = min(4, len(tokens))
     gap = 24
-    column_width = (_CONTENT_WIDTH - gap * (columns - 1)) / columns
+    column_width = (content_width - gap * (columns - 1)) / columns
     # Reserve only this name's actual carrier list, not the longest list in
     # the entire reading. Shared names must not force every unique name to wrap.
+    carrier_widths = {
+        token: min(column_width / 2, max(24, len(value) * 24))
+        for token, value in positions.items()
+    }
     budgets = {
         token: max(
-            1,
-            int(
-                (column_width - max(24, len(value) * 24 * 0.6) - 64)
-                / (_TOKEN_LABEL_SIZE * 0.72)
-            ),
+            1, int((column_width - carrier_widths[token] - 64) / _TOKEN_LABEL_SIZE)
         )
-        for token, value in positions.items()
+        for token in tokens
     }
     rows = tuple(
         _TokenRow(
@@ -327,6 +360,8 @@ def vocabulary_matrix(
             else "collision"
             if flags.get(token) is False
             else "unique",
+            tuple(exact_lines(positions[token], carrier_widths[token], 24)),
+            carrier_widths[token],
         )
         for token in tokens
     )
@@ -339,7 +374,7 @@ def vocabulary_matrix(
         f"LIVE READING · {plural(len(tokens), 'name').upper()} · {legible} OF {len(entries)} VOCABULARIES READ",
         ACCENT,
     )
-    legend, key_end = _legend(entries, carried, codes, 280)
+    legend, key_end = _legend(entries, carried, codes, 280, content_width)
     parts += legend
     summary = (
         f"{len(reading.exempted_collisions)} exempted collisions · "
@@ -350,7 +385,7 @@ def vocabulary_matrix(
     parts.append(text(MARGIN, key_end + 26, summary, 24, ACCENT, "700"))
     for x, shape, label, ink in (
         (MARGIN, EXEMPT_SHAPE, EXEMPT_LABEL, OCHRE),
-        (MARGIN + _CONTENT_WIDTH / 2, COLLISION_SHAPE, COLLISION_LABEL, WARN),
+        (MARGIN + content_width / 2, COLLISION_SHAPE, COLLISION_LABEL, WARN),
     ):
         parts.append(glyph(shape, x + 10, key_end + 48, 7, PAPER, ink, 2))
         parts.append(text(x + 28, key_end + 56, label, 24, ink, "700"))
@@ -405,14 +440,22 @@ def vocabulary_matrix(
                     )
                 )
             parts.append('</g><g class="token-carriers">')
-            parts.append(
-                text(right - 12, cursor + 22, row.positions, 24, INK, "700", "end")
-            )
+            for index, fragment in enumerate(row.carrier_fragments):
+                parts.append(
+                    text(
+                        right - 12 - row.carrier_width,
+                        cursor + 22 + index * 25,
+                        fragment,
+                        24,
+                        INK,
+                        "700",
+                    )
+                )
             parts.append("</g></g>")
             cursor += row.height
         bottoms.append(cursor)
     cursor = max(bottoms) + 28
-    parts.append(line(MARGIN, cursor, CONTENT_RIGHT, cursor, RULE, 2))
+    parts.append(line(MARGIN, cursor, content_right, cursor, RULE, 2))
     cursor += 34
     parts.append(text(MARGIN, cursor, "READING BOUNDARY", 24, ACCENT, "700"))
     cursor += 30
@@ -420,196 +463,204 @@ def vocabulary_matrix(
         "Numbers are working positions. Only observed carriers are listed; unread lines remain unknown.",
         "This display compares spellings. It establishes neither conceptual separation nor sibling correctness.",
     ):
-        for value in wrap_to_width(paragraph, _CONTENT_WIDTH, 24):
+        for value in wrap_to_width(paragraph, content_width, 24):
             parts.append(text(MARGIN, cursor, value, 24, INK))
             cursor += 26
         cursor += 8
-    return "".join([*open_canvas(1600, cursor + 24), *parts, close_canvas()])
-
-
-def _surface_row_height(detail_lines: int, gloss_lines: int) -> int:
-    """Keep full-width detail below both the gloss and optional metric notes."""
-    gloss_bottom = 68 + 22 * (gloss_lines - 1)
-    return max(88, gloss_bottom) + 44 + 24 * detail_lines
+    return "".join([*open_canvas(canvas_width, cursor + 24), *parts, close_canvas()])
 
 
 def installation_surface(
     lines: tuple[LineEntry, ...],
     reading: SetReading,
 ) -> str:
-    """Draw what was actually found on this machine for each declared line.
+    """Draw exact published values, or explicit unavailability, at fixed size.
 
-    A row that resolved reports the version, registry size, token count, and
-    digest prefix its package published. A row that did not resolve is hatched,
-    is labeled with the code that explains it, and shows an em dash in every
-    metric: no value is carried over, defaulted, or guessed.
+    Cards run in working order across each pair, then down the page. Identity
+    and status share a band; the four metrics form a two-by-two field group.
+    Every band advances from its tallest exact wrapped block. The declaration
+    digest retains its documented display prefix.
     """
     verify_coverage()
     entries = _ordered(lines)
-    observations = {
-        observation.line_id: observation for observation in reading.observations
-    }
-    details = {
-        entry.id: wrap_to_width(
-            observations[entry.id].detail
-            if entry.id in observations and observations[entry.id].detail
-            else "no detail was recorded",
-            _CONTENT_WIDTH - 130,
-            24,
-        )
-        for entry in entries
-    }
-    glosses = {
-        entry.id: wrap(
-            READ_CODE_GLOSS[
-                observations[entry.id].code
-                if entry.id in observations
-                else ReadCode.NOT_INSTALLED
-            ],
-            _GLOSS_WRAP,
-        )
-        for entry in entries
-    }
-    heights = [
-        _surface_row_height(len(details[entry.id]), len(glosses[entry.id]))
-        for entry in entries
-    ]
-    declare_stage = next(
-        (stage for stage in reading.derivation if stage.name == "declare"), None
-    )
-    summary_lines = wrap_to_width(
-        declare_stage.detail if declare_stage is not None else "no declare stage ran",
-        _CONTENT_WIDTH - 98,
-        24,
-    )
-    summary_height = 210 + 24 * len(summary_lines)
-    height = _TOP + sum(item + 20 for item in heights) + summary_height + 90
+    observations = {item.line_id: item for item in reading.observations}
     unread = [
-        entry.id
+        entry
         for entry in entries
         if entry.id not in observations
         or observations[entry.id].code is not ReadCode.RESOLVED
     ]
-
-    parts = open_canvas(1600, height)
-    parts.append(hatch_defs("notread", WARN))
+    canvas_width = 2000
+    content_right = canvas_width - MARGIN
+    content_width = content_right - MARGIN
+    gap = 12
+    card_width = (content_width - gap) / 2
+    text_width = card_width - 102
+    field_gap = 16
+    field_width = (text_width - field_gap) / 2
+    parts = [hatch_defs("notread", WARN)]
     parts += header(
         "THE INSTALLATION SURFACE",
         "What this machine could actually read",
-        "One row per declared line: whether it resolved, what version it "
-        "publishes, how large its registry is, and the prefix of its digest.",
+        "One card per declared line: whether it resolved and the values its package publishes.",
         f"LIVE READING · {plural(len(entries), 'declared line').upper()} · "
         f"{plural(len(unread), 'line').upper()} NOT READ",
         WARN if unread else ACCENT,
     )
-
-    cursor = _TOP
-    for entry, row_height in zip(entries, heights):
-        observation = observations.get(entry.id)
-        code = observation.code if observation is not None else ReadCode.NOT_INSTALLED
-        code_ink = READ_CODE_INK[code]
-        resolved = code is ReadCode.RESOLVED
-        ink = line_ink(entry.color)
-        parts.append(
-            rect(MARGIN, cursor, _CONTENT_WIDTH, row_height, CARD, ink, 2, rx=10)
-        )
-        parts.append(rect(MARGIN, cursor, 12, row_height, ink, ink, 0))
-        if not resolved:
+    cursor: float = _TOP
+    for start in range(0, len(entries), 2):
+        bottoms = []
+        for column, entry in enumerate(entries[start : start + 2]):
+            left = MARGIN + column * (card_width + gap)
+            text_left = left + 82
+            observation = observations.get(entry.id)
+            code = (
+                observation.code if observation is not None else ReadCode.NOT_INSTALLED
+            )
+            ink = line_ink(entry.color)
+            content: list[str] = []
+            top = cursor + 30
+            drawn, identity_y = text_block(
+                text_left, top, entry.color, field_width, 26, ink, "700"
+            )
+            content.extend(drawn)
+            drawn, identity_y = text_block(
+                text_left, identity_y, entry.package_name, field_width, 24, MUTED, "700"
+            )
+            content.extend(drawn)
+            drawn, status_y = text_block(
+                text_left + field_width + field_gap,
+                top,
+                code.value,
+                field_width,
+                24,
+                READ_CODE_INK[code],
+                "700",
+            )
+            content.extend(drawn)
+            y = max(identity_y, status_y)
+            drawn, y = text_block(
+                text_left, y, READ_CODE_GLOSS[code], text_width, 24, MUTED
+            )
+            content.extend(drawn)
+            metrics = (
+                ("VERSION", observation.version if observation is not None else None),
+                (
+                    "SIZE",
+                    observation.registry_size if observation is not None else None,
+                ),
+                (
+                    "TOKENS",
+                    len(observation.tokens)
+                    if observation is not None and observation.tokens
+                    else None,
+                ),
+                (
+                    "DIGEST",
+                    observation.registry_digest[:DIGEST_PREFIX]
+                    if observation is not None and observation.registry_digest
+                    else None,
+                ),
+            )
+            for offset in (0, 2):
+                metric_bottoms = []
+                for index, (name, value) in enumerate(metrics[offset : offset + 2]):
+                    drawn, bottom = text_block(
+                        text_left + index * (field_width + field_gap),
+                        y,
+                        f"{name} · {value if value is not None else '— not read'}",
+                        field_width,
+                        26,
+                        INK if value is not None else MUTED,
+                        "700",
+                    )
+                    content.extend(drawn)
+                    metric_bottoms.append(bottom)
+                y = max(metric_bottoms)
+            drawn, y = text_block(
+                text_left,
+                y,
+                observation.detail
+                if observation is not None and observation.detail
+                else "no detail was recorded",
+                text_width,
+                24,
+                MUTED,
+            )
+            content.extend(drawn)
+            row_height = y - cursor + 12
             parts.append(
-                f'<rect x="{MARGIN + 12}" y="{cursor + 1}" '
-                f'width="{_CONTENT_WIDTH - 13}" height="{row_height - 2}" '
-                'fill="url(#notread)" stroke="none"/>'
+                rect(left, cursor, card_width, row_height, CARD, ink, 2, rx=10)
             )
-        parts.append(
-            glyph(
-                shape_for(entry.working_position),
-                MARGIN + 60,
-                cursor + 46,
-                26,
-                line_fill(entry.color),
-                ink,
-                3,
-            )
-        )
-        parts.append(text(MARGIN + 106, cursor + 40, entry.color, 26, ink, "700"))
-        parts.append(
-            text(MARGIN + 106, cursor + 68, entry.package_name, 24, MUTED, "700")
-        )
-        parts.append(
-            glyph(
-                READ_CODE_SHAPE[code],
-                MARGIN + 400,
-                cursor + 34,
-                13,
-                code_ink if READ_CODE_SOLID[code] else PAPER,
-                code_ink,
-                2.5,
-            )
-        )
-        parts.append(text(MARGIN + 424, cursor + 40, code.value, 24, code_ink, "700"))
-        # Wrapped narrow enough that the widest gloss line stops short of the
-        # stat blocks to its right. The room is CONTENT_RIGHT - 20 - four stat
-        # blocks - this column's left edge; a wider wrap ran the gloss under
-        # the version value.
-        for index, gloss in enumerate(glosses[entry.id]):
-            parts.append(text(MARGIN + 424, cursor + 68 + index * 22, gloss, 24, MUTED))
-        stats = (
-            (
-                "VERSION",
-                observation.version
-                if observation is not None and observation.version
-                else "—",
-            ),
-            (
-                "SIZE",
-                str(observation.registry_size)
-                if observation is not None and observation.registry_size is not None
-                else "—",
-            ),
-            (
-                "TOKENS",
-                str(len(observation.tokens))
-                if observation is not None and observation.tokens
-                else "—",
-            ),
-            (
-                "DIGEST",
-                observation.registry_digest[:DIGEST_PREFIX]
-                if observation is not None and observation.registry_digest
-                else "—",
-            ),
-        )
-        block_w = 158
-        first_x = CONTENT_RIGHT - 20 - block_w * len(stats)
-        for index, (label, value) in enumerate(stats):
-            bx = first_x + index * block_w
-            parts.append(text(bx, cursor + 38, label, 24, MUTED, "700"))
+            if code is not ReadCode.RESOLVED:
+                parts.append(
+                    rect(
+                        left + 12,
+                        cursor + 1,
+                        card_width - 13,
+                        row_height - 2,
+                        "url(#notread)",
+                        "none",
+                        0,
+                    )
+                )
+            parts.append(rect(left, cursor, 12, row_height, ink, ink, 0))
             parts.append(
-                text(
-                    bx,
-                    cursor + 66,
-                    value,
-                    26,
-                    INK if value != "—" else MUTED,
-                    "700",
+                glyph(
+                    shape_for(entry.working_position),
+                    left + 36,
+                    cursor + 30,
+                    24,
+                    line_fill(entry.color),
+                    ink,
+                    3,
                 )
             )
-            if value == "—":
-                parts.append(text(bx, cursor + 88, "not read", 24, code_ink, "700"))
-        detail_top = row_height - 24 * len(details[entry.id]) - 12
-        for index, row in enumerate(details[entry.id]):
             parts.append(
-                text(MARGIN + 106, cursor + detail_top + index * 24, row, 24, MUTED)
+                glyph(
+                    READ_CODE_SHAPE[code],
+                    left + 36,
+                    cursor + 84,
+                    13,
+                    READ_CODE_INK[code] if READ_CODE_SOLID[code] else PAPER,
+                    READ_CODE_INK[code],
+                    2.5,
+                )
             )
-        cursor += row_height + 20
-
+            parts.extend(content)
+            bottoms.append(cursor + row_height)
+        cursor = max(bottoms) + gap
     status_ink = SET_STATUS_INK[reading.status]
+    content = []
+    drawn, y = text_block(
+        MARGIN + 74,
+        cursor + 40,
+        reading.status.value,
+        content_width - 98,
+        26,
+        status_ink,
+        "700",
+    )
+    content.extend(drawn)
+    declare_stage = next(
+        (stage for stage in reading.derivation if stage.name == "declare"), None
+    )
+    values = (
+        SET_STATUS_GLOSS[reading.status],
+        " · ".join(f"{code.value} {reading.counts()[code.value]}" for code in ReadCode),
+        f"declaration digest {reading.set_digest[:DIGEST_PREFIX]}",
+        f"undeclared lines: {', '.join(reading.undeclared_lines) or 'none reported'}",
+        declare_stage.detail if declare_stage is not None else "no declare stage ran",
+    )
+    for value in values:
+        drawn, y = text_block(MARGIN + 74, y, value, content_width - 98, 24, MUTED)
+        content.extend(drawn)
     parts.append(
         rect(
             MARGIN,
             cursor,
-            _CONTENT_WIDTH,
-            summary_height - 40,
+            content_width,
+            y - cursor + 12,
             PANEL,
             status_ink,
             2.5,
@@ -619,52 +670,26 @@ def installation_surface(
     parts.append(
         glyph(
             SET_STATUS_SHAPE[reading.status],
-            MARGIN + 40,
-            cursor + 44,
-            24,
+            MARGIN + 36,
+            cursor + 34,
+            22,
             PAPER,
             status_ink,
             3,
         )
     )
-    parts.append(
-        text(MARGIN + 74, cursor + 50, reading.status.value, 26, status_ink, "700")
-    )
-    parts.append(
-        text(
-            MARGIN + 74,
-            cursor + 80,
-            SET_STATUS_GLOSS[reading.status],
-            24,
-            INK,
-        )
-    )
-    counts = reading.counts()
-    tally = " · ".join(f"{code.value} {counts[code.value]}" for code in ReadCode)
-    parts.append(text(MARGIN + 74, cursor + 112, tally, 24, MUTED, "700"))
-    parts.append(
-        text(
-            MARGIN + 74,
-            cursor + 144,
-            f"declaration digest {reading.set_digest[:DIGEST_PREFIX]} · "
-            f"undeclared lines: {', '.join(reading.undeclared_lines) or 'none reported'}",
-            24,
-            MUTED,
-        )
-    )
-    for index, row in enumerate(summary_lines):
-        parts.append(text(MARGIN + 74, cursor + 176 + index * 24, row, 24, MUTED))
-    footer_lines = wrap_to_width(
-        "A row marked not read is a fact about this machine's installation, not about the line. Nothing on that row is filled in from memory, a default, or a previous build.",
-        _CONTENT_WIDTH,
+    parts.extend(content)
+    drawn, y = text_block(
+        MARGIN,
+        y + 48,
+        "A card marked not read is a fact about this machine's installation, not about the line. "
+        "Nothing on that card is filled in from memory, a default, or a previous build.",
+        content_width,
         24,
+        INK,
     )
-    for index, value in enumerate(footer_lines):
-        parts.append(
-            text(MARGIN, cursor + summary_height + 4 + index * 26, value, 24, INK)
-        )
-    parts.append(close_canvas())
-    return "".join(parts)
+    parts.extend(drawn)
+    return "".join([*open_canvas(canvas_width, int(y + 24)), *parts, close_canvas()])
 
 
 __all__ = [

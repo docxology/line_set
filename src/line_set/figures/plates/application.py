@@ -18,6 +18,8 @@ the siblings' business, and no row on it is a finding about a line.
 
 from __future__ import annotations
 
+from math import ceil
+
 from ...invariants import SoundnessResult, self_disjointness_from_reading
 from ...models import LineEntry, LineObservation, SetReading
 from ..canvas import (
@@ -31,7 +33,9 @@ from ..canvas import (
     plural,
     rect,
     text,
-    wrap,
+    exact_lines,
+    text_block,
+    wrap_to_width,
 )
 from ..palette import (
     ACCENT,
@@ -50,9 +54,6 @@ from ..palette import (
     line_ink,
     shape_for,
 )
-
-#: How many wrapper tokens are laid out per column.
-TOKENS_PER_COLUMN = 4
 
 #: Marker shape and word for a line that carries none of the wrapper's tokens,
 #: and for one that carries some. Shape, fill, and label all differ.
@@ -92,10 +93,9 @@ def _unestablished(
     reason: str,
 ) -> str:
     """Draw the honest replacement for a comparison that could not be made."""
-    detail_lines = wrap(verdict.detail, 128)
+    detail_lines = wrap_to_width(verdict.detail, _CONTENT_WIDTH, 24)
     observations = _line_observations(reading, wrapper)
-    height = _TOP + 156 + 44 * len(observations) + 62 + 26 * len(detail_lines) + 60
-    parts = open_canvas(1600, height)
+    parts: list[str] = []
     parts += header(
         "THE WRAPPER UNDER ITS OWN RULE",
         "The comparison could not be made",
@@ -120,7 +120,11 @@ def _unestablished(
     cursor = _TOP + 132
     for observation in observations:
         code = observation.code
-        parts.append(rect(MARGIN, cursor, _CONTENT_WIDTH, 36, CARD, RULE, 1.5, rx=6))
+        name_rows = exact_lines(observation.line_id, 240, 24)
+        row_height = max(36, 12 + 28 * len(name_rows))
+        parts.append(
+            rect(MARGIN, cursor, _CONTENT_WIDTH, row_height, CARD, RULE, 1.5, rx=6)
+        )
         parts.append(
             glyph(
                 READ_CODE_SHAPE[code],
@@ -132,9 +136,10 @@ def _unestablished(
                 2,
             )
         )
-        parts.append(
-            text(MARGIN + 52, cursor + 24, observation.line_id, 24, INK, "700")
+        drawn, _ = text_block(
+            MARGIN + 52, cursor + 24, observation.line_id, 240, 24, INK, "700"
         )
+        parts.extend(drawn)
         parts.append(
             text(MARGIN + 320, cursor + 24, code.value, 24, READ_CODE_INK[code], "700")
         )
@@ -147,7 +152,7 @@ def _unestablished(
                 MUTED,
             )
         )
-        cursor += 44
+        cursor += row_height + 8
     parts.append(line(MARGIN, cursor + 18, CONTENT_RIGHT, cursor + 18, RULE, 2))
     for index, detail in enumerate(detail_lines):
         parts.append(text(MARGIN, cursor + 54 + index * 26, detail, 24, INK))
@@ -161,8 +166,13 @@ def _unestablished(
             MUTED,
         )
     )
-    parts.append(close_canvas())
-    return "".join(parts)
+    return "".join(
+        [
+            *open_canvas(1600, cursor + 122 + 26 * len(detail_lines)),
+            *parts,
+            close_canvas(),
+        ]
+    )
 
 
 def self_application(
@@ -207,31 +217,35 @@ def self_application(
         for collision in (*reading.collisions, *reading.exempted_collisions)
         if wrapper.id in collision.lines
     }
-    columns = max(1, -(-len(tokens) // TOKENS_PER_COLUMN))
-    rows_per_column = -(-len(tokens) // columns)
-    vocabulary_height = 96 + 28 * rows_per_column
-    detail_lines = wrap(verdict.detail, 126)
-    rule_lines = wrap(
+    # Column count is bounded by usable token width, not token count. Overflow
+    # goes downward; no new token can squeeze an existing label.
+    preferred_width = min(_CONTENT_WIDTH, max(300, max(map(len, tokens)) * 24 + 54))
+    columns = max(1, min(4, int(_CONTENT_WIDTH / preferred_width)))
+    column_width = _CONTENT_WIDTH / columns
+    token_rows = [exact_lines(token, column_width - 70, 24) for token in tokens]
+    row_heights = [
+        max(len(rows) for rows in token_rows[start : start + columns]) * 28 + 8
+        for start in range(0, len(tokens), columns)
+    ]
+    identity = (
+        f"{wrapper.package_name} · {wrapper.color} · "
+        f"{plural(len(tokens), 'enum member name')} exported at its root"
+    )
+    identity_rows = exact_lines(identity, _CONTENT_WIDTH - 56, 26)
+    token_top = _TOP + 32 + 30 * len(identity_rows)
+    vocabulary_height = token_top - _TOP + sum(row_heights) + 18
+    detail_lines = wrap_to_width(verdict.detail, _CONTENT_WIDTH - 98, 24)
+    rule_lines = wrap_to_width(
         "A declared exemption does not help here. The wrapper is not a line and "
         "has no standing to share a token with one, so an exempted collision "
         "involving it counts against it exactly like an undeclared one. What "
         "holds is a fact about spellings: this package's own status names are "
         "not any line's status names. It is not a finding that the wrapper has "
         "kept its other boundaries, which a person reads.",
-        132,
+        _CONTENT_WIDTH,
+        24,
     )
-    height = (
-        _TOP
-        + vocabulary_height
-        + 76
-        + 76 * len(observations)
-        + 142
-        + 26 * len(detail_lines)
-        + 96
-        + 26 * len(rule_lines)
-    )
-
-    parts = open_canvas(1600, height)
+    parts: list[str] = []
     parts += header(
         "THE WRAPPER UNDER ITS OWN RULE",
         "The package that checks for shared tokens, checked for shared tokens",
@@ -249,47 +263,38 @@ def self_application(
     parts.append(
         rect(MARGIN, _TOP, _CONTENT_WIDTH, vocabulary_height, CARD, MUTED, 2, rx=10)
     )
-    parts.append(
-        text(
-            MARGIN + 28,
-            _TOP + 40,
-            f"{wrapper.package_name} · {wrapper.color} · "
-            f"{plural(len(tokens), 'enum member name')} exported at its root",
-            26,
-            INK,
-            "700",
-        )
+    drawn, _ = text_block(
+        MARGIN + 28, _TOP + 32, identity, _CONTENT_WIDTH - 56, 26, INK, "700"
     )
-    column_width = _CONTENT_WIDTH / columns
-    for index, token in enumerate(tokens):
-        column = index // rows_per_column
-        row = index % rows_per_column
-        x = MARGIN + 28 + column * column_width
-        y = _TOP + 82 + row * 28
-        carried = token in hits
-        parts.append(
-            glyph(
-                OVERLAP_SHAPE if carried else DISJOINT_SHAPE,
-                x + 8,
-                y - 6,
-                7,
-                WARN if carried else PAPER,
-                WARN if carried else MUTED,
-                2,
+    parts.extend(drawn)
+    y: float = token_top
+    for start in range(0, len(tokens), columns):
+        for column, token in enumerate(tokens[start : start + columns]):
+            x = MARGIN + 28 + column * column_width
+            carried = token in hits
+            parts.append(
+                glyph(
+                    OVERLAP_SHAPE if carried else DISJOINT_SHAPE,
+                    x + 8,
+                    y - 6,
+                    7,
+                    WARN if carried else PAPER,
+                    WARN if carried else MUTED,
+                    2,
+                )
             )
-        )
-        parts.append(
-            text(
+            drawn, _ = text_block(
                 x + 26,
                 y,
                 token,
+                column_width - 70,
                 24,
                 WARN if carried else INK,
                 "700" if carried else "400",
             )
-        )
-
-    cursor = _TOP + vocabulary_height + 76
+            parts.extend(drawn)
+        y += row_heights[start // columns]
+    cursor: float = _TOP + vocabulary_height + 76
     parts.append(
         text(MARGIN, cursor - 26, "AGAINST EACH DECLARED LINE", 24, ACCENT, "700")
     )
@@ -302,51 +307,51 @@ def self_application(
         entry_ink = MUTED if entry is None else line_ink(entry.color)
         entry_fill = PAPER if entry is None else line_fill(entry.color)
         marker = "circle" if entry is None else shape_for(entry.working_position)
-        parts.append(rect(MARGIN, cursor, _CONTENT_WIDTH, 64, CARD, RULE, 1.5, rx=8))
-        parts.append(rect(MARGIN, cursor, 10, 64, entry_ink, entry_ink, 0))
+        name = item.line_id
+        state = (
+            f"{plural(len(item.tokens), 'token')} read"
+            if readable
+            else f"no vocabulary read · {item.code.value}"
+        )
+        comparison = (
+            f"shares {', '.join(overlap)} with the wrapper"
+            if overlap
+            else "shares no spelling with the wrapper"
+            if readable
+            else "was not read, so nothing was compared"
+        )
+        content = []
+        y = cursor + 30
+        for value, size, color, weight in (
+            (name, 26, INK, "700"),
+            (state, 24, MUTED if readable else WARN, "400"),
+            (comparison, 24, ink, "700"),
+        ):
+            drawn, y = text_block(
+                MARGIN + 78, y, value, _CONTENT_WIDTH - 110, size, color, weight
+            )
+            content.extend(drawn)
+        row_height = y - cursor + 10
+        parts.append(
+            rect(MARGIN, cursor, _CONTENT_WIDTH, row_height, CARD, RULE, 1.5, rx=8)
+        )
+        parts.append(rect(MARGIN, cursor, 10, row_height, entry_ink, entry_ink, 0))
         parts.append(
             glyph(marker, MARGIN + 46, cursor + 32, 15, entry_fill, entry_ink, 2.5)
-        )
-        parts.append(text(MARGIN + 78, cursor + 28, item.line_id, 26, INK, "700"))
-        parts.append(
-            text(
-                MARGIN + 78,
-                cursor + 52,
-                f"{plural(len(item.tokens), 'token')} read"
-                if readable
-                else f"no vocabulary read · {item.code.value}",
-                24,
-                MUTED if readable else WARN,
-            )
         )
         parts.append(
             glyph(
                 shape,
-                MARGIN + 640,
-                cursor + 30,
-                13,
+                MARGIN + 46,
+                cursor + 64,
+                10,
                 WARN if overlap else PAPER,
                 ink,
                 2.5,
             )
         )
-        parts.append(
-            text(
-                MARGIN + 666,
-                cursor + 36,
-                f"shares {', '.join(overlap)} with the wrapper"
-                if overlap
-                else (
-                    "shares no spelling with the wrapper"
-                    if readable
-                    else "was not read, so nothing was compared"
-                ),
-                24,
-                ink,
-                "700",
-            )
-        )
-        cursor += 76
+        parts.extend(content)
+        cursor += row_height + 12
 
     status_ink = GOOD if verdict.passed else WARN
     parts.append(
@@ -390,13 +395,17 @@ def self_application(
     parts.append(text(MARGIN, footer + 34, "READING RULE", 24, ACCENT, "700"))
     for index, row_text in enumerate(rule_lines):
         parts.append(text(MARGIN, footer + 66 + index * 26, row_text, 24, INK))
-    parts.append(close_canvas())
-    return "".join(parts)
+    return "".join(
+        [
+            *open_canvas(1600, ceil(footer + 96 + 26 * len(rule_lines))),
+            *parts,
+            close_canvas(),
+        ]
+    )
 
 
 __all__ = [
     "DISJOINT_SHAPE",
     "OVERLAP_SHAPE",
-    "TOKENS_PER_COLUMN",
     "self_application",
 ]

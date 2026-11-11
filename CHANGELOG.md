@@ -1,5 +1,68 @@
 # Changelog
 
+## 0.8.0 (2026-11-09)
+
+- Use the existing conservative glyph-width budget for lossless SVG text
+  fragments, preserving authored spacing and keeping complete identifiers
+  and words together when they fit without shrinking the fixed font size.
+- Budget wide ampersands conservatively so complete scalar labels stay within
+  fixed-width cards at the authored font size; measure native rendered ink in
+  the repeated and mixed-punctuation regression cases.
+- Refresh current namespace pins against actual publishable producer commits with
+  privacy-safe attribution. Produce a distinct native reading when provenance
+  changes, preserve the unchanged census, and retain earlier candidate and
+  historical records rather than relabeling their identities.
+- Share recursive nested-field admission between serialization and package
+  resolution. Contain malformed injected provenance, revisions, and diagnostics
+  as serializable `IMPORT_FAILED` readings while retaining valid import custody.
+  Reject `datetime` at the calendar-only reader boundary rather than truncating it.
+- Admit module-origin enrichment before returning an observation, and retain the
+  original failure type when exception-message formatting itself fails.
+  Preserve well-typed caller-supplied diagnostics exactly.
+- Make assembly collection, rewrites, reference checks, and placeholder handling
+  literal-aware across inline code, fences, indented blocks, and list contexts.
+  Retarget image destinations without rewriting identical caption text.
+- Scan top-level BibTeX fields without promoting nested field-like text to
+  identity. Preserve supported raw entries and keep comments inactive; refuse
+  unsupported or incomplete syntax before mutation rather than losing entries.
+- Preflight configuration, references, accessibility coverage, serialization, and
+  output bytes in both plan and write modes. Require matching accessible records
+  for actual compiled embeds; retain PNG-only assembly without inferred SVGs.
+- Refuse unsafe managed destinations, symlinks, wrong node kinds, and generated
+  ownership collisions. Delete obsolete section Markdown only under the prior
+  report's explicit inventory; preserve unrelated files. Add exact compiled-target
+  `image_sources` to assembly reports, without claiming renderer provenance.
+- Preserve supported quoted YAML scalars and meaningful scope sections; remove
+  only actual References stubs. Reject assembler-introduced identifier collisions
+  without treating reproduced authored duplicates as new assembly authority.
+- Cut over `parse_embeds` from a basename dictionary to per-occurrence records
+  retaining source, line, exact destination, and width, including repeated and
+  unlabeled placements. Keep standalone measurement separate from optional
+  explicit-surface measurement with exact source-SVG mappings and carrier geometry.
+- Measure explicit numeric SVG font sizes with or without `px`, including
+  single-quoted attributes and pixel declarations in CSS. Take the smallest
+  declaration without claiming to implement the CSS cascade or measure PDF text.
+- Measure caption-code bracket placements instead of silently omitting them.
+  Read actual SVG/CSS font declarations rather than comments or text, and honor
+  supported configuration comments without substituting a different height cap.
+- Preserve configured PNG covers across blank lines and comments in paper
+  metadata, including their source mapping and alternative text.
+- Give every compiled native cover the full text width within the existing
+  figure height cap. Pack the set cover by complete declared names, retaining
+  lossless wrapping for longer labels instead of breaking ordinary color names.
+- Reflow complete dynamic labels and tokens, derive finite cover stroke spacing
+  from available slots, and pack layouts without shrinking fonts or truncating
+  identities. Figure output preflight rejects owned symlink destinations; exclusive
+  output access remains required, with no transactional-render guarantee.
+- Keep native reading/declaration schemas and evaluator policy identifiers
+  unchanged. Geometry measurements are bounded model checks, not PDF/HTML/EPUB,
+  font-substitution, accessibility, or human-readability certification; historical
+  artifacts and bibliographic edition identities remain historical.
+- Record the 2026-11-10 namespace from ten real reviewed commit archives.
+  Match complete/private and explicitly withheld/public views to their own
+  checks and refuse both wrong-view substitutions. Preserve the original 0.7.0
+  public reading and worked manuscript bytes without relabeling their producers.
+
 ## 0.7.0 (2026-11-08)
 
 Actual native integration and qualification:

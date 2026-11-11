@@ -26,6 +26,8 @@ from ..canvas import (
     open_canvas,
     rect,
     text,
+    exact_lines,
+    text_block,
 )
 from ..palette import ACCENT, GOOD, INK, MUTED, PANEL, PAPER, WARN
 
@@ -89,7 +91,10 @@ def exemption_gate(
     columns = max(len(group) for group in groups.values())
     legend = next(iter(groups.values()))
     legend_lines = [f"{index + 1}. {probe.name}" for index, probe in enumerate(legend)]
-    legend_top = _TOP + 66 + 64 * len(groups)
+    token_rows = {token: exact_lines(token, 360, 26) for token in groups}
+    legend_top = (
+        _TOP + 66 + sum(max(64, 30 * len(rows) + 20) for rows in token_rows.values())
+    )
     parts = open_canvas(1600, legend_top + 70 + 34 * len(legend_lines) + 100)
     parts += header(
         "THE EXEMPTION GATE",
@@ -112,9 +117,10 @@ def exemption_gate(
                 "middle",
             )
         )
-    for row, (token, group) in enumerate(sorted(groups.items())):
-        y = _TOP + 90 + row * 64
-        parts.append(text(MARGIN, y, token, 26, INK, "700"))
+    y = _TOP + 90
+    for token, group in sorted(groups.items()):
+        drawn, _ = text_block(MARGIN, y, token, 360, 26, INK, "700")
+        parts.extend(drawn)
         for column, probe in enumerate(group):
             x = left + step * (column + 0.5)
             ink = GOOD if probe.holds else WARN
@@ -132,6 +138,7 @@ def exemption_gate(
             parts.append(
                 text(x + 3, y, "PASS" if probe.holds else "FAIL", 24, ink, "700")
             )
+        y += max(64, 30 * len(token_rows[token]) + 20)
     for index, label in enumerate(legend_lines):
         parts.append(text(MARGIN, legend_top + 52 + index * 34, label, 26, MUTED))
     parts.append(

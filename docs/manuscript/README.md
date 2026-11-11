@@ -33,5 +33,17 @@ Figures are embedded as `../../output/figures/<name>.png` and are rebuilt with
 `uv run python scripts/build_figures.py`. Do not hand-edit anything under
 `output/`.
 
+For compiled volumes, the assembler omits only actual heading-only **References**
+stubs (optionally with an empty `#refs` Div), not arbitrary `99_` sections.
+Fenced, inline, and indented literal examples remain source text, not active
+anchors, references, or figure embeds. Generated part/cover identifiers and image
+basenames may not collide with reproduced source content. Assembly plans the
+complete config and accessibility registry before writing, refuses unsupported
+bibliography/config syntax explicitly, and cleans obsolete sections only from
+the prior assembly report's inventory. See the
+[assembly contract](../development.md) for the supported subsets, output
+containment rules, and image-source mapping. This does not measure the rendered
+volume's physical legibility.
+
 Read [AGENTS.md](AGENTS.md), [../README.md](../README.md), and
 [../../README.md](../../README.md) next.

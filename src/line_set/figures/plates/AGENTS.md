@@ -21,7 +21,7 @@ to an SVG string. A plate reads; it never decides.
   and that panel states in words that nothing was compared. Never let a plate
   render an empty version of itself as though it were a result.
 - **Unread is drawn, not omitted.** `installation_surface` hatches an
-  unresolved row, marks each metric with an em dash and the words "not read",
+  unresolved card, marks each metric with an em dash and the words "not read",
   and prints the code that explains it. Do not substitute a zero, a previous
   value, or a blank.
 - **Shape and label carry every distinction.** Color is redundant. A new
@@ -37,6 +37,12 @@ to an SVG string. A plate reads; it never decides.
   both columns. The vocabulary matrix reserves carrier width per name, then
   balances contiguous alphabetic panels by their actual wrapped row heights.
   Keep artifact identities, all written data, and both legibility floors.
+- **Cover slots derive from the actual registry.** At most ten usable slots
+  occupy a register row; additional entries add rows. Stroke length is bounded
+  by slot width minus an explicit gap, including the white understroke.
+  Full color labels wrap at their fixed size and determine the next row.
+  The reader rule and canvas follow the last label. This prevents geometric
+  merging; it does not promise every extended cover clears a physical page cap.
 
 ## Validation
 

@@ -4,7 +4,8 @@ from pathlib import Path
 
 import pytest
 
-from line_set.omnibus import assemble, fence_mask
+from line_set._markdown_spans import fence_mask
+from line_set.omnibus import assemble
 from tests.test_omnibus import (
     ONE_WORK,
     blind_resolver,

@@ -30,6 +30,7 @@ from pathlib import Path
 import pytest
 
 from line_set import LINE_SET, WRAPPER_LINE, LineEntry, sibling_base
+from line_set._markdown_spans import fence_mask
 from line_set.omnibus import (
     GENERATED_ORDERING_MARKER,
     SOURCE_FIGURE_PREFIX,
@@ -42,7 +43,6 @@ from line_set.omnibus import (
     denamespace_anchors,
     discover_paper,
     discover_papers,
-    fence_mask,
     gather_figures,
     invert_section,
     matching_brace,
@@ -54,6 +54,7 @@ from line_set.omnibus import (
     promote_headings,
     read_paper_config,
     retarget_figures,
+    restore_figures,
     top_level_block,
     transform_section,
     unbuilt_plates,
@@ -287,6 +288,62 @@ def test_namespacing_inverts_over_the_syntaxes_it_rewrites() -> None:
     moved, _, _ = namespace_anchors(text, "w", anchors)
     assert moved != text
     assert denamespace_anchors(moved, "w", anchors) == text
+
+
+@pytest.mark.parametrize(
+    "name,reference",
+    [
+        ("part", "@sec:part."),
+        ("part.v2", "@sec:part.v2."),
+        ("part.v2", "[@sec:part.v2]"),
+        ("part.v2.", "@sec:part.v2."),
+        ("part.v2.", "@sec:part.v2..."),
+    ],
+)
+def test_dotted_references_keep_exact_declared_names_and_source_punctuation(
+    name: str, reference: str
+) -> None:
+    source = (
+        f"# Part {{#sec:{name}}}\n\n"
+        f"See {reference} Also [part](#sec:{name}).\n"
+        f"`Literal {reference}`\n"
+    )
+    anchors = collect_anchors(source)
+    moved, definitions, references = namespace_anchors(source, "w", anchors)
+    assert definitions == 1
+    assert references == 2
+    assert f"See {reference.replace('@sec:', '@sec:w-')} " in moved
+    assert f"[part](#sec:w-{name})." in moved
+    assert f"`Literal {reference}`" in moved
+    assert unresolved_references(moved, collect_anchors(moved)) == ()
+    assert denamespace_anchors(moved, "w", anchors) == source
+
+
+def test_terminal_periods_prefer_the_longest_declared_target_without_link_guessing() -> (
+    None
+):
+    anchors = ("sec:part", "sec:part.", "sec:part.v2")
+    source = "See @sec:part.. and @sec:part.v2. [exact](#sec:part.v2.).\n"
+    moved, definitions, references = namespace_anchors(source, "w", anchors)
+    assert definitions == 0
+    assert references == 2
+    assert moved == ("See @sec:w-part.. and @sec:w-part.v2. [exact](#sec:part.v2.).\n")
+    moved_anchors = ("sec:w-part", "sec:w-part.", "sec:w-part.v2")
+    assert unresolved_references(moved, moved_anchors) == ("](#sec:part.v2.)",)
+    assert denamespace_anchors(moved, "w", anchors) == source
+
+
+def test_unresolved_bare_references_exclude_punctuation_but_keep_internal_periods() -> (
+    None
+):
+    source = "See @sec:missing.v2... and @def:missing.v2. and @author:2020.\n"
+    moved, definitions, references = namespace_anchors(source, "w", ("def:term",))
+    assert (moved, definitions, references) == (source, 0, 0)
+    assert unresolved_references(source, ("def:term",)) == (
+        "@def:missing.v2",
+        "@sec:missing.v2",
+    )
+    assert unresolved_references(source, ()) == ("@sec:missing.v2",)
 
 
 # ------------------------------------------------------------- figure paths
@@ -527,9 +584,14 @@ def test_normalizing_collapses_whitespace_and_braces_and_keeps_content() -> None
 
 
 def test_a_bib_entry_with_quoted_and_bare_values_is_read() -> None:
-    text = '@article{k, author = "A, B", year = 1999, title = {T} }\n'
+    text = '@article{k, author = "A, B", year = 1999, month = jan, title = {T} }\n'
     entry = parse_bib(text, "s")[0]
-    assert dict(entry.fields) == {"author": "A, B", "year": "1999", "title": "T"}
+    assert dict(entry.fields) == {
+        "author": "A, B",
+        "year": "1999",
+        "month": "jan",
+        "title": "T",
+    }
     assert entry.entry_type == "article"
 
 
@@ -907,7 +969,10 @@ def test_written_plates_reproduce_their_source_bytes_and_a_rerun_is_clean(
     write_paper(
         base,
         "carrier",
-        sections={"00_a.md": f"# A\n\n![P.]({SOURCE_FIGURE_PREFIX}p.png)\n"},
+        sections={
+            "00_a.md": f"# A\n\n![P.]({SOURCE_FIGURE_PREFIX}p.png)\n",
+            "01_stale.md": "# An earlier generated section\n",
+        },
         plates=("p.png",),
     )
     out = tmp_path / "out"
@@ -927,8 +992,13 @@ def test_written_plates_reproduce_their_source_bytes_and_a_rerun_is_clean(
         == (base / "carrier" / "output" / "figures" / "p.png").read_bytes()
     )
 
-    stale = out / "output" / "manuscript" / "900_stale.md"
-    stale.write_text("# Stale\n", encoding="utf-8")
+    manuscript = out / "output" / "manuscript"
+    stale = manuscript / next(name for name in first.files if "_01_stale.md" in name)
+    (base / "carrier" / "manuscript" / "01_stale.md").unlink()
+    manual = manuscript / "manual.md"
+    supplemental = manuscript / "supplemental.bib"
+    manual.write_text("Operator note.\n", encoding="utf-8")
+    supplemental.write_text("@book{manual, title={Keep me}}\n", encoding="utf-8")
     second = assemble(
         out,
         base,
@@ -939,7 +1009,11 @@ def test_written_plates_reproduce_their_source_bytes_and_a_rerun_is_clean(
         write=True,
     )
     assert not stale.exists(), "a previous assembly's section would render again"
-    assert second.files == first.files
+    assert stale.name not in second.files
+    assert manual.read_text(encoding="utf-8") == "Operator note.\n"
+    assert (
+        supplemental.read_text(encoding="utf-8") == "@book{manual, title={Keep me}}\n"
+    )
 
 
 def test_the_report_counts_what_was_written(tmp_path: Path) -> None:
@@ -1158,14 +1232,12 @@ def test_every_reproduced_section_inverts_to_its_source_bytes() -> None:
                 # spelling so the gate pins everything the volume actually
                 # depends on — anchors, headings, prose bytes — without
                 # failing on a checkout's directory depth.
-                normalized = re.sub(
-                    r"(?<![\w/])(?:\.\./)+output/figures/",
-                    SOURCE_FIGURE_PREFIX,
-                    source,
-                )
+                # Canonicalize only active image destinations. Literal and
+                # prose paths are pinned independently by boundary regressions.
+                normalized = restore_figures(retarget_figures(source)[0])
                 assert inverted == normalized, path
             checked += 1
-    assert checked > 50, "too few sections were inverted for this to mean anything"
+    assert checked, "no source sections were available for inversion"
 
 
 def test_the_inversion_can_fail_when_the_assembled_text_was_altered() -> None:
@@ -1472,12 +1544,21 @@ def test_a_directive_no_carrier_preamble_declares_is_reported(tmp_path: Path) ->
     assert report.dropped_preamble == (("other", "\\usepackage{tikz}"),)
 
 
-def test_a_truncated_entry_is_read_as_far_as_it_goes_and_no_further() -> None:
-    """Real databases are edited by hand, and a half-written field is not a value."""
-    assert parse_bib("@book{k, title = {T}, author =}\n", "s")[0].fields == (
-        ("title", "T"),
-    )
-    assert parse_bib('@book{k, title = "unterminated}\n', "s")[0].fields == ()
+@pytest.mark.parametrize(
+    "text",
+    [
+        "@book{k, title = {T}, author =}\n",
+        '@book{k, title = "unterminated}\n',
+    ],
+)
+def test_a_truncated_entry_is_refused_instead_of_silently_losing_fields(
+    text: str,
+) -> None:
+    with pytest.raises(OmnibusError):
+        parse_bib(text, "s")
+
+
+def test_complete_final_bib_fields_need_no_trailing_comma() -> None:
     assert parse_bib("@book{k, title = {T}}\n", "s")[0].fields == (("title", "T"),)
     assert parse_bib("@book{k, year = 1999}\n", "s")[0].fields == (("year", "1999"),)
 

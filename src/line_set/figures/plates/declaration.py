@@ -25,8 +25,10 @@ from ..canvas import (
     plural,
     rect,
     text,
-    wrap,
+    exact_lines,
+    text_block,
     wrap_to_width,
+    escape_text,
 )
 from ..palette import (
     ACCENT,
@@ -43,25 +45,50 @@ from ..palette import (
     shape_for,
 )
 
+_COMPASS_WIDTH = 2400
 _CARD_LEFT = MARGIN
-_CARD_WIDTH = CONTENT_RIGHT - MARGIN
+_CARD_RIGHT = _COMPASS_WIDTH - MARGIN
+_CARD_WIDTH = _CARD_RIGHT - _CARD_LEFT
 _TEXT_LEFT = MARGIN + 116
+_IDENTITY_WIDTH = 700
+_SENTENCE_LEFT = _TEXT_LEFT + _IDENTITY_WIDTH + 28
+_SENTENCE_WIDTH = _CARD_RIGHT - _SENTENCE_LEFT - 24
 _CONTENT_TOP = 300
 
 
 def _row_lines(entry: LineEntry) -> tuple[list[str], list[str], list[str]]:
     """Wrap one entry's three sentences at the widths the card allows."""
     return (
-        wrap(f"asks — {entry.question}", 84),
-        wrap(f"does — {entry.job}", 94),
-        wrap(f"must not become — {entry.must_not_become}", 84),
+        wrap_to_width(f"asks — {entry.question}", _SENTENCE_WIDTH, 29),
+        wrap_to_width(f"does — {entry.job}", _SENTENCE_WIDTH, 28),
+        wrap_to_width(
+            f"must not become — {entry.must_not_become}", _SENTENCE_WIDTH, 29
+        ),
     )
 
 
 def _row_height(entry: LineEntry) -> int:
-    """Card height derived from how much text the entry actually carries."""
+    """Height of the taller identity or question/job/boundary column."""
     asks, does, avoids = _row_lines(entry)
-    return 74 + 32 * len(asks) + 30 * len(does) + 30 * len(avoids)
+    identity_height = sum(
+        (size + 4) * len(exact_lines(value, _IDENTITY_WIDTH, size))
+        for value, size in (
+            (entry.color, 29),
+            (
+                f"package {entry.package_name} · keeps {entry.registry_noun} "
+                f"· emits {entry.verdict_noun}",
+                28,
+            ),
+            (
+                f"opus stage · {entry.opus_stage}"
+                if entry.opus_stage
+                else "no opus stage",
+                28,
+            ),
+        )
+    )
+    sentence_height = 33 * len(asks) + 32 * len(does) + 33 * len(avoids)
+    return 30 + max(identity_height, sentence_height) + 8
 
 
 def _draw_card(
@@ -74,6 +101,9 @@ def _draw_card(
     marker_position: int | None = None,
 ) -> list[str]:
     """Draw one line's card: marker, names, and its three declared sentences.
+
+    The wider card puts exact identity metadata beside the three sentences,
+    rather than stacking both bands and scaling the entire plate down.
 
     ``marker_position`` places the wrapper after the entries actually drawn,
     rather than reusing its position in the unextended declaration. Current
@@ -100,36 +130,41 @@ def _draw_card(
         rect(_CARD_LEFT, top, 12, height, ink, ink, 0, rx=0),
         glyph(marker, _CARD_LEFT + 62, top + 30, 28, fill, ink, 3),
         text(_CARD_LEFT + 62, top + 76, corner_note, 28, MUTED, "700", "middle"),
-        text(_TEXT_LEFT, top + 26, entry.color, 29, ink, "700"),
-        text(
-            _TEXT_LEFT,
-            top + 52,
+    ]
+    cursor: float = top + 30
+    for value, size, color, weight in (
+        (entry.color, 29, ink, "700"),
+        (
             f"package {entry.package_name} · keeps {entry.registry_noun} "
             f"· emits {entry.verdict_noun}",
             28,
             MUTED,
+            "400",
         ),
-        text(
-            CONTENT_RIGHT - 24,
-            top + 26,
+        (
             f"opus stage · {entry.opus_stage}" if entry.opus_stage else "no opus stage",
             28,
             ink if entry.opus_stage else MUTED,
             "700",
-            "end",
         ),
-    ]
+    ):
+        drawn, cursor = text_block(
+            _TEXT_LEFT, cursor, value, _IDENTITY_WIDTH, size, color, weight
+        )
+        parts.extend(drawn)
+    cursor = top + 30
     asks, does, avoids = _row_lines(entry)
-    cursor = top + 82
-    for row in asks:
-        parts.append(text(_TEXT_LEFT, cursor, row, 29, INK, "700"))
-        cursor += 32
-    for row in does:
-        parts.append(text(_TEXT_LEFT, cursor, row, 28, MUTED))
-        cursor += 30
-    for row in avoids:
-        parts.append(text(_TEXT_LEFT, cursor, row, 29, WARN, "700"))
-        cursor += 30
+    for rows, value, size, color, weight in (
+        (asks, f"asks — {entry.question}", 29, INK, "700"),
+        (does, f"does — {entry.job}", 28, MUTED, "400"),
+        (avoids, f"must not become — {entry.must_not_become}", 29, WARN, "700"),
+    ):
+        escaped = escape_text(value)
+        parts.append(f'<g aria-label="{escaped}" data-full-text="{escaped}">')
+        for row in rows:
+            parts.append(text(_SENTENCE_LEFT, cursor, row, size, color, weight))
+            cursor += size + 4
+        parts.append("</g>")
     return parts
 
 
@@ -201,7 +236,7 @@ def set_compass(lines: tuple[LineEntry, ...], wrapper: LineEntry) -> str:
     body = sum(height + 8 for height in heights)
     # Footer baseline is 156 units below the cards; retain 30 units below it.
     height = _CONTENT_TOP + body + wrapper_height + 186
-    parts = open_canvas(1600, height)
+    parts = open_canvas(_COMPASS_WIDTH, height)
     parts += header(
         "THE SET COMPASS",
         "Which question sends you to which line",
@@ -211,7 +246,7 @@ def set_compass(lines: tuple[LineEntry, ...], wrapper: LineEntry) -> str:
         "NO LINE RANKS ABOVE ANOTHER",
         ACCENT,
     )
-    parts += _compass_rose(entries, 1400, 150)
+    parts += _compass_rose(entries, _CARD_RIGHT - 90, 150)
 
     cursor = _CONTENT_TOP
     for entry, card_height in zip(entries, heights):
@@ -225,7 +260,7 @@ def set_compass(lines: tuple[LineEntry, ...], wrapper: LineEntry) -> str:
         cursor += card_height + 8
 
     cursor += 24
-    parts.append(line(MARGIN, cursor, CONTENT_RIGHT, cursor, RULE, 2))
+    parts.append(line(MARGIN, cursor, _CARD_RIGHT, cursor, RULE, 2))
     parts.append(
         text(
             MARGIN,
@@ -289,6 +324,8 @@ def two_orders(lines: tuple[LineEntry, ...]) -> str:
     place on the left and is connected to an explicit note instead. The
     divergence sentence under the columns is the live result of
     :func:`line_set.invariants.check_orders_diverge`, not a claim typed here.
+    Working cards retain twelve units below their last question baseline;
+    their height uses the same wrapped name and question rows that are drawn.
     """
     working = tuple(sorted(lines, key=lambda entry: entry.working_position))
     staged = tuple(
@@ -304,8 +341,11 @@ def two_orders(lines: tuple[LineEntry, ...]) -> str:
     questions = {
         entry.id: wrap_to_width(entry.question, box_w - 112, 26) for entry in working
     }
+    names = {entry.id: exact_lines(entry.color, box_w - 112, 26) for entry in working}
+    # The last question baseline is 32 + 30 * names + 28 * questions.
     box_heights = {
-        entry.id: 100 + 28 * (len(questions[entry.id]) - 1) for entry in working
+        entry.id: 44 + 30 * len(names[entry.id]) + 28 * len(questions[entry.id])
+        for entry in working
     }
     gap = 12
     left_x = MARGIN
@@ -342,27 +382,36 @@ def two_orders(lines: tuple[LineEntry, ...]) -> str:
                 2.5,
             )
         )
-        parts.append(text(left_x + 92, y + 40, entry.color, 26, ink, "700"))
+        for row, name in enumerate(names[entry.id]):
+            parts.append(text(left_x + 92, y + 30 + row * 30, name, 26, ink, "700"))
         parts.append(
             text(
-                left_x + box_w - 20,
-                y + 40,
+                left_x + 92,
+                y + 30 + 30 * len(names[entry.id]),
                 f"position {entry.working_position}",
                 24,
                 MUTED,
-                "400",
-                "end",
             )
         )
         for row, question in enumerate(questions[entry.id]):
-            parts.append(text(left_x + 92, y + 76 + row * 28, question, 26, MUTED))
+            parts.append(
+                text(
+                    left_x + 92,
+                    y + 60 + 30 * len(names[entry.id]) + row * 28,
+                    question,
+                    26,
+                    MUTED,
+                )
+            )
         left_center[entry.id] = y + box_h / 2
         y += box_h + gap
 
     right_center: dict[str, float] = {}
     y = top
     for entry in staged:
-        box_h = 100
+        stage_detail = f"stage {OPUS_STAGE_ORDER.index(entry.opus_stage) + 1} · the {entry.color} line"
+        stage_rows = exact_lines(stage_detail, box_w - 112, 28)
+        box_h = 72 + 32 * len(stage_rows)
         ink = line_ink(entry.color)
         stage = entry.opus_stage
         assert stage is not None  # staged filters to entries with an opus stage
@@ -380,15 +429,8 @@ def two_orders(lines: tuple[LineEntry, ...]) -> str:
             )
         )
         parts.append(text(right_x + 24, y + 40, stage, 26, ink, "700"))
-        parts.append(
-            text(
-                right_x + 24,
-                y + 68,
-                f"stage {OPUS_STAGE_ORDER.index(stage) + 1} · the {entry.color} line",
-                28,
-                MUTED,
-            )
-        )
+        for row, value in enumerate(stage_rows):
+            parts.append(text(right_x + 24, y + 72 + row * 32, value, 28, MUTED))
         right_center[entry.id] = y + box_h / 2
         y += box_h + gap
 
@@ -415,12 +457,17 @@ def two_orders(lines: tuple[LineEntry, ...]) -> str:
 
     cursor = y + 24
     if unstaged:
+        labels = [
+            f"{entry.color} · position {entry.working_position}" for entry in unstaged
+        ]
+        row_counts = [len(exact_lines(value, box_w - 48, 28)) for value in labels]
+        panel_height = 70 + 32 * sum(row_counts)
         parts.append(
             rect(
                 right_x,
                 cursor,
                 box_w,
-                60 + 30 * len(unstaged),
+                panel_height,
                 PANEL,
                 MUTED,
                 1.5,
@@ -431,21 +478,16 @@ def two_orders(lines: tuple[LineEntry, ...]) -> str:
         parts.append(
             text(right_x + 24, cursor + 34, "NO OPUS STAGE DECLARED", 28, MUTED, "700")
         )
-        for index, entry in enumerate(unstaged):
-            parts.append(
-                text(
-                    right_x + 24,
-                    cursor + 62 + index * 30,
-                    f"{entry.color} · position {entry.working_position}",
-                    28,
-                    MUTED,
-                )
+        label_y: float = cursor + 68
+        for entry, label in zip(unstaged, labels):
+            drawn, label_y = text_block(
+                right_x + 24, label_y, label, box_w - 48, 28, MUTED
             )
+            parts.extend(drawn)
             parts.append(
                 path(
                     f"M{left_x + box_w} {left_center[entry.id]:.1f} C "
-                    f"{(left_x + box_w + right_x) / 2:.1f} "
-                    f"{left_center[entry.id]:.1f}, "
+                    f"{(left_x + box_w + right_x) / 2:.1f} {left_center[entry.id]:.1f}, "
                     f"{(left_x + box_w + right_x) / 2:.1f} {cursor + 30}, "
                     f"{right_x} {cursor + 30}",
                     MUTED,
@@ -453,7 +495,7 @@ def two_orders(lines: tuple[LineEntry, ...]) -> str:
                     dash="4 7",
                 )
             )
-        cursor += 84 + 30 * len(unstaged)
+        cursor += panel_height + 24
 
     cursor = max(cursor, left_bottom) + 24
     parts.append(line(MARGIN, cursor + 10, CONTENT_RIGHT, cursor + 10, RULE, 2))

@@ -6,10 +6,10 @@ not already decide.
 
 ## Modules
 
-- `__init__.py` re-exports `build_figures()`, `figure_summary()`, `figure_plates()`, `FigurePlate`, the rasterizer constants, and the legibility surface (`measure_project()`, `illegible()`, `FigureLegibility`, `MIN_LEGIBLE_PT`).
+- `__init__.py` re-exports `build_figures()`, `figure_summary()`, `figure_plates()`, `FigurePlate`, the rasterizer constants, and the legibility surface (`EmbedOccurrence`, `measure_project()`, `measure_surface()`, `illegible()`, `FigureLegibility`, `MIN_LEGIBLE_PT`).
 - `build.py` defines `build_figures()`, `figure_summary()`, `RSVG_CONVERT`, `RSVG_ENV_VAR`, `BUILD_PROVENANCE`, and `PROJECT_ROOT`.
 - `canvas.py` defines the SVG primitives — `text()`, `rect()`, `line()`, `path()`, `glyph()`, `hatch_defs()`, `open_canvas()`, `header()`, `close_canvas()`, `wrap()`, `plural()` — plus `WIDTH`, `MARGIN`, `CONTENT_RIGHT`, and `MIN_TEXT_UNITS`.
-- `legibility.py` derives what a canvas unit becomes in printed points — `measure_project()`, `measure_plate()`, `illegible()`, `parse_page_geometry()`, `parse_embeds()`, `parse_height_fraction()`, `MIN_LEGIBLE_PT` — from `docs/manuscript/config.yaml`, the embed widths, and the built SVGs. It draws nothing.
+- `legibility.py` derives printed-point sizes from explicit placements, page margins, a height cap and source SVGs. `parse_embed_text()` and `parse_embeds()` retain every active occurrence, including unlabeled images (empty label), with original source/line diagnostics; shared `prose_spans()` excludes literal examples. `measure_project()` measures standalone source only. `measure_surface()` optionally measures a compiled plan without writing or rendering it.
 - `palette.py` defines the inks, `line_fill()`/`line_ink()`/`shape_for()`/`dash_for()`, the enumeration-keyed display maps, and `verify_coverage()`.
 - `plates/__init__.py` defines `FigurePlate` and `figure_plates(lines, shared, reading, wrapper, self_reading)`. Two readings are passed: `reading` covers the declared lines, `self_reading` covers them plus the wrapper and is the one the self-check itself runs.
 - `plates/declaration.py` draws `set_compass` and `two_orders`.
@@ -20,16 +20,20 @@ not already decide.
 
 ## Invariants
 
-`canvas.wrap_to_width()` derives a deterministic character budget from available
-width and font size. The native raster regression measures actual glyph widths
-against horizontal card and viewport boundaries and detects text overlaps near
-the same baseline. Both that
-gate and the printed-point legibility gate must pass.
+`canvas.wrap_to_width()` uses conservative per-character width estimates and
+breaks long unspaced words. `exact_lines()` and `text_block()` retain full
+dynamic identities at a fixed font size, with exact full text on the SVG group.
+Cards and cover rows grow from their wrapped text; token columns have a usable
+width floor. No identity is shortened or font reduced to fit. Native glyph,
+vertical layout and physical-page checks remain separate required proof.
 
-- **The build fails closed before it writes.** `verify_coverage()` and the
-  rasterizer lookup both run before the first SVG is written. A missing
-  `rsvg-convert` raises with install guidance; it is never skipped, never
-  warned about, and never leaves a partial artifact set behind.
+- **Prerequisites and owned paths fail closed before writes.** Display-map and
+  rasterizer lookup failures precede the first SVG. The builder preflights every
+  owned destination and refuses symlinked `output`, `output/figures`, SVG, PNG,
+  and manifest paths, including dangling links. Unrelated files are not removed.
+  This is a local preflight, not race resistance or transactional rendering:
+  the caller must exclude concurrent output mutation, and a runtime rasterizer
+  failure can leave a partial set.
 - **No clock reading reaches a plate.** A reading's `read_as_of` is
   deliberately not drawn. It is a property of the reading, available from
   `read_set()`, and drawing it would make two builds of an unchanged
@@ -84,6 +88,39 @@ marked not read is a fact about one machine's installation. A digest prefix
 detects disagreement with a digest someone already holds and is not tamper
 evidence.
 
+### Physical measurement API and limits
+
+`EmbedOccurrence(source, line, image_path, label, width_fraction)` identifies one
+placement; repeated paths and labels remain distinct. `parse_embeds(directory)`
+returns a tuple in sorted-source and original-offset order, not a basename map.
+`parse_embed_text(markdown, source=...)` accepts planned text before it is written.
+`FigureLegibility` includes `source`, `source_line`, and `surface` diagnostics.
+
+`measure_project(root)` selects `docs/manuscript` (or `manuscript`) and derives
+each SVG counterpart beside the exact source-relative image destination,
+normally `output/figures`. Distinct paths with one basename stay distinct.
+It never selects an injected compiled manuscript and must not be cited as
+compiled-volume qualification.
+
+For optional compiled measurement call
+`measure_surface(occurrences, config_text=generated_config,
+svg_sources={exact_image_path: original_svg_path}, surface="compiled")`.
+Supply every actual planned placement, including covers, and the compiled
+carrier's generated config. Missing exact SVG mappings or files refuse the
+measurement; PNG-only assembly remains independently supported. The caller owns
+SVG-to-image correspondence; this function does not authenticate it.
+
+The geometry model is US Letter in TeX points, four explicit inch margins in a
+double-quoted `geometry:` scalar, percentage embed widths (absent means full
+text width), and a numeric `figure_height_fraction` (absent means the documented
+template default). Image parsing uses inline Markdown image destinations and
+optional brace attributes, not arbitrary Markdown/HTML or renderer layout.
+This is an authored-font-size derivation under those assumptions, not a PDF,
+HTML, EPUB, font-substitution, accessibility or human-readability verdict.
+Tall exact-text extensions may fail the physical floor despite fitting the SVG;
+do not hide that failure with smaller fonts, truncation or omitted placements.
+
+
 ## Validation
 
 - `uv run python scripts/build_figures.py`
@@ -95,4 +132,4 @@ evidence.
   with a planted bad SVG control.
 - Convert a plate to grayscale and confirm every distinction survives.
 - Build once with a resolver that finds no sibling; `installation_surface`
-  must hatch every row and `vocabulary_matrix` must draw its honest panel.
+  must hatch every card and `vocabulary_matrix` must draw its honest panel.

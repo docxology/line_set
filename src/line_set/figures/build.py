@@ -152,6 +152,26 @@ def _write_figure_registry(
     return path
 
 
+def _check_output_paths(root: Path, names: tuple[str, ...]) -> Path:
+    """Refuse redirected owned output before any directory or file is written.
+
+    This is a local preflight, not protection against concurrent filesystem
+    replacement. Builds require exclusive access to their output directory.
+    """
+    root = root.resolve()
+    output = root / "output"
+    figures = output / "figures"
+    for path in (output, figures, *(figures / name for name in names)):
+        if path.is_symlink() or not path.resolve().is_relative_to(root):
+            raise ValueError(f"figure output must not follow a symlink: {path}")
+        if path.exists():
+            if path in (output, figures) and not path.is_dir():
+                raise ValueError(f"figure output directory is not a directory: {path}")
+            if path not in (output, figures) and not path.is_file():
+                raise ValueError(f"figure output is not a regular file: {path}")
+    return figures
+
+
 def build_figures(
     project_root: Path | None = None,
     *,
@@ -181,7 +201,10 @@ def build_figures(
     )
 
     root = PROJECT_ROOT if project_root is None else Path(project_root)
-    figure_dir = root / "output" / "figures"
+    names = tuple(
+        f"{plate.name}.{suffix}" for plate in plates for suffix in ("svg", "png")
+    ) + ("set_registry.json", "figure_registry.json")
+    figure_dir = _check_output_paths(root, names)
     figure_dir.mkdir(parents=True, exist_ok=True)
 
     produced: list[Path] = []

@@ -305,22 +305,115 @@ def wrap(value: str, width: int) -> list[str]:
     lines: list[str] = []
     current = ""
     for word in words:
-        candidate = f"{current} {word}".strip()
-        if current and len(candidate) > width:
+        if current and len(current) + 1 + len(word) > width:
             lines.append(current)
-            current = word
-        else:
-            current = candidate
-    # ``words`` is non-empty here and ``split()`` yields no empty word, so
-    # ``current`` always holds the tail. No guard, because a guard nothing can
-    # falsify is a branch that reads as caution and tests as noise.
-    lines.append(current)
+            current = ""
+        while len(word) > width:
+            lines.append(word[:width])
+            word = word[width:]
+        if word:
+            current = f"{current} {word}".strip()
+    if current:
+        lines.append(current)
     return lines
 
 
+def _estimated_em(value: str) -> float:
+    """Conservative Arial/sans-serif budgeting, not native glyph measurement."""
+    return sum(
+        1.2
+        if not char.isascii()
+        else 1.0
+        if char in "WMwm@%&"
+        else 0.8
+        if char.isupper()
+        else 0.65
+        if char.isalnum()
+        else 0.4
+        if char.isspace()
+        else 0.6
+        for char in value
+    )
+
+
 def wrap_to_width(value: str, width: float, size: int) -> list[str]:
-    """Use a deterministic character budget; raster checks measure actual glyphs."""
-    return wrap(value, max(1, int(width / (size * 0.6))))
+    """Width-budget prose, breaking even an unspaced word without shrinking."""
+    budget = width / size
+    lines: list[str] = []
+    current = ""
+    for word in str(value).split():
+        candidate = f"{current} {word}" if current else word
+        if current and _estimated_em(candidate) > budget:
+            lines.append(current)
+            current = ""
+        fragment = ""
+        for char in word:
+            if fragment and _estimated_em(fragment + char) > budget:
+                lines.append(fragment)
+                fragment = ""
+            fragment += char
+        if current:
+            current += " " + fragment
+        else:
+            current = fragment
+    if current:
+        lines.append(current)
+    return lines or [""]
+
+
+def exact_lines(value: str, width: float, size: int) -> list[str]:
+    """Lossless fragments using the prose's conservative glyph-width budget.
+
+    Concatenation recovers the exact value, including authored whitespace.
+    An overlong unspaced value still splits without shrinking or abbreviation.
+    Native font/layout qualification is still required.
+    """
+    budget = max(1.0, width / size)
+    rows: list[str] = []
+    start = 0
+    while start < len(value):
+        end = start
+        used = 0.0
+        while end < len(value):
+            advance = _estimated_em(value[end])
+            if end > start and used + advance > budget:
+                break
+            used += advance
+            end += 1
+        if end < len(value) and not value[end].isspace():
+            boundary = next(
+                (
+                    index + 1
+                    for index in range(end - 1, start, -1)
+                    if value[index].isspace()
+                ),
+                None,
+            )
+            if boundary is not None:
+                end = boundary
+        rows.append(value[start:end])
+        start = end
+    return rows or [""]
+
+
+def text_block(
+    x: float,
+    y: float,
+    value: str,
+    width: float,
+    size: int,
+    fill: str = INK,
+    weight: str = "400",
+) -> tuple[list[str], float]:
+    """Draw full exact text at fixed size; return parts and next baseline."""
+    rows = exact_lines(value, width, size)
+    parts = [
+        f'<g aria-label="{escape_text(value)}" data-full-text="{escape_text(value)}">'
+    ]
+    for index, row in enumerate(rows):
+        parts.append(text(x, y + index * (size + 4), row, size, fill, weight))
+    parts.append("</g>")
+    return parts, y + len(rows) * (size + 4)
 
 
 #: Endings that take ``-es`` rather than ``-s``.
@@ -362,6 +455,7 @@ __all__ = [
     "WIDTH",
     "close_canvas",
     "escape_text",
+    "exact_lines",
     "glyph",
     "hatch_defs",
     "header",
@@ -371,6 +465,7 @@ __all__ = [
     "plural",
     "rect",
     "text",
+    "text_block",
     "wrap",
     "wrap_to_width",
 ]

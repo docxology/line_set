@@ -12,7 +12,7 @@
   ],
   "license": "cc-by-4.0",
   "access_right": "open",
-  "version": "0.7.0",
+  "version": "0.8.0",
   "keywords": [
     "modularity",
     "information hiding",
@@ -110,5 +110,5 @@
       "scheme": "doi"
     }
   ],
-  "notes": "Membership is declared by the package registry. Violet, Copper, and Iron are private instruments; repository references do not grant source access. Sibling DOI references are retained in related_identifiers. The last verified archive DOI is retained as an explicitly versioned historical reference in CITATION.cff and the manuscript configuration; no DOI has been assigned to this software release. This local metadata is not deposit authorization."
+  "notes": "Source metadata for version 0.8.0; a source declaration is not a release or deposit receipt. The owner-chosen display title The Line Set: The Collected Volume is retained for this source citation. The public source ZIP, standalone wrapper paper The Line Set: Holding Instruments Apart, and PRIVATE eleven-work omnibus are distinct objects. Previously verified public source ZIP: 0.7.0 / 10.5281/zenodo.24069475; historical 0.2.0 / 10.5281/zenodo.22833507 remains a separate reference. Neither identifies this source edition, the standalone rendered wrapper, or the private omnibus; no omnibus deposit is claimed. Cite later source through its repository until its exact edition/object is independently verified. Membership is declared by the registry; Violet, Copper, and Iron remain private. Repository references grant no access. This metadata grants no deposit authority."
 }

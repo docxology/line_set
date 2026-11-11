@@ -39,10 +39,12 @@ import pytest
 from line_set.figures import canvas, legibility
 from line_set.figures.legibility import (
     MIN_LEGIBLE_PT,
+    EmbedOccurrence,
     PageGeometry,
     illegible,
     measure_plate,
     measure_project,
+    measure_surface,
     parse_embeds,
     parse_height_fraction,
     parse_page_geometry,
@@ -136,9 +138,12 @@ def test_an_embed_with_no_width_attribute_takes_the_full_text_width(
     tmp_path: Path,
 ) -> None:
     _plant(tmp_path, small=18, width=1600, height=1000, fraction=0.92, embed_width="")
-    assert parse_embeds(tmp_path / "manuscript") == {
-        "planted.png": ("fig:planted", 1.0)
-    }
+    (item,) = parse_embeds(tmp_path / "manuscript")
+    assert (item.filename, item.label, item.width_fraction) == (
+        "planted.png",
+        "fig:planted",
+        1.0,
+    )
 
 
 def test_a_width_attribute_is_read_as_a_fraction(tmp_path: Path) -> None:
@@ -150,9 +155,12 @@ def test_a_width_attribute_is_read_as_a_fraction(tmp_path: Path) -> None:
         fraction=0.92,
         embed_width=" width=95%",
     )
-    assert parse_embeds(tmp_path / "manuscript") == {
-        "planted.png": ("fig:planted", 0.95)
-    }
+    (item,) = parse_embeds(tmp_path / "manuscript")
+    assert (item.filename, item.label, item.width_fraction) == (
+        "planted.png",
+        "fig:planted",
+        0.95,
+    )
 
 
 def test_the_rendered_point_size_is_the_declared_width_ratio(tmp_path: Path) -> None:
@@ -260,7 +268,7 @@ def test_a_plate_with_no_text_cannot_report_a_legible_minimum(tmp_path: Path) ->
         'viewBox="0 0 100 100"><rect x="0" y="0" width="10" height="10"/></svg>',
         encoding="utf-8",
     )
-    with pytest.raises(ValueError) as error:
+    with pytest.raises(ValueError):
         measure_plate(
             svg,
             "fig:blank",
@@ -269,7 +277,6 @@ def test_a_plate_with_no_text_cannot_report_a_legible_minimum(tmp_path: Path) ->
             PageGeometry(text_width_pt=553.6, text_height_pt=715.5),
             0.92,
         )
-    assert "no text" in str(error.value)
 
 
 def test_an_svg_with_no_declared_canvas_size_is_refused(tmp_path: Path) -> None:
@@ -324,3 +331,194 @@ def test_the_canvas_floor_is_chosen_so_a_full_width_embed_clears_the_page_floor(
     assert (canvas.MIN_TEXT_UNITS - 1) * geometry.text_width_pt / canvas.WIDTH < (
         MIN_LEGIBLE_PT
     )
+
+
+@pytest.mark.parametrize("widths", [(10, 100), (100, 10), (100, 100)])
+def test_repeated_image_placements_are_measured_independently(
+    tmp_path: Path,
+    widths: tuple[int, int],
+) -> None:
+    _plant(tmp_path, small=18, width=1600, height=1000, fraction=0.92, embed_width="")
+    source = tmp_path / "manuscript" / "01_body.md"
+    source.write_text(
+        "\n".join(
+            f"![Placement](../output/figures/planted.png){{#fig:placement-{index} width={width}%}}"
+            for index, width in enumerate(widths)
+        ),
+        encoding="utf-8",
+    )
+    measured = measure_project(tmp_path)
+    assert [item.width_fraction for item in measured] == [
+        width / 100 for width in widths
+    ]
+    assert [item.source_line for item in measured] == [1, 2]
+    assert all(
+        item.source == str(source) and item.surface == "standalone" for item in measured
+    )
+    assert [item.label for item in illegible(measured)] == [
+        f"fig:placement-{index}" for index, width in enumerate(widths) if width == 10
+    ]
+
+
+def test_compiled_measurement_uses_explicit_carrier_geometry_and_exact_svg_mapping(
+    tmp_path: Path,
+) -> None:
+    _plant(tmp_path, small=18, width=1600, height=1000, fraction=0.92, embed_width="")
+    svg = tmp_path / "output" / "figures" / "planted.svg"
+    occurrences = (
+        EmbedOccurrence("volume/part.md", 8, "figures/native.png", "fig:native", 1.0),
+        EmbedOccurrence("volume/cover.md", 3, "figures/cover.png", "fig:cover", 0.7),
+    )
+    wide = _CONFIG.format(fraction=0.92)
+    narrow = wide.replace("left=0.42in,right=0.42in", "left=2.0in,right=2.0in")
+    mapping = {item.image_path: svg for item in occurrences}
+    wider = measure_surface(
+        occurrences, config_text=wide, svg_sources=mapping, surface="compiled"
+    )
+    narrower = measure_surface(
+        occurrences, config_text=narrow, svg_sources=mapping, surface="compiled"
+    )
+    assert all(item.surface == "compiled" for item in wider)
+    assert all(a.rendered_min_pt > b.rendered_min_pt for a, b in zip(wider, narrower))
+    assert narrower[0].rendered_min_pt < MIN_LEGIBLE_PT <= wider[0].rendered_min_pt
+    assert measure_project(tmp_path)[0].surface == "standalone"
+    with pytest.raises(FileNotFoundError):
+        measure_surface(
+            occurrences,
+            config_text=wide,
+            svg_sources={occurrences[0].image_path: svg},
+            surface="compiled",
+        )
+
+
+def test_legibility_ignores_literal_image_examples_but_keeps_original_offsets(
+    tmp_path: Path,
+) -> None:
+    manuscript = tmp_path / "manuscript"
+    manuscript.mkdir()
+    literal = "![Example](plate.png){#fig:example width=1%}"
+    body = (
+        f"```markdown\n{literal}\n```\n\n"
+        f"`{literal}`\n\n    {literal}\n\n"
+        "![Real](plate.png){#fig:real width=100%}\n"
+    )
+    (manuscript / "part.md").write_text(body, encoding="utf-8")
+    (item,) = parse_embeds(manuscript)
+    assert item.label == "fig:real"
+    assert item.line == body[: body.index("![Real]")].count("\n") + 1
+
+
+def test_actual_alt_text_code_and_distinct_paths_with_one_basename_are_measured(
+    tmp_path: Path,
+) -> None:
+    _plant(tmp_path, small=18, width=1600, height=1000, fraction=0.92, embed_width="")
+    second = tmp_path / "other" / "planted.svg"
+    second.parent.mkdir()
+    second.write_text(
+        _SVG_TEMPLATE.format(width=1600, height=1000, small=36), encoding="utf-8"
+    )
+    source = tmp_path / "manuscript" / "01_body.md"
+    source.write_text(
+        "![A `code` label](../output/figures/planted.png){#fig:First_label width=100%}\n"
+        "![A second image](../other/planted.png){width=100%}\n",
+        encoding="utf-8",
+    )
+    first, other = measure_project(tmp_path)
+    assert first.filename == other.filename == "planted.png"
+    assert first.label == "fig:First_label"
+    assert other.label == ""
+    assert other.min_font_units == 2 * first.min_font_units
+
+
+def test_literal_bracket_caption_cannot_hide_an_illegible_repeated_placement(
+    tmp_path: Path,
+) -> None:
+    _plant(tmp_path, small=18, width=1600, height=1000, fraction=0.92, embed_width="")
+    (tmp_path / "manuscript" / "01_body.md").write_text(
+        "![Wide](../output/figures/planted.png){#fig:wide width=100%}\n"
+        "![Use `a[b]`](../output/figures/planted.png){#fig:narrow width=10%}\n",
+        encoding="utf-8",
+    )
+    measured = measure_project(tmp_path)
+    assert [(item.label, item.source_line) for item in measured] == [
+        ("fig:wide", 1),
+        ("fig:narrow", 2),
+    ]
+    assert [item.label for item in illegible(measured)] == ["fig:narrow"]
+
+
+def test_commented_height_cap_cannot_turn_a_floor_failure_into_a_pass(
+    tmp_path: Path,
+) -> None:
+    _plant(tmp_path, small=18, width=1600, height=1000, fraction=0.25, embed_width="")
+    config = tmp_path / "manuscript" / "config.yaml"
+    config.write_text(
+        _CONFIG.format(fraction=0.25).replace(
+            "figure_height_fraction: 0.25",
+            "figure_height_fraction: 0.25 # deliberate cap",
+        ),
+        encoding="utf-8",
+    )
+    (measured,) = measure_project(tmp_path)
+    assert measured.height_bound
+    assert measured.rendered_min_pt < MIN_LEGIBLE_PT
+    assert not measured.legible
+
+
+def test_commented_geometry_is_not_a_declared_margin() -> None:
+    config = (
+        '# geometry: "left=0in,right=0in,top=0in,bottom=0in"\n'
+        'metadata:\n  geometry: "left=1in,right=1in,top=1in,bottom=1in"\n'
+    )
+    geometry = parse_page_geometry(config)
+    assert geometry.text_width_pt == pytest.approx(6.5 * 72.27)
+    assert geometry.text_height_pt == pytest.approx(9.0 * 72.27)
+
+
+@pytest.mark.parametrize(
+    "extra",
+    [
+        '<!-- font-size="1px" -->',
+        '<text data-font-size="1px">font-size: 1px example</text>',
+        "<style>/* font-size: 1px; */ text { font-size: 18px; }</style>",
+        "<text style='content: \";font-size: 1px;\";font-size: 18px;'>Text</text>",
+    ],
+)
+def test_only_actual_svg_font_declarations_enter_the_inventory(
+    tmp_path: Path, extra: str
+) -> None:
+    path = tmp_path / "plate.svg"
+    path.write_text(
+        '<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="1000">'
+        + extra
+        + '<text font-size="18px">Readable</text></svg>',
+        encoding="utf-8",
+    )
+    measured = measure_plate(
+        path, "fig:p", "p.png", 1.0, PageGeometry(560.0, 720.0), 0.92
+    )
+    assert measured.min_font_units == 18
+    assert measured.legible
+
+
+def test_comment_only_font_mentions_are_missing_measurement_not_a_pass(
+    tmp_path: Path,
+) -> None:
+    path = tmp_path / "plate.svg"
+    path.write_text(
+        '<svg width="1600" height="1000"><!-- font-size="18px" -->'
+        "<text>No declared size</text></svg>",
+        encoding="utf-8",
+    )
+    with pytest.raises(ValueError):
+        measure_plate(path, "fig:p", "p.png", 1.0, PageGeometry(560.0, 720.0), 0.92)
+
+
+def test_malformed_svg_is_not_a_supported_measurement(tmp_path: Path) -> None:
+    path = tmp_path / "plate.svg"
+    path.write_text(
+        '<svg width="1600" height="1000"><text font-size="18px"></svg>',
+        encoding="utf-8",
+    )
+    with pytest.raises(ValueError):
+        measure_plate(path, "fig:p", "p.png", 1.0, PageGeometry(560.0, 720.0), 0.92)

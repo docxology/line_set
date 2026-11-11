@@ -7,18 +7,24 @@ its declared color name. Nothing here names an individual line, so a color
 appended to the declaration appears on the cover without an edit in this
 module.
 
-The canvas matches the sibling covers' title-page proportions. Because the
-cover prints at a declared fraction of the text width rather than as a
-full-width embed, its smallest label is authored well above
-:data:`line_set.figures.canvas.MIN_TEXT_UNITS`, so a label still clears the
-six-point print floor through the ``width=70%`` embed the volume's part
-headings use.
+The canvas matches the sibling covers' title-page proportions, with labels
+authored above :data:`line_set.figures.canvas.MIN_TEXT_UNITS`. The rendered
+print floor is qualified separately at each source or compiled placement's
+actual geometry; a source label size alone does not certify a cover placement.
 """
 
 from __future__ import annotations
 
 from ...models import LineEntry
-from ..canvas import close_canvas, line, open_canvas, rect, text
+from ..canvas import (
+    close_canvas,
+    escape_text,
+    exact_lines,
+    line,
+    open_canvas,
+    rect,
+    text,
+)
 from ..palette import COVER_ORDER, INK, MUTED, RULE, cover_stroke
 
 #: The cover canvas. Wider than the plate design width on purpose: this is the
@@ -29,13 +35,16 @@ HEIGHT = 1100
 #: The white stroke is invisible on paper by itself, so it is drawn over a
 _WHITE_UNDER_WIDTH = 12.0
 
-#: Length of one line's stroke, and the vertical metrics of the row.
+#: Maximum stroke length; actual strokes reserve a gap inside their slot.
 _STROKE_LENGTH = 110.0
-_STROKE_Y = 470.0
-_LABEL_Y = 575.0
+_SLOT_GAP = 24.0
+_REGISTER_LEFT = 230.0
+_REGISTER_SPAN = 1340.0
+_LABEL_SIZE = 30
+_MAX_COLUMNS = 10
 
-#: The reader's stroke sits below the register and spans past it.
-_READER_Y = 790.0
+#: Register rows grow with the declaration; the reader follows the last row.
+_REGISTER_TOP = 390.0
 
 #: Words for the subtitle's count; numerals past the table.
 _NUMBER_WORDS = (
@@ -60,35 +69,45 @@ def _number_word(count: int) -> str:
     return _NUMBER_WORDS[count] if count < len(_NUMBER_WORDS) else str(count)
 
 
-def _stroke(entry: LineEntry, center: float) -> list[str]:
-    """One line's stroke and its name, or the empty list for no entries."""
-    parts: list[str] = []
+def _stroke(
+    entry: LineEntry,
+    center: float,
+    stroke_y: float,
+    slot_width: float,
+) -> tuple[list[str], float]:
+    """One separate stroke and full label within its actual slot."""
+    parts = [f'<g data-cover-color="{escape_text(entry.color)}">']
+    length = min(_STROKE_LENGTH, slot_width - _SLOT_GAP)
     stroke = cover_stroke(entry.color)
     if entry.color == "white":
         parts.append(
             line(
-                center - _STROKE_LENGTH / 2,
-                _STROKE_Y,
-                center + _STROKE_LENGTH / 2,
-                _STROKE_Y,
+                center - length / 2,
+                stroke_y,
+                center + length / 2,
+                stroke_y,
                 INK,
                 _WHITE_UNDER_WIDTH,
             )
         )
     parts.append(
-        line(
-            center - _STROKE_LENGTH / 2,
-            _STROKE_Y,
-            center + _STROKE_LENGTH / 2,
-            _STROKE_Y,
-            stroke,
-            6.0,
+        line(center - length / 2, stroke_y, center + length / 2, stroke_y, stroke, 6.0)
+    )
+    label_rows = exact_lines(entry.color, slot_width - _SLOT_GAP, _LABEL_SIZE)
+    for index, label in enumerate(label_rows):
+        parts.append(
+            text(
+                center,
+                stroke_y + 70 + index * 36,
+                label,
+                _LABEL_SIZE,
+                MUTED,
+                "700",
+                "middle",
+            )
         )
-    )
-    parts.append(
-        text(center, _LABEL_Y, entry.color.upper(), 30, MUTED, "700", "middle")
-    )
-    return parts
+    parts.append("</g>")
+    return parts, stroke_y + 70 + 36 * len(label_rows)
 
 
 def _display_order(entries: tuple[LineEntry, ...]) -> tuple[LineEntry, ...]:
@@ -112,21 +131,46 @@ def _display_order(entries: tuple[LineEntry, ...]) -> tuple[LineEntry, ...]:
 
 
 def cover_svg(entries: tuple[LineEntry, ...]) -> str:
-    """Render the cover: one stroke per declared line in one dotted register.
+    """Render registry-sized slots in rows, with gaps and full written labels.
 
-    The stroke centers divide the row into ``len(entries)`` equal slots, and
-    each stroke is shorter than its slot, so two strokes cannot meet whatever
-    the set's size. The reader's stroke beneath spans past the register: it is
-    what holds the set, and it holds nothing by being a color.
+    Ordinary declared names get a full-size slot instead of artificial word
+    fragments. Oversized names wrap losslessly; the canvas grows vertically,
+    never by shrinking a label. Physical page legibility is measured separately.
     """
     ordered = _display_order(entries)
-    body = open_canvas(WIDTH, HEIGHT)
-    body.append(rect(60, 60, WIDTH - 120, HEIGHT - 120, "none", INK, 2.5))
+    label_width = max((len(entry.color) for entry in ordered), default=1) * _LABEL_SIZE
+    columns = max(
+        1,
+        min(
+            _MAX_COLUMNS,
+            len(ordered),
+            int(_REGISTER_SPAN / (label_width + _SLOT_GAP)),
+        ),
+    )
+    step = _REGISTER_SPAN / columns
+    parts: list[str] = []
+    cursor = _REGISTER_TOP
+    for start in range(0, len(ordered), columns):
+        bottom = cursor
+        for index, entry in enumerate(ordered[start : start + columns]):
+            strokes, label_bottom = _stroke(
+                entry,
+                _REGISTER_LEFT + (index + 0.5) * step,
+                cursor,
+                step,
+            )
+            parts.extend(strokes)
+            bottom = max(bottom, label_bottom)
+        cursor = bottom + 80
+    reader_y = max(790.0, cursor + 40)
+    height = max(HEIGHT, int(reader_y + 310))
+    body = open_canvas(WIDTH, height)
+    body.append(rect(60, 60, WIDTH - 120, height - 120, "none", INK, 2.5))
     body.append(text(120, 168, "THE LINE SET", 44, INK, "700"))
     body.append(
         text(
             WIDTH - 100,
-            HEIGHT - 110,
+            height - 110,
             f"A READER FOR {_number_word(len(ordered))} INSTRUMENTS",
             30,
             MUTED,
@@ -148,23 +192,29 @@ def cover_svg(entries: tuple[LineEntry, ...]) -> str:
         )
         body.append(close_canvas())
         return "".join(body)
-    left, span = 230.0, 1340.0
-    step = span / len(ordered)
     body.append(
         rect(
-            left - 80,
-            _STROKE_Y - 130,
-            span + 160,
-            _LABEL_Y - _STROKE_Y + 210,
+            _REGISTER_LEFT - 80,
+            _REGISTER_TOP - 130,
+            _REGISTER_SPAN + 160,
+            cursor - _REGISTER_TOP + 130,
             "none",
             RULE,
             2.5,
             dash="2 8",
         )
     )
-    for slot, entry in enumerate(ordered):
-        body.extend(_stroke(entry, left + slot * step + step / 2))
-    body.append(line(left - 110, _READER_Y, left + span + 110, _READER_Y, MUTED, 3.0))
+    body.extend(parts)
+    body.append(
+        line(
+            _REGISTER_LEFT - 110,
+            reader_y,
+            _REGISTER_LEFT + _REGISTER_SPAN + 110,
+            reader_y,
+            MUTED,
+            3.0,
+        )
+    )
     body.append(close_canvas())
     return "".join(body)
 

@@ -2,34 +2,31 @@
 
 The declared line instruments use a common report-envelope convention for co-registration:
 one record per native report, saying "this instrument, about this subject, at
-this review moment, said this — and here is the pointer to its complete native
-report." The convention came out of a design review of the collected set
+this review moment, said this — and here is its native readout pointer."
+The pointer's scope belongs to its producer. The convention came out of a design review of the collected set
 ("The Space Between the Lines", 2026-07-29; see
 [correspondence.md](correspondence.md)). This page records the convention as
 the set-level fact it is. Line Set documents it and does not implement it: a
 set reading is not a line report, so the wrapper has no envelope to export.
 
-## The shape, as the exporting works publish it
+## The shared wire shape
 
-Each exporting work declares, in its own `src/<name>/envelope.py`, a
-module-level constant
-
-```python
-ENVELOPE_SCHEMA = "line.report-envelope/1.0"
-```
-
-and a frozen dataclass with exactly these fields:
+Each native exporter publishes these ten JSON-compatible fields under
+`line.report-envelope/1.0`. Module placement, constants, dataclasses, and mappings
+are producer-owned implementation choices, not shared Python interfaces.
+Native return types may be mappings or local dataclasses; only the serialized
+fields form the shared convention.
 
 | Field | What it carries |
 | --- | --- |
-| `schema_version` | The schema string above, copied from that work's own constant. |
+| `schema_version` | The shared transport string `line.report-envelope/1.0`. |
 | `line_id` | The exporting instrument's coherent native identity; current membership is in `src/line_set/registry.py`, not a four-name whitelist. |
 | `subject_id` | What was assessed, in the caller's own reference scheme; stored, not verified. |
 | `review_date` | The native report's review date. |
-| `registry_version` | The version marker of the registry the report was evaluated against — a package version where the registry has no separate marker (red_line, black_line), or a registry/ledger revision date where it does (golden_line uses YYYY.MM.DD format, white_line uses YYYY.MM format). |
-| `registry_digest` | The instrument's own digest of its own registry, read from it, never recomputed by a reader. |
+| `registry_version` | The producer's registry or policy marker; it may be separate from the package version. |
+| `registry_digest` | The producer's declared registry digest; envelope intake does not recompute its method or certify its source. |
 | `native_status` | The instrument's verdict **in that instrument's own vocabulary** — see below. |
-| `report_ref` | SHA-256 of the canonical native report. The envelope points at the complete derivation; it never copies or restates it. |
+| `report_ref` | The producer-defined native readout digest, not a universal guarantee of retained inputs, context, or replay evidence. |
 | `source_snapshot_refs` | Caller-supplied provenance for the material the report was about; stored, not verified. |
 | `scope_and_nonclaims` | The instrument's non-claims, riding inside the envelope so a stored copy cannot outgrow what the instrument was allowed to say. |
 
@@ -42,8 +39,20 @@ defect in the convention.
 Copper's native status carries its read-state/completeness and per-pool vector,
 so rejected, empty, incomplete, and complete declarations remain distinct.
 Iron retains scenario and every episode's comparison/flags, not a favorable
-scenario aggregate. Main never interprets either projection. The complete report
-pointer and nonclaims remain necessary; a status projection is not the report.
+scenario aggregate. Main never interprets either projection. Copper and Iron
+bind their complete canonical reports; Blue retains its legacy coverage-projection
+digest, with normalized input, context, and full replay identity held separately
+in its companion report. Consult each producer's contract before claiming
+complete correspondence: a status projection or matching pointer is not replay.
+
+A producer's numeric domain does not establish a consumer's admission budget.
+Copper preserves exact integers without a decimal-digit bound; Witness accepts
+only its own bounded strict JSON, including integers of at most 4096 bits.
+A valid large Copper envelope can therefore receive a named Witness intake
+refusal without changing Copper's native reading. Do not round, stringify, trim,
+or omit the rejected values to obtain acceptance. Retain the complete native
+artifact and the refusal; neither envelope export nor intake certifies universal
+interoperability or the report's substantive truth.
 
 Violet, Copper, and Iron are PRIVATE producers. Public companion exports require
 separate disclosure review and empty `source_snapshot_refs`, not private source
@@ -54,14 +63,14 @@ native envelopes.
 
 ## Alignment by convention, never by import
 
-Each work declares its own `"line.report-envelope/1.0"` literal. No work
-imports another's constant, dataclass, or serializer, and this repository does
-not either — the string above is quoted prose, not code this package executes.
-Agreement between the repositories is a published convention, held the same
-way the sibling repositories are referenced: by name and URL, never by
-relative path or import. A work whose envelope stopped matching the shape
-would be out of convention, and nothing in any other repository would break —
-which is exactly the coupling the set wants.
+Each native producer owns its transport literal, exporter, and serializer;
+there is no shared runtime dependency. Main documents this wire convention,
+not an envelope implementation. Its separate reader imports published namespace
+bindings, never native evaluator or envelope implementations. Witness owns its
+local by-value intake and leaves native status opaque.
+
+Wire agreement is a published convention. An out-of-convention export does not
+break a sibling's Python imports, but a by-value consumer may refuse it.
 
 ## `native_status` is not comparable across lines
 

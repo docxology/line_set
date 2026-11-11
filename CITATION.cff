@@ -1,9 +1,9 @@
 cff-version: 1.2.0
-message: "Cite this software by repository and version. The archived reference below identifies the earlier deposited version."
+message: "Cite proposed source version 0.8.0 by repository and version. The owner-chosen Collected Volume display title names this source citation, not a deposited PRIVATE omnibus or standalone wrapper paper. References identify earlier editions."
 type: software
 title: "The Line Set: The Collected Volume"
-version: "0.7.0"
-date-released: "2026-11-08"
+version: "0.8.0"
+date-released: "2026-11-09"
 authors:
   - family-names: "Friedman"
     given-names: "Daniel Ari"
@@ -36,13 +36,21 @@ abstract: >-
   collision was found.
 references:
   - type: software
+    title: "The Line Set: The Collected Volume"
+    version: "0.7.0"
+    authors:
+      - family-names: "Friedman"
+        given-names: "Daniel Ari"
+    doi: "10.5281/zenodo.24069475"
+    notes: "Previously verified public source ZIP only; not the standalone wrapper paper, PRIVATE eleven-work omnibus, or proposed 0.8.0 source."
+  - type: software
     title: "The Line Set: Holding Instruments Apart"
     version: "0.2.0"
     authors:
       - family-names: "Friedman"
         given-names: "Daniel Ari"
     doi: "10.5281/zenodo.22833507"
-    notes: "Last verified archive; this DOI identifies version 0.2.0, not the current software release."
+    notes: "Historical archive; this DOI identifies version 0.2.0, not the current source candidate."
   - type: software
     title: "red_line"
     authors:

@@ -265,16 +265,122 @@ receipt. The assembler writes `omnibus_claim_ledger.json` from the formalism
 anchors actually declared in the assembled sections, so the engine can resolve
 their namespaced cross-references. Its rows record label presence only.
 
-The volume owns one final merged bibliography. Source reference pages containing
-only a heading, optionally followed by an empty Pandoc `#refs` Div, are structural
-stubs and are not reproduced inside a work. Reference pages containing prose or
-examples remain source sections; their empty live `#refs` Divs are removed before
-the normal section transforms. Prose, citations, nonempty Divs and fenced,
-inline or indented literal examples remain intact. The final volume reference
-page owns the single citeproc placeholder, keeping combined IDs unique and
-split HTML citation destinations unambiguous. The generated front matter sets
-`link-citations: true` in leading Markdown YAML so EPUB receives the same
-source-owned citation-link policy.
+The volume owns one final merged bibliography. A `99_` reference page is a
+structural stub only when its heading actually says **References**, optionally
+followed by an empty Pandoc `#refs` Div. A heading-only `99_scope.md` is still
+a source section. Reference pages containing prose or examples remain source
+sections; their empty live `#refs` Divs are removed before the normal section
+transforms. Prose, citations, nonempty Divs and fenced, inline or indented literal
+examples remain intact. Fences close only with the opening delimiter character
+and at least its run length. Inline code uses matching backtick runs, including
+multiline spans within a paragraph; ordinary list continuation indentation is
+not an indented code block. The shared `line_set._markdown_spans.prose_spans`
+reader exposes active half-open ranges in original string offsets for publication
+consumers. Literal syntax is neither collected nor rewritten nor validated as an
+active anchor, reference, or image. Figure retargeting changes image destinations
+only, not prose paths or captions. The final volume reference page owns the single
+citeproc placeholder, and the generated front matter sets `link-citations: true`
+in leading Markdown YAML.
+
+Assembly refuses collisions it introduces between authored namespaced IDs and
+generated front-matter, part, or cover IDs. It does not add validation of duplicate
+IDs already authored within a work or broaden the supported anchor-attribute
+syntax. The document-wide formalism-kind versus citation rule is unchanged.
+
+The bibliography reader preserves raw supported entries and compares only their
+top-level identity fields. It accepts braced records with balanced nested braced
+or quoted literal values, escaped characters, numeric values, standard bare
+month names (`jan` through `dec`), percent comments outside values, and balanced
+`@comment{...}` blocks. Comments do not become live entries. Unsupported
+constructs raise `OmnibusError` before any write: in particular parenthesized
+records, `@string`, `@preamble`, other macro-valued fields, concatenation, and
+incomplete fields are not silently dropped or shortened.
+This is a bounded reader, not a BibTeX evaluator.
+
+Both planning and writing prepare the complete config, reference ledger,
+bibliography, registry, destination checks, and UTF-8 output bytes before
+mutation. Every actual compiled embed must have exactly one matching accessible
+registry record: label and filename must agree when a label is present; an
+unlabeled embed needs an unambiguous filename match. Required alt text must be
+nonblank and is retained from the source record. Repeated placements remain
+covered; literal examples do not demand records. Native plates and generated
+covers share one output-basename ownership map, so neither silently replaces the
+other. PNG-only works remain supported; assembly does not require source SVGs
+or claim to measure compiled physical legibility.
+
+`AssemblyReport.image_sources` contains sorted `(compiled image target, source
+Path)` pairs, including generated cover copies. Its JSON representation is an
+`image_sources` object. Targets use the exact `../figures/<basename>` spelling
+in the compiled embeds. This is source-file ownership, not renderer provenance
+or a claim that a source SVG sibling exists. A physical compiled-surface check
+must independently bind those exact targets to genuine SVG sources and the
+compiled config.
+Blank lines and standalone comments inside supported `paper` metadata do not
+erase a configured cover; its image and alternative text remain in the copied
+cover block and source inventory.
+
+Generated part covers use the full text width, subject to the existing figure
+height cap; their native text must satisfy the same physical floor as other
+placements. The set cover derives its column budget from complete declared
+names, while longer labels still wrap without losing characters.
+
+When an external SDK consumes a compiled canonical manuscript tree, retain
+required non-Markdown evidence resources at their declared paths. For example,
+copy the genuine current `reading_record.json` from the preserved authored tree
+to `docs/manuscript/reading_record.json` and record byte correspondence. Do not
+replace compiled sections with authored sections or substitute an older reading
+to satisfy a source-path check. This resource retention is the rendering
+caller's responsibility, not additional namespace or evaluator authority.
+
+The physical-layout API is in `line_set.figures.legibility`:
+
+- `parse_embeds(manuscript_dir)` returns a tuple of `EmbedOccurrence` records,
+  not a dictionary keyed by basename. Every repeated active placement retains
+  its exact destination, label, width, source file, and original line number.
+  `parse_embed_text(markdown, source=...)` accepts an explicit text surface.
+  Inline code in a caption, including bracket text, does not hide an actual
+  placement or change its original destination or line.
+- `measure_project(project_root)` measures only standalone authored placements;
+  it never treats an `output/manuscript` tree as a qualified compiled volume.
+- `measure_surface(occurrences, config_text=..., svg_sources=..., surface=...)`
+  requires the explicit `standalone` or `compiled` scope and a complete exact
+  image-destination-to-source-SVG map. A compiled caller includes every generated
+  placement, including covers, and the actual compiled configuration. Missing
+  source SVGs or an empty measurement surface are refused.
+
+The font inventory accepts explicit numeric `font-size` attributes in single or
+double quotes, with optional `px`, and numeric pixel declarations in CSS. It
+takes the smallest declaration conservatively; it does not evaluate the CSS
+cascade, inherited or relative sizes, font substitution, glyph bounds, or
+computed browser styles. A missing supported declaration remains a refusal.
+Only real XML attributes and CSS-bearing style attributes/elements contribute
+declarations. XML/CSS comments, quoted CSS strings, ordinary text and similarly
+named data attributes do not. Supported geometry and height scalars honor
+ordinary YAML trailing comments; commented-out keys are not declarations.
+
+Bind each SVG to its actual native raster generation before measuring it;
+filename resemblance alone does not establish correspondence. The result is
+per-occurrence geometry under the declared US Letter page model, not PDF text
+extraction, accessibility certification, or human visual acceptance. A generic
+PNG-only assembly remains valid without this optional SVG measurement.
+
+Managed manuscript/figure directories and all files assembly will write or
+remove must be nonsymlink nodes contained under the project root. Wrong node
+kinds and unsafe filenames are refused in both modes. Cleanup reads the prior
+`omnibus_report.json` section inventory and removes only obsolete listed
+sections; unrelated Markdown/BibTeX files survive. A missing inventory grants
+no inferred section-deletion authority; a malformed inventory is refused.
+Known generated config, bibliography, ledger, report, and current section
+filenames are replaced explicitly. Deterministic input failure leaves the
+previous output unchanged; this is not a transaction against runtime I/O
+failures or concurrent filesystem changes.
+
+The paper metadata subset is single-line plain, single-quoted, or double-quoted
+string scalars for title, subtitle, version, and date. Quoting, escapes, and
+inline comments are decoded before use; generated string scalars are safely
+quoted, including quotes, backslashes, and escaped YAML line separators.
+Multiline scalars, aliases, tags, and collection nodes are explicitly refused
+rather than partially read. Reused author/render/geometry blocks remain verbatim.
 
 Native authored sources can contain producer-owned variables. Preserve the raw
 assembled tree, then consume a genuine native-resolved manuscript projection

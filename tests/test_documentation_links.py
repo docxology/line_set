@@ -31,7 +31,7 @@ from __future__ import annotations
 import re
 from pathlib import Path
 
-from line_set.omnibus import fence_mask
+from line_set._markdown_spans import fence_mask
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 
