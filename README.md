@@ -38,6 +38,8 @@ runs the production reader over the real declaration plus this package's own
 entry. A declared exemption does not rescue the wrapper: it is not a line and
 has no standing to share a token with one.
 
+![Line Set composition architecture: 10 declared line instruments (7 public solid nodes and 3 private dashed nodes — violet_line, copper_line, and iron_line) bridging set declarations, shared-token exemptions, and opt-in sibling intake to the 5-stage set reader, 2.0-public reading census, and literal-aware omnibus typography assembly](docs/assets/architecture-overview.svg)
+
 ## The honest boundary
 
 A `SET_LEGIBLE` reading says that the declared lines the reader could import each
@@ -176,9 +178,9 @@ private omnibus includes eleven works and excludes Witness:
 - [Red Line](https://github.com/docxology/red_line) — the cognitive-security registry of self-assessments
 - [White Line](https://github.com/docxology/white_line) — the absence and omission ledger
 - [Silver Line](https://github.com/docxology/silver_line) — the memory-and-succession instrument
-- [Violet Line](https://github.com/docxology/violet_line) — PRIVATE consent ledger; authorized source access only
+- Violet Line (`violet_line`, private) — consent ledger of affected parties; authorized source access only
 - [Blue Line](https://github.com/docxology/blue_line) — the stewardship instrument for maintained commitments
 - [Green Line](https://github.com/docxology/green_line) — the capacity-under-development instrument
-- [Copper Line](https://github.com/docxology/copper_line) — PRIVATE finite-resource exposure arithmetic and burden attribution
-- [Iron Line](https://github.com/docxology/iron_line) — PRIVATE scenario-bound recorded recovery-target comparisons
+- Copper Line (`copper_line`, private) — finite-resource exposure arithmetic and burden attribution; authorized source access only
+- Iron Line (`iron_line`, private) — scenario-bound recorded recovery-target comparisons; authorized source access only
 - [The Witness Register](https://github.com/docxology/witness_register) — co-registration without aggregation
