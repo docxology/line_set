@@ -6,9 +6,10 @@ pure standard library, the sibling line packages are optional, and the tests,
 the offline check battery, and the manuscript all work with none of them
 present. What a separated copy cannot do on its own is typeset itself: PDF and
 HTML rendering uses the separate `docxology/template` engine, which is a stated
-external dependency and is never vendored here. Everything else — the suite,
-`check_registry.py`, `check_set.py`, `build_figures.py`, `record_reading.py`,
-and `build_omnibus.py` — runs from the clone alone.
+external dependency and is never vendored here. Everything else — the suite, the offline registry check, and figure generation with librsvg —
+works from this clone alone. A complete live reading and canonical recording
+require the relevant sibling packages. The omnibus assembler also accepts an
+incomplete corpus and reports which works were absent.
 
 Separation is not the hard part. Staying legible after separation is, because
 this project's whole subject is a set it is no longer sitting inside. What
@@ -79,7 +80,7 @@ The public reader raises `DeclarationError` for empty or ambiguous declarations
 before imports. Small custom sets need no opus convention or exemption table.
 Published root enum names include aliases; class aliases do not inflate the
 census. Discovery coverage and binding provenance travel in the reading even
-when the namespace is legible. See [the binding contract](docs/binding_contract.md)
+when the namespace is legible. See [the binding contract](binding_contract.md)
 for descriptors, exact-record hashes and schema migration. Archived readings
 retain their original date and are not current verification of absent siblings.
 
@@ -88,14 +89,15 @@ retain their original date and are not current verification of absent siblings.
 Copy the project tree, `uv.lock`, and the manuscript together. Do not copy the
 template engine into the project. After copying: update `docs/manuscript/config.yaml`,
 the publication metadata, and every cross-project link, then run the local
-validation surface in [`docs/development.md`](docs/development.md) before
+validation surface in [development guide](development.md) before
 claiming the copy is sound.
 
 ## Validation after separation
 
-The offline gates — the test suite and `scripts/check_registry.py` — are the ones
-that must still pass unchanged. `scripts/check_set.py` and the two live figures
-will report absence, which is the correct result and not a gate failure.
+The test suite and `scripts/check_registry.py` pass with no siblings.
+`scripts/check_set.py --imports-only` reports `SET_PARTIAL` and exits 1 in a
+fresh standalone environment. Figure generation succeeds and marks unread
+siblings in every plate that uses the live reading.
 
 The `build_omnibus.py` volume is a further gate on separation, and it degrades
 rather than raising. With no sibling beside the clone it assembles this work
@@ -105,9 +107,9 @@ because this project reads other checkouts and writes to none of them. Both
 outcomes exit zero and both are honest, and the omnibus corpus gates in the
 suite skip with the missing works named rather than failing.
 
-The local gates are necessary and not sufficient. Rendered PDF/HTML output must
+The rendered PDF, HTML, and EPUB must
 also pass the template's validation, which needs the external engine described
-in [`docs/development.md`](docs/development.md). The template's strict public
+in [development guide](development.md). The template's strict public
 publication audit asks whether a project sits inside its own public repository,
 so it reports a repository-boundary finding against a copy mirrored in from an
 external projects root; that finding is about where the copy was linked from and

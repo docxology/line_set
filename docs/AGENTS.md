@@ -62,7 +62,7 @@ remains authoritative; the rules below add documentation-specific constraints.
   registries, figure designs, or evaluator logic into this folder.
 - **Do not document a surface that does not exist yet.** Where this folder
   describes a contract that is not yet built, say so in
-  [`../TODO.md`](../TODO.md) rather than letting the description read as a
+  [`TODO.md`](TODO.md) rather than letting the description read as a
   report of something on disk.
 
 ## Verification

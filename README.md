@@ -42,10 +42,10 @@ has no standing to share a token with one.
 
 ## The honest boundary
 
-A `SET_LEGIBLE` reading says that the declared lines the reader could import each
-exported a set of enum member names, and that no name appeared in more than one
-of them except where an exemption was declared in advance with a distinct meaning
-per line. It does not say the instruments are correct, complete, well chosen, or
+A `SET_LEGIBLE` reading means every declared line supplied a readable root
+vocabulary, no discovered package was found outside the declaration, and every
+overlapping name matched an exact declared exemption with a meaning for each
+carrier. Discovery covers the reader's configured scope. It does not say the instruments are correct, complete, well chosen, or
 worth having; it does not say the set covers what it should cover; it is not
 tamper evidence; it is not independent verification of any sibling, since every
 version, size, and digest reported is read from that sibling using the sibling's
@@ -66,7 +66,7 @@ Pure standard library, no runtime dependencies. The sibling line packages are
 renders its manuscript with none of them present.
 
 ```bash
-uv sync
+uv sync --locked
 ```
 
 With no sibling importable, a reading is `SET_PARTIAL` and self-disjointness
@@ -82,38 +82,32 @@ positional and this project is its own repository, so a clone whose set lives
 elsewhere names the directory with `LINE_SET_SIBLINGS` rather than being moved
 into a layout.
 
-## The four commands
+## Run a standalone check
+
+Use [uv](https://docs.astral.sh/uv/) and install `rsvg-convert` from librsvg
+to build the figures. From a fresh clone with no line packages installed:
 
 ```bash
-uv run python scripts/check_registry.py   # offline structural battery over the declaration
-uv run python scripts/check_set.py        # live reading of the installed lines
-uv run python scripts/build_figures.py    # deterministic SVG/PNG pairs into output/figures/
-uv run python scripts/record_reading.py --withhold-source violet_line --withhold-source copper_line --withhold-source iron_line  # public view after complete pinned admission
+uv sync --locked
+export LINE_SET_SIBLINGS="$(mktemp -d)"
+uv run python scripts/check_registry.py
+uv run pytest tests/ --cov=src --cov-branch --cov-report=term-missing
+uv run python scripts/build_figures.py
+uv run python scripts/check_set.py --imports-only
 ```
 
-The first needs no sibling and reaches nothing outside this tree. The second
-needs them: without a full reading the non-overlap contract was not checked, so
-it exits non-zero rather than reporting a pass. The third runs either way — it
-needs `rsvg-convert`, not the siblings — and live plates render an unread
-sibling visibly rather than omitting its row. The fourth additionally requires
-pinned source snapshots, complete metadata and completed discovery; a readable
-but unpinned development installation is not canonical evidence. `--check`
-compares the held record without rewriting it. The test suite is
-`uv run pytest tests/ --cov=src --cov-branch --cov-report=term-missing`, and it
-must pass with the siblings absent as well as present.
+The offline registry and test gates pass. The final command reports
+`set_partial` and exits 1 because a sibling-free reading leaves the live
+non-overlap check unestablished. Figure generation succeeds and shows unread
+siblings explicitly.
 
-The manuscript's measured numbers come from `docs/manuscript/reading_record.json`.
-A new current `2.0-public` view must withhold all three private producers'
-revisions and module paths: Violet, Copper, and Iron. The full pinned measurement
-stays in private custody. Earlier eight-line and ten-line evidence retains its original producers and dates.
-The suite replays the public reading, checks its identity and census, and compares
-the same view with a newly admitted complete pinned reading where those sources are
-accessible. Public replay is not complete public source-pin proof, and revision-only
-changes in a withheld source are not detectable from this view. Authored prose is
-reviewed against that dated measurement, not certified by matching sentences.
-Previously public historical records remain under `docs/releases/evidence/`.
-Full commands and render path:
-[`docs/development.md`](docs/development.md).
+The [worked readings](docs/manuscript/04_examples.md) use the dated [ten-line
+public record](docs/manuscript/reading_record.json). It withholds the producer
+revisions and module paths for Violet, Copper, and Iron. The suite replays
+the public record and checks its identity and census. Full source-pin checks
+and continuity checks for the withheld identities require the authorized
+captures. Earlier readings retain their dates and producer identities in the
+[release evidence](docs/releases/README.md).
 
 ## Figures
 
@@ -144,7 +138,7 @@ and admission boundary are in [`docs/extensibility.md`](docs/extensibility.md).
 
 Line Set is standalone. It has its own package, tests, documentation, manuscript,
 references, and figures, and a separated copy must still explain its own purpose
-and limits without the siblings present — see [`STANDALONE.md`](STANDALONE.md).
+and limits without the siblings present — see [the standalone guide](docs/standalone.md).
 Current membership is declared in
 [`src/line_set/registry.py`](src/line_set/registry.py); the family roster below
 links each independent repository. A declared member need not be installed or
@@ -158,14 +152,12 @@ registries, figure designs, or evaluator logic, and it never modifies them.
 
 ## Documentation
 
-- [`docs/claim_boundaries.md`](docs/claim_boundaries.md) — the non-claim register.
-- [`docs/architecture.md`](docs/architecture.md) — modules, stages, precedence, digests.
-- [`docs/invariants.md`](docs/invariants.md) — the checks and their proof of detection.
-- [`docs/extensibility.md`](docs/extensibility.md) — adding a color.
-- [`docs/development.md`](docs/development.md) — commands and render path.
-- [`docs/envelope.md`](docs/envelope.md) — the set-wide report envelope convention.
-- [`docs/correspondence.md`](docs/correspondence.md) — design reviews received and answered.
-- [`AGENTS.md`](AGENTS.md) — working rules for this tree. [`TODO.md`](TODO.md) — what is not yet built.
+- [Documentation index](docs/README.md) for architecture, invariants, the
+  binding contract, contributing, and claim boundaries.
+- [Manuscript source](docs/manuscript/README.md) and [public rendering
+  instructions](docs/development.md#rendering-the-manuscript).
+- [Open work](docs/TODO.md), [release packets](docs/releases/README.md), and
+  [repository guidance](AGENTS.md).
 
 ## The Line Set
 

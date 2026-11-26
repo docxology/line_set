@@ -18,7 +18,7 @@ Section order:
 | [`02a_formalism.md`](02a_formalism.md) | The records, the matcher, the reading, the precedence rule, and the self-application, stated as definitions and propositions |
 | [`02b_scholarship.md`](02b_scholarship.md) | Modularity, boundary objects, and the hazard of the index |
 | [`03_extensibility.md`](03_extensibility.md) | Historical executed extension example and current admission boundary |
-| [`04_examples.md`](04_examples.md) | Retained eight-line measurement, explicitly distinguished from the new current cutover |
+| [`04_examples.md`](04_examples.md) | Dated ten-line 0.8.0 measurement and its public view, with links to earlier records |
 | [`05_limits.md`](05_limits.md) | What the reader cannot see |
 | [`06_conclusion.md`](06_conclusion.md) | What the project earns |
 | [`99_references.md`](99_references.md) | Bibliography anchor |
@@ -30,8 +30,11 @@ record integrity rather than matching authored sentences. Review measured
 passages against the record whenever it changes.
 
 Figures are embedded as `../../output/figures/<name>.png` and are rebuilt with
-`uv run python scripts/build_figures.py`. Do not hand-edit anything under
-`output/`.
+`uv run python scripts/build_figures.py`. Plates based on the live reading
+show the siblings available during the build. The dated prose uses the separately
+retained [reading record](reading_record.json). Follow the [public render
+recipe](../development.md#rendering-the-manuscript) to build and validate the
+PDF, HTML, and EPUB. Do not hand-edit anything under `output/`.
 
 For compiled volumes, the assembler omits only actual heading-only **References**
 stubs (optionally with an empty `#refs` Div), not arbitrary `99_` sections.
@@ -41,7 +44,7 @@ basenames may not collide with reproduced source content. Assembly plans the
 complete config and accessibility registry before writing, refuses unsupported
 bibliography/config syntax explicitly, and cleans obsolete sections only from
 the prior assembly report's inventory. See the
-[assembly contract](../development.md) for the supported subsets, output
+[assembly contract](../development.md#assembling-the-omnibus) for the supported subsets, output
 containment rules, and image-source mapping. This does not measure the rendered
 volume's physical legibility.
 

@@ -8,6 +8,11 @@ Start with [claim_boundaries.md](claim_boundaries.md) if you are evaluating what
 this project asserts, and with [architecture.md](architecture.md) if you are
 about to change it.
 
+- [Standalone guide](standalone.md) for local checks with optional siblings absent.
+- [Manuscript source](manuscript/README.md) and the [public render recipe](development.md#rendering-the-manuscript).
+- [Binding contract](binding_contract.md) for discovery, provenance, and record formats.
+- [Open work](TODO.md) and [changes by version](../CHANGELOG.md).
+
 - [admission/decision-20261108.md](admission/decision-20261108.md) — current
   architectural admission of Copper and Iron, including the extension alternative.
 - [admission/README.md](admission/README.md) — historical no-addition decision,
