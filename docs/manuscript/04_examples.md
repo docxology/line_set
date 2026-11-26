@@ -1,5 +1,10 @@
 # Worked readings {#sec:examples}
 
+The dated measurement below comes from the retained reading record. Figures
+that use a live reading describe the build environment. In a sibling-free
+build, those plates show unread lines while this section preserves the
+recorded ten-line census.
+
 ## Ten-line 0.8.0 pinned measurement and public view
 
 The 2026-11-11 measurement reads all ten actual native-qualified producer commits from immutable Git-archive captures whose regular-file bytes match their recorded commits and trees. These are real reviewed source commits, not predicted release tags. Eight producers use `convention-heuristic` binding; Copper and Iron use their explicit `line-set-binding/1` descriptors. All ten use `pinned-source-snapshot` provenance. This measures the exported namespace, not native report correctness, practical usefulness, or conceptual independence.

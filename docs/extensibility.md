@@ -132,7 +132,7 @@ an unused identity.
 - **Project-root and `docs/` prose, wherever it names a count or lists the
   lines.** Same rule as captions: the prose is not derived, so the prose is what
   drifts. Today that means `README.md` (which names the lines and counts the
-  stages, figures, and commands), `AGENTS.md`, `STANDALONE.md`, `CHANGELOG.md`,
+  stages, figures, and commands), `AGENTS.md`, [the standalone guide](standalone.md), `CHANGELOG.md`,
   and this file. Grep for the line names and for spelled-out numbers before
   concluding the pass is done; a count in prose has no test behind it.
 

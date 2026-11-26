@@ -92,7 +92,7 @@ overriding any of them — "precedence without information destruction."
 
 The settled recording pass was taken at the window's close: paper date and
 record moved to 2026-07-29, the compiled volume re-assembled and re-rendered,
-and the rendered text read back (`TODO.md` log records the measurements).
+and the rendered text read back ([the project log](TODO.md) records the measurements).
 `docs/envelope.md`'s roster now also records, as a dated observation, that
 the witness_register companion exists and accepted all four lines' exported
 envelopes unmodified.

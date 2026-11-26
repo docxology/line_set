@@ -1,12 +1,12 @@
 # Deferred work
 
 This file separates current open work from the dated completed log below.
-[`docs/claim_boundaries.md`](docs/claim_boundaries.md) limits every claim.
+[`docs/claim_boundaries.md`](claim_boundaries.md) limits every claim.
 
 ## Open — inside the current instrument boundary
 
 - **Admission research remains unexecuted.** The
-  [dossier and protocol](docs/admission/README.md) define a hypothetical case
+  [dossier and protocol](admission/README.md) define a hypothetical case
   library and optional evidence/replay convention. Native exporters and fixes
   remain owner-governed. A source refinement pass does not replace the real
   native outputs, independent human reviews and consent needed for the proposed
@@ -57,7 +57,7 @@ These are not represented anywhere as hidden features:
   `docxology/line_set`, with release packets under `docs/releases/`. What is
   still an author step is the citation workflow: reserving and minting a DOI for
   the current release and re-rendering at the release tree, as
-  [publication.md](docs/publication.md) sets out.
+  [publication.md](publication.md) sets out.
 
 ## Standing discipline
 

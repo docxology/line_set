@@ -1137,7 +1137,7 @@ def corpus() -> tuple[object, ...]:
     Every gate below measures the *whole* declared set, so a run with a work
     missing would be measuring less than the set and must not report a pass.
     It must not report a failure either: a separated copy of this project is
-    supposed to travel alone, and `README.md` and `STANDALONE.md` both promise
+    supposed to travel alone, and `README.md` and `docs/standalone.md` both promise
     the suite passes with the siblings absent. So the gates skip, and they skip
     with the works named.
 

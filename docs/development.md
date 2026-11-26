@@ -4,15 +4,15 @@ The package is pure standard library with no runtime dependencies. The local
 validation surface is:
 
 ```bash
+uv sync --locked
+export LINE_SET_SIBLINGS="$(mktemp -d)"
 uv run pytest tests/ --cov=src --cov-branch --cov-report=term-missing
 uv run ruff check src tests scripts
 uv run ruff format --check src tests scripts
 uv run mypy src/line_set
 uv run python scripts/check_registry.py
-uv run python scripts/check_set.py
 uv run python scripts/gen_formalism_ledger.py
 uv run python scripts/build_figures.py
-uv run python scripts/record_reading.py --as-of <recorded-review-date> --withhold-source violet_line --withhold-source copper_line --withhold-source iron_line --check
 ```
 
 The coverage floor is configured in `pyproject.toml`; read it there rather than
@@ -197,50 +197,42 @@ floor and visual inspection of the generated PNGs and final PDF.
 
 ## Rendering the manuscript
 
-**Rendering is an external dependency, and it is stated as one rather than
-hidden.** This repository ships no renderer. The manuscript is markdown plus a
-`docs/manuscript/config.yaml`, and the PDF and HTML are produced by the separate
-`docxology/template` engine, which lives in its own repository and is
-deliberately not vendored here.
+Render the author-maintained [manuscript](manuscript/README.md) with the
+external [docxology/template](https://github.com/docxology/template) engine.
+The public paper can be rendered without any sibling checkout. The live
+plates will show absent packages while the worked reading retains its dated
+measurement.
 
-Everything else works without it. The test suite, `check_registry.py`,
-`check_set.py`, `build_figures.py`, `record_reading.py`, and `build_omnibus.py`
-all run from this repository alone; what needs the template is the typeset
-artifact and the template's own output validation. A copy of this project with
-no template anywhere on the machine is still a complete, checkable project — it
-simply has no PDF.
-
-Clone the engine wherever you like. Nothing below assumes it sits at a
-particular place relative to this project:
+Install Python 3.14, uv, `rsvg-convert`, Pandoc with a matching
+`pandoc-crossref`, and XeLaTeX with its packages on `PATH`. The recipe uses a
+clean Git-indexed checkout named `line_set` and pins the engine used for these
+commands. Run from the root of this repository and choose an unused location
+for the engine checkout:
 
 ```bash
-git clone https://github.com/docxology/template.git /wherever/you/want/template
-```
+LINE_SET_ROOT="$(pwd -P)"
+TEMPLATE="$LINE_SET_ROOT/../line-set-render-template"
+git clone https://github.com/docxology/template.git "$TEMPLATE"
+git -C "$TEMPLATE" switch --detach 87704feae0a4490ef7dad9c931d268e8c30273c2
 
-The template discovers projects by mirroring an external projects root into its
-own `projects/` tree, and the root is given to it explicitly rather than
-guessed. It expects that root to hold lifecycle folders, so this project should
-sit at `<root>/working/line_set` — a symlink is enough if the clone lives
-elsewhere:
-
-```bash
-# From anywhere; substitute your own two paths.
-TEMPLATE=/wherever/you/want/template
-PROJECTS_ROOT=/wherever/you/keep/projects      # must contain working/line_set
+uv sync --locked
+LINE_SET_SIBLINGS="$(mktemp -d)" uv run python scripts/build_figures.py
 
 cd "$TEMPLATE"
-uv sync --frozen --group rendering
-export TEMPLATE_PRIVATE_PROJECTS_ROOT="$PROJECTS_ROOT"
-uv run python -m infrastructure.orchestration link-projects --dry-run
-uv run python -m infrastructure.orchestration link-projects
-uv run python scripts/pipeline/stage_03_render.py --project working/line_set --skip-manuscript-hydration
-uv run python scripts/pipeline/stage_04_validate.py --project working/line_set
+uv sync --locked --no-dev --python 3.14
+mkdir -p projects/working
+ln -s "$LINE_SET_ROOT" projects/working/line_set
+uv run --no-sync python scripts/pipeline/stage_03_render.py --project working/line_set --skip-manuscript-hydration
+uv run --no-sync python scripts/pipeline/stage_04_validate.py --project working/line_set
 ```
 
-Use a Git-indexed engine checkout: its rendered provenance gate fingerprints
-tracked engine implementation files. A source archive can render, but cannot
-supply that index. The `--skip-manuscript-hydration` option retains this
-repository's authored `docs/manuscript` layout.
+The manuscript hydration flag preserves the authored source layout. Both Git
+indexes are used by the engine's provenance checks. Read the combined PDF,
+HTML, and EPUB under the Line Set checkout's `output/pdf/`, `output/web/`, and
+`output/epub/`, and review the validation receipt in `output/reports/` before
+sharing artifacts.
+
+## Assembling the omnibus
 
 The current complete volume contains Main plus ten instruments, eleven works;
 Witness remains outside it. Violet, Copper, and Iron require authorized PRIVATE
