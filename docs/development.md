@@ -241,7 +241,8 @@ private custody, never in a public repository/worktree sharing its object store.
 Public Main figures and ledgers must contain only reviewed public namespace
 metadata, not private module paths, source revisions, native receipts, or content.
 
-First run this repository's omnibus builder in a separate render clone.
+From a separate render clone of Line Set, run
+`uv run python scripts/build_omnibus.py --write`.
 Preserve its authored `docs/manuscript` outside that
 clone, then copy the assembled `output/manuscript` to `docs/manuscript` in the
 render clone. Record the release revision and hashes of both manuscript trees,
