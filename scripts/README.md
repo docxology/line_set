@@ -8,7 +8,7 @@ uv run python scripts/check_registry.py   # offline structural battery over the 
 uv run python scripts/check_set.py        # live reading of the installed lines
 uv run python scripts/build_figures.py    # deterministic SVG/PNG pairs into output/figures/
 uv run python scripts/record_reading.py   # write docs/manuscript/reading_record.json
-uv run python scripts/build_omnibus.py    # compile the declared works under output/manuscript/
+uv run python scripts/build_omnibus.py    # validate and report the omnibus plan
 uv run python scripts/gen_formalism_ledger.py   # regenerate data/formalism_claim_ledger.json
 ```
 
@@ -21,6 +21,12 @@ and fails closed with install guidance if the rasterizer is absent.
 `record_reading.py` needs every declared line readable and refuses to write a
 record of a reading it could not take; `--check` compares the record on disk
 against a live reading without rewriting it.
+
+The default `build_omnibus.py` invocation validates the plan and reports what
+it would write. From a separate render clone, use
+`uv run python scripts/build_omnibus.py --write` to generate
+`output/manuscript/`. The complete volume's source requirements are in the
+[omnibus workflow](../docs/development.md#assembling-the-omnibus).
 
 Every one of them refuses an argument it does not understand rather than
 ignoring it, and `tests/test_scripts.py` runs each as a subprocess and requires
