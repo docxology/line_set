@@ -2,12 +2,13 @@
 
 ## How to cite
 
-Source edition **0.8.0**, dated November 9, 2026. Cite inspected source by
-repository, version, and exact revision. Source, release, standalone manuscript,
-and compiled volume remain distinct objects; each needs separate evidence:
+Cite an inspected source checkout by repository, declared version, and full
+commit SHA. For a checkout of `main`, use `git rev-parse HEAD` to obtain the
+exact revision and substitute it in this 0.8.0 example.
 
 > Friedman, D. A. (2026). *The Line Set: The Collected Volume* (source
-> version 0.8.0) [Software source]. <https://github.com/docxology/line_set>.
+> version 0.8.0, commit `<checkout-sha>`) [Software source].
+> <https://github.com/docxology/line_set>.
 
 ```bibtex
 @software{friedman_line_set_source_2026,
@@ -16,7 +17,7 @@ and compiled volume remain distinct objects; each needs separate evidence:
   version = {0.8.0},
   year    = {2026},
   url     = {https://github.com/docxology/line_set},
-  note    = {Software-source edition; not a manuscript or compiled-volume deposit receipt}
+  note    = {Software source at Git commit <checkout-sha>}
 }
 ```
 
@@ -24,21 +25,21 @@ The owner-chosen **Collected Volume** display title is retained. It labels
 this software-source citation, not evidence of a public compiled-volume
 deposit. Three objects remain separate:
 
-- The public Main software SOURCE ZIP; previously verified **0.7.0** /
-  <https://doi.org/10.5281/zenodo.24069475>.
+- The public Main software source archive. Zenodo published the single source
+  ZIP from the **v0.8.0** tag on November 11, 2026.
+  [Version DOI 10.5281/zenodo.24124421](https://doi.org/10.5281/zenodo.24124421) ·
+  [GitHub v0.8.0 release](https://github.com/docxology/line_set/releases/tag/v0.8.0)
 - The standalone wrapper paper, *The Line Set: Holding Instruments Apart*.
   A source-ZIP DOI does not independently identify a rendered PDF/HTML/EPUB.
 - The **PRIVATE eleven-work omnibus**, excluding Witness. No omnibus deposit
   or DOI is claimed, and source publication does not authorize its disclosure.
 
-The older archive remains *The Line Set: Holding Instruments Apart*,
-**0.2.0** / <https://doi.org/10.5281/zenodo.22833507>; its title/DOI pair is
-historical, not renamed to match the intentional current display title.
-Both earlier references remain in `CITATION.cff`; the config's
-`publication.archived_version` / `publication.archived_version_doi` now name
-the previously verified **0.7.0 source ZIP**. Neither older DOI identifies
-proposed 0.8.0. Cite later source through its repository until its exact
-edition/object is independently verified.
+The earlier **0.7.0** source ZIP remains at
+<https://doi.org/10.5281/zenodo.24069475>. The **0.2.0** archive keeps its
+published title, *The Line Set: Holding Instruments Apart*, and DOI
+<https://doi.org/10.5281/zenodo.22833507>. `CITATION.cff` retains both
+references. The manuscript config pins `publication.archived_version` and
+`publication.archived_version_doi` to the **0.7.0 source ZIP**.
 
 `CITATION.cff` carries the citation metadata in machine-readable form, and
 `.zenodo.json` carries the deposit metadata. The version declarations are
@@ -56,11 +57,10 @@ binds that reference's title, version and DOI to the retained API response hash.
 
 ## Persistent Identifiers and Verification
 
-The metadata retains exact historical source/version references, not identifiers
-for this later edition. Placeholder DOI strings are not citations. Local
-metadata assertions do not independently verify a deposit: check the actual
-external record, its repository, tag, version, access, and deposited contents.
-A reserved identifier is not evidence that a deposit has been published.
+Verify a version DOI against the external record before citing it. Check the
+repository, tag, version, access, and deposited contents. Keep placeholder
+identifiers out of citations. A reserved identifier records the reservation
+only.
 
 ## Manual reserve-first DOI publication
 
